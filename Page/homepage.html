@@ -877,6 +877,9 @@
 
 <body>
 
+    <div class="scroll-line" id="scrollLine"></div>
+
+
     <!-- BACKGROUND -->
 
     <div class="bg-wrapper">
@@ -972,7 +975,7 @@
 
         <div class="hero-right">
 
-            <div class="banner-3d">
+            <div class="banner-3d reveal">
 
                 <div class="ring ring1"></div>
                 <div class="ring ring2"></div>
@@ -994,7 +997,7 @@
 
         <div class="showcase-left">
 
-            <div class="glass-box">
+            <div class="glass-box reveal">
 
                 <span class="tag">
                     FUTURE GAMING
@@ -1019,7 +1022,7 @@
 
         <div class="showcase-right">
 
-            <div class="showcase-banner">
+            <div class="showcase-banner reveal">
 
                 <img src="/images/setup-banner.png"
                      alt="Gaming Setup" />
@@ -1040,7 +1043,7 @@
 
         <div class="product-grid">
 
-            <div class="product-card">
+            <div class="product-card reveal floating">
 
                 <img src="/images/pc1.jpg"
                      class="product-image"
@@ -1062,7 +1065,7 @@
 
             </div>
 
-            <div class="product-card">
+            <div class="product-card reveal floating">
 
                 <img src="/images/keyboard.jpg"
                      class="product-image"
@@ -1084,7 +1087,7 @@
 
             </div>
 
-            <div class="product-card">
+            <div class="product-card reveal floating">
 
                 <img src="/images/mouse.jpg"
                      class="product-image"
@@ -1106,7 +1109,7 @@
 
             </div>
 
-            <div class="product-card">
+            <div class="product-card reveal floating">
 
                 <img src="/images/headphone.jpg"
                      class="product-image"
@@ -1128,7 +1131,7 @@
 
             </div>
 
-            <div class="product-card">
+            <div class="product-card reveal floating">
 
                 <img src="/images/monitor.jpg"
                      class="product-image"
@@ -1189,18 +1192,108 @@
     <script>
 
         const header = document.getElementById("header");
+        const scrollLine = document.getElementById("scrollLine");
+
+        /* HEADER GLASS */
 
         window.addEventListener("scroll", () => {
 
             if (window.scrollY > 40) {
-
                 header.classList.add("scrolled");
-
             }
             else {
-
                 header.classList.remove("scrolled");
             }
+
+            /* SCROLL LINE */
+
+            const scrollTop = window.scrollY;
+            const docHeight =
+                document.body.scrollHeight - window.innerHeight;
+
+            const percent = (scrollTop / docHeight) * 100;
+
+            scrollLine.style.width = percent + "%";
+
+        });
+
+        /* REVEAL EFFECT */
+
+        const reveals = document.querySelectorAll(".reveal");
+
+        function revealOnScroll() {
+
+            const triggerBottom = window.innerHeight * 0.88;
+
+            reveals.forEach((item, index) => {
+
+                const top = item.getBoundingClientRect().top;
+
+                if (top < triggerBottom) {
+
+                    setTimeout(() => {
+                        item.classList.add("active");
+                    }, index * 120);
+
+                }
+
+            });
+
+        }
+
+        window.addEventListener("scroll", revealOnScroll);
+
+        revealOnScroll();
+
+        /* 3D PRODUCT TILT */
+
+        const cards = document.querySelectorAll(".product-card");
+
+        cards.forEach(card => {
+
+            card.addEventListener("mousemove", (e) => {
+
+                const rect = card.getBoundingClientRect();
+
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = -(y - centerY) / 18;
+                const rotateY = (x - centerX) / 18;
+
+                card.style.transform =
+                    `
+                    rotateX(${rotateX}deg)
+                    rotateY(${rotateY}deg)
+                    translateY(-10px)
+                    scale(1.02)
+                    `;
+
+            });
+
+            card.addEventListener("mouseleave", () => {
+
+                card.style.transform =
+                    "rotateX(0) rotateY(0) translateY(0) scale(1)";
+
+            });
+
+        });
+
+        /* HERO PARALLAX */
+
+        const banner = document.querySelector(".banner-image");
+
+        document.addEventListener("mousemove", (e) => {
+
+            const x = (window.innerWidth / 2 - e.clientX) / 40;
+            const y = (window.innerHeight / 2 - e.clientY) / 40;
+
+            banner.style.transform =
+                `translate(${x}px, ${y}px)`;
 
         });
 
