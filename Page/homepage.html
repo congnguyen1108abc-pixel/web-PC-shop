@@ -1,17 +1,14 @@
-
-
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
 
     <meta charset="utf-8" />
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>PC MASTER - Premium Store</title>
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -26,9 +23,9 @@
             --dark2: #081120;
             --dark3: #0f172a;
             --white: #ffffff;
-            --glass: rgba(255,255,255,.08);
-            --glass-border: rgba(255,255,255,.14);
-            --text: rgba(255,255,255,.75);
+            --glass: rgba(255, 255, 255, .08);
+            --glass-border: rgba(255, 255, 255, .14);
+            --text: rgba(255, 255, 255, .75);
         }
 
         html {
@@ -36,11 +33,11 @@
         }
 
         body {
-            font-family: 'Segoe UI',sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             overflow-x: hidden;
             overflow-y: scroll;
             color: white;
-            background: radial-gradient(circle at top left, rgba(56,189,248,.18), transparent 25%), radial-gradient(circle at bottom right, rgba(14,165,233,.12), transparent 25%), linear-gradient(180deg,#08101b 0%, #040b14 55%, #01050b 100%);
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, .18), transparent 25%), radial-gradient(circle at bottom right, rgba(14, 165, 233, .12), transparent 25%), linear-gradient(180deg, #08101b 0%, #040b14 55%, #01050b 100%);
             scroll-snap-type: y mandatory;
         }
 
@@ -104,9 +101,9 @@
         .grid-bg {
             position: absolute;
             inset: 0;
-            background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
             background-size: 55px 55px;
-            mask-image: linear-gradient(to bottom,rgba(0,0,0,1),transparent);
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), transparent);
         }
 
         .particles span {
@@ -114,34 +111,34 @@
             width: 4px;
             height: 4px;
             border-radius: 50%;
-            background: rgba(255,255,255,.5);
+            background: rgba(255, 255, 255, .5);
             animation: particleMove linear infinite;
         }
 
-            .particles span:nth-child(1) {
-                left: 10%;
-                animation-duration: 12s;
-            }
+        .particles span:nth-child(1) {
+            left: 10%;
+            animation-duration: 12s;
+        }
 
-            .particles span:nth-child(2) {
-                left: 25%;
-                animation-duration: 16s;
-            }
+        .particles span:nth-child(2) {
+            left: 25%;
+            animation-duration: 16s;
+        }
 
-            .particles span:nth-child(3) {
-                left: 50%;
-                animation-duration: 20s;
-            }
+        .particles span:nth-child(3) {
+            left: 50%;
+            animation-duration: 20s;
+        }
 
-            .particles span:nth-child(4) {
-                left: 70%;
-                animation-duration: 14s;
-            }
+        .particles span:nth-child(4) {
+            left: 70%;
+            animation-duration: 14s;
+        }
 
-            .particles span:nth-child(5) {
-                left: 90%;
-                animation-duration: 18s;
-            }
+        .particles span:nth-child(5) {
+            left: 90%;
+            animation-duration: 18s;
+        }
 
         /* ================================= */
         /* HEADER */
@@ -163,19 +160,19 @@
             transition: .4s ease;
         }
 
-            header.scrolled {
-                background: rgba(255,255,255,.08);
-                border: 1px solid rgba(255,255,255,.12);
-                backdrop-filter: blur(28px);
-                -webkit-backdrop-filter: blur(28px);
-                box-shadow: 0 8px 40px rgba(0,0,0,.35), inset 0 1px 1px rgba(255,255,255,.08);
-            }
+        header.scrolled {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .12);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, .35), inset 0 1px 1px rgba(255, 255, 255, .08);
+        }
 
         .logo {
             font-size: 32px;
             font-weight: 800;
             letter-spacing: 4px;
-            background: linear-gradient(90deg,#ffffff,#7dd3fc);
+            background: linear-gradient(90deg, #ffffff, #7dd3fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -185,33 +182,33 @@
             gap: 35px;
         }
 
-            nav a {
-                text-decoration: none;
-                color: rgba(255,255,255,.78);
-                font-size: 15px;
-                position: relative;
-                transition: .3s;
-            }
+        nav a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, .78);
+            font-size: 15px;
+            position: relative;
+            transition: .3s;
+        }
 
-                nav a:hover {
-                    color: white;
-                }
+        nav a:hover {
+            color: white;
+        }
 
-                nav a::after {
-                    content: "";
-                    position: absolute;
-                    left: 0;
-                    bottom: -7px;
-                    width: 0%;
-                    height: 2px;
-                    border-radius: 10px;
-                    background: var(--blue-light);
-                    transition: .3s;
-                }
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            width: 0%;
+            height: 2px;
+            border-radius: 10px;
+            background: var(--blue-light);
+            transition: .3s;
+        }
 
-                nav a:hover::after {
-                    width: 100%;
-                }
+        nav a:hover::after {
+            width: 100%;
+        }
 
         /* ================================= */
         /* HEADER ACTIONS */
@@ -227,8 +224,8 @@
             width: 48px;
             height: 48px;
             border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.12);
-            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .06);
             backdrop-filter: blur(20px);
             color: white;
             cursor: pointer;
@@ -236,10 +233,10 @@
             transition: .35s;
         }
 
-            .cart-btn:hover {
-                transform: translateY(-2px);
-                background: rgba(255,255,255,.12);
-            }
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, .12);
+        }
 
         .btn {
             padding: 12px 24px;
@@ -251,13 +248,13 @@
         }
 
         .register-btn {
-            background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
             color: white;
         }
 
         .login-btn {
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
             backdrop-filter: blur(20px);
             color: white;
         }
@@ -281,23 +278,23 @@
             width: 50%;
         }
 
-            .hero-left h1 {
-                font-size: clamp(70px,8vw,120px);
-                line-height: 1;
-                margin-bottom: 25px;
-                font-weight: 900;
-                background: linear-gradient(90deg,#ffffff,#7dd3fc,#38bdf8);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
+        .hero-left h1 {
+            font-size: clamp(70px, 8vw, 120px);
+            line-height: 1;
+            margin-bottom: 25px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #ffffff, #7dd3fc, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-            .hero-left p {
-                color: var(--text);
-                font-size: 18px;
-                line-height: 1.9;
-                max-width: 650px;
-                margin-bottom: 40px;
-            }
+        .hero-left p {
+            color: var(--text);
+            font-size: 18px;
+            line-height: 1.9;
+            max-width: 650px;
+            margin-bottom: 40px;
+        }
 
         .hero-buttons {
             display: flex;
@@ -314,13 +311,13 @@
         }
 
         .hero-primary {
-            background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
             color: white;
         }
 
         .hero-secondary {
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
             backdrop-filter: blur(20px);
             color: white;
         }
@@ -353,7 +350,7 @@
         .ring {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgba(125,211,252,.18);
+            border: 1px solid rgba(125, 211, 252, .18);
         }
 
         .ring1 {
@@ -371,7 +368,7 @@
         .ring3 {
             width: 280px;
             height: 280px;
-            background: rgba(255,255,255,.05);
+            background: rgba(255, 255, 255, .05);
             backdrop-filter: blur(20px);
         }
 
@@ -379,7 +376,7 @@
             width: 380px;
             position: relative;
             z-index: 5;
-            filter: drop-shadow(0 20px 50px rgba(0,0,0,.5));
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, .5));
         }
 
         /* ================================= */
@@ -399,21 +396,21 @@
         }
 
         .glass-box {
-            background: rgba(255,255,255,.06);
-            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .10);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border-radius: 35px;
             padding: 50px;
-            box-shadow: 0 20px 40px rgba(0,0,0,.35), inset 0 1px 1px rgba(255,255,255,.06);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .35), inset 0 1px 1px rgba(255, 255, 255, .06);
         }
 
         .tag {
             display: inline-block;
             padding: 10px 18px;
             border-radius: 999px;
-            background: rgba(56,189,248,.18);
-            border: 1px solid rgba(125,211,252,.2);
+            background: rgba(56, 189, 248, .18);
+            border: 1px solid rgba(125, 211, 252, .2);
             color: #7dd3fc;
             margin-bottom: 25px;
             font-size: 14px;
@@ -424,13 +421,13 @@
             font-size: 72px;
             line-height: 1;
             margin-bottom: 25px;
-            background: linear-gradient(90deg,#fff,#7dd3fc);
+            background: linear-gradient(90deg, #fff, #7dd3fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .glass-box p {
-            color: rgba(255,255,255,.72);
+            color: rgba(255, 255, 255, .72);
             line-height: 1.9;
             font-size: 17px;
         }
@@ -442,24 +439,24 @@
             align-items: center;
         }
 
-            .showcase-banner::before {
-                content: "";
-                position: absolute;
-                width: 450px;
-                height: 450px;
-                border-radius: 50%;
-                background: rgba(56,189,248,.25);
-                filter: blur(120px);
-                animation: pulseGlow 5s ease infinite;
-            }
+        .showcase-banner::before {
+            content: "";
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, .25);
+            filter: blur(120px);
+            animation: pulseGlow 5s ease infinite;
+        }
 
-            .showcase-banner img {
-                width: 90%;
-                position: relative;
-                z-index: 5;
-                animation: float 5s ease-in-out infinite;
-                filter: drop-shadow(0 25px 45px rgba(0,0,0,.45));
-            }
+        .showcase-banner img {
+            width: 90%;
+            position: relative;
+            z-index: 5;
+            animation: float 5s ease-in-out infinite;
+            filter: drop-shadow(0 25px 45px rgba(0, 0, 0, .45));
+        }
 
         /* ================================= */
         /* PRODUCTS */
@@ -473,31 +470,31 @@
             text-align: center;
             font-size: 58px;
             margin-bottom: 70px;
-            background: linear-gradient(90deg,#ffffff,#7dd3fc);
+            background: linear-gradient(90deg, #ffffff, #7dd3fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
 
         .product-card {
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .10);
             backdrop-filter: blur(20px);
             border-radius: 30px;
             overflow: hidden;
             transition: .4s;
         }
 
-            .product-card:hover {
-                transform: translateY(-10px) scale(1.02);
-                background: rgba(255,255,255,.08);
-                box-shadow: 0 20px 40px rgba(0,0,0,.35);
-            }
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 255, 255, .08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .35);
+        }
 
         .product-image {
             width: 100%;
@@ -509,15 +506,15 @@
             padding: 25px;
         }
 
-            .product-info h3 {
-                font-size: 28px;
-                margin-bottom: 12px;
-            }
+        .product-info h3 {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
 
-            .product-info p {
-                color: var(--text);
-                line-height: 1.7;
-            }
+        .product-info p {
+            color: var(--text);
+            line-height: 1.7;
+        }
 
         .price {
             margin-top: 18px;
@@ -533,9 +530,9 @@
         footer {
             padding: 50px;
             text-align: center;
-            color: rgba(255,255,255,.65);
-            background: rgba(255,255,255,.04);
-            border-top: 1px solid rgba(255,255,255,.08);
+            color: rgba(255, 255, 255, .65);
+            background: rgba(255, 255, 255, .04);
+            border-top: 1px solid rgba(255, 255, 255, .08);
             backdrop-filter: blur(20px);
         }
 
@@ -554,7 +551,7 @@
             }
         }
 
-    @keyframes rotateReverse {
+        @keyframes rotateReverse {
 
             from {
                 transform: rotate(360deg);
@@ -699,179 +696,490 @@
 
 
 
-    /* ================================= */
-    /* SCROLL REVEAL ANIMATION */
-    /* ================================= */
+        /* ================================= */
+        /* SCROLL REVEAL ANIMATION */
+        /* ================================= */
 
-    .reveal {
-    opacity: 0;
-    transform: translateY(80px) scale(.96);
-    transition: all 1s cubic-bezier(.2,.65,.2,1);
-    will-change: transform, opacity;
-    }
+        .reveal {
+            opacity: 0;
+            transform: translateY(80px) scale(.96);
+            transition: all 1s cubic-bezier(.2, .65, .2, 1);
+            will-change: transform, opacity;
+        }
 
-    .reveal.active {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
 
-    /* ================================= */
-    /* PRODUCT ADVANCED EFFECT */
-    /* ================================= */
+        /* ================================= */
+        /* PRODUCT ADVANCED EFFECT */
+        /* ================================= */
 
-    .product-card {
-    position: relative;
-    transform-style: preserve-3d;
-    perspective: 1000px;
-    overflow: hidden;
-    }
+        .product-card {
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            overflow: hidden;
+        }
 
-    /* LIGHT EFFECT */
+        /* LIGHT EFFECT */
 
-    .product-card::before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    background: linear-gradient(
-    135deg,
-    rgba(125,211,252,.0),
-    rgba(125,211,252,.35),
-    rgba(56,189,248,.0)
-    );
-    opacity: 0;
-    transition: .5s;
-    z-index: 1;
-    pointer-events: none;
-    }
+        .product-card::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg,
+                    rgba(125, 211, 252, .0),
+                    rgba(125, 211, 252, .35),
+                    rgba(56, 189, 248, .0));
+            opacity: 0;
+            transition: .5s;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-    .product-card:hover::before {
-    opacity: 1;
-    }
+        .product-card:hover::before {
+            opacity: 1;
+        }
 
-    /* GLOW EFFECT */
+        /* GLOW EFFECT */
 
-    .product-card::after {
-    content: "";
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    background: rgba(56,189,248,.15);
-    border-radius: 50%;
-    filter: blur(80px);
-    top: -120px;
-    right: -120px;
-    opacity: 0;
-    transition: .5s;
-    }
+        .product-card::after {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(56, 189, 248, .15);
+            border-radius: 50%;
+            filter: blur(80px);
+            top: -120px;
+            right: -120px;
+            opacity: 0;
+            transition: .5s;
+        }
 
-    .product-card:hover::after {
-    opacity: 1;
-    }
+        .product-card:hover::after {
+            opacity: 1;
+        }
 
-    /* IMAGE ZOOM */
+        /* IMAGE ZOOM */
 
-    .product-image {
-    transition: transform .8s ease;
-    }
+        .product-image {
+            transition: transform .8s ease;
+        }
 
-    .product-card:hover .product-image {
-    transform: scale(1.08);
-    }
+        .product-card:hover .product-image {
+            transform: scale(1.08);
+        }
 
-    /* PRODUCT CONTENT FLOAT */
+        /* PRODUCT CONTENT FLOAT */
 
-    .product-info {
-    position: relative;
-    z-index: 5;
-    transition: .4s;
-    }
+        .product-info {
+            position: relative;
+            z-index: 5;
+            transition: .4s;
+        }
 
-    .product-card:hover .product-info {
-    transform: translateY(-8px);
-    }
+        .product-card:hover .product-info {
+            transform: translateY(-8px);
+        }
 
-    /* PRICE GLOW */
+        /* PRICE GLOW */
 
-    .price {
-    text-shadow: 0 0 12px rgba(125,211,252,.5);
-    }
+        .price {
+            text-shadow: 0 0 12px rgba(125, 211, 252, .5);
+        }
 
-    /* ================================= */
-    /* HERO PARALLAX */
-    /* ================================= */
+        /* ================================= */
+        /* HERO PARALLAX */
+        /* ================================= */
 
-    .banner-image {
-    transition: transform .15s linear;
-    }
+        .banner-image {
+            transition: transform .15s linear;
+        }
 
-    /* ================================= */
-    /* SMOOTH SECTION */
-    /* ================================= */
+        /* ================================= */
+        /* SMOOTH SECTION */
+        /* ================================= */
 
-    .page-section {
-    position: relative;
-    }
+        .page-section {
+            position: relative;
+        }
 
-    /* ================================= */
-    /* SHOWCASE EFFECT */
-    /* ================================= */
+        /* ================================= */
+        /* SHOWCASE EFFECT */
+        /* ================================= */
 
-    .glass-box {
-    position: relative;
-    overflow: hidden;
-    }
+        .glass-box {
+            position: relative;
+            overflow: hidden;
+        }
 
-    .glass-box::before {
-    content: "";
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    background: rgba(125,211,252,.15);
-    border-radius: 50%;
-    filter: blur(70px);
-    top: -100px;
-    right: -100px;
-    animation: pulseGlow 6s infinite;
-    }
+        .glass-box::before {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            background: rgba(125, 211, 252, .15);
+            border-radius: 50%;
+            filter: blur(70px);
+            top: -100px;
+            right: -100px;
+            animation: pulseGlow 6s infinite;
+        }
 
-    /* ================================= */
-    /* SCROLL INDICATOR */
-    /* ================================= */
+        /* ================================= */
+        /* SCROLL INDICATOR */
+        /* ================================= */
 
-    .scroll-line {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 4px;
-    z-index: 99999;
-    background: linear-gradient(90deg,#38bdf8,#7dd3fc);
-    box-shadow: 0 0 20px #38bdf8;
-    }
+        .scroll-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            z-index: 99999;
+            background: linear-gradient(90deg, #38bdf8, #7dd3fc);
+            box-shadow: 0 0 20px #38bdf8;
+        }
 
-    /* ================================= */
-    /* FLOATING ANIMATION */
-    /* ================================= */
+        /* ================================= */
+        /* FLOATING ANIMATION */
+        /* ================================= */
 
-    .floating {
-    animation: floatingCard 5s ease-in-out infinite;
-    }
+        .floating {
+            animation: floatingCard 5s ease-in-out infinite;
+        }
 
-    @keyframes floatingCard {
+        @keyframes floatingCard {
 
-    0% {
-    transform: translateY(0px);
-    }
+            0% {
+                transform: translateY(0px);
+            }
 
-    50% {
-    transform: translateY(-10px);
-    }
+            50% {
+                transform: translateY(-10px);
+            }
 
-    100% {
-    transform: translateY(0px);
-    }
-    }
+            100% {
+                transform: translateY(0px);
+            }
+        }
 
+        /* ================================================= */
+        /* GEAR SECTION */
+        /* ================================================= */
+
+        .gear-section {
+            padding: 120px 80px;
+        }
+
+        .gear-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .gear-tag {
+            display: inline-block;
+            padding: 10px 22px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, .15);
+            border: 1px solid rgba(125, 211, 252, .25);
+            color: #7dd3fc;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        .gear-title,
+        .laptop-title,
+        .audio-title {
+            font-size: 70px;
+            line-height: 1;
+            margin-bottom: 25px;
+            background: linear-gradient(90deg, #fff, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gear-desc,
+        .laptop-text {
+            color: rgba(255, 255, 255, .72);
+            max-width: 850px;
+            margin: auto;
+            line-height: 1.9;
+        }
+
+        .gear-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+        }
+
+        .gear-big-card {
+            position: relative;
+            min-height: 700px;
+            border-radius: 40px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            backdrop-filter: blur(20px);
+            transition: .6s;
+        }
+
+        .gear-big-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+
+        .gear-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, #000 10%, transparent 70%);
+            z-index: 1;
+        }
+
+        .gear-big-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 1s;
+        }
+
+        .gear-big-card:hover .gear-big-image {
+            transform: scale(1.08);
+        }
+
+        .gear-content {
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+            z-index: 2;
+        }
+
+        .gear-content h3 {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .gear-content p {
+            color: rgba(255, 255, 255, .7);
+            margin-bottom: 20px;
+        }
+
+        .gear-btn {
+            margin-top: 25px;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .4s;
+        }
+
+        .gear-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, .4);
+        }
+
+        /* SMALL GRID */
+
+        .gear-small-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .gear-small-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            min-height: 330px;
+            transition: .5s;
+        }
+
+        .gear-small-card:hover {
+            transform: translateY(-8px) rotate(-1deg);
+        }
+
+        .gear-small-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 1s;
+        }
+
+        .gear-small-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .small-info {
+            position: absolute;
+            left: 25px;
+            bottom: 25px;
+            z-index: 2;
+        }
+
+        .small-info h4 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .small-info span {
+            color: #7dd3fc;
+            font-weight: bold;
+        }
+
+        /* ================================================= */
+        /* LAPTOP SECTION */
+        /* ================================================= */
+
+        .laptop-section {
+            padding: 120px 80px;
+        }
+
+        .laptop-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .laptop-right {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .laptop-card {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+            border-radius: 35px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            backdrop-filter: blur(20px);
+            transition: .5s;
+        }
+
+        .laptop-card:hover {
+            transform: translateX(15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .35);
+        }
+
+        .laptop-card img {
+            width: 280px;
+            border-radius: 20px;
+            transition: .6s;
+        }
+
+        .laptop-card:hover img {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .laptop-info h3 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        /* ================================================= */
+        /* AUDIO SECTION */
+        /* ================================================= */
+
+        .audio-section {
+            padding: 120px 80px;
+        }
+
+        .audio-center {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .audio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .audio-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 35px;
+            min-height: 500px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            transition: .6s;
+        }
+
+        .audio-card:hover {
+            transform: translateY(-12px);
+        }
+
+        .audio-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 1s;
+        }
+
+        .audio-card:hover img {
+            transform: scale(1.12);
+        }
+
+        .audio-content {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 35px;
+            background: linear-gradient(to top, #000, transparent);
+        }
+
+        .audio-content h3 {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .audio-content p {
+            color: rgba(255, 255, 255, .75);
+        }
+
+        /* ================================================= */
+        /* RESPONSIVE */
+        /* ================================================= */
+
+        @media(max-width:1000px) {
+
+            .gear-layout,
+            .laptop-container,
+            .audio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gear-title,
+            .laptop-title,
+            .audio-title {
+                font-size: 48px;
+            }
+
+            .gear-section,
+            .laptop-section,
+            .audio-section {
+                padding: 100px 20px;
+            }
+
+            .laptop-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .laptop-card img {
+                width: 100%;
+            }
+
+        }
     </style>
 </head>
 
@@ -926,11 +1234,11 @@
                 🛒
             </button>
 
-            <button class="btn register-btn" onclick="window.location.href='#'">
+            <button class="btn register-btn" onclick="window.location.href='/register'">
                 Đăng Ký
             </button>
 
-            <button class="btn login-btn" onclick="window.location.href='/Login'">
+            <button class="btn login-btn" onclick="window.location.href='/login'">
                 Đăng Nhập
             </button>
 
@@ -981,9 +1289,7 @@
                 <div class="ring ring2"></div>
                 <div class="ring ring3"></div>
 
-                <img src="/images/banner-pc.png"
-                     class="banner-image"
-                     alt="Banner PC" />
+                <img src="/images/banner-pc.png" class="banner-image" alt="Banner PC" />
 
             </div>
 
@@ -1024,8 +1330,7 @@
 
             <div class="showcase-banner reveal">
 
-                <img src="/images/setup-banner.png"
-                     alt="Gaming Setup" />
+                <img src="/images/setup-banner.png" alt="Gaming Setup" />
 
             </div>
 
@@ -1045,9 +1350,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/pc1.jpg"
-                     class="product-image"
-                     alt="Gaming PC" />
+                <img src="/images/pc1.jpg" class="product-image" alt="Gaming PC" />
 
                 <div class="product-info">
 
@@ -1067,9 +1370,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/keyboard.jpg"
-                     class="product-image"
-                     alt="Keyboard" />
+                <img src="/images/keyboard.jpg" class="product-image" alt="Keyboard" />
 
                 <div class="product-info">
 
@@ -1089,9 +1390,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/mouse.jpg"
-                     class="product-image"
-                     alt="Mouse" />
+                <img src="/images/mouse.jpg" class="product-image" alt="Mouse" />
 
                 <div class="product-info">
 
@@ -1111,9 +1410,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/headphone.jpg"
-                     class="product-image"
-                     alt="Headphone" />
+                <img src="/images/headphone.jpg" class="product-image" alt="Headphone" />
 
                 <div class="product-info">
 
@@ -1133,9 +1430,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/monitor.jpg"
-                     class="product-image"
-                     alt="Monitor" />
+                <img src="/images/monitor.jpg" class="product-image" alt="Monitor" />
 
                 <div class="product-info">
 
@@ -1155,9 +1450,7 @@
 
             <div class="product-card">
 
-                <img src="/images/laptop.jpg"
-                     class="product-image"
-                     alt="Laptop" />
+                <img src="/images/laptop.jpg" class="product-image" alt="Laptop" />
 
                 <div class="product-info">
 
@@ -1170,6 +1463,275 @@
                     <div class="price">
                         42.990.000đ
                     </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================================================= -->
+    <!-- GAMING GEAR SECTION -->
+    <!-- ================================================= -->
+
+    <section class="gear-section page-section">
+
+        <div class="gear-header reveal">
+
+            <span class="gear-tag">
+                ELITE GAMING GEAR
+            </span>
+
+            <h2 class="gear-title">
+                GAMING<br>
+                ACCESSORIES
+            </h2>
+
+            <p class="gear-desc">
+                Bộ sưu tập gaming gear premium với thiết kế futuristic,
+                hiệu ứng liquid glass và trải nghiệm cao cấp dành cho game thủ.
+            </p>
+
+        </div>
+
+        <div class="gear-layout">
+
+            <!-- BIG CARD -->
+
+            <div class="gear-big-card reveal">
+
+                <div class="gear-overlay"></div>
+
+                <img src="/images/controller.png" class="gear-big-image" alt="Gaming Controller" />
+
+                <div class="gear-content">
+
+                    <h3>PRO WIRELESS CONTROLLER</h3>
+
+                    <p>
+                        Hall Effect Trigger + RGB Lighting + Ultra Low Latency
+                    </p>
+
+                    <div class="gear-price">
+                        2.990.000đ
+                    </div>
+
+                    <button class="gear-btn">
+                        MUA NGAY
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- SMALL GRID -->
+
+            <div class="gear-small-grid">
+
+                <div class="gear-small-card reveal">
+
+                    <img src="/images/headphone.jpg" alt="Headphone" />
+
+                    <div class="small-info">
+
+                        <h4>Gaming Headset</h4>
+
+                        <span>3.290.000đ</span>
+
+                    </div>
+
+                </div>
+
+                <div class="gear-small-card reveal">
+
+                    <img src="/images/mouse.jpg" alt="Mouse" />
+
+                    <div class="small-info">
+
+                        <h4>Wireless Mouse</h4>
+
+                        <span>1.990.000đ</span>
+
+                    </div>
+
+                </div>
+
+                <div class="gear-small-card reveal">
+
+                    <img src="/images/keyboard.jpg" alt="Keyboard" />
+
+                    <div class="small-info">
+
+                        <h4>Mechanical Keyboard</h4>
+
+                        <span>2.490.000đ</span>
+
+                    </div>
+
+                </div>
+
+                <div class="gear-small-card reveal">
+
+                    <img src="/images/gamepad.jpg" alt="Gamepad" />
+
+                    <div class="small-info">
+
+                        <h4>RGB Gamepad</h4>
+
+                        <span>1.290.000đ</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================================================= -->
+    <!-- LAPTOP SECTION -->
+    <!-- ================================================= -->
+
+    <section class="laptop-section page-section">
+
+        <div class="laptop-container">
+
+            <div class="laptop-left reveal">
+
+                <span class="gear-tag">
+                    RTX SERIES
+                </span>
+
+                <h2 class="laptop-title">
+                    GAMING<br>
+                    LAPTOPS
+                </h2>
+
+                <p class="laptop-text">
+
+                    Hiệu năng thế hệ mới với RTX AI,
+                    màn hình 240Hz và hệ thống tản nhiệt
+                    vapor chamber cao cấp dành cho esports.
+
+                </p>
+
+                <button class="gear-btn">
+                    KHÁM PHÁ NGAY
+                </button>
+
+            </div>
+
+            <div class="laptop-right">
+
+                <div class="laptop-card reveal">
+
+                    <img src="/images/laptop.jpg" alt="Laptop" />
+
+                    <div class="laptop-info">
+
+                        <h3>RTX 5080 ULTRA</h3>
+
+                        <p>Intel Core Ultra 9</p>
+
+                        <div class="gear-price">
+                            42.990.000đ
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="laptop-card reveal">
+
+                    <img src="/images/laptop2.jpg" alt="Laptop" />
+
+                    <div class="laptop-info">
+
+                        <h3>RTX 5070 PRO</h3>
+
+                        <p>Ryzen 9 AI Edition</p>
+
+                        <div class="gear-price">
+                            36.990.000đ
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================================================= -->
+    <!-- AUDIO SECTION -->
+    <!-- ================================================= -->
+
+    <section class="audio-section page-section">
+
+        <div class="audio-center reveal">
+
+            <span class="gear-tag">
+                IMMERSIVE SOUND
+            </span>
+
+            <h2 class="audio-title">
+                PREMIUM AUDIO
+            </h2>
+
+        </div>
+
+        <div class="audio-grid">
+
+            <div class="audio-card reveal">
+
+                <img src="/images/headphone.jpg" alt="Audio" />
+
+                <div class="audio-content">
+
+                    <h3>7.1 SURROUND</h3>
+
+                    <p>
+                        Spatial Audio + Noise Cancellation
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="audio-card reveal">
+
+                <img src="/images/speaker.jpg" alt="Speaker" />
+
+                <div class="audio-content">
+
+                    <h3>RGB SPEAKER</h3>
+
+                    <p>
+                        Deep Bass + Dynamic RGB
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="audio-card reveal">
+
+                <img src="/images/mic.jpg" alt="Microphone" />
+
+                <div class="audio-content">
+
+                    <h3>STREAMING MIC</h3>
+
+                    <p>
+                        Studio Quality Sound
+                    </p>
 
                 </div>
 
@@ -1300,4 +1862,5 @@
     </script>
 
 </body>
+
 </html>

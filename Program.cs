@@ -36,7 +36,14 @@ app.MapPost("/Login", async context =>
     context.Response.Redirect("/Homepage");
 });
 
+app.MapGet("/Register", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "register.html"));
+});
+
 app.MapControllers();
+
 
 
 app.Run();

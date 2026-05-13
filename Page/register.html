@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PC MASTER - Register</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #38bdf8;
+            --blue-light: #7dd3fc;
+            --dark: #020617;
+            --dark2: #081120;
+            --glass: rgba(255, 255, 255, .07);
+            --glass-border: rgba(255, 255, 255, .12);
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            background:
+                radial-gradient(circle at top left,
+                    rgba(56, 189, 248, .18),
+                    transparent 25%),
+
+                radial-gradient(circle at bottom right,
+                    rgba(14, 165, 233, .15),
+                    transparent 25%),
+
+                linear-gradient(180deg, #050b16 0%, #020617 100%);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ================================= */
+        /* 3D BACKGROUND */
+        /* ================================= */
+
+        .bg-wrapper {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: -5;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .3;
+            animation: float 10s ease-in-out infinite;
+        }
+
+        .orb1 {
+            width: 450px;
+            height: 450px;
+            background: #38bdf8;
+            top: -120px;
+            left: -100px;
+        }
+
+        .orb2 {
+            width: 350px;
+            height: 350px;
+            background: #0ea5e9;
+            bottom: -120px;
+            right: -80px;
+            animation-delay: 3s;
+        }
+
+        .orb3 {
+            width: 300px;
+            height: 300px;
+            background: #7dd3fc;
+            top: 40%;
+            left: 45%;
+            opacity: .15;
+            animation-delay: 5s;
+        }
+
+        .grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
+
+            background-size: 55px 55px;
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), transparent);
+        }
+
+        /* ================================= */
+        /* PARTICLES */
+        /* ================================= */
+
+        .particles span {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: white;
+            opacity: .5;
+            animation: particleMove linear infinite;
+        }
+
+        .particles span:nth-child(1) {
+            left: 10%;
+            animation-duration: 12s;
+        }
+
+        .particles span:nth-child(2) {
+            left: 25%;
+            animation-duration: 18s;
+        }
+
+        .particles span:nth-child(3) {
+            left: 45%;
+            animation-duration: 15s;
+        }
+
+        .particles span:nth-child(4) {
+            left: 65%;
+            animation-duration: 20s;
+        }
+
+        .particles span:nth-child(5) {
+            left: 85%;
+            animation-duration: 14s;
+        }
+
+        /* ================================= */
+        /* REGISTER BOX */
+        /* ================================= */
+
+        .register-box {
+
+            width: 450px;
+            padding: 50px;
+
+            border-radius: 35px;
+
+            background: rgba(255, 255, 255, .07);
+
+            border: 1px solid rgba(255, 255, 255, .12);
+
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+
+            box-shadow:
+                0 25px 45px rgba(0, 0, 0, .45),
+                inset 0 1px 1px rgba(255, 255, 255, .08);
+
+            position: relative;
+            overflow: hidden;
+
+            animation: fadeUp 1s ease;
+        }
+
+        .register-box::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 220px;
+            height: 220px;
+
+            background: rgba(56, 189, 248, .18);
+
+            border-radius: 50%;
+
+            filter: blur(70px);
+
+            top: -100px;
+            right: -100px;
+
+            animation: pulse 5s infinite;
+        }
+
+        .logo {
+
+            text-align: center;
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 4px;
+
+            margin-bottom: 10px;
+
+            background: linear-gradient(90deg, #fff, #7dd3fc);
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, .65);
+            margin-bottom: 40px;
+        }
+
+        /* ================================= */
+        /* FORM */
+        /* ================================= */
+
+        .input-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .input-group input {
+
+            width: 100%;
+            padding: 16px 18px;
+
+            border-radius: 16px;
+
+            border: 1px solid rgba(255, 255, 255, .1);
+
+            background: rgba(255, 255, 255, .06);
+
+            color: white;
+            font-size: 15px;
+
+            outline: none;
+
+            transition: .35s;
+        }
+
+        .input-group input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, .25);
+            transform: translateY(-2px);
+        }
+
+        .input-group input.valid {
+            border-color: #38bdf8;
+        }
+
+        .input-group input.invalid {
+            border-color: #ef4444;
+        }
+
+        .error {
+
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        /* ================================= */
+        /* PASSWORD STRENGTH */
+        /* ================================= */
+
+        .strength {
+
+            width: 100%;
+            height: 8px;
+
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, .08);
+
+            overflow: hidden;
+
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+
+            width: 0%;
+            height: 100%;
+
+            background: #ef4444;
+
+            transition: .4s;
+        }
+
+        /* ================================= */
+        /* BUTTON */
+        /* ================================= */
+
+        .register-btn {
+
+            width: 100%;
+            padding: 17px;
+
+            border: none;
+            border-radius: 18px;
+
+            background: rgba(255, 255, 255, .08);
+
+            color: rgba(255, 255, 255, .5);
+
+            font-size: 16px;
+            font-weight: 700;
+
+            cursor: not-allowed;
+
+            transition: .4s;
+        }
+
+        .register-btn.active {
+
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+
+            color: white;
+
+            cursor: pointer;
+
+            box-shadow: 0 10px 30px rgba(56, 189, 248, .35);
+        }
+
+        .register-btn.active:hover {
+            transform: translateY(-3px);
+        }
+
+        /* ================================= */
+        /* FOOTER */
+        /* ================================= */
+
+        .bottom-text {
+
+            margin-top: 25px;
+            text-align: center;
+
+            color: rgba(255, 255, 255, .65);
+
+            font-size: 14px;
+        }
+
+        .bottom-text a {
+            color: #7dd3fc;
+            text-decoration: none;
+        }
+
+        /* ================================= */
+        /* ANIMATION */
+        /* ================================= */
+
+        @keyframes float {
+
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-30px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes particleMove {
+
+            from {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-120px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+
+            0% {
+                transform: scale(1);
+                opacity: .4;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: .7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: .4;
+            }
+        }
+
+        /* ================================= */
+        /* RESPONSIVE */
+        /* ================================= */
+
+        @media(max-width:600px) {
+
+            .register-box {
+                width: 95%;
+                padding: 35px 25px;
+            }
+
+            .logo {
+                font-size: 34px;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+
+    <div class="bg-wrapper">
+
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+
+        <div class="grid"></div>
+
+        <div class="particles">
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+    </div>
+
+    <!-- REGISTER -->
+
+    <div class="register-box">
+
+        <div class="logo">
+            PC MASTER
+        </div>
+
+        <div class="subtitle">
+            CREATE YOUR GAMING ACCOUNT
+        </div>
+
+        <form id="registerForm">
+
+            <!-- NAME -->
+
+            <div class="input-group">
+
+                <label>Họ và tên</label>
+
+                <input type="text" id="fullname" placeholder="Nhập họ tên">
+
+                <div class="error">
+                    Họ tên phải từ 5 ký tự trở lên
+                </div>
+
+            </div>
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label>Email</label>
+
+                <input type="email" id="email" placeholder="example@gmail.com">
+
+                <div class="error">
+                    Email không hợp lệ
+                </div>
+
+            </div>
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label>Mật khẩu</label>
+
+                <input type="password" id="password" placeholder="Nhập mật khẩu">
+
+                <div class="strength">
+
+                    <div class="strength-bar" id="strengthBar"></div>
+
+                </div>
+
+                <div class="error">
+                    Mật khẩu tối thiểu 8 ký tự,
+                    có chữ hoa và số
+                </div>
+
+            </div>
+
+            <!-- CONFIRM -->
+
+            <div class="input-group">
+
+                <label>Xác nhận mật khẩu</label>
+
+                <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu">
+
+                <div class="error">
+                    Mật khẩu xác nhận không khớp
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <button type="submit" class="register-btn" id="registerBtn" disabled>
+
+                ĐĂNG KÝ
+
+            </button>
+
+        </form>
+
+        <div class="bottom-text">
+
+            Đã có tài khoản?
+            <a href="/Login">Đăng nhập</a>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPT -->
+
+    <script>
+
+        const fullname = document.getElementById("fullname");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const confirmPassword =
+            document.getElementById("confirmPassword");
+
+        const registerBtn =
+            document.getElementById("registerBtn");
+
+        const strengthBar =
+            document.getElementById("strengthBar");
+
+        const inputs =
+            document.querySelectorAll("input");
+
+        function validateForm() {
+
+            let valid = true;
+
+            /* FULLNAME */
+
+            if (fullname.value.trim().length < 5) {
+
+                showError(fullname);
+                valid = false;
+
+            }
+            else {
+                success(fullname);
+            }
+
+            /* EMAIL */
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(email.value)) {
+
+                showError(email);
+                valid = false;
+
+            }
+            else {
+                success(email);
+            }
+
+            /* PASSWORD */
+
+            const passPattern =
+                /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+            if (!passPattern.test(password.value)) {
+
+                showError(password);
+                valid = false;
+
+            }
+            else {
+                success(password);
+            }
+
+            /* CONFIRM */
+
+            if (confirmPassword.value !== password.value
+                || confirmPassword.value === "") {
+
+                showError(confirmPassword);
+                valid = false;
+
+            }
+            else {
+                success(confirmPassword);
+            }
+
+            /* BUTTON */
+
+            if (valid) {
+
+                registerBtn.disabled = false;
+                registerBtn.classList.add("active");
+
+            }
+            else {
+
+                registerBtn.disabled = true;
+                registerBtn.classList.remove("active");
+
+            }
+
+        }
+
+        function showError(input) {
+
+            input.classList.add("invalid");
+            input.classList.remove("valid");
+
+            input.parentElement
+                .querySelector(".error")
+                .style.display = "block";
+        }
+
+        function success(input) {
+
+            input.classList.remove("invalid");
+            input.classList.add("valid");
+
+            input.parentElement
+                .querySelector(".error")
+                .style.display = "none";
+        }
+
+        /* PASSWORD STRENGTH */
+
+        password.addEventListener("input", () => {
+
+            const val = password.value;
+
+            let strength = 0;
+
+            if (val.length >= 8) strength += 30;
+            if (/[A-Z]/.test(val)) strength += 30;
+            if (/\d/.test(val)) strength += 20;
+            if (/[^A-Za-z0-9]/.test(val)) strength += 20;
+
+            strengthBar.style.width = strength + "%";
+
+            if (strength < 40) {
+
+                strengthBar.style.background = "#ef4444";
+
+            }
+            else if (strength < 80) {
+
+                strengthBar.style.background = "#facc15";
+
+            }
+            else {
+
+                strengthBar.style.background = "#38bdf8";
+            }
+
+        });
+
+        inputs.forEach(input => {
+
+            input.addEventListener("input", validateForm);
+
+        });
+
+        /* SUBMIT */
+
+        document
+            .getElementById("registerForm")
+
+            .addEventListener("submit", (e) => {
+
+                e.preventDefault();
+
+                if (!registerBtn.disabled) {
+
+                    alert("Đăng ký thành công!");
+
+                }
+
+            });
+
+    </script>
+
+</body>
+
+</html>
