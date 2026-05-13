@@ -18,6 +18,26 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.MapGet("/Homepage", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "homepage.html"));
+});
+
+app.MapGet("/Login", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "login.html"));
+});
+
+app.MapPost("/Login", async context =>
+{
+    // Dummy login: redirect to Homepage
+    context.Response.Redirect("/Homepage");
+});
+
 app.MapControllers();
 
+
 app.Run();
+

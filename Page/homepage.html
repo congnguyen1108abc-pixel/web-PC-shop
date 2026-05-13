@@ -1,0 +1,1210 @@
+
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>PC MASTER - Premium Store</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue-light: #7dd3fc;
+            --blue: #38bdf8;
+            --blue-dark: #0ea5e9;
+            --dark: #020617;
+            --dark2: #081120;
+            --dark3: #0f172a;
+            --white: #ffffff;
+            --glass: rgba(255,255,255,.08);
+            --glass-border: rgba(255,255,255,.14);
+            --text: rgba(255,255,255,.75);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI',sans-serif;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            color: white;
+            background: radial-gradient(circle at top left, rgba(56,189,248,.18), transparent 25%), radial-gradient(circle at bottom right, rgba(14,165,233,.12), transparent 25%), linear-gradient(180deg,#08101b 0%, #040b14 55%, #01050b 100%);
+            scroll-snap-type: y mandatory;
+        }
+
+        /* ================================= */
+        /* PAGE SECTION */
+        /* ================================= */
+
+        .page-section {
+            min-height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ================================= */
+        /* BACKGROUND */
+        /* ================================= */
+
+        .bg-wrapper {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .25;
+            animation: floatOrb 12s ease-in-out infinite;
+        }
+
+        .orb1 {
+            width: 550px;
+            height: 550px;
+            background: #38bdf8;
+            top: -220px;
+            left: -120px;
+        }
+
+        .orb2 {
+            width: 450px;
+            height: 450px;
+            background: #0ea5e9;
+            right: -100px;
+            bottom: -150px;
+            animation-delay: 3s;
+        }
+
+        .orb3 {
+            width: 350px;
+            height: 350px;
+            background: #7dd3fc;
+            top: 45%;
+            left: 40%;
+            opacity: .15;
+            animation-delay: 5s;
+        }
+
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+            background-size: 55px 55px;
+            mask-image: linear-gradient(to bottom,rgba(0,0,0,1),transparent);
+        }
+
+        .particles span {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.5);
+            animation: particleMove linear infinite;
+        }
+
+            .particles span:nth-child(1) {
+                left: 10%;
+                animation-duration: 12s;
+            }
+
+            .particles span:nth-child(2) {
+                left: 25%;
+                animation-duration: 16s;
+            }
+
+            .particles span:nth-child(3) {
+                left: 50%;
+                animation-duration: 20s;
+            }
+
+            .particles span:nth-child(4) {
+                left: 70%;
+                animation-duration: 14s;
+            }
+
+            .particles span:nth-child(5) {
+                left: 90%;
+                animation-duration: 18s;
+            }
+
+        /* ================================= */
+        /* HEADER */
+        /* ================================= */
+
+        header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 80px);
+            height: 78px;
+            padding: 0 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            border-radius: 28px;
+            transition: .4s ease;
+        }
+
+            header.scrolled {
+                background: rgba(255,255,255,.08);
+                border: 1px solid rgba(255,255,255,.12);
+                backdrop-filter: blur(28px);
+                -webkit-backdrop-filter: blur(28px);
+                box-shadow: 0 8px 40px rgba(0,0,0,.35), inset 0 1px 1px rgba(255,255,255,.08);
+            }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg,#ffffff,#7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav {
+            display: flex;
+            gap: 35px;
+        }
+
+            nav a {
+                text-decoration: none;
+                color: rgba(255,255,255,.78);
+                font-size: 15px;
+                position: relative;
+                transition: .3s;
+            }
+
+                nav a:hover {
+                    color: white;
+                }
+
+                nav a::after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    bottom: -7px;
+                    width: 0%;
+                    height: 2px;
+                    border-radius: 10px;
+                    background: var(--blue-light);
+                    transition: .3s;
+                }
+
+                nav a:hover::after {
+                    width: 100%;
+                }
+
+        /* ================================= */
+        /* HEADER ACTIONS */
+        /* ================================= */
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .cart-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.06);
+            backdrop-filter: blur(20px);
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: .35s;
+        }
+
+            .cart-btn:hover {
+                transform: translateY(-2px);
+                background: rgba(255,255,255,.12);
+            }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 16px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .35s;
+        }
+
+        .register-btn {
+            background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+            color: white;
+        }
+
+        .login-btn {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.12);
+            backdrop-filter: blur(20px);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* ================================= */
+        /* HERO */
+        /* ================================= */
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 170px 80px 100px;
+        }
+
+        .hero-left {
+            width: 50%;
+        }
+
+            .hero-left h1 {
+                font-size: clamp(70px,8vw,120px);
+                line-height: 1;
+                margin-bottom: 25px;
+                font-weight: 900;
+                background: linear-gradient(90deg,#ffffff,#7dd3fc,#38bdf8);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .hero-left p {
+                color: var(--text);
+                font-size: 18px;
+                line-height: 1.9;
+                max-width: 650px;
+                margin-bottom: 40px;
+            }
+
+        .hero-buttons {
+            display: flex;
+            gap: 18px;
+        }
+
+        .hero-btn {
+            padding: 15px 32px;
+            border-radius: 18px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .35s;
+        }
+
+        .hero-primary {
+            background: linear-gradient(135deg,#38bdf8,#0ea5e9);
+            color: white;
+        }
+
+        .hero-secondary {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.12);
+            backdrop-filter: blur(20px);
+            color: white;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* ================================= */
+        /* HERO RIGHT */
+        /* ================================= */
+
+        .hero-right {
+            width: 45%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .banner-3d {
+            position: relative;
+            width: 520px;
+            height: 520px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(125,211,252,.18);
+        }
+
+        .ring1 {
+            width: 520px;
+            height: 520px;
+            animation: rotate 20s linear infinite;
+        }
+
+        .ring2 {
+            width: 400px;
+            height: 400px;
+            animation: rotateReverse 14s linear infinite;
+        }
+
+        .ring3 {
+            width: 280px;
+            height: 280px;
+            background: rgba(255,255,255,.05);
+            backdrop-filter: blur(20px);
+        }
+
+        .banner-image {
+            width: 380px;
+            position: relative;
+            z-index: 5;
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,.5));
+        }
+
+        /* ================================= */
+        /* SHOWCASE */
+        /* ================================= */
+
+        .showcase {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 120px 80px;
+        }
+
+        .showcase-left,
+        .showcase-right {
+            width: 48%;
+        }
+
+        .glass-box {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.10);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: 35px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0,0,0,.35), inset 0 1px 1px rgba(255,255,255,.06);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: rgba(56,189,248,.18);
+            border: 1px solid rgba(125,211,252,.2);
+            color: #7dd3fc;
+            margin-bottom: 25px;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .glass-box h2 {
+            font-size: 72px;
+            line-height: 1;
+            margin-bottom: 25px;
+            background: linear-gradient(90deg,#fff,#7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-box p {
+            color: rgba(255,255,255,.72);
+            line-height: 1.9;
+            font-size: 17px;
+        }
+
+        .showcase-banner {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .showcase-banner::before {
+                content: "";
+                position: absolute;
+                width: 450px;
+                height: 450px;
+                border-radius: 50%;
+                background: rgba(56,189,248,.25);
+                filter: blur(120px);
+                animation: pulseGlow 5s ease infinite;
+            }
+
+            .showcase-banner img {
+                width: 90%;
+                position: relative;
+                z-index: 5;
+                animation: float 5s ease-in-out infinite;
+                filter: drop-shadow(0 25px 45px rgba(0,0,0,.45));
+            }
+
+        /* ================================= */
+        /* PRODUCTS */
+        /* ================================= */
+
+        .products {
+            padding: 120px 80px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 58px;
+            margin-bottom: 70px;
+            background: linear-gradient(90deg,#ffffff,#7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.10);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            overflow: hidden;
+            transition: .4s;
+        }
+
+            .product-card:hover {
+                transform: translateY(-10px) scale(1.02);
+                background: rgba(255,255,255,.08);
+                box-shadow: 0 20px 40px rgba(0,0,0,.35);
+            }
+
+        .product-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+            .product-info h3 {
+                font-size: 28px;
+                margin-bottom: 12px;
+            }
+
+            .product-info p {
+                color: var(--text);
+                line-height: 1.7;
+            }
+
+        .price {
+            margin-top: 18px;
+            font-size: 24px;
+            color: var(--blue-light);
+            font-weight: bold;
+        }
+
+        /* ================================= */
+        /* FOOTER */
+        /* ================================= */
+
+        footer {
+            padding: 50px;
+            text-align: center;
+            color: rgba(255,255,255,.65);
+            background: rgba(255,255,255,.04);
+            border-top: 1px solid rgba(255,255,255,.08);
+            backdrop-filter: blur(20px);
+        }
+
+        /* ================================= */
+        /* ANIMATION */
+        /* ================================= */
+
+        @keyframes rotate {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+    @keyframes rotateReverse {
+
+            from {
+                transform: rotate(360deg);
+            }
+
+            to {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes float {
+
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes floatOrb {
+
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-35px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes particleMove {
+
+            from {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(-120px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulseGlow {
+
+            0% {
+                transform: scale(1);
+                opacity: .4;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: .7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: .4;
+            }
+        }
+
+        /* ================================= */
+        /* RESPONSIVE */
+        /* ================================= */
+
+        @media(max-width:1000px) {
+
+            header {
+                width: calc(100% - 20px);
+                padding: 0 20px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .hero,
+            .showcase {
+                flex-direction: column;
+                text-align: center;
+                gap: 80px;
+            }
+
+            .hero-left,
+            .hero-right,
+            .showcase-left,
+            .showcase-right {
+                width: 100%;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .products {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .banner-3d {
+                width: 350px;
+                height: 350px;
+            }
+
+            .ring1 {
+                width: 350px;
+                height: 350px;
+            }
+
+            .ring2 {
+                width: 260px;
+                height: 260px;
+            }
+
+            .ring3 {
+                width: 180px;
+                height: 180px;
+            }
+
+            .banner-image {
+                width: 240px;
+            }
+
+            .glass-box h2 {
+                font-size: 48px;
+            }
+        }
+
+
+
+    /* ================================= */
+    /* SCROLL REVEAL ANIMATION */
+    /* ================================= */
+
+    .reveal {
+    opacity: 0;
+    transform: translateY(80px) scale(.96);
+    transition: all 1s cubic-bezier(.2,.65,.2,1);
+    will-change: transform, opacity;
+    }
+
+    .reveal.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    }
+
+    /* ================================= */
+    /* PRODUCT ADVANCED EFFECT */
+    /* ================================= */
+
+    .product-card {
+    position: relative;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    overflow: hidden;
+    }
+
+    /* LIGHT EFFECT */
+
+    .product-card::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(
+    135deg,
+    rgba(125,211,252,.0),
+    rgba(125,211,252,.35),
+    rgba(56,189,248,.0)
+    );
+    opacity: 0;
+    transition: .5s;
+    z-index: 1;
+    pointer-events: none;
+    }
+
+    .product-card:hover::before {
+    opacity: 1;
+    }
+
+    /* GLOW EFFECT */
+
+    .product-card::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(56,189,248,.15);
+    border-radius: 50%;
+    filter: blur(80px);
+    top: -120px;
+    right: -120px;
+    opacity: 0;
+    transition: .5s;
+    }
+
+    .product-card:hover::after {
+    opacity: 1;
+    }
+
+    /* IMAGE ZOOM */
+
+    .product-image {
+    transition: transform .8s ease;
+    }
+
+    .product-card:hover .product-image {
+    transform: scale(1.08);
+    }
+
+    /* PRODUCT CONTENT FLOAT */
+
+    .product-info {
+    position: relative;
+    z-index: 5;
+    transition: .4s;
+    }
+
+    .product-card:hover .product-info {
+    transform: translateY(-8px);
+    }
+
+    /* PRICE GLOW */
+
+    .price {
+    text-shadow: 0 0 12px rgba(125,211,252,.5);
+    }
+
+    /* ================================= */
+    /* HERO PARALLAX */
+    /* ================================= */
+
+    .banner-image {
+    transition: transform .15s linear;
+    }
+
+    /* ================================= */
+    /* SMOOTH SECTION */
+    /* ================================= */
+
+    .page-section {
+    position: relative;
+    }
+
+    /* ================================= */
+    /* SHOWCASE EFFECT */
+    /* ================================= */
+
+    .glass-box {
+    position: relative;
+    overflow: hidden;
+    }
+
+    .glass-box::before {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    background: rgba(125,211,252,.15);
+    border-radius: 50%;
+    filter: blur(70px);
+    top: -100px;
+    right: -100px;
+    animation: pulseGlow 6s infinite;
+    }
+
+    /* ================================= */
+    /* SCROLL INDICATOR */
+    /* ================================= */
+
+    .scroll-line {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    z-index: 99999;
+    background: linear-gradient(90deg,#38bdf8,#7dd3fc);
+    box-shadow: 0 0 20px #38bdf8;
+    }
+
+    /* ================================= */
+    /* FLOATING ANIMATION */
+    /* ================================= */
+
+    .floating {
+    animation: floatingCard 5s ease-in-out infinite;
+    }
+
+    @keyframes floatingCard {
+
+    0% {
+    transform: translateY(0px);
+    }
+
+    50% {
+    transform: translateY(-10px);
+    }
+
+    100% {
+    transform: translateY(0px);
+    }
+    }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+
+    <div class="bg-wrapper">
+
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+
+        <div class="grid-bg"></div>
+
+        <div class="particles">
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+    </div>
+
+    <!-- HEADER -->
+
+    <header id="header">
+
+        <div class="logo">
+            PC MASTER
+        </div>
+
+        <nav>
+
+            <a href="#">Trang Chủ</a>
+            <a href="#">Sản Phẩm</a>
+            <a href="#">Gaming Gear</a>
+            <a href="#">PC Build</a>
+            <a href="#">Liên Hệ</a>
+
+        </nav>
+
+        <div class="nav-actions">
+
+            <button class="cart-btn">
+                🛒
+            </button>
+
+            <button class="btn register-btn" onclick="window.location.href='#'">
+                Đăng Ký
+            </button>
+
+            <button class="btn login-btn" onclick="window.location.href='/Login'">
+                Đăng Nhập
+            </button>
+
+        </div>
+
+    </header>
+
+    <!-- HERO -->
+
+    <section class="hero page-section">
+
+        <div class="hero-left">
+
+            <h1>
+
+                NEXT GEN<br>
+                ELECTRONICS
+
+            </h1>
+
+            <p>
+
+                Hệ thống bán linh kiện điện tử và gaming gear cao cấp
+                với giao diện glass morphism hiện đại, hiệu ứng 3D,
+                animation mượt mà và trải nghiệm premium dành cho game thủ.
+
+            </p>
+
+            <div class="hero-buttons">
+
+                <button class="hero-btn hero-primary">
+                    Khám Phá Ngay
+                </button>
+
+                <button class="hero-btn hero-secondary">
+                    Xem Sản Phẩm
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="hero-right">
+
+            <div class="banner-3d">
+
+                <div class="ring ring1"></div>
+                <div class="ring ring2"></div>
+                <div class="ring ring3"></div>
+
+                <img src="/images/banner-pc.png"
+                     class="banner-image"
+                     alt="Banner PC" />
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SHOWCASE -->
+
+    <section class="showcase page-section">
+
+        <div class="showcase-left">
+
+            <div class="glass-box">
+
+                <span class="tag">
+                    FUTURE GAMING
+                </span>
+
+                <h2>
+                    PREMIUM<br>
+                    SETUP
+                </h2>
+
+                <p>
+
+                    Thiết kế gaming setup hiện đại với RGB futuristic,
+                    hiệu ứng liquid glass và trải nghiệm cao cấp
+                    dành cho streamer và game thủ thế hệ mới.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="showcase-right">
+
+            <div class="showcase-banner">
+
+                <img src="/images/setup-banner.png"
+                     alt="Gaming Setup" />
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- PRODUCTS -->
+
+    <section class="products page-section">
+
+        <h2 class="section-title">
+            SẢN PHẨM HOT
+        </h2>
+
+        <div class="product-grid">
+
+            <div class="product-card">
+
+                <img src="/images/pc1.jpg"
+                     class="product-image"
+                     alt="Gaming PC" />
+
+                <div class="product-info">
+
+                    <h3>RTX Gaming PC</h3>
+
+                    <p>
+                        Intel Core Ultra + RTX 5090
+                    </p>
+
+                    <div class="price">
+                        59.990.000đ
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card">
+
+                <img src="/images/keyboard.jpg"
+                     class="product-image"
+                     alt="Keyboard" />
+
+                <div class="product-info">
+
+                    <h3>Mechanical Keyboard</h3>
+
+                    <p>
+                        RGB Hot Swap Gaming Edition
+                    </p>
+
+                    <div class="price">
+                        2.490.000đ
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card">
+
+                <img src="/images/mouse.jpg"
+                     class="product-image"
+                     alt="Mouse" />
+
+                <div class="product-info">
+
+                    <h3>Wireless Gaming Mouse</h3>
+
+                    <p>
+                        Ultra Lightweight 4K Polling
+                    </p>
+
+                    <div class="price">
+                        1.990.000đ
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card">
+
+                <img src="/images/headphone.jpg"
+                     class="product-image"
+                     alt="Headphone" />
+
+                <div class="product-info">
+
+                    <h3>Gaming Headset</h3>
+
+                    <p>
+                        7.1 Surround Premium Audio
+                    </p>
+
+                    <div class="price">
+                        3.290.000đ
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card">
+
+                <img src="/images/monitor.jpg"
+                     class="product-image"
+                     alt="Monitor" />
+
+                <div class="product-info">
+
+                    <h3>4K Gaming Monitor</h3>
+
+                    <p>
+                        240Hz Ultra Fast IPS Display
+                    </p>
+
+                    <div class="price">
+                        12.990.000đ
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="product-card">
+
+                <img src="/images/laptop.jpg"
+                     class="product-image"
+                     alt="Laptop" />
+
+                <div class="product-info">
+
+                    <h3>Gaming Laptop RTX</h3>
+
+                    <p>
+                        Intel Ultra + RTX 5080 Mobile
+                    </p>
+
+                    <div class="price">
+                        42.990.000đ
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        © 2026 PC MASTER - NEXT GEN ELECTRONICS EXPERIENCE
+
+    </footer>
+
+    <!-- SCRIPT -->
+
+    <script>
+
+        const header = document.getElementById("header");
+
+        window.addEventListener("scroll", () => {
+
+            if (window.scrollY > 40) {
+
+                header.classList.add("scrolled");
+
+            }
+            else {
+
+                header.classList.remove("scrolled");
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
