@@ -1,3 +1,3 @@
 ﻿# PC_Store
 
-14/5 Thêm index để chạy bài 
+14/5 Thêm index để chạy bài, thêm trang sản phẩm

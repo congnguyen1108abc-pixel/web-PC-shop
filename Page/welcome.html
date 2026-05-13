@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>PC MASTER - Mechanical Experience</title>
+    <title>HYPER CORE - Mechanical Experience</title>
 
     <style>
         * {
@@ -26,12 +26,10 @@
                     rgba(37, 99, 235, .15),
                     transparent 35%),
 
-                linear-gradient(
-                    180deg,
+                linear-gradient(180deg,
                     #040812 0%,
                     #02050b 55%,
-                    #000000 100%
-                );
+                    #000000 100%);
             color: white;
         }
 
@@ -142,12 +140,10 @@
         h1 {
             font-size: clamp(60px, 6vw, 95px);
 
-            background: linear-gradient(
-                90deg,
-                #ffffff,
-                #7dd3fc,
-                #38bdf8
-            );
+            background: linear-gradient(90deg,
+                    #ffffff,
+                    #7dd3fc,
+                    #38bdf8);
 
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -155,14 +151,49 @@
             margin-bottom: 8px;
 
             text-shadow:
-                0 0 20px rgba(125,211,252,.25);
+                0 0 20px rgba(125, 211, 252, .25);
         }
 
         .subtitle {
             font-size: 17px;
-            color: rgba(255,255,255,.72);
+            color: rgba(255, 255, 255, .85);
             letter-spacing: 4px;
             margin-bottom: 80px;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+            display: inline-flex;
+            align-items: center;
+            text-transform: uppercase;
+            min-height: 1.5em;
+        }
+
+        .typewriter-cursor {
+            display: inline-block;
+            color: rgba(0, 217, 255, 0.9);
+            margin-left: 6px;
+            animation: blinkCursor 0.8s steps(2, start) infinite;
+            transition: opacity 1s ease-in-out;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 217, 255, 0.8);
+        }
+
+        @keyframes blinkCursor {
+            to { opacity: 0; }
+        }
+
+        @keyframes pulseSubtitle {
+            0%, 100% {
+                opacity: 0.85;
+                text-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
+            }
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 18px rgba(0, 217, 255, 0.8);
+            }
+        }
+
+        .subtitle.pulsing {
+            animation: pulseSubtitle 4s ease-in-out infinite;
         }
 
         /* ========================= */
@@ -367,11 +398,11 @@
         <div class="content">
 
             <h1>
-                PC MASTER
+                HYPER CORE
             </h1>
 
-            <div class="subtitle">
-                NEXT GEN GAMING EXPERIENCE
+            <div class="subtitle" id="welcome-subtitle">
+                <span id="typewriter-text"></span><span class="typewriter-cursor" id="typewriter-cursor">|</span>
             </div>
 
             <!-- SWITCH -->
@@ -700,6 +731,56 @@
             );
 
         }
+
+        /* ========================= */
+        /* TYPEWRITER EFFECT FOR SLOGAN (INFINITE LOOP) */
+        /* ========================= */
+
+        const textToType = "CHẠM VÀO SỨC MẠNH THỰC THỤ";
+        const targetSpan = document.getElementById("typewriter-text");
+        const subtitleDiv = document.getElementById("welcome-subtitle");
+        let typeIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            const currentString = textToType;
+
+            if (isDeleting) {
+                // Tách bớt chữ (xóa ký tự)
+                targetSpan.textContent = currentString.substring(0, typeIndex - 1);
+                typeIndex--;
+
+                // Tắt hiệu ứng nhịp thở khi bắt đầu xóa
+                subtitleDiv.classList.remove("pulsing");
+
+                if (typeIndex === 0) {
+                    isDeleting = false;
+                    // Dừng 0.5 giây rồi bắt đầu gõ lại
+                    setTimeout(typeEffect, 500);
+                } else {
+                    // Tốc độ xóa: ~50ms/chữ
+                    setTimeout(typeEffect, 50);
+                }
+            } else {
+                // Thêm chữ (gõ ký tự)
+                targetSpan.textContent = currentString.substring(0, typeIndex + 1);
+                typeIndex++;
+
+                if (typeIndex === currentString.length) {
+                    isDeleting = true;
+                    // Gõ xong kích hoạt hiệu ứng nhịp thở pulsing
+                    subtitleDiv.classList.add("pulsing");
+                    // Dừng 2 giây để người dùng đọc xong mới xóa
+                    setTimeout(typeEffect, 2000);
+                } else {
+                    // Tốc độ gõ: ~100ms/chữ
+                    setTimeout(typeEffect, 100);
+                }
+            }
+        }
+
+        // Bắt đầu chạy vòng lặp đệ quy khi vừa load
+        setTimeout(typeEffect, 500);
 
         animate();
 
