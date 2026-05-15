@@ -36,6 +36,12 @@ app.MapGet("/Products", async context =>
     await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "products.html"));
 });
 
+app.MapGet("/shoppingcart", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "shoppingcart.html"));
+});
+
 app.MapPost("/Login", async context =>
 {
     // Dummy login: redirect to Homepage
