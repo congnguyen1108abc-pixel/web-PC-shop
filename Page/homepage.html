@@ -8,6 +8,10 @@
 
     <title>HYPER CORE - Premium Store</title>
 
+    <!-- POPUP SYSTEM CSS -->
+    <link rel="stylesheet" href="/assets/popup/popup.css">
+
+
     <style>
         * {
             margin: 0;
@@ -332,6 +336,58 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* ================================= */
+        /* REGISTER GLASS BUTTON */
+        /* ================================= */
+
+        .register-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 13px 24px;
+
+            border-radius: 18px;
+            border: 1px solid rgba(125, 211, 252, .3);
+
+            background: linear-gradient(135deg, rgba(56, 189, 248, .2), rgba(14, 165, 233, .2));
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+
+            cursor: pointer;
+            overflow: hidden;
+
+            transition: .35s ease;
+        }
+
+        .register-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .25), transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .register-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .register-glass-btn:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, .4), rgba(14, 165, 233, .4));
+            border: 1px solid rgba(125, 211, 252, .8);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, .2);
+            transform: translateY(-3px);
         }
 
         .btn:hover {
@@ -1808,6 +1864,16 @@
 
             </button>
 
+            <!-- REGISTER BUTTON -->
+
+            <button class="register-glass-btn">
+
+                <span class="login-icon">📝</span>
+
+                <span>Đăng Ký</span>
+
+            </button>
+
         </div>
 
     </header>
@@ -2448,7 +2514,7 @@
     <div id="login-popup-container"></div>
     <div id="register-popup-container"></div>
 
-    <script src="/assets/js/popup.js"></script>
+    <script src="/assets/popup/popup.js"></script>
 
 </body>
 

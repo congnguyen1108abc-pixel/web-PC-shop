@@ -1,0 +1,95 @@
+<!-- REGISTER POPUP -->
+
+<div class="widget-popup" id="registerPopup">
+
+    <div class="widget-box">
+
+        <!-- CLOSE BUTTON -->
+
+        <button class="widget-close" onclick="closeRegisterPopup()">
+
+            ✕
+
+        </button>
+
+        <!-- TITLE -->
+
+        <h2 class="widget-title">
+            Đăng Ký
+        </h2>
+
+        <p class="widget-subtitle">
+            Tạo tài khoản để trải nghiệm HYPER CORE
+        </p>
+
+        <!-- FORM -->
+
+        <form id="registerForm" onsubmit="return handleRegister(event)">
+
+            <!-- USERNAME -->
+
+            <input type="text" class="widget-input" id="regUser" placeholder="Tên đăng nhập" required />
+
+            <div id="userError" class="error-msg">
+
+                Tên đăng nhập tối thiểu 3 ký tự
+
+            </div>
+
+            <!-- EMAIL -->
+
+            <input type="email" class="widget-input" id="regEmail" placeholder="Email" required />
+
+            <div id="emailError" class="error-msg">
+
+                Email không hợp lệ
+
+            </div>
+
+            <!-- PASSWORD -->
+
+            <input type="password" class="widget-input" id="regPass" placeholder="Mật khẩu" required />
+
+            <div id="passError" class="error-msg">
+
+                Mật khẩu tối thiểu 6 ký tự
+
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+
+            <input type="password" class="widget-input" id="regConfirm" placeholder="Xác nhận mật khẩu" required />
+
+            <div id="confirmError" class="error-msg">
+
+                Mật khẩu xác nhận không khớp
+
+            </div>
+
+            <!-- SUBMIT -->
+
+            <button type="submit" class="widget-submit">
+
+                Đăng Ký Ngay
+
+            </button>
+
+        </form>
+
+        <!-- LOGIN -->
+
+        <div class="login-text">
+
+            Đã có tài khoản?
+
+            <a class="login-link" href="javascript:void(0)" onclick="switchToLogin()">
+
+                Đăng nhập
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

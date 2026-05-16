@@ -199,6 +199,6 @@ function initRegisterRealtime() {
 
 /* INITIALIZE WIDGETS */
 document.addEventListener('DOMContentLoaded', () => {
-    loadWidget('/assets/widgets/login.html', 'login-popup-container', 'loginPopup', '.login-glass-btn');
-    loadWidget('/assets/widgets/register.html', 'register-popup-container', 'registerPopup', '.register-glass-btn');
+    loadWidget('/Login', 'login-popup-container', 'loginPopup', '.login-glass-btn');
+    loadWidget('/Register', 'register-popup-container', 'registerPopup', '.register-glass-btn');
 });
