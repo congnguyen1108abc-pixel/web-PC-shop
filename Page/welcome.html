@@ -178,14 +178,19 @@
         }
 
         @keyframes blinkCursor {
-            to { opacity: 0; }
+            to {
+                opacity: 0;
+            }
         }
 
         @keyframes pulseSubtitle {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 0.85;
                 text-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
             }
+
             50% {
                 opacity: 1;
                 text-shadow: 0 0 18px rgba(0, 217, 255, 0.8);

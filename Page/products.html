@@ -1,586 +1,320 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>HYPER CORE - Danh Sách Sản Phẩm</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --blue-light: #7dd3fc;
       --blue: #38bdf8;
       --blue-dark: #0ea5e9;
-      --dark: #020617;
-      --dark2: #081120;
-      --dark3: #0f172a;
-      --white: #ffffff;
-      --glass: rgba(255, 255, 255, .08);
-      --glass-border: rgba(255, 255, 255, .14);
-      --text: rgba(255, 255, 255, .75);
+      --glass: rgba(255, 255, 255, .06);
+      --glass-hover: rgba(255, 255, 255, .10);
+      --glass-border: rgba(255, 255, 255, .12);
+      --text: rgba(255, 255, 255, .65);
+      --text-bright: rgba(255, 255, 255, .90);
+      --green: #22d3a0;
+      --red: #f87171;
+      --gold: #fbbf24;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      overflow-x: hidden;
+      font-family: 'Segoe UI', Arial, sans-serif;
       color: white;
-      background: radial-gradient(circle at top left, rgba(56, 189, 248, .18), transparent 25%),
+      background: 
+        radial-gradient(circle at top left, rgba(56, 189, 248, .18), transparent 25%),
         radial-gradient(circle at bottom right, rgba(14, 165, 233, .12), transparent 25%),
         linear-gradient(180deg, #08101b 0%, #040b14 55%, #01050b 100%);
       min-height: 100vh;
+      overflow-x: hidden;
     }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #040b14; }
+    ::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, .2); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, .4); }
 
     /* HEADER */
     header {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 80px);
-      height: 78px;
-      padding: 0 35px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 999;
-      border-radius: 28px;
-      transition: .4s ease;
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 80px); height: 78px; padding: 0 35px;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 999; border-radius: 28px; transition: .4s ease;
+      background: rgba(255, 255, 255, .02);
+      border: 1px solid rgba(255, 255, 255, .05);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     }
 
     header.scrolled {
       background: rgba(255, 255, 255, .08);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+      border-color: rgba(255, 255, 255, .14);
       box-shadow: 0 8px 40px rgba(0, 0, 0, .35);
     }
 
     .logo {
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: 4px;
+      font-size: 30px; font-weight: 800; letter-spacing: 4px;
       background: linear-gradient(90deg, #ffffff, #7dd3fc);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    nav {
-      display: flex;
-      gap: 35px;
-    }
-
+    nav { display: flex; gap: 35px; align-items: center; }
     nav a {
-      text-decoration: none;
-      color: rgba(255, 255, 255, .78);
-      font-size: 15px;
-      position: relative;
-      transition: .3s;
+      text-decoration: none; color: rgba(255, 255, 255, .78);
+      font-size: 15px; position: relative; transition: .3s;
+      display: flex; align-items: center;
     }
-
-    nav a:hover {
-      color: white;
-    }
-
+    nav a:hover { color: white; }
+    nav a.active { color: var(--blue-light); }
     nav a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -7px;
-      width: 0%;
-      height: 2px;
-      border-radius: 10px;
-      background: var(--blue-light);
-      transition: .3s;
+      content: ""; position: absolute; left: 0; bottom: -7px;
+      width: 0%; height: 2px; border-radius: 10px;
+      background: var(--blue-light); transition: .3s;
     }
+    nav a:hover::after, nav a.active::after { width: 100%; }
 
-    nav a:hover::after,
-    nav a.active::after {
-      width: 100%;
-    }
-
-    nav a.active {
-      color: var(--blue-light);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .nav-actions { display: flex; align-items: center; gap: 14px; }
 
     .cart-btn {
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
+      position: relative; width: 48px; height: 48px; border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, .12);
-      background: rgba(255, 255, 255, .06);
-      backdrop-filter: blur(20px);
-      color: white;
-      cursor: pointer;
-      font-size: 18px;
-      transition: .35s;
+      background: rgba(255, 255, 255, .06); backdrop-filter: blur(20px);
+      color: white; cursor: pointer; font-size: 18px; transition: .35s;
+      display: flex; align-items: center; justify-content: center;
     }
-
-    .cart-btn:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, .12);
-    }
-
-    .btn {
-      padding: 12px 24px;
-      border-radius: 16px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      transition: .35s;
-    }
-
-    .register-btn {
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      color: white;
-    }
-
-    .login-btn {
-      background: rgba(255, 255, 255, .06);
-      border: 1px solid rgba(255, 255, 255, .12);
-      backdrop-filter: blur(20px);
-      color: white;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-    }
+    .cart-btn:hover { transform: translateY(-2px); background: rgba(255, 255, 255, .12); }
 
     /* LAYOUT */
     .page-wrapper {
       padding: 120px 60px 60px;
-      display: flex;
-      gap: 28px;
-      max-width: 1600px;
-      margin: 0 auto;
+      display: flex; gap: 28px;
+      max-width: 1600px; margin: 0 auto;
     }
 
     /* SIDEBAR */
-    .sidebar {
-      width: 280px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+    .sidebar { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; }
 
     .sidebar-box {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, .25), inset 0 1px 1px rgba(255, 255, 255, .06);
+      background: var(--glass); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-radius: 24px; padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
     }
 
     .sidebar-box h3 {
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: var(--blue-light);
-      text-transform: uppercase;
-      margin-bottom: 16px;
+      font-size: 12px; letter-spacing: 2px; color: var(--blue-light);
+      text-transform: uppercase; margin-bottom: 16px; font-weight: 700;
     }
 
-    /* SEARCH */
-    .search-wrap {
-      position: relative;
-    }
-
+    .search-wrap { position: relative; }
     .search-wrap input {
-      width: 100%;
-      padding: 11px 16px 11px 40px;
-      background: rgba(255, 255, 255, .05);
-      border: 1px solid rgba(255, 255, 255, .10);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      transition: .3s;
+      width: 100%; padding: 11px 16px 11px 40px;
+      background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 12px; color: #fff; font-size: 14px; outline: none; transition: .3s;
     }
+    .search-wrap input::placeholder { color: rgba(255, 255, 255, .35); }
+    .search-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(56, 189, 248, .12); }
+    .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, .35); font-size: 14px; }
 
-    .search-wrap input::placeholder {
-      color: rgba(255, 255, 255, .35);
-    }
-
-    .search-wrap input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, .12);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255, 255, 255, .35);
-      font-size: 14px;
-    }
-
-    /* FILTER */
-    .filter-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .filter-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--text);
-      user-select: none;
-    }
-
-    .filter-item input[type=checkbox],
-    .filter-item input[type=radio] {
-      display: none;
-    }
+    .filter-group { display: flex; flex-direction: column; gap: 10px; }
+    .filter-item { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text); user-select: none; transition: .2s; }
+    .filter-item:hover { color: white; }
+    .filter-item input { display: none; }
 
     .custom-check {
-      width: 18px;
-      height: 18px;
-      border-radius: 5px;
-      border: 1.5px solid rgba(255, 255, 255, .25);
-      background: rgba(255, 255, 255, .04);
-      flex-shrink: 0;
-      transition: .3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 18px; height: 18px; border-radius: 5px;
+      border: 1.5px solid rgba(255, 255, 255, .25); background: rgba(255, 255, 255, .04);
+      flex-shrink: 0; transition: .3s; display: flex; align-items: center; justify-content: center;
     }
+    .custom-radio { border-radius: 50%; }
 
-    .custom-radio {
-      border-radius: 50%;
-    }
+    .filter-item input:checked + .custom-check { border-color: var(--blue); background: rgba(56, 189, 248, .15); }
+    .filter-item input:checked + .custom-check::after { content: "✓"; color: var(--blue-light); font-size: 11px; font-weight: 700; }
+    .filter-item input[type=radio]:checked + .custom-check::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--blue-light); }
 
-    .filter-item input:checked+.custom-check {
-      border-color: var(--blue);
-      background: rgba(56, 189, 248, .15);
-    }
+    .cat-count { margin-left: auto; font-size: 11px; color: rgba(255, 255, 255, .3); }
 
-    .filter-item input:checked+.custom-check::after {
-      content: "✓";
-      color: var(--blue-light);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .filter-item input[type=radio]:checked+.custom-check::after {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--blue-light);
-    }
-
-    /* PRICE */
-    .price-inputs {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
+    .price-inputs { display: flex; gap: 8px; margin-top: 8px; }
     .price-inputs input {
-      width: 100%;
-      padding: 8px 10px;
-      background: rgba(255, 255, 255, .05);
-      border: 1px solid rgba(255, 255, 255, .10);
-      border-radius: 10px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
-      transition: .3s;
+      width: 100%; padding: 8px 10px;
+      background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 10px; color: #fff; font-size: 13px; outline: none; transition: .3s;
     }
-
-    .price-inputs input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, .12);
-    }
-
-    .price-sep {
-      display: flex;
-      align-items: center;
-      color: var(--text);
-      font-size: 13px;
-    }
+    .price-inputs input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(56, 189, 248, .12); }
+    .price-sep { display: flex; align-items: center; color: var(--text); font-size: 13px; }
 
     .filter-btn {
-      width: 100%;
-      padding: 11px;
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 12px;
-      transition: .35s;
+      width: 100%; padding: 11px; background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      border: none; border-radius: 12px; color: white; font-weight: 700;
+      cursor: pointer; font-size: 14px; margin-top: 12px; transition: .35s;
     }
+    .filter-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, .3); }
 
-    .filter-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+    .filter-reset {
+      width: 100%; padding: 9px; background: transparent; border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 12px; color: var(--text); font-size: 12px; cursor: pointer; margin-top: 8px; transition: .3s;
     }
+    .filter-reset:hover { border-color: rgba(255, 255, 255, .3); color: white; }
 
     /* MAIN */
-    .main-content {
-      flex: 1;
-      min-width: 0;
-    }
+    .main-content { flex: 1; min-width: 0; }
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-    }
-
+    .top-bar { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; }
     .top-bar h1 {
-      font-size: 36px;
+      font-size: 36px; font-weight: 800;
       background: linear-gradient(90deg, #fff, var(--blue-light));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
-    .top-bar span {
-      color: var(--text);
-      font-size: 14px;
-      margin-top: 4px;
-      display: block;
-    }
+    .result-count { color: var(--text); font-size: 14px; margin-top: 6px; }
 
     .sort-select {
-      padding: 10px 18px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
-      cursor: pointer;
-      backdrop-filter: blur(12px);
+      padding: 10px 18px; background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 12px; color: #fff; font-size: 13px; outline: none; cursor: pointer; backdrop-filter: blur(12px);
     }
-
-    .sort-select option {
-      background: #0a1628;
-    }
+    .sort-select option { background: #0a1628; }
 
     /* PRODUCT GRID */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
+    .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 
     /* PRODUCT CARD */
     .product-card {
-      background: rgba(255, 255, 255, .05);
-      border: 1px solid rgba(255, 255, 255, .10);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 24px;
-      overflow: hidden;
-      transition: .4s;
-      position: relative;
-      cursor: pointer;
+      background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .10);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-radius: 24px; overflow: hidden; transition: .4s; position: relative; cursor: pointer;
     }
-
-    .product-card:hover {
-      transform: translateY(-5px) scale(1.02);
-      background: rgba(255, 255, 255, .08);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, .35);
-    }
-
+    .product-card:hover { transform: translateY(-5px) scale(1.02); background: rgba(255, 255, 255, .08); box-shadow: 0 20px 40px rgba(0, 0, 0, .35); }
+    
     .product-card::before {
-      content: "";
-      position: absolute;
-      inset: -2px;
+      content: ""; position: absolute; inset: -2px;
       background: linear-gradient(135deg, rgba(125, 211, 252, 0), rgba(125, 211, 252, .25), rgba(56, 189, 248, 0));
-      opacity: 0;
-      transition: .5s;
-      z-index: 1;
-      pointer-events: none;
+      opacity: 0; transition: .5s; z-index: 1; pointer-events: none;
+    }
+    .product-card:hover::before { opacity: 1; }
+
+    .card-img-wrap { position: relative; width: 100%; height: 200px; overflow: hidden; background: rgba(0, 0, 0, .25); }
+    .card-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 20px; transition: transform .6s ease; }
+    .product-card:hover .card-img-wrap img { transform: scale(1.08); }
+
+    .badge {
+      position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 999px;
+      font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; z-index: 2;
+    }
+    .badge-new { background: rgba(56, 189, 248, .18); border: 1px solid rgba(125, 211, 252, .3); color: var(--blue-light); }
+    .badge-sale { background: rgba(251, 191, 36, .15); border: 1px solid rgba(251, 191, 36, .3); color: var(--gold); }
+    .badge-hot { background: rgba(248, 113, 113, .15); border: 1px solid rgba(248, 113, 113, .3); color: var(--red); }
+
+    .wishlist-btn {
+      position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 10px;
+      background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .12);
+      color: rgba(255, 255, 255, .4); cursor: pointer; font-size: 15px;
+      display: flex; align-items: center; justify-content: center; transition: .25s; z-index: 2;
+    }
+    .wishlist-btn:hover, .wishlist-btn.active { color: var(--red); background: rgba(248, 113, 113, .12); border-color: rgba(248, 113, 113, .3); }
+
+    .card-body { padding: 20px; position: relative; z-index: 5; }
+    .card-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; color: white; }
+    .card-specs { font-size: 12px; color: rgba(255, 255, 255, .45); margin-bottom: 12px; letter-spacing: .4px; }
+
+    .card-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+    .stars { color: var(--gold); font-size: 11px; letter-spacing: 1px; }
+    .rating-count { font-size: 11px; color: rgba(255, 255, 255, .3); }
+
+    .card-price-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .price-new { font-size: 20px; font-weight: 800; color: var(--blue-light); text-shadow: 0 0 12px rgba(125, 211, 252, .4); }
+    .price-old { font-size: 13px; color: rgba(255, 255, 255, .3); text-decoration: line-through; }
+    .discount-tag {
+      padding: 2px 6px; border-radius: 6px;
+      background: rgba(34, 211, 160, .12); border: 1px solid rgba(34, 211, 160, .25);
+      color: var(--green); font-size: 10px; font-weight: 700;
     }
 
-    .product-card:hover::before {
-      opacity: 1;
-    }
+    .stock-row { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
+    .stock-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .stock-dot.in { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .stock-dot.low { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+    .stock-dot.out { background: var(--red); }
+    .stock-text { font-size: 11px; color: var(--text); }
 
-    .card-img-wrap {
-      position: relative;
-      width: 100%;
-      height: 200px;
-      overflow: hidden;
-      background: rgba(0, 0, 0, .25);
-    }
-
-    .card-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      padding: 16px;
-      transition: transform .6s ease;
-    }
-
-    .product-card:hover .card-img-wrap img {
-      transform: scale(1.08);
-    }
-
-    .badge-3d {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      padding: 4px 10px;
-      background: rgba(56, 189, 248, .18);
-      border: 1px solid rgba(125, 211, 252, .3);
-      border-radius: 999px;
-      font-size: 11px;
-      color: var(--blue-light);
-      font-weight: 600;
-      animation: pulse 2.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: .6;
-      }
-    }
-
-    .card-body {
-      padding: 20px;
-      position: relative;
-      z-index: 5;
-    }
-
-    .card-name {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-
-    .card-specs {
-      font-size: 12px;
-      color: rgba(255, 255, 255, .45);
-      margin-bottom: 14px;
-      letter-spacing: .4px;
-    }
-
-    .card-price-row {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
-
-    .price-new {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--blue-light);
-      text-shadow: 0 0 12px rgba(125, 211, 252, .4);
-    }
-
-    .price-old {
-      font-size: 13px;
-      color: rgba(255, 255, 255, .3);
-      text-decoration: line-through;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 10px;
-    }
-
+    .card-actions { display: flex; gap: 10px; }
     .btn-add {
-      flex: 1;
-      padding: 10px;
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      border: none;
-      color: white;
-      font-weight: 700;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: .35s;
+      flex: 1; padding: 11px; background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      border: none; color: white; font-weight: 700; border-radius: 12px;
+      cursor: pointer; font-size: 13px; transition: .35s; position: relative; overflow: hidden; min-height: 40px;
     }
+    .btn-add:hover:not([disabled]) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(56, 189, 248, .3); }
+    .btn-add:active:not([disabled]) { transform: scale(.98); }
+    .btn-add.added { background: linear-gradient(135deg, #22d3a0, #16a87f); }
+    .btn-add[disabled] { opacity: .4; cursor: not-allowed; }
 
-    .btn-add:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .35);
+    .btn-text, .btn-check {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: .25s ease;
     }
+    .btn-check { opacity: 0; transform: scale(.6); }
+    .btn-add.added .btn-text { opacity: 0; transform: scale(.6); }
+    .btn-add.added .btn-check { opacity: 1; transform: scale(1); }
 
     .btn-detail {
-      flex: 1;
-      padding: 10px;
-      background: rgba(255, 255, 255, .06);
-      border: 1px solid rgba(255, 255, 255, .12);
-      color: white;
-      font-weight: 600;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: .35s;
+      flex: 1; padding: 11px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12);
+      color: white; font-weight: 600; border-radius: 12px; cursor: pointer; font-size: 13px; transition: .35s;
     }
+    .btn-detail:hover { background: rgba(255, 255, 255, .12); transform: translateY(-2px); }
 
-    .btn-detail:hover {
-      background: rgba(255, 255, 255, .12);
-      transform: translateY(-2px);
+    /* EMPTY STATE */
+    .empty-state { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; text-align: center; grid-column: 1 / -1; }
+    .empty-state.show { display: flex; }
+    .empty-icon { font-size: 52px; margin-bottom: 18px; opacity: .35; }
+    .empty-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; color: rgba(255, 255, 255, .6); }
+    .empty-sub { font-size: 14px; color: var(--text); margin-bottom: 22px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 26px; right: 26px; z-index: 9999; display: flex; align-items: center; gap: 12px;
+      padding: 13px 18px; border-radius: 16px; background: rgba(5, 13, 26, .93); border: 1px solid rgba(56, 189, 248, .3);
+      backdrop-filter: blur(20px); box-shadow: 0 12px 40px rgba(0, 0, 0, .5);
+      transform: translateY(80px); opacity: 0; transition: .4s cubic-bezier(.34, 1.56, .64, 1); pointer-events: none;
     }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-icon { font-size: 18px; }
+    .toast-text { font-size: 13px; font-weight: 500; }
+    .toast-name { color: var(--blue-light); font-weight: 700; }
 
     /* SCROLL REVEAL */
-    .reveal {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: all .8s cubic-bezier(.2, .65, .2, 1);
-    }
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
 
-    .reveal.active {
-      opacity: 1;
-      transform: translateY(0);
+    /* RESPONSIVE */
+    @media(max-width: 1200px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media(max-width: 900px) {
+      .page-wrapper { flex-direction: column; padding: 110px 24px 40px; }
+      .sidebar { width: 100%; }
+      header { width: calc(100% - 32px); padding: 0 20px; }
+      nav { display: none; }
     }
+    @media(max-width: 560px) { .product-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 
 <body>
 
   <header id="header">
-    <div class="logo">HYPER CORE</div>
-
+    <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">HYPER CORE</div>
     <nav>
       <a href="/Homepage">Trang Chủ</a>
       <a href="/Products" class="active">Sản Phẩm</a>
       <a href="#">Gaming Gear</a>
       <a href="#">PC Build</a>
+      <a href="#">Trạng thái đơn hàng</a>
       <a href="#">Liên Hệ</a>
     </nav>
-
     <div class="nav-actions">
-      <button class="cart-btn">&#x1F6D2;</button>
-      <button class="btn register-btn" onclick="window.location.href='/register'">Đăng Ký</button>
-      <button class="btn login-btn" onclick="window.location.href='/login'">Đăng Nhập</button>
+      <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
+        🛒
+        <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center">0</span>
+      </button>
     </div>
   </header>
 
@@ -588,49 +322,81 @@
     <aside class="sidebar">
       <div class="sidebar-box">
         <div class="search-wrap">
-          <span class="search-icon">&#x1F50D;</span>
+          <span class="search-icon">🔍</span>
           <input type="text" id="searchInput" placeholder="Tìm sản phẩm..." />
         </div>
       </div>
+      
       <div class="sidebar-box">
         <h3>Danh Mục</h3>
         <div class="filter-group">
-          <label class="filter-item"><input type="radio" name="cat" value="all" checked /><span
-              class="custom-check custom-radio"></span>Tất cả</label>
-          <label class="filter-item"><input type="radio" name="cat" value="vga" /><span
-              class="custom-check custom-radio"></span>VGA / Card Đồ Họa</label>
-          <label class="filter-item"><input type="radio" name="cat" value="cpu" /><span
-              class="custom-check custom-radio"></span>CPU / Bộ Vi Xử Lý</label>
-          <label class="filter-item"><input type="radio" name="cat" value="main" /><span
-              class="custom-check custom-radio"></span>Mainboard</label>
-          <label class="filter-item"><input type="radio" name="cat" value="ram" /><span
-              class="custom-check custom-radio"></span>RAM</label>
-          <label class="filter-item"><input type="radio" name="cat" value="ssd" /><span
-              class="custom-check custom-radio"></span>SSD / Ổ Cứng</label>
-          <label class="filter-item"><input type="radio" name="cat" value="psu" /><span
-              class="custom-check custom-radio"></span>Nguồn / PSU</label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="all" checked />
+            <span class="custom-check custom-radio"></span>
+            Tất cả
+            <span class="cat-count" id="count-all"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="vga" />
+            <span class="custom-check custom-radio"></span>
+            VGA / Card Đồ Họa
+            <span class="cat-count" id="count-vga"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="cpu" />
+            <span class="custom-check custom-radio"></span>
+            CPU / Bộ Vi Xử Lý
+            <span class="cat-count" id="count-cpu"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="main" />
+            <span class="custom-check custom-radio"></span>
+            Mainboard
+            <span class="cat-count" id="count-main"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="ram" />
+            <span class="custom-check custom-radio"></span>
+            RAM
+            <span class="cat-count" id="count-ram"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="ssd" />
+            <span class="custom-check custom-radio"></span>
+            SSD / Ổ Cứng
+            <span class="cat-count" id="count-ssd"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="psu" />
+            <span class="custom-check custom-radio"></span>
+            Nguồn / PSU
+            <span class="cat-count" id="count-psu"></span>
+          </label>
         </div>
       </div>
+
       <div class="sidebar-box">
         <h3>Thương Hiệu</h3>
-        <div class="filter-group">
-          <label class="filter-item"><input type="checkbox" /><span class="custom-check"></span>ASUS</label>
-          <label class="filter-item"><input type="checkbox" /><span class="custom-check"></span>MSI</label>
-          <label class="filter-item"><input type="checkbox" /><span class="custom-check"></span>Gigabyte</label>
-          <label class="filter-item"><input type="checkbox" /><span class="custom-check"></span>Corsair</label>
-          <label class="filter-item"><input type="checkbox" /><span class="custom-check"></span>AMD</label>
-          <label class="filter-item"><input type="checkbox" /><span class="custom-check"></span>Intel</label>
-          <label class="filter-item"><input type="checkbox" /><span class="custom-check"></span>NVIDIA</label>
+        <div class="filter-group" id="brandFilter">
+          <label class="filter-item"><input type="checkbox" value="ASUS"/><span class="custom-check"></span>ASUS</label>
+          <label class="filter-item"><input type="checkbox" value="MSI"/><span class="custom-check"></span>MSI</label>
+          <label class="filter-item"><input type="checkbox" value="Gigabyte"/><span class="custom-check"></span>Gigabyte</label>
+          <label class="filter-item"><input type="checkbox" value="Corsair"/><span class="custom-check"></span>Corsair</label>
+          <label class="filter-item"><input type="checkbox" value="AMD"/><span class="custom-check"></span>AMD</label>
+          <label class="filter-item"><input type="checkbox" value="Intel"/><span class="custom-check"></span>Intel</label>
+          <label class="filter-item"><input type="checkbox" value="Samsung"/><span class="custom-check"></span>Samsung</label>
         </div>
       </div>
+
       <div class="sidebar-box">
         <h3>Khoảng Giá</h3>
         <div class="price-inputs">
-          <input type="number" placeholder="Từ (đ)" />
-          <span class="price-sep">&#x2014;</span>
-          <input type="number" placeholder="Đến (đ)" />
+          <input type="number" id="priceMin" placeholder="Từ (đ)" />
+          <span class="price-sep">—</span>
+          <input type="number" id="priceMax" placeholder="Đến (đ)" />
         </div>
-        <button class="filter-btn">Áp Dụng</button>
+        <button class="filter-btn" id="applyFilter">Áp Dụng</button>
+        <button class="filter-reset" id="resetFilter">Xoá bộ lọc</button>
       </div>
     </aside>
 
@@ -638,182 +404,314 @@
       <div class="top-bar">
         <div>
           <h1>Danh Sách Sản Phẩm</h1>
-          <span>Hiển thị 9 sản phẩm</span>
+          <div class="result-count" id="resultCount">Hiển thị ... sản phẩm</div>
         </div>
-        <select class="sort-select">
-          <option>Mặc định</option>
-          <option>Giá tăng dần</option>
-          <option>Giá giảm dần</option>
-          <option>Mới nhất</option>
+        <select class="sort-select" id="sortSelect">
+          <option value="default">Mặc định</option>
+          <option value="price-asc">Giá tăng dần</option>
+          <option value="price-desc">Giá giảm dần</option>
+          <option value="rating">Đánh giá cao nhất</option>
+          <option value="name">Tên A–Z</option>
         </select>
       </div>
-      <div class="product-grid">
 
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=RTX+4090" alt="RTX 4090" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">ASUS ROG RTX 4090 24GB OC</div>
-            <div class="card-specs">Ada Lovelace | 24GB GDDR6X | 384-bit</div>
-            <div class="card-price-row"><span class="price-new">45.900.000 đ</span><span class="price-old">52.000.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
+      <div class="product-grid" id="productGrid">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">🔍</div>
+          <div class="empty-title">Không tìm thấy sản phẩm</div>
+          <div class="empty-sub">Thử thay đổi bộ lọc hoặc từ khoá tìm kiếm</div>
+          <button class="filter-reset" onclick="resetAll()" style="width:auto; padding: 10px 20px;">Xoá bộ lọc</button>
         </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=Ryzen+9+7950X" alt="Ryzen 9 7950X" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">AMD Ryzen 9 7950X</div>
-            <div class="card-specs">Socket AM5 | 16 Nhân 32 Luồng | 5.7GHz</div>
-            <div class="card-price-row"><span class="price-new">18.500.000 đ</span><span class="price-old">22.000.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=ROG+Z790" alt="ROG Z790" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">ASUS ROG Maximus Z790 Hero</div>
-            <div class="card-specs">LGA1700 | DDR5 | PCIe 5.0</div>
-            <div class="card-price-row"><span class="price-new">14.200.000 đ</span><span class="price-old">16.500.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=DDR5+32GB" alt="Corsair DDR5" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">Corsair Dominator DDR5 32GB</div>
-            <div class="card-specs">DDR5 | 32GB (2x16) | 6400MHz</div>
-            <div class="card-price-row"><span class="price-new">4.800.000 đ</span><span class="price-old">5.500.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=Samsung+990+Pro" alt="Samsung 990 Pro" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">Samsung 990 Pro NVMe 2TB</div>
-            <div class="card-specs">PCIe 4.0 | 7450 MB/s | M.2 2280</div>
-            <div class="card-price-row"><span class="price-new">3.200.000 đ</span><span class="price-old">3.800.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=RTX+4070+Ti" alt="RTX 4070 Ti" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">MSI Gaming X Trio RTX 4070 Ti</div>
-            <div class="card-specs">Ada Lovelace | 12GB GDDR6X | 192-bit</div>
-            <div class="card-price-row"><span class="price-new">19.500.000 đ</span><span class="price-old">23.000.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=i9-14900K" alt="i9-14900K" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">Intel Core i9-14900K</div>
-            <div class="card-specs">LGA1700 | 24 Nhân | 6.0GHz Boost</div>
-            <div class="card-price-row"><span class="price-new">15.900.000 đ</span><span class="price-old">19.000.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=HX1200+PSU" alt="Corsair HX1200" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">Corsair HX1200 Platinum</div>
-            <div class="card-specs">1200W | 80+ Platinum | Full Modular</div>
-            <div class="card-price-row"><span class="price-new">5.600.000 đ</span><span class="price-old">6.200.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
-        <div class="product-card reveal">
-          <div class="card-img-wrap">
-            <img src="https://placehold.co/300x200/081120/7dd3fc?text=RX+7900+XTX" alt="RX 7900 XTX" />
-            <span class="badge-3d">&#x1F441;&#xFE0F; Hỗ trợ 3D</span>
-          </div>
-          <div class="card-body">
-            <div class="card-name">Gigabyte RX 7900 XTX Gaming OC</div>
-            <div class="card-specs">RDNA 3 | 24GB GDDR6 | 384-bit</div>
-            <div class="card-price-row"><span class="price-new">22.500.000 đ</span><span class="price-old">26.000.000
-                đ</span></div>
-            <div class="card-actions"><button class="btn-add">Thêm vào giỏ</button><button class="btn-detail">Chi
-                tiết</button></div>
-          </div>
-        </div>
-
       </div>
     </main>
   </div>
 
+  <div class="toast" id="toast">
+    <span class="toast-icon">✅</span>
+    <span class="toast-text">Đã thêm <span class="toast-name" id="toastName"></span> vào giỏ hàng</span>
+  </div>
+
   <script>
-    const header = document.getElementById("header");
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 40) header.classList.add("scrolled");
-      else header.classList.remove("scrolled");
+    const PRODUCTS = [
+      {id:1, cat:'vga', brand:'ASUS', name:'ASUS ROG RTX 4090 24GB OC', specs:'Ada Lovelace · 24GB GDDR6X · 384-bit', price:45900000, oldPrice:52000000, rating:4.9, reviews:128, stock:'in', badge:'hot', img:'https://placehold.co/300x200/081120/7dd3fc?text=RTX+4090'},
+      {id:2, cat:'cpu', brand:'AMD', name:'AMD Ryzen 9 7950X', specs:'Socket AM5 · 16 Nhân 32 Luồng · 5.7GHz', price:18500000, oldPrice:22000000, rating:4.8, reviews:94, stock:'in', badge:'sale', img:'https://placehold.co/300x200/081120/7dd3fc?text=Ryzen+9+7950X'},
+      {id:3, cat:'main', brand:'ASUS', name:'ASUS ROG Maximus Z790 Hero', specs:'LGA1700 · DDR5 · PCIe 5.0', price:14200000, oldPrice:16500000, rating:4.7, reviews:61, stock:'low', badge:null, img:'https://placehold.co/300x200/081120/7dd3fc?text=ROG+Z790'},
+      {id:4, cat:'ram', brand:'Corsair', name:'Corsair Dominator DDR5 32GB', specs:'DDR5 · 32GB (2x16) · 6400MHz', price:4800000, oldPrice:5500000, rating:4.6, reviews:210, stock:'in', badge:'new', img:'https://placehold.co/300x200/081120/7dd3fc?text=DDR5+32GB'},
+      {id:5, cat:'ssd', brand:'Samsung', name:'Samsung 990 Pro NVMe 2TB', specs:'PCIe 4.0 · 7450 MB/s · M.2 2280', price:3200000, oldPrice:3800000, rating:4.9, reviews:445, stock:'in', badge:null, img:'https://placehold.co/300x200/081120/7dd3fc?text=Samsung+990+Pro'},
+      {id:6, cat:'vga', brand:'MSI', name:'MSI Gaming X Trio RTX 4070 Ti', specs:'Ada Lovelace · 12GB GDDR6X · 192-bit', price:19500000, oldPrice:23000000, rating:4.7, reviews:77, stock:'in', badge:'sale', img:'https://placehold.co/300x200/081120/7dd3fc?text=RTX+4070+Ti'},
+      {id:7, cat:'cpu', brand:'Intel', name:'Intel Core i9-14900K', specs:'LGA1700 · 24 Nhân · 6.0GHz Boost', price:15900000, oldPrice:19000000, rating:4.8, reviews:132, stock:'low', badge:null, img:'https://placehold.co/300x200/081120/7dd3fc?text=i9-14900K'},
+      {id:8, cat:'psu', brand:'Corsair', name:'Corsair HX1200 Platinum', specs:'1200W · 80+ Platinum · Full Modular', price:5600000, oldPrice:6200000, rating:4.8, reviews:89, stock:'in', badge:null, img:'https://placehold.co/300x200/081120/7dd3fc?text=HX1200+PSU'},
+      {id:9, cat:'vga', brand:'Gigabyte', name:'Gigabyte RX 7900 XTX Gaming OC', specs:'RDNA 3 · 24GB GDDR6 · 384-bit', price:22500000, oldPrice:26000000, rating:4.6, reviews:55, stock:'out', badge:null, img:'https://placehold.co/300x200/081120/7dd3fc?text=RX+7900+XTX'},
+      {id:10, cat:'main', brand:'MSI', name:'MSI MEG X670E ACE', specs:'Socket AM5 · DDR5 · PCIe 5.0', price:11900000, oldPrice:13500000, rating:4.5, reviews:43, stock:'in', badge:'new', img:'https://placehold.co/300x200/081120/7dd3fc?text=MSI+X670E'},
+      {id:11, cat:'ssd', brand:'Samsung', name:'Samsung 870 EVO SATA 1TB', specs:'SATA III · 560 MB/s · 2.5"', price:1800000, oldPrice:2200000, rating:4.7, reviews:630, stock:'in', badge:null, img:'https://placehold.co/300x200/081120/7dd3fc?text=870+EVO'},
+      {id:12, cat:'ram', brand:'Corsair', name:'Corsair Vengeance DDR5 64GB', specs:'DDR5 · 64GB (2x32) · 5600MHz', price:7200000, oldPrice:8500000, rating:4.5, reviews:38, stock:'low', badge:'new', img:'https://placehold.co/300x200/081120/7dd3fc?text=Vengeance+64GB'},
+    ];
+
+    let cartCount = 0;
+    let filters = { cat: 'all', brands: [], priceMin: null, priceMax: null, search: '', sort: 'default' };
+
+    const formatPrice = n => n.toLocaleString('vi-VN') + ' đ';
+    const calcDiscount = (p, o) => Math.round((1 - p / o) * 100);
+    
+    const getStarsStr = r => {
+      const full = Math.floor(r);
+      const half = (r % 1 >= 0.5) ? 1 : 0;
+      const empty = 5 - full - half;
+      return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+    };
+
+    const getStockInfo = s => {
+      if (s === 'in') return { dot: 'in', txt: 'Còn hàng' };
+      if (s === 'low') return { dot: 'low', txt: 'Sắp hết' };
+      return { dot: 'out', txt: 'Hết hàng' };
+    };
+
+    const getBadgeHTML = b => {
+      if (!b) return '';
+      const map = {
+        new: ['badge-new', 'MỚI'],
+        sale: ['badge-sale', 'SALE'],
+        hot: ['badge-hot', '🔥 HOT']
+      };
+      return `<span class="badge ${map[b][0]}">${map[b][1]}</span>`;
+    };
+
+    function renderCards(list) {
+      const grid = document.getElementById('productGrid');
+      const empty = document.getElementById('emptyState');
+      
+      // Remove existing products
+      grid.querySelectorAll('.product-card').forEach(c => c.remove());
+      
+      // Update count display
+      document.getElementById('resultCount').textContent = list.length ? `Hiển thị ${list.length} sản phẩm` : 'Không có sản phẩm';
+
+      if (!list.length) {
+        empty.classList.add('show');
+        return;
+      }
+      empty.classList.remove('show');
+
+      list.forEach((p, i) => {
+        const sInfo = getStockInfo(p.stock);
+        const isOut = p.stock === 'out';
+        
+        const card = document.createElement('div');
+        card.className = 'product-card reveal';
+        card.dataset.id = p.id;
+        
+        card.innerHTML = `
+          <div class="card-img-wrap">
+            <img src="${p.img}" alt="${p.name}" loading="lazy"/>
+            ${getBadgeHTML(p.badge)}
+            <button class="wishlist-btn" title="Yêu thích">♡</button>
+          </div>
+          <div class="card-body">
+            <div class="card-name">${p.name}</div>
+            <div class="card-specs">${p.specs}</div>
+            <div class="card-rating">
+              <span class="stars">${getStarsStr(p.rating)}</span>
+              <span class="rating-count">${p.rating} (${p.reviews} đánh giá)</span>
+            </div>
+            <div class="card-price-row">
+              <span class="price-new">${formatPrice(p.price)}</span>
+              ${p.oldPrice ? `<span class="price-old">${formatPrice(p.oldPrice)}</span><span class="discount-tag">-${calcDiscount(p.price, p.oldPrice)}%</span>` : ''}
+            </div>
+            <div class="stock-row">
+              <span class="stock-dot ${sInfo.dot}"></span>
+              <span class="stock-text">${sInfo.txt}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-add" data-name="${p.name}" ${isOut ? 'disabled' : ''}>
+                <span class="btn-text">${isOut ? 'Hết hàng' : 'Thêm vào giỏ'}</span>
+                <span class="btn-check">✓ Đã thêm</span>
+              </button>
+              <button class="btn-detail">Chi tiết</button>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+
+        // Intersection Observer for reveal animations
+        const obs = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('active');
+          });
+        }, { threshold: 0.1 });
+        obs.observe(card);
+
+        // Add delay effect to reveal dynamically
+        setTimeout(() => card.classList.add('active'), i * 50);
+      });
+
+      // Wishlist event setup
+      grid.querySelectorAll('.wishlist-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          btn.classList.toggle('active');
+          btn.textContent = btn.classList.contains('active') ? '♥' : '♡';
+        });
+      });
+
+      // Cart event setup
+      grid.querySelectorAll('.btn-add:not([disabled])').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          if (btn.classList.contains('added')) return;
+          btn.classList.add('added');
+          addToCart(btn.dataset.name);
+          setTimeout(() => btn.classList.remove('added'), 2000);
+        });
+      });
+    }
+
+    function getFilteredList() {
+      let list = [...PRODUCTS];
+
+      // Category Filter
+      if (filters.cat !== 'all') {
+        list = list.filter(p => p.cat === filters.cat);
+      }
+
+      // Brand Filter
+      if (filters.brands.length > 0) {
+        list = list.filter(p => filters.brands.includes(p.brand));
+      }
+
+      // Price Range Filter
+      if (filters.priceMin !== null) {
+        list = list.filter(p => p.price >= filters.priceMin);
+      }
+      if (filters.priceMax !== null) {
+        list = list.filter(p => p.price <= filters.priceMax);
+      }
+
+      // Search Filter
+      if (filters.search) {
+        const q = filters.search.toLowerCase();
+        list = list.filter(p => p.name.toLowerCase().includes(q) || p.specs.toLowerCase().includes(q));
+      }
+
+      // Sorting
+      if (filters.sort === 'price-asc') {
+        list.sort((a, b) => a.price - b.price);
+      } else if (filters.sort === 'price-desc') {
+        list.sort((a, b) => b.price - a.price);
+      } else if (filters.sort === 'rating') {
+        list.sort((a, b) => b.rating - a.rating);
+      } else if (filters.sort === 'name') {
+        list.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      return list;
+    }
+
+    function updateCategoryCounts() {
+      const categories = ['all', 'vga', 'cpu', 'main', 'ram', 'ssd', 'psu'];
+      categories.forEach(cat => {
+        const el = document.getElementById('count-' + cat);
+        if (el) {
+          const count = (cat === 'all') ? PRODUCTS.length : PRODUCTS.filter(p => p.cat === cat).length;
+          el.textContent = `(${count})`;
+        }
+      });
+    }
+
+    function applyFiltersAndRender() {
+      renderCards(getFilteredList());
+    }
+
+    function addToCart(name) {
+      cartCount++;
+      const badge = document.getElementById('cartCount');
+      if (badge) {
+        badge.textContent = cartCount;
+        badge.style.display = 'flex';
+      }
+
+      const toast = document.getElementById('toast');
+      const toastName = document.getElementById('toastName');
+      toastName.textContent = name;
+      
+      toast.classList.add('show');
+      clearTimeout(toast.hideTimeout);
+      toast.hideTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    function resetAll() {
+      filters = { cat: 'all', brands: [], priceMin: null, priceMax: null, search: '', sort: 'default' };
+      
+      // Reset input values
+      document.getElementById('searchInput').value = '';
+      document.getElementById('priceMin').value = '';
+      document.getElementById('priceMax').value = '';
+      document.getElementById('sortSelect').value = 'default';
+      
+      // Reset active radio
+      const allRadio = document.querySelector('input[name="cat"][value="all"]');
+      if (allRadio) allRadio.checked = true;
+      
+      // Reset checkboxes
+      document.querySelectorAll('#brandFilter input').forEach(checkbox => {
+        checkbox.checked = false;
+      });
+
+      applyFiltersAndRender();
+    }
+
+    // Header scroll behavior
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
     });
 
-    // Custom checkbox
-    document.querySelectorAll('.filter-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const inp = item.querySelector('input');
-        if (inp.type === 'checkbox') inp.checked = !inp.checked;
+    // Search input event
+    document.getElementById('searchInput').addEventListener('input', function() {
+      filters.search = this.value.trim();
+      applyFiltersAndRender();
+    });
+
+    // Category radio buttons
+    document.querySelectorAll('input[name="cat"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        filters.cat = this.value;
+        applyFiltersAndRender();
       });
     });
 
-    document.getElementById("searchInput").addEventListener("input", function () {
-      const q = this.value.toLowerCase();
-      document.querySelectorAll(".product-card").forEach(c => {
-        c.style.display = c.querySelector(".card-name").textContent.toLowerCase().includes(q) ? "" : "none";
-      });
+    // Sort selector
+    document.getElementById('sortSelect').addEventListener('change', function() {
+      filters.sort = this.value;
+      applyFiltersAndRender();
     });
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("active"); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    // Apply Filter button
+    document.getElementById('applyFilter').addEventListener('click', () => {
+      const min = document.getElementById('priceMin').value;
+      const max = document.getElementById('priceMax').value;
+      
+      filters.priceMin = min ? parseFloat(min) : null;
+      filters.priceMax = max ? parseFloat(max) : null;
+      
+      // Read checked brands
+      filters.brands = Array.from(document.querySelectorAll('#brandFilter input:checked')).map(input => input.value);
+      
+      applyFiltersAndRender();
+    });
+
+    // Reset filter button
+    document.getElementById('resetFilter').addEventListener('click', resetAll);
+
+    // Initial startup execution
+    updateCategoryCounts();
+    applyFiltersAndRender();
   </script>
 </body>
-
 </html>
