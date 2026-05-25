@@ -9,7 +9,14 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseDefaultFiles();
-app.UseStaticFiles();
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".glb"] = "model/gltf-binary";
+provider.Mappings[".gltf"] = "model/gltf+json";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider
+});
 
 app.UseSwagger();
 app.UseSwaggerUI();
