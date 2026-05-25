@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>HYPER CORE - Mechanical Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 
     <style>
         * {
@@ -137,21 +138,56 @@
             align-items: flex-end;
         }
 
-        h1 {
+        .neon-logo {
             font-size: clamp(60px, 6vw, 95px);
-
-            background: linear-gradient(90deg,
-                    #ffffff,
-                    #7dd3fc,
-                    #38bdf8);
-
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-
-            margin-bottom: 8px;
-
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            font-weight: 700;
+            color: #e0f2fe;
             text-shadow:
-                0 0 20px rgba(125, 211, 252, .25);
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #0ea5e9,
+                0 0 40px #0ea5e9,
+                0 0 80px #0ea5e9;
+            margin-bottom: 8px;
+            letter-spacing: 6px;
+        }
+
+        .flicker-1 { animation: flicker-1 3s linear infinite; }
+        .flicker-2 { animation: flicker-2 2.5s linear infinite; }
+        .flicker-3 { animation: flicker-3 4s linear infinite; }
+
+        @keyframes flicker-1 {
+            0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #0ea5e9, 0 0 40px #0ea5e9;
+            }
+            20%, 21.9%, 63%, 63.9%, 65%, 69.9% {
+                opacity: 0.4;
+                text-shadow: none;
+            }
+        }
+
+        @keyframes flicker-2 {
+            0%, 40%, 42.9%, 44%, 44.9%, 46%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #0ea5e9, 0 0 40px #0ea5e9;
+            }
+            40.1%, 42.8%, 43.1%, 43.9%, 45%, 45.9% {
+                opacity: 0.3;
+                text-shadow: none;
+            }
+        }
+
+        @keyframes flicker-3 {
+            0%, 80%, 82.9%, 84%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #0ea5e9, 0 0 40px #0ea5e9;
+            }
+            80.1%, 82.8%, 83.1%, 83.9% {
+                opacity: 0.2;
+                text-shadow: none;
+            }
         }
 
         .subtitle {
@@ -178,19 +214,14 @@
         }
 
         @keyframes blinkCursor {
-            to {
-                opacity: 0;
-            }
+            to { opacity: 0; }
         }
 
         @keyframes pulseSubtitle {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 0.85;
                 text-shadow: 0 0 8px rgba(0, 217, 255, 0.4);
             }
-
             50% {
                 opacity: 1;
                 text-shadow: 0 0 18px rgba(0, 217, 255, 0.8);
@@ -402,8 +433,8 @@
 
         <div class="content">
 
-            <h1>
-                HYPER CORE
+            <h1 class="neon-logo">
+                <span class="flicker-1">H</span>Y<span class="flicker-2">PE</span>R C<span class="flicker-3">O</span>RE
             </h1>
 
             <div class="subtitle" id="welcome-subtitle">
@@ -737,8 +768,10 @@
 
         }
 
+        animate();
+
         /* ========================= */
-        /* TYPEWRITER EFFECT FOR SLOGAN (INFINITE LOOP) */
+        /* TYPEWRITER EFFECT FOR SLOGAN */
         /* ========================= */
 
         const textToType = "CHẠM VÀO SỨC MẠNH THỰC THỤ";
@@ -751,43 +784,32 @@
             const currentString = textToType;
 
             if (isDeleting) {
-                // Tách bớt chữ (xóa ký tự)
                 targetSpan.textContent = currentString.substring(0, typeIndex - 1);
                 typeIndex--;
 
-                // Tắt hiệu ứng nhịp thở khi bắt đầu xóa
                 subtitleDiv.classList.remove("pulsing");
 
                 if (typeIndex === 0) {
                     isDeleting = false;
-                    // Dừng 0.5 giây rồi bắt đầu gõ lại
                     setTimeout(typeEffect, 500);
                 } else {
-                    // Tốc độ xóa: ~50ms/chữ
                     setTimeout(typeEffect, 50);
                 }
             } else {
-                // Thêm chữ (gõ ký tự)
                 targetSpan.textContent = currentString.substring(0, typeIndex + 1);
                 typeIndex++;
 
                 if (typeIndex === currentString.length) {
                     isDeleting = true;
-                    // Gõ xong kích hoạt hiệu ứng nhịp thở pulsing
                     subtitleDiv.classList.add("pulsing");
-                    // Dừng 2 giây để người dùng đọc xong mới xóa
                     setTimeout(typeEffect, 2000);
                 } else {
-                    // Tốc độ gõ: ~100ms/chữ
                     setTimeout(typeEffect, 100);
                 }
             }
         }
 
-        // Bắt đầu chạy vòng lặp đệ quy khi vừa load
         setTimeout(typeEffect, 500);
-
-        animate();
 
     </script>
 
