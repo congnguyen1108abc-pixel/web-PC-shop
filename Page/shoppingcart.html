@@ -635,16 +635,7 @@
 
             </div>
 
-            <div class="shipping-box">
 
-                <select>
-                    <option>TP Hồ Chí Minh</option>
-                    <option>Hà Nội</option>
-                    <option>Đà Nẵng</option>
-                    <option>Cần Thơ</option>
-                </select>
-
-            </div>
 
             <div style="margin-top:30px">
 
@@ -913,6 +904,32 @@
                 }
 
             });
+
+        // Redirect to filladdress page on clicking Checkout
+        const checkoutBtn = document.querySelector(".checkout-btn");
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener("click", () => {
+                let cartData = {
+                    items: [],
+                    subtotal: parseInt(subtotal.innerText.replace(/\D/g, '')),
+                    shipping: 40000, // Hardcoded for demo, could be dynamic
+                    discount: 1000000,
+                    total: parseInt(total.innerText.replace(/\D/g, ''))
+                };
+
+                document.querySelectorAll(".cart-item").forEach(item => {
+                    const img = item.querySelector("img").src;
+                    const title = item.querySelector("h3").innerText;
+                    const variant = item.querySelector(".variant").innerText;
+                    const price = parseInt(item.querySelector(".item-price").dataset.price);
+                    const qty = parseInt(item.querySelector(".qty-input").value);
+                    cartData.items.push({ img, title, variant, price, qty });
+                });
+
+                localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
+                window.location.href = "/filladdress";
+            });
+        }
 
     </script>
 

@@ -25,6 +25,18 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.MapGet("/welcome", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "welcome.html"));
+});
+
+app.MapGet("/welcome.html", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "welcome.html"));
+});
+
 app.MapGet("/Homepage", async context =>
 {
     context.Response.ContentType = "text/html";
@@ -47,6 +59,42 @@ app.MapGet("/shoppingcart", async context =>
 {
     context.Response.ContentType = "text/html";
     await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "shoppingcart.html"));
+});
+
+app.MapGet("/filladdress", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "filladdress.html"));
+});
+
+app.MapGet("/payments", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "payments.html"));
+});
+
+app.MapGet("/paymentcomplete", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "paymentcomplete.html"));
+});
+
+app.MapGet("/paymentcomplete.html", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "paymentcomplete.html"));
+});
+
+app.MapGet("/qr-pay", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "qr-pay.html"));
+});
+
+app.MapGet("/qr-pay.html", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "qr-pay.html"));
 });
 
 app.MapPost("/Login", async context =>

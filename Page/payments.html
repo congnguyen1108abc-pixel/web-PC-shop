@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Thanh Toán - HYPER CORE</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        :root {
+            --blue: #38bdf8;
+            --blue-light: #7dd3fc;
+            --dark: #020617;
+            --dark2: #081120;
+            --glass: rgba(255, 255, 255, .06);
+            --border: rgba(255, 255, 255, .12);
+            --text: rgba(255, 255, 255, .7);
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+
+            background:
+                radial-gradient(circle at top left,
+                    rgba(56, 189, 248, .18),
+                    transparent 25%),
+
+                radial-gradient(circle at bottom right,
+                    rgba(14, 165, 233, .15),
+                    transparent 25%),
+
+                linear-gradient(180deg,
+                    #08101b 0%,
+                    #040b14 55%,
+                    #01050b 100%);
+        }
+
+        /* BACKGROUND */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .22;
+            z-index: -1;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .orb1 {
+            width: 450px;
+            height: 450px;
+            background: #38bdf8;
+            top: -140px;
+            left: -120px;
+        }
+
+        .orb2 {
+            width: 380px;
+            height: 380px;
+            background: #0ea5e9;
+            right: -100px;
+            bottom: -120px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-25px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* CONTAINER */
+        .payment-wrapper {
+            width: 100%;
+            min-height: auto;
+            padding: 40px 20px 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .payment-box {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1.2fr .8fr;
+            gap: 30px;
+        }
+
+        /* GLASS */
+        .glass-card {
+            background: rgba(15, 23, 42, .72);
+            border: 1px solid rgba(255, 255, 255, .1);
+            backdrop-filter: blur(28px);
+            border-radius: 34px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, .45), inset 0 1px 1px rgba(255, 255, 255, .05);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            background: rgba(56, 189, 248, .12);
+            border-radius: 50%;
+            filter: blur(90px);
+            top: -120px;
+            right: -120px;
+        }
+
+        /* LEFT */
+        .payment-left {
+            padding: 40px;
+        }
+
+        .title {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #fff, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text);
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        /* METHODS */
+        .method-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .method-card {
+            position: relative;
+        }
+
+        .method-card input {
+            display: none;
+        }
+
+        .method-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 26px;
+            border-radius: 26px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .08);
+            cursor: pointer;
+            transition: .35s;
+        }
+
+        .method-label:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .method-card input:checked+.method-label {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, .12);
+            box-shadow: 0 0 20px rgba(56, 189, 248, .18);
+        }
+
+        .method-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .method-icon {
+            width: 68px;
+            height: 68px;
+            border-radius: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .method-info h3 {
+            font-size: 21px;
+            margin-bottom: 6px;
+        }
+
+        .method-info p {
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .radio-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, .3);
+            transition: .3s;
+        }
+
+        .method-card input:checked+.method-label .radio-circle {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 6px rgba(56, 189, 248, .18);
+            background: #38bdf8;
+        }
+
+        /* PAYMENT DETAIL */
+        .payment-detail {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .detail-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #7dd3fc;
+        }
+
+        /* PAYMENT QR */
+        .pay-content {
+            display: none;
+            animation: fadeIn .4s ease;
+        }
+
+        .pay-content.active {
+            display: block;
+        }
+
+        .qr-box {
+            width: 290px;
+            height: 290px;
+            margin: 25px auto;
+            padding: 14px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-image {
+            width: 100%;
+            border-radius: 22px;
+        }
+
+        .pay-guide {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 25px;
+        }
+
+        .guide-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .08);
+            padding: 16px 18px;
+            border-radius: 18px;
+            transition: .3s;
+        }
+
+        .guide-item:hover {
+            transform: translateX(6px);
+            background: rgba(255, 255, 255, .07);
+        }
+
+        .guide-item span {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .payment-info {
+            margin-top: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+            color: rgba(255, 255, 255, .75);
+        }
+
+        .info-row strong {
+            color: white;
+        }
+
+        .cod-box {
+            width: 130px;
+            height: 130px;
+            margin: 35px auto;
+            border-radius: 35px;
+            background: rgba(56, 189, 248, .12);
+            border: 1px solid rgba(56, 189, 248, .2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 58px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .cod-text {
+            text-align: center;
+            color: rgba(255, 255, 255, .7);
+            line-height: 1.8;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* RIGHT */
+        .payment-right {
+            padding: 35px;
+            height: fit-content;
+        }
+
+        .summary-title {
+            font-size: 28px;
+            margin-bottom: 28px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 22px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .product-item img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        .product-info h4 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .product-info p {
+            color: var(--text);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .price {
+            color: #7dd3fc;
+            font-weight: bold;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, .75);
+        }
+
+        .summary-total {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, .08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-total h2 {
+            font-size: 18px;
+        }
+
+        .summary-total span {
+            font-size: 32px;
+            font-weight: 900;
+            color: #7dd3fc;
+        }
+
+        /* BUTTONS */
+        .pay-btn {
+            width: 100%;
+            height: 60px;
+            margin-top: 35px;
+            border: none;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .35s;
+        }
+
+        .pay-btn:hover:not(:disabled) {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 18px 35px rgba(56, 189, 248, .4);
+        }
+
+        .pay-btn:disabled {
+            background: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .secure-box {
+            margin-top: 24px;
+            text-align: center;
+            color: rgba(255, 255, 255, .55);
+            font-size: 14px;
+        }
+
+        /* SANDBOX MOCK STYLES */
+        .sandbox-btn {
+            display: block;
+            margin: 15px auto;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px dashed #38bdf8;
+            color: #38bdf8;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .sandbox-btn:hover {
+            background: #38bdf8;
+            color: white;
+        }
+
+        .success-msg {
+            display: none;
+            text-align: center;
+            color: #4ade80;
+            /* Màu xanh lá */
+            font-weight: bold;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        /* ================================= */
+        /* BANK DROPDOWN */
+        /* ================================= */
+
+        .bank-dropdown-wrapper {
+            position: relative;
+        }
+
+        .bank-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, .95);
+            border: 1px solid rgba(56, 189, 248, .2);
+            border-radius: 22px;
+            padding: 10px;
+            backdrop-filter: blur(30px);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, .6),
+                0 0 30px rgba(56, 189, 248, .1);
+            animation: dropDown .3s ease;
+        }
+
+        .bank-dropdown.show {
+            display: block;
+        }
+
+        @keyframes dropDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bank-drop-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: .3s;
+            color: rgba(255, 255, 255, .75);
+        }
+
+        .bank-drop-item:hover {
+            background: rgba(255, 255, 255, .08);
+            color: white;
+        }
+
+        .bank-drop-item.active {
+            background: rgba(56, 189, 248, .15);
+            border: 1px solid rgba(56, 189, 248, .25);
+            color: white;
+        }
+
+        .bank-drop-item p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .5);
+            margin-top: 3px;
+        }
+
+        .bank-drop-item.active p {
+            color: rgba(125, 211, 252, .7);
+        }
+
+        .drop-icon {
+            font-size: 24px;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .06);
+            flex-shrink: 0;
+        }
+
+        /* BANK SUB CONTENT */
+        .bank-method-content {
+            display: none;
+            animation: fadeIn .4s ease;
+        }
+
+        .bank-method-content.active {
+            display: block;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 52px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(255, 255, 255, .05);
+            padding: 0 18px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: .3s;
+        }
+
+        .input-field:focus {
+            border-color: #38bdf8;
+            background: rgba(255, 255, 255, .08);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, .12);
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, .42);
+        }
+
+        @media(max-width:950px) {
+            .payment-box {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-left,
+            .payment-right {
+                padding: 28px;
+            }
+
+            .title {
+                font-size: 34px;
+            }
+        }
+
+        /* ========================= */
+        /* HEADER */
+        /* ========================= */
+
+        .cart-header {
+            width: 100%;
+            padding: 30px 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 34px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #fff, #7dd3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .step.active {
+            color: white;
+        }
+
+        .step-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        }
+
+        @media(max-width:1000px) {
+            .cart-header {
+                padding: 25px 20px;
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <!-- HEADER -->
+    <div class="cart-header">
+        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+            HYPER CORE
+        </div>
+        <div class="progress">
+            <div class="step active">
+                <div class="step-circle">1</div>
+                <span>Giỏ hàng</span>
+            </div>
+            <div class="step active">
+                <div class="step-circle">2</div>
+                <span>Địa chỉ</span>
+            </div>
+            <div class="step active">
+                <div class="step-circle">3</div>
+                <span>Thanh toán</span>
+            </div>
+            <div class="step">
+                <div class="step-circle">4</div>
+                <span>Hoàn tất</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-wrapper">
+        <div class="payment-box">
+
+            <div class="glass-card payment-left">
+                <h1 class="title">Thanh Toán Đơn Hàng</h1>
+                <p class="subtitle">Chọn phương thức thanh toán phù hợp để hoàn tất đơn hàng của bạn tại HYPER CORE.</p>
+
+                <div class="method-grid">
+                    <div class="method-card">
+                        <input type="radio" name="payment" id="momo" checked />
+                        <label for="momo" class="method-label">
+                            <div class="method-left">
+                                <div class="method-icon">💜</div>
+                                <div class="method-info">
+                                    <h3>Ví Điện Tử MoMo</h3>
+                                    <p>Thanh toán nhanh chóng bằng QR hoặc số điện thoại</p>
+                                </div>
+                            </div>
+                            <div class="radio-circle"></div>
+                        </label>
+                    </div>
+
+                    <div class="method-card bank-dropdown-wrapper">
+                        <input type="radio" name="payment" id="bank" />
+                        <label for="bank" class="method-label" id="bankToggle">
+                            <div class="method-left">
+                                <div class="method-icon">🏦</div>
+                                <div class="method-info">
+                                    <h3>Chuyển Khoản Ngân Hàng</h3>
+                                    <p>Hỗ trợ Vietcombank, MB Bank, BIDV...</p>
+                                </div>
+                            </div>
+                            <div class="radio-circle"></div>
+                        </label>
+
+                        <!-- DROPDOWN 3 OPTION -->
+                        <div class="bank-dropdown" id="bankDropdown">
+                            <div class="bank-drop-item active" data-method="qrpay">
+                                <span class="drop-icon">📱</span>
+                                <div>
+                                    <strong>QR PAY</strong>
+                                    <p>Quét mã QR để thanh toán</p>
+                                </div>
+                            </div>
+                            <div class="bank-drop-item" data-method="visa">
+                                <span class="drop-icon">💳</span>
+                                <div>
+                                    <strong>VISA / MASTER CARD</strong>
+                                    <p>Thẻ tín dụng quốc tế</p>
+                                </div>
+                            </div>
+                            <div class="bank-drop-item" data-method="atm">
+                                <span class="drop-icon">🏦</span>
+                                <div>
+                                    <strong>ATM NỘI ĐỊA</strong>
+                                    <p>Thẻ ATM / Internet Banking</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="method-card">
+                        <input type="radio" name="payment" id="cod" />
+                        <label for="cod" class="method-label">
+                            <div class="method-left">
+                                <div class="method-icon">🚚</div>
+                                <div class="method-info">
+                                    <h3>Thanh Toán Khi Nhận Hàng</h3>
+                                    <p>Thanh toán trực tiếp bằng tiền mặt khi giao hàng</p>
+                                </div>
+                            </div>
+                            <div class="radio-circle"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="payment-detail">
+
+                    <div class="pay-content active" id="momoContent">
+                        <h3 class="detail-title">Thanh Toán Qua MoMo</h3>
+                        <div class="qr-box">
+                            <img id="momo-qr-img" src="" class="qr-image" />
+                        </div>
+
+                        <button class="sandbox-btn" id="momoMockBtn">Giả lập: Đã quét mã & thanh toán</button>
+                        <div class="success-msg" id="momoSuccess">✅ Thanh toán thành công! Bạn có thể xác nhận đơn.
+                        </div>
+
+                        <div class="payment-info">
+                            <div class="info-row">
+                                <span>Ví MoMo:</span>
+                                <strong>0909 999 999</strong>
+                            </div>
+                            <div class="info-row">
+                                <span>Tên người nhận:</span>
+                                <strong>HYPER CORE</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pay-content" id="bankContent">
+                        <h3 class="detail-title" id="bankSubTitle">📱 QR PAY - Chuyển Khoản Ngân Hàng</h3>
+
+                        <!-- QR PAY -->
+                        <div class="bank-method-content active" id="qrpayContent">
+                            <div class="payment-info" style="text-align: center; padding: 30px 10px;">
+                                <div style="font-size: 40px; margin-bottom: 15px;">⏱️</div>
+                                <h4 style="margin-bottom: 10px;">Chuyển hướng đến Cổng Thanh Toán</h4>
+                                <p style="color: rgba(255,255,255,.6); font-size: 14px;">
+                                    Bạn sẽ được chuyển sang trang quét mã QR an toàn để hoàn tất giao dịch.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- VISA -->
+                        <div class="bank-method-content" id="visaContent">
+                            <div class="payment-info">
+                                <div class="info-row">
+                                    <span>Loại thẻ:</span>
+                                    <strong>Visa / MasterCard</strong>
+                                </div>
+                            </div>
+                            <div style="margin-top:25px;">
+                                <input type="text" class="input-field" placeholder="Số thẻ" />
+                                <div style="height:15px;"></div>
+                                <input type="text" class="input-field" placeholder="Tên chủ thẻ" />
+                                <div style="height:15px;"></div>
+                                <div style="display:flex; gap:15px;">
+                                    <input type="text" class="input-field" placeholder="MM/YY" />
+                                    <input type="password" class="input-field" placeholder="CVV" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ATM -->
+                        <div class="bank-method-content" id="atmContent">
+                            <div class="payment-info">
+                                <div class="info-row">
+                                    <span>Cổng thanh toán:</span>
+                                    <strong>NAPAS ATM</strong>
+                                </div>
+                            </div>
+                            <div style="margin-top:25px;">
+                                <input type="text" class="input-field" placeholder="Số thẻ ATM nội địa" />
+                                <div style="height:15px;"></div>
+                                <input type="text" class="input-field" placeholder="Tên chủ thẻ" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="pay-content" id="codContent">
+                        <h3 class="detail-title">Thanh Toán Khi Nhận Hàng</h3>
+                        <div class="cod-box">🚚</div>
+                        <p class="cod-text">
+                            Bạn sẽ thanh toán trực tiếp cho nhân viên giao hàng khi đơn hàng được giao thành công.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="glass-card payment-right">
+                <h2 class="summary-title">Đơn Hàng Của Bạn</h2>
+
+                <div id="dynamic-product-list">
+                    <!-- Products will be injected here -->
+                </div>
+
+                <div class="summary-row">
+                    <span>Tạm tính</span>
+                    <span id="summary-subtotal"></span>
+                </div>
+                <div class="summary-row">
+                    <span>Phí vận chuyển</span>
+                    <span id="summary-shipping"></span>
+                </div>
+                <div class="summary-row">
+                    <span>Giảm giá</span>
+                    <span style="color:#38bdf8;" id="summary-discount"></span>
+                </div>
+
+                <div class="summary-total">
+                    <h2>Tổng thanh toán</h2>
+                    <span id="display-total"></span>
+                </div>
+
+                <button class="pay-btn" id="confirmPayBtn" disabled>
+                    XÁC NHẬN THANH TOÁN
+                </button>
+
+                <div class="secure-box">
+                    🔒 Thanh toán được mã hóa và bảo mật tuyệt đối
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. CẤU HÌNH DỮ LIỆU ĐỘNG TỪ LOCAL STORAGE
+        // ==========================================
+        const formatCurrency = (amount) => {
+            return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        }
+
+        let cartData = JSON.parse(localStorage.getItem("hypercore_cart"));
+        if (!cartData) {
+            cartData = {
+                items: [
+                    { img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1200&auto=format&fit=crop", title: "RTX Gaming PC", variant: "Intel Ultra + RTX 5090", price: 59990000, qty: 1 },
+                    { img: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?q=80&w=1200&auto=format&fit=crop", title: "Mechanical Keyboard", variant: "RGB Hot Swap Edition", price: 2490000, qty: 1 }
+                ],
+                subtotal: 62480000,
+                shipping: 50000,
+                discount: 1000000,
+                total: 61530000
+            };
+            // THÊM DÒNG NÀY ĐỂ LƯU VÀO TRÌNH DUYỆT
+            localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
+        }
+
+        const totalAmount = cartData.total;
+
+        // Render order summary dynamically
+        const productList = document.getElementById("dynamic-product-list");
+        cartData.items.forEach(item => {
+            productList.innerHTML += `
+                <div class="product-item">
+                    <img src="${item.img}" alt="${item.title}" />
+                    <div class="product-info">
+                        <h4>${item.title} (x${item.qty})</h4>
+                        <p>${item.variant}</p>
+                        <div class="price">${formatCurrency(item.price)}</div>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById("summary-subtotal").innerText = formatCurrency(cartData.subtotal);
+        document.getElementById("summary-shipping").innerText = formatCurrency(cartData.shipping);
+        document.getElementById("summary-discount").innerText = "-" + formatCurrency(cartData.discount);
+        document.getElementById("display-total").innerText = formatCurrency(totalAmount);
+
+        // Sinh link QR giả lập cho Demo (không dùng VietQR để tránh quét ra tài khoản thật)
+        const safeAmount = formatCurrency(totalAmount).replace('đ', ' VND');
+
+        // Format QR gốc của MoMo (2|99|SĐT|Tên||0|0|Số_tiền)
+        // Khi quét bằng app MoMo, nó sẽ nhận diện được số tiền, nhưng có thể báo lỗi do SĐT 0909999999 không có thật.
+        const momoQRText = `2|99|0909999999|HYPER CORE||0|0|${totalAmount}`;
+        const momoQRUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(momoQRText)}`;
+        document.getElementById("momo-qr-img").src = momoQRUrl;
+
+        // ==========================================
+        // 2. XỬ LÝ GIAO DIỆN CHỌN PHƯƠNG THỨC
+        // ==========================================
+        const momo = document.getElementById("momo");
+        const bank = document.getElementById("bank");
+        const cod = document.getElementById("cod");
+
+        const momoContent = document.getElementById("momoContent");
+        const bankContent = document.getElementById("bankContent");
+        const codContent = document.getElementById("codContent");
+
+        const confirmPayBtn = document.getElementById("confirmPayBtn");
+
+        // Biến lưu trạng thái xem user đã thanh toán thành công trong Sandbox chưa
+        let isMomoPaid = false;
+        let isBankPaid = false;
+
+        function checkButtonState() {
+            if (cod.checked) {
+                // COD thì mở nút luôn, không cần quét
+                confirmPayBtn.disabled = false;
+                confirmPayBtn.innerText = "XÁC NHẬN ĐẶT HÀNG";
+            } else if (momo.checked) {
+                // Mở nút nếu biến isMomoPaid = true
+                confirmPayBtn.disabled = !isMomoPaid;
+                confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+            } else if (bank.checked) {
+                // Mở nút luôn vì cổng thanh toán QR nằm ở trang khác
+                confirmPayBtn.disabled = false;
+                confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+            }
+        }
+
+        function hideAll() {
+            momoContent.classList.remove("active");
+            bankContent.classList.remove("active");
+            codContent.classList.remove("active");
+        }
+
+        momo.addEventListener("change", () => {
+            hideAll();
+            momoContent.classList.add("active");
+            bankDropdown.classList.remove("show"); // đóng dropdown nếu đang mở
+            checkButtonState();
+        });
+
+
+        cod.addEventListener("change", () => {
+            hideAll();
+            codContent.classList.add("active");
+            bankDropdown.classList.remove("show"); // đóng dropdown nếu đang mở
+            checkButtonState();
+        });
+
+        // ==========================================
+        // 3. XỬ LÝ SANDBOX GIẢ LẬP THANH TOÁN
+        // ==========================================
+        document.getElementById("momoMockBtn").addEventListener("click", function () {
+            this.style.display = 'none';
+            document.getElementById("momoSuccess").style.display = 'block';
+            isMomoPaid = true;
+            checkButtonState();
+        });
+
+        // ==========================================
+        // 4. CHUYỂN TRANG
+        // ==========================================
+        confirmPayBtn.addEventListener("click", () => {
+            const selectedMethod = document.querySelector('input[name="payment"]:checked').id;
+
+            if (selectedMethod === "bank") {
+                // Lấy sub-method đang active (qrpay, visa, atm)
+                const activeBankMethod = document.querySelector(".bank-drop-item.active").dataset.method;
+
+                if (activeBankMethod === "qrpay") {
+                    createVietQRPayment();
+                } else {
+                    // Xử lý cho Visa / ATM nội địa nếu có
+                    window.location.href = `paymentcomplete.html?method=${activeBankMethod}`;
+                }
+            } else {
+                // Xử lý cho MoMo hoặc COD
+                window.location.href = `paymentcomplete.html?method=${selectedMethod}`;
+            }
+        });
+
+        // ==========================================
+        // BANK DROPDOWN TOGGLE + SUB-OPTION
+        // ==========================================
+        const bankDropdown = document.getElementById("bankDropdown");
+        const bankToggle = document.getElementById("bankToggle");
+        const bankDropItems = document.querySelectorAll(".bank-drop-item");
+        const bankSubContents = document.querySelectorAll(".bank-method-content");
+        const bankSubTitle = document.getElementById("bankSubTitle");
+
+        const titleMap = {
+            qrpay: "📱 QR PAY - Chuyển Khoản Ngân Hàng",
+            visa: "💳 VISA / MASTER CARD",
+            atm: "🏦 ATM NỘI ĐỊA"
+        };
+
+        // Khi click vào label "Chuyển Khoản Ngân Hàng" → toggle dropdown
+        bankToggle.addEventListener("click", (e) => {
+            // Chỉ toggle dropdown khi bank đã được chọn
+            if (bank.checked) {
+                e.preventDefault();
+                bankDropdown.classList.toggle("show");
+            }
+        });
+
+        // Khi bank radio được chọn lần đầu → mở dropdown
+        bank.addEventListener("change", () => {
+            hideAll();
+            bankContent.classList.add("active");
+            bankDropdown.classList.add("show");
+            checkButtonState();
+        });
+
+        // Khi click vào 1 trong 3 sub-option
+        bankDropItems.forEach(item => {
+            item.addEventListener("click", () => {
+                // Highlight active item
+                bankDropItems.forEach(i => i.classList.remove("active"));
+                item.classList.add("active");
+
+                // Switch sub-content
+                bankSubContents.forEach(c => c.classList.remove("active"));
+                const method = item.dataset.method;
+                document.getElementById(method + "Content").classList.add("active");
+
+                // Update title
+                bankSubTitle.innerText = titleMap[method] || "Chuyển Khoản Ngân Hàng";
+
+                // Close dropdown
+                bankDropdown.classList.remove("show");
+            });
+        });
+
+        // Click bên ngoài → đóng dropdown
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".bank-dropdown-wrapper")) {
+                bankDropdown.classList.remove("show");
+            }
+        });
+
+        // Chạy lần đầu khi load trang
+        checkButtonState();
+
+        // ==========================================
+        // VIETQR PAYMENT API
+        // ==========================================
+        async function createVietQRPayment() {
+            try {
+                // 1. Khóa nút và đổi text để báo hiệu đang xử lý
+                confirmPayBtn.innerText = "ĐANG TẠO ĐƠN HÀNG...";
+                confirmPayBtn.disabled = true;
+
+                // 2. Chuẩn bị dữ liệu đơn hàng
+                const orderPayload = {
+                    orderId: "HC" + Date.now(),
+                    amount: totalAmount,
+                    items: cartData.items, // Gửi danh sách sản phẩm
+                    description: "Thanh toan don hang HYPER CORE"
+                };
+
+                // 3. Gọi API Backend của bạn (Thay URL bằng endpoint thật của bạn)
+                const response = await fetch("https://api.yourdomain.com/v1/payments/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(orderPayload)
+                });
+
+                const data = await response.json();
+
+                // 4. Kiểm tra URL thanh toán trả về từ Backend
+                if (response.ok && data.checkoutUrl) {
+                    // REDIRECT NGƯỜI DÙNG SANG TRANG THANH TOÁN THẬT
+                    window.location.href = data.checkoutUrl;
+                } else {
+                    alert("Lỗi tạo thanh toán: " + (data.message || "Không xác định"));
+                    confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+                    confirmPayBtn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Lỗi kết nối:", error);
+                alert("Không thể kết nối đến máy chủ. Vui lòng thử lại!");
+                confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+                confirmPayBtn.disabled = false;
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>

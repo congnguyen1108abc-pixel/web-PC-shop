@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Thanh Toán Thành Công - HYPER CORE</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        :root {
+            --blue: #38bdf8;
+            --blue2: #0ea5e9;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow: hidden;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                radial-gradient(circle at top left,
+                    rgba(56, 189, 248, .18),
+                    transparent 25%),
+
+                radial-gradient(circle at bottom right,
+                    rgba(14, 165, 233, .18),
+                    transparent 25%),
+
+                linear-gradient(180deg,
+                    #08101b 0%,
+                    #040b14 55%,
+                    #01050b 100%);
+
+            color: white;
+        }
+
+        /* ORBS */
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .25;
+            z-index: -1;
+            animation: float 7s ease-in-out infinite;
+        }
+
+        .orb1 {
+            width: 420px;
+            height: 420px;
+            background: #38bdf8;
+            top: -140px;
+            left: -120px;
+        }
+
+        .orb2 {
+            width: 350px;
+            height: 350px;
+            background: #0ea5e9;
+            bottom: -120px;
+            right: -120px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-25px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* CARD */
+
+        .success-card {
+            width: 95%;
+            max-width: 520px;
+
+            padding: 60px 45px;
+
+            border-radius: 36px;
+
+            background: rgba(15, 23, 42, .72);
+
+            backdrop-filter: blur(28px);
+
+            border: 1px solid rgba(255, 255, 255, .1);
+
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, .45),
+                inset 0 1px 1px rgba(255, 255, 255, .05);
+
+            text-align: center;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 260px;
+            height: 260px;
+
+            background: rgba(56, 189, 248, .14);
+
+            border-radius: 50%;
+
+            filter: blur(90px);
+
+            top: -120px;
+            right: -120px;
+        }
+
+        /* ICON */
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+
+            margin: auto auto 30px;
+
+            border-radius: 50%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                linear-gradient(135deg,
+                    rgba(56, 189, 248, .2),
+                    rgba(14, 165, 233, .15));
+
+            border: 2px solid rgba(56, 189, 248, .3);
+
+            font-size: 58px;
+
+            animation: pop .6s ease;
+        }
+
+        @keyframes pop {
+
+            0% {
+                transform: scale(.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* TEXT */
+
+        .success-title {
+            font-size: 42px;
+            font-weight: 900;
+
+            margin-bottom: 16px;
+
+            background:
+                linear-gradient(90deg,
+                    #fff,
+                    #7dd3fc);
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .success-desc {
+            color: rgba(255, 255, 255, .68);
+
+            line-height: 1.8;
+
+            font-size: 16px;
+
+            margin-bottom: 35px;
+        }
+
+        .order-box {
+            padding: 22px;
+            border-radius: 24px;
+
+            background: rgba(255, 255, 255, .04);
+
+            border: 1px solid rgba(255, 255, 255, .08);
+
+            margin-bottom: 35px;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+
+            color: rgba(255, 255, 255, .72);
+        }
+
+        .order-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .order-value {
+            color: #7dd3fc;
+            font-weight: 700;
+        }
+
+        /* BUTTON */
+
+        .home-btn {
+            width: 100%;
+            height: 62px;
+
+            border: none;
+            border-radius: 22px;
+
+            background:
+                linear-gradient(135deg,
+                    #38bdf8,
+                    #0ea5e9);
+
+            color: white;
+
+            font-size: 17px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: .35s;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+
+            box-shadow:
+                0 18px 35px rgba(56, 189, 248, .4);
+        }
+
+        .secure-text {
+            margin-top: 20px;
+
+            color: rgba(255, 255, 255, .45);
+
+            font-size: 14px;
+        }
+
+        @media(max-width:600px) {
+
+            .success-card {
+                padding: 45px 25px;
+            }
+
+            .success-title {
+                font-size: 32px;
+            }
+
+            .success-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 48px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h1 class="success-title">
+            Thanh Toán Thành Công
+        </h1>
+
+        <p class="success-desc">
+            Cảm ơn bạn đã mua hàng tại HYPER CORE.
+            Đơn hàng của bạn đã được xác nhận và đang được xử lý.
+        </p>
+
+        <div class="order-box">
+
+            <div class="order-row">
+                <span>Mã đơn hàng</span>
+                <span class="order-value">#HC2026</span>
+            </div>
+
+            <div class="order-row">
+                <span>Phương thức</span>
+                <span class="order-value" id="methodValue">MoMo QR Pay</span>
+            </div>
+
+            <div class="order-row">
+                <span>Tổng thanh toán</span>
+                <span class="order-value">61.530.000đ</span>
+            </div>
+
+        </div>
+
+        <button class="home-btn" onclick="goHome()">
+
+            QUAY VỀ TRANG CHỦ
+
+        </button>
+
+        <div class="secure-text">
+            🔒 Giao dịch đã được mã hóa bảo mật
+        </div>
+
+    </div>
+
+    <script>
+
+        function goHome() {
+            window.location.href = "/Homepage";
+        }
+
+        // Lấy query param 'method' và hiển thị tương ứng
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            const method = params.get('method') || '';
+            const map = {
+                momo: 'MoMo QR Pay',
+                bank: 'Chuyển khoản ngân hàng',
+                cod: 'Thanh toán khi nhận hàng',
+                qrpay: 'Cổng Thanh Toán (VietQR)'
+            };
+            const text = map[method] || (method ? decodeURIComponent(method) : '—');
+            const el = document.getElementById('methodValue');
+            if (el) el.textContent = text;
+        })();
+
+        // Ví dụ logic kiểm tra trạng thái từ cổng thanh toán redirect về
+        window.onload = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderCode = urlParams.get('orderCode');
+
+            if (orderCode) {
+                try {
+                    // Cập nhật mã đơn hàng hiển thị
+                    const orderValueEl = document.querySelector('.order-row:nth-child(1) .order-value');
+                    if (orderValueEl) orderValueEl.innerText = "#" + orderCode;
+
+                    // Gọi API backend để check trạng thái thật của đơn hàng
+                    const response = await fetch(`https://api.yourdomain.com/v1/orders/${orderCode}`);
+                    const orderData = await response.json();
+
+                    if (orderData.status === 'SUCCESS') {
+                        // Xóa giỏ hàng local storage vì đã mua xong
+                        localStorage.removeItem("hypercore_cart");
+                        
+                        document.querySelector('.success-title').innerText = "Thanh Toán Thành Công";
+                        document.querySelector('.success-desc').innerText = "Cảm ơn bạn đã mua hàng tại HYPER CORE. Đơn hàng của bạn đã được thanh toán và đang được xử lý.";
+                    } else {
+                        // Hiển thị trạng thái chưa xác nhận
+                        document.querySelector('.success-title').innerText = "Đang Chờ Xác Nhận";
+                        document.querySelector('.success-desc').innerText = "Đơn hàng đang chờ thanh toán hoặc giao dịch chưa hoàn tất.";
+                    }
+                } catch (error) {
+                    console.error("Lỗi kiểm tra đơn hàng:", error);
+                    // Mặc định cho hiển thị trạng thái chờ nếu lỗi API
+                }
+            } else {
+                // Nếu không có orderCode, xóa giỏ hàng mặc định (cho MoMo, COD)
+                localStorage.removeItem("hypercore_cart");
+            }
+        };
+
+    </script>
+
+</body>
+
+</html>
