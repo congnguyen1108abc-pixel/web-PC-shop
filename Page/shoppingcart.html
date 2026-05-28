@@ -514,95 +514,9 @@
         <!-- LEFT -->
 
         <div class="glass-box">
-
-            <!-- ITEM -->
-
-            <div class="cart-item">
-
-                <img src="/images/pc1.jpg">
-
-                <div class="item-info">
-
-                    <h3>RTX Gaming PC</h3>
-
-                    <div class="variant">
-                        Màu: Đen RGB • RTX 5090 • Intel Ultra 9
-                    </div>
-
-                    <div class="quantity-box">
-
-                        <button class="qty-btn minus">-</button>
-
-                        <input type="number" class="qty-input" value="1">
-
-                        <button class="qty-btn plus">+</button>
-
-                    </div>
-
-                    <div class="save-later">
-                        💙 Lưu mua sau
-                    </div>
-
-                </div>
-
-                <div class="price-box">
-
-                    <div class="price item-price" data-price="59990000">
-                        59.990.000đ
-                    </div>
-
-                    <button class="delete-btn">
-                        🗑
-                    </button>
-
-                </div>
-
+            <div id="cartItemsContainer">
+                <!-- Items will be rendered here dynamically -->
             </div>
-
-            <!-- ITEM -->
-
-            <div class="cart-item">
-
-                <img src="/images/headphone.jpg">
-
-                <div class="item-info">
-
-                    <h3>Gaming Headset</h3>
-
-                    <div class="variant">
-                        Màu: White • 7.1 Surround
-                    </div>
-
-                    <div class="quantity-box">
-
-                        <button class="qty-btn minus">-</button>
-
-                        <input type="number" class="qty-input" value="1">
-
-                        <button class="qty-btn plus">+</button>
-
-                    </div>
-
-                    <div class="save-later">
-                        💙 Lưu mua sau
-                    </div>
-
-                </div>
-
-                <div class="price-box">
-
-                    <div class="price item-price" data-price="3290000">
-                        3.290.000đ
-                    </div>
-
-                    <button class="delete-btn">
-                        🗑
-                    </button>
-
-                </div>
-
-            </div>
-
         </div>
 
         <!-- RIGHT -->
@@ -761,175 +675,156 @@
     <!-- SCRIPT -->
 
     <script>
-
-        const minusBtns =
-            document.querySelectorAll(".minus");
-
-        const plusBtns =
-            document.querySelectorAll(".plus");
-
-        const deleteBtns =
-            document.querySelectorAll(".delete-btn");
-
-        const subtotal =
-            document.getElementById("subtotal");
-
-        const total =
-            document.getElementById("total");
-
+        const subtotal = document.getElementById("subtotal");
+        const total = document.getElementById("total");
+        const cartContainer = document.getElementById("cartItemsContainer");
         let deletedItem = null;
+        let deletedItemData = null; // store data for undo
+
+        // Load cart from localStorage
+        let cartItems = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
+
+        function renderCart() {
+            cartContainer.innerHTML = "";
+            if (cartItems.length === 0) {
+                cartContainer.innerHTML = '<div style="text-align:center; padding: 40px; color: rgba(255,255,255,0.5);">Giỏ hàng của bạn đang trống.</div>';
+                updateTotal();
+                return;
+            }
+
+            cartItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <img src="${item.img}">
+                    <div class="item-info">
+                        <h3>${item.title}</h3>
+                        <div class="variant">${item.variant}</div>
+                        <div class="quantity-box">
+                            <button class="qty-btn minus" data-index="${index}">-</button>
+                            <input type="number" class="qty-input" value="${item.qty}" data-index="${index}">
+                            <button class="qty-btn plus" data-index="${index}">+</button>
+                        </div>
+                        <div class="save-later">💙 Lưu mua sau</div>
+                    </div>
+                    <div class="price-box">
+                        <div class="price item-price" data-price="${item.price}">
+                            ${item.price.toLocaleString("vi-VN")}đ
+                        </div>
+                        <button class="delete-btn" data-index="${index}">🗑</button>
+                    </div>
+                `;
+                cartContainer.appendChild(div);
+            });
+
+            bindEvents();
+            updateTotal();
+        }
+
+        function bindEvents() {
+            document.querySelectorAll(".plus").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    let idx = parseInt(e.target.dataset.index);
+                    cartItems[idx].qty += 1;
+                    saveAndRender();
+                });
+            });
+
+            document.querySelectorAll(".minus").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    let idx = parseInt(e.target.dataset.index);
+                    if (cartItems[idx].qty > 1) {
+                        cartItems[idx].qty -= 1;
+                        saveAndRender();
+                    }
+                });
+            });
+
+            document.querySelectorAll(".qty-input").forEach(input => {
+                input.addEventListener("change", (e) => {
+                    let idx = parseInt(e.target.dataset.index);
+                    let val = parseInt(e.target.value);
+                    if (val < 1 || isNaN(val)) val = 1;
+                    cartItems[idx].qty = val;
+                    saveAndRender();
+                });
+            });
+
+            document.querySelectorAll(".delete-btn").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    let idx = parseInt(e.target.dataset.index);
+                    deletedItemData = cartItems[idx];
+                    cartItems.splice(idx, 1);
+                    
+                    document.getElementById("undoBox").style.display = "flex";
+                    
+                    saveAndRender();
+                });
+            });
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('hypercore_cart_items', JSON.stringify(cartItems));
+            renderCart();
+        }
 
         /* ===================== */
         /* UPDATE TOTAL */
         /* ===================== */
-
         function updateTotal() {
-
             let sum = 0;
+            cartItems.forEach(item => {
+                sum += item.qty * item.price;
+            });
 
-            document.querySelectorAll(".cart-item")
-                .forEach(item => {
-
-                    const qty =
-                        parseInt(item.querySelector(".qty-input").value);
-
-                    const price =
-                        parseInt(item.querySelector(".item-price")
-                            .dataset.price);
-
-                    sum += qty * price;
-
-                });
-
-            subtotal.innerText =
-                sum.toLocaleString("vi-VN") + "đ";
-
-            total.innerText =
-                (sum - 1000000 + 40000)
-                    .toLocaleString("vi-VN") + "đ";
+            subtotal.innerText = sum.toLocaleString("vi-VN") + "đ";
+            let discountAmount = sum > 0 ? 1000000 : 0;
+            let shippingFee = sum > 0 ? 40000 : 0;
+            
+            let finalTotal = sum - discountAmount + shippingFee;
+            if (finalTotal < 0) finalTotal = 0;
+            
+            total.innerText = finalTotal.toLocaleString("vi-VN") + "đ";
         }
-
-        /* ===================== */
-        /* QUANTITY */
-        /* ===================== */
-
-        plusBtns.forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                const input =
-                    btn.parentElement.querySelector(".qty-input");
-
-                input.value++;
-
-                updateTotal();
-
-            });
-
-        });
-
-        minusBtns.forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                const input =
-                    btn.parentElement.querySelector(".qty-input");
-
-                if (input.value > 1) {
-
-                    input.value--;
-
-                    updateTotal();
-                }
-
-            });
-
-        });
-
-        document.querySelectorAll(".qty-input")
-            .forEach(input => {
-
-                input.addEventListener("input", () => {
-
-                    if (input.value < 1) {
-                        input.value = 1;
-                    }
-
-                    updateTotal();
-
-                });
-
-            });
-
-        /* ===================== */
-        /* DELETE + UNDO */
-        /* ===================== */
-
-        deleteBtns.forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                deletedItem =
-                    btn.closest(".cart-item");
-
-                deletedItem.remove();
-
-                document
-                    .getElementById("undoBox")
-                    .style.display = "flex";
-
-                updateTotal();
-
-            });
-
-        });
 
         document
             .getElementById("undoBtn")
             .addEventListener("click", () => {
-
-                if (deletedItem) {
-
-                    document
-                        .querySelector(".glass-box")
-                        .appendChild(deletedItem);
-
-                    deletedItem = null;
-
-                    document
-                        .getElementById("undoBox")
-                        .style.display = "none";
-
-                    updateTotal();
+                if (deletedItemData) {
+                    cartItems.push(deletedItemData);
+                    deletedItemData = null;
+                    document.getElementById("undoBox").style.display = "none";
+                    saveAndRender();
                 }
-
             });
 
         // Redirect to filladdress page on clicking Checkout
         const checkoutBtn = document.querySelector(".checkout-btn");
         if (checkoutBtn) {
             checkoutBtn.addEventListener("click", () => {
+                if(cartItems.length === 0) {
+                    alert("Giỏ hàng đang trống!");
+                    return;
+                }
+                
+                let sum = 0;
+                cartItems.forEach(item => { sum += item.qty * item.price; });
+                
                 let cartData = {
-                    items: [],
-                    subtotal: parseInt(subtotal.innerText.replace(/\D/g, '')),
-                    shipping: 40000, // Hardcoded for demo, could be dynamic
+                    items: cartItems,
+                    subtotal: sum,
+                    shipping: 40000, 
                     discount: 1000000,
-                    total: parseInt(total.innerText.replace(/\D/g, ''))
+                    total: sum - 1000000 + 40000
                 };
-
-                document.querySelectorAll(".cart-item").forEach(item => {
-                    const img = item.querySelector("img").src;
-                    const title = item.querySelector("h3").innerText;
-                    const variant = item.querySelector(".variant").innerText;
-                    const price = parseInt(item.querySelector(".item-price").dataset.price);
-                    const qty = parseInt(item.querySelector(".qty-input").value);
-                    cartData.items.push({ img, title, variant, price, qty });
-                });
 
                 localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
                 window.location.href = "/filladdress";
             });
         }
+        
+        // Initial Render
+        renderCart();
 
     </script>
 

@@ -10,6 +10,9 @@
 
     <!-- POPUP SYSTEM CSS -->
     <link rel="stylesheet" href="/assets/popup/popup.css">
+    
+    <!-- 3D MODEL VIEWER -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
 
     <style>
@@ -479,29 +482,20 @@
             animation: float 6s ease-in-out infinite;
         }
 
-        .ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid rgba(125, 211, 252, .18);
-        }
 
-        .ring1 {
-            width: 520px;
-            height: 520px;
-            animation: rotate 20s linear infinite;
+        .banner-model {
+            width: 800px;
+            height: 800px;
+            position: relative;
+            z-index: 5;
+            filter: drop-shadow(0 20px 50px rgba(0, 0, 0, .5));
+            animation: floatModel 8s ease-in-out infinite;
         }
-
-        .ring2 {
-            width: 400px;
-            height: 400px;
-            animation: rotateReverse 14s linear infinite;
-        }
-
-        .ring3 {
-            width: 280px;
-            height: 280px;
-            background: rgba(255, 255, 255, .05);
-            backdrop-filter: blur(20px);
+        
+        @keyframes floatModel {
+            0% { transform: translateY(0) rotateX(0) rotateY(0); }
+            50% { transform: translateY(-15px) rotateX(2deg) rotateY(-2deg); }
+            100% { transform: translateY(0) rotateX(0) rotateY(0); }
         }
 
         .banner-image {
@@ -802,20 +796,6 @@
                 height: 350px;
             }
 
-            .ring1 {
-                width: 350px;
-                height: 350px;
-            }
-
-            .ring2 {
-                width: 260px;
-                height: 260px;
-            }
-
-            .ring3 {
-                width: 180px;
-                height: 180px;
-            }
 
             .banner-image {
                 width: 240px;
@@ -1881,6 +1861,7 @@
     <!-- HERO -->
 
     <section class="hero page-section">
+        <div id="vanta-bg" style="position: absolute; inset: 0; z-index: -1;"></div>
 
         <div class="hero-left">
 
@@ -1917,11 +1898,22 @@
 
             <div class="banner-3d reveal">
 
-                <div class="ring ring1"></div>
-                <div class="ring ring2"></div>
-                <div class="ring ring3"></div>
 
-                <img src="/images/banner-pc.png" class="banner-image" alt="Banner PC" />
+                <model-viewer
+                    src="/assets/models/PC_homepage3.glb"
+                    class="banner-model"
+                    alt="PC 3D Model"
+                    autoplay
+                    auto-rotate
+                    auto-rotate-delay="0"
+                    rotation-per-second="-10deg"
+                    camera-controls
+                    disable-zoom
+                    interaction-prompt="none"
+                    tone-mapping="neutral"
+                    shadow-intensity="1.5"
+                    camera-orbit="0deg 75deg auto">
+                </model-viewer>
 
             </div>
 
@@ -2513,6 +2505,27 @@
     <!-- DYNAMIC POPUP CONTAINER -->
     <div id="login-popup-container"></div>
     <div id="register-popup-container"></div>
+
+    <!-- VANTA.NET SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script>
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: false,
+            touchControls: false,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x38bdf8,
+            backgroundColor: 0x050810,
+            points: 12.00,
+            maxDistance: 22.00,
+            spacing: 18.00
+        })
+    </script>
 
     <script src="/assets/popup/popup.js"></script>
 

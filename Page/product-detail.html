@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>HYPER CORE - Chi Tiết Sản Phẩm</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --blue:#38bdf8;--blue-light:#7dd3fc;--blue-dark:#0ea5e9;
+      --glass:rgba(255,255,255,.06);--glass-border:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.65);--cyan:#00d9ff;
+    }
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:'Segoe UI',Arial,sans-serif;color:#fff;
+      background:radial-gradient(circle at top left,rgba(56,189,248,.18),transparent 25%),
+        radial-gradient(circle at bottom right,rgba(14,165,233,.12),transparent 25%),
+        linear-gradient(180deg,#08101b 0%,#040b14 55%,#01050b 100%);
+      min-height:100vh;overflow-x:hidden;
+    }
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:#040b14;}
+    ::-webkit-scrollbar-thumb{background:rgba(56,189,248,.25);border-radius:99px;}
+
+    /* HEADER */
+    header{
+      position:fixed;top:20px;left:50%;transform:translateX(-50%);
+      width:calc(100% - 80px);height:78px;padding:0 35px;
+      display:flex;justify-content:space-between;align-items:center;
+      z-index:999;border-radius:28px;transition:.4s ease;
+    }
+    header.scrolled{background:rgba(255,255,255,.08);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 8px 40px rgba(0,0,0,.35);}
+    .logo{font-size:30px;font-weight:800;letter-spacing:4px;background:linear-gradient(90deg,#fff,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+    nav{display:flex;gap:30px;align-items:center;}
+    nav a{text-decoration:none;color:rgba(255,255,255,.78);font-size:15px;position:relative;transition:.3s;}
+    nav a:hover{color:#fff;}
+    nav a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;border-radius:10px;background:var(--blue-light);transition:.3s;}
+    nav a:hover::after,nav a.active::after{width:100%;}
+    nav a.active{color:var(--blue-light);}
+    .nav-actions{display:flex;align-items:center;gap:12px;}
+    .cart-btn{position:relative;width:48px;height:48px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:18px;transition:.35s;display:flex;align-items:center;justify-content:center;}
+    .cart-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.12);}
+    .login-glass-btn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);backdrop-filter:blur(22px);color:#fff;font-size:14px;font-weight:600;cursor:pointer;overflow:hidden;transition:.35s;}
+    .login-glass-btn:hover{background:linear-gradient(135deg,rgba(56,189,248,.95),rgba(14,165,233,.95));transform:translateY(-2px);}
+    .register-glass-btn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:16px;border:1px solid rgba(125,211,252,.3);background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(14,165,233,.2));color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:.35s;}
+    .register-glass-btn:hover{background:linear-gradient(135deg,rgba(56,189,248,.4),rgba(14,165,233,.4));transform:translateY(-2px);}
+
+    /* BREADCRUMB */
+    .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);flex-wrap:wrap;}
+    .breadcrumb a{color:var(--text);text-decoration:none;transition:.2s;}
+    .breadcrumb a:hover{color:var(--blue-light);}
+    .breadcrumb span{color:rgba(255,255,255,.3);}
+    .breadcrumb .current{color:var(--blue-light);}
+
+    /* MAIN LAYOUT */
+    .detail-wrapper{
+      max-width:1400px;margin:0 auto;
+      padding:110px 50px 80px;
+      display:flex;gap:50px;align-items:flex-start;
+    }
+
+    /* LEFT COLUMN — vertical flex stack */
+    .col-left{
+      flex:1;min-width:0;
+      position:sticky;top:110px;
+      display:flex;flex-direction:column;gap:16px;
+    }
+
+    /* MAIN MEDIA FRAME (3D or image) */
+    .media-frame{
+      position:relative;
+      border-radius:28px;
+      overflow:hidden;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--glass-border);
+      width:100%;
+      min-height:60vh;
+      display:flex;align-items:center;justify-content:center;
+    }
+    /* model-viewer fills the frame */
+    .media-frame model-viewer{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      border-radius:28px;
+      background:transparent;
+    }
+    /* main img fills the frame, hidden by default */
+    .media-frame img#mainImg{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      object-fit:contain;
+      transition:.4s ease;
+      display:none;
+    }
+    /* show img when gallery mode */
+    .media-frame.gallery-mode model-viewer{ display:none; }
+    .media-frame.gallery-mode img#mainImg{ display:block; }
+    .img-badge{
+      position:absolute;top:18px;left:18px;padding:6px 14px;z-index:10;
+      border-radius:99px;background:rgba(56,189,248,.2);border:1px solid rgba(56,189,248,.35);
+      color:var(--blue-light);font-size:12px;font-weight:700;letter-spacing:1px;
+    }
+    /* mini view toggle pill inside frame */
+    .view-pill{
+      position:absolute;top:18px;right:18px;z-index:20;
+      display:flex;gap:4px;
+      background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);
+      backdrop-filter:blur(16px);border-radius:99px;padding:4px;
+    }
+    .view-pill button{
+      padding:5px 14px;border-radius:99px;border:none;
+      font-size:12px;font-weight:700;cursor:pointer;transition:.25s;
+      background:transparent;color:rgba(255,255,255,.55);
+    }
+    .view-pill button.active{
+      background:rgba(56,189,248,.25);color:var(--blue-light);
+      box-shadow:0 0 10px rgba(56,189,248,.3);
+    }
+    .view-pill button:hover{ color:#fff; }
+
+    /* THUMBNAILS — always below media frame */
+    .thumbnails{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;}
+    .thumbnails::-webkit-scrollbar{height:4px;}
+    .thumbnails::-webkit-scrollbar-thumb{background:rgba(56,189,248,.3);border-radius:99px;}
+    .thumb{
+      flex-shrink:0;width:82px;height:82px;border-radius:14px;overflow:hidden;
+      border:2px solid transparent;cursor:pointer;transition:.3s;background:var(--glass);
+    }
+    .thumb img{width:100%;height:100%;object-fit:cover;}
+    .thumb:hover{border-color:var(--blue);}
+    .thumb.active{border-color:var(--blue-light);box-shadow:0 0 14px rgba(56,189,248,.4);}
+
+    /* RIGHT COLUMN */
+    .col-right{width:480px;flex-shrink:0;display:flex;flex-direction:column;gap:24px;}
+
+    /* PRODUCT TITLE */
+    .product-title{
+      font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;line-height:1.15;
+      background:linear-gradient(90deg,#fff,#7dd3fc);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+
+    /* RATING */
+    .rating-row{display:flex;align-items:center;gap:12px;}
+    .stars{color:#fbbf24;font-size:16px;letter-spacing:2px;}
+    .rating-count{font-size:13px;color:var(--text);}
+    .in-stock{font-size:13px;color:#22d3a0;font-weight:700;}
+
+    /* PRICE */
+    .price-block{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+    .price-current{font-size:2rem;font-weight:800;color:var(--blue-light);text-shadow:0 0 20px rgba(125,211,252,.4);}
+    .price-original{font-size:1.1rem;color:rgba(255,255,255,.35);text-decoration:line-through;}
+    .price-badge{padding:4px 12px;border-radius:99px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:#f87171;font-size:12px;font-weight:700;}
+
+    /* QUICK SPECS */
+    .specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .spec-box{
+      background:var(--glass);border:1px solid var(--glass-border);
+      border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;
+      transition:.3s;
+    }
+    .spec-box:hover{border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.06);}
+    .spec-icon{font-size:22px;width:36px;text-align:center;}
+    .spec-label{font-size:11px;color:var(--text);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+    .spec-value{font-size:14px;font-weight:700;color:#fff;}
+
+    /* VARIANTS */
+    .variant-group{display:flex;flex-direction:column;gap:12px;}
+    .variant-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--blue-light);font-weight:700;}
+    .variant-options{display:flex;gap:10px;flex-wrap:wrap;}
+    .variant-btn{
+      padding:9px 20px;border-radius:12px;border:1px solid var(--glass-border);
+      background:var(--glass);color:var(--text);font-size:14px;font-weight:600;
+      cursor:pointer;transition:.3s;
+    }
+    .variant-btn:hover{border-color:var(--blue);color:#fff;}
+    .variant-btn.active{border-color:var(--blue-light);color:var(--blue-light);background:rgba(56,189,248,.12);box-shadow:0 0 14px rgba(56,189,248,.2);}
+
+    /* COLOR SWATCHES */
+    .color-options{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .color-swatch{
+      width:36px;height:36px;border-radius:50%;cursor:pointer;
+      border:2px solid transparent;transition:.3s;position:relative;
+    }
+    .color-swatch:hover{transform:scale(1.15);}
+    .color-swatch.active{border-color:var(--blue-light);box-shadow:0 0 14px rgba(125,211,252,.5);}
+    .color-swatch.black{background:#1a1a1a;}
+    .color-swatch.white{background:#e5e5e5;}
+    .color-swatch.blue{background:linear-gradient(135deg,#38bdf8,#0ea5e9);}
+    .color-swatch.red{background:linear-gradient(135deg,#f87171,#ef4444);}
+
+    /* DIVIDER */
+    .divider{height:1px;background:var(--glass-border);}
+
+    /* ACTION BUTTONS */
+    .action-btns{display:flex;gap:14px;}
+    .btn-add-cart{
+      flex:1;padding:16px;border-radius:18px;border:1px solid rgba(56,189,248,.4);
+      background:rgba(56,189,248,.1);color:var(--blue-light);
+      font-size:16px;font-weight:700;cursor:pointer;transition:.35s;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .btn-add-cart:hover{background:rgba(56,189,248,.2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(56,189,248,.2);}
+    .btn-buy-now{
+      flex:1;padding:16px;border-radius:18px;border:none;
+      background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;
+      font-size:16px;font-weight:700;cursor:pointer;transition:.35s;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      box-shadow:0 8px 25px rgba(56,189,248,.3);
+    }
+    .btn-buy-now:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(56,189,248,.5);}
+
+    /* SECTION TITLE */
+    .section-label{
+      font-size:12px;font-weight:700;letter-spacing:2px;
+      text-transform:uppercase;color:var(--blue-light);
+      margin-bottom:-8px;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:1024px){
+      .detail-wrapper{flex-direction:column;padding:100px 24px 60px;}
+      .col-left{position:relative;top:0;}
+      .col-right{width:100%;}
+      header{width:calc(100% - 32px);padding:0 20px;}
+      nav{display:none;}
+    }
+    @media(max-width:560px){
+      .specs-grid{grid-template-columns:1fr;}
+      .action-btns{flex-direction:column;}
+      .thumb{width:64px;height:64px;}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="logo" onclick="window.location.href='/Homepage'">HYPER CORE</div>
+    <nav>
+      <a href="/Homepage">Trang Chủ</a>
+      <a href="/Products" class="active">Sản Phẩm</a>
+      <a href="#">Gaming Gear</a>
+      <a href="#">PC Build</a>
+      <a href="#">Trạng thái đơn hàng</a>
+      <a href="#">Liên Hệ</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="window.location.href='/shoppingcart'">🛒</button>
+      <button class="login-glass-btn" onclick="window.location.href='/Login'">
+        <span>👤</span><span>Đăng Nhập</span>
+      </button>
+      <button class="register-glass-btn" onclick="window.location.href='/Register'">
+        <span>📝</span><span>Đăng Ký</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="detail-wrapper">
+
+    <!-- LEFT: MEDIA COLUMN -->
+    <div class="col-left">
+
+      <!-- MAIN MEDIA FRAME -->
+      <div class="media-frame" id="mediaFrame">
+
+        <!-- 3D MODEL VIEWER (default) -->
+        <model-viewer
+          id="modelViewer"
+          src="/assets/models/gaming_room.glb"
+          camera-controls
+          auto-rotate
+          auto-rotate-delay="0"
+          rotation-per-second="25deg"
+          interaction-prompt="none"
+          tone-mapping="neutral"
+          shadow-intensity="1"
+          camera-orbit="0deg 75deg 1.5m">
+          <div slot="poster" style="display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;height:100%;color:#00d9ff;font-weight:700;gap:16px;">
+            <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(0,217,255,.15);border-left-color:#00d9ff;animation:spin 1s linear infinite;"></div>
+            <span>ĐANG TẢI MÔ HÌNH 3D...</span>
+          </div>
+        </model-viewer>
+
+        <!-- IMAGE (hidden by default, shown when thumbnail clicked) -->
+        <img id="mainImg" src="" alt="Product Image"/>
+
+        <!-- BADGE -->
+        <div class="img-badge" id="imgBadge">3D</div>
+
+        <!-- MINI TOGGLE PILL -->
+        <div class="view-pill">
+          <button id="pill3d" class="active" onclick="switchView('3d')">🔮 3D</button>
+          <button id="pillImg" onclick="switchView('img')">🖼 Ảnh</button>
+        </div>
+
+      </div>
+
+      <!-- THUMBNAILS — always below -->
+      <div class="thumbnails" id="thumbnails">
+        <div class="thumb active" onclick="changeImg(this,'https://placehold.co/800x600/08101b/7dd3fc?text=Front')">
+          <img src="https://placehold.co/160x160/08101b/7dd3fc?text=Front" alt="Front"/>
+        </div>
+        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/0f172a/38bdf8?text=Side')">
+          <img src="https://placehold.co/160x160/0f172a/38bdf8?text=Side" alt="Side"/>
+        </div>
+        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/040b14/0ea5e9?text=Top')">
+          <img src="https://placehold.co/160x160/040b14/0ea5e9?text=Top" alt="Top"/>
+        </div>
+        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/020617/7dd3fc?text=Detail')">
+          <img src="https://placehold.co/160x160/020617/7dd3fc?text=Detail" alt="Detail"/>
+        </div>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- RIGHT: INFO COLUMN -->
+    <div class="col-right">
+
+      <!-- BREADCRUMB -->
+      <div class="breadcrumb">
+        <a href="/Homepage">Trang Chủ</a>
+        <span>›</span>
+        <a href="/Products" id="bc-cat">Sản Phẩm</a>
+        <span>›</span>
+        <span class="current" id="bc-name">...</span>
+      </div>
+
+      <!-- PRODUCT NAME -->
+      <h1 class="product-title" id="pd-name">Đang tải...</h1>
+
+      <!-- RATING -->
+      <div class="rating-row">
+        <span class="stars" id="pd-stars">★★★★★</span>
+        <span class="rating-count" id="pd-rating">—</span>
+        <span class="in-stock" id="pd-stock">—</span>
+      </div>
+
+      <!-- PRICE -->
+      <div class="price-block">
+        <span class="price-current" id="pd-price">—</span>
+        <span class="price-original" id="pd-old">—</span>
+        <span class="price-badge" id="pd-disc">—</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- QUICK SPECS -->
+      <span class="section-label">Thông Số Nhanh</span>
+      <div class="specs-grid">
+        <div class="spec-box">
+          <div class="spec-icon">🪨</div>
+          <div>
+            <div class="spec-label">Chất Liệu</div>
+            <div class="spec-value">Aluminum Alloy</div>
+          </div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-icon">📡</div>
+          <div>
+            <div class="spec-label">Kết Nối</div>
+            <div class="spec-value">USB-C / Bluetooth</div>
+          </div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-icon">⌨️</div>
+          <div>
+            <div class="spec-label">Layout</div>
+            <div class="spec-value">75% TKL</div>
+          </div>
+        </div>
+        <div class="spec-box">
+          <div class="spec-icon">⚡</div>
+          <div>
+            <div class="spec-label">Switches</div>
+            <div class="spec-value">Gateron G Pro</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- COLOR VARIANT -->
+      <div class="variant-group">
+        <span class="variant-label">Màu Sắc: <span id="colorName" style="color:#fff;font-weight:700;">Black</span></span>
+        <div class="color-options">
+          <div class="color-swatch black active" title="Black" onclick="pickColor(this,'Black')"></div>
+          <div class="color-swatch white" title="White" onclick="pickColor(this,'White')"></div>
+          <div class="color-swatch blue" title="Cyan Blue" onclick="pickColor(this,'Cyan Blue')"></div>
+          <div class="color-swatch red" title="Red Panda" onclick="pickColor(this,'Red Panda')"></div>
+        </div>
+      </div>
+
+      <!-- SWITCH VARIANT -->
+      <div class="variant-group">
+        <span class="variant-label">Loại Switch</span>
+        <div class="variant-options">
+          <button class="variant-btn active" onclick="pickVariant(this)">Linear Red</button>
+          <button class="variant-btn" onclick="pickVariant(this)">Tactile Brown</button>
+          <button class="variant-btn" onclick="pickVariant(this)">Clicky Blue</button>
+          <button class="variant-btn" onclick="pickVariant(this)">Silent Pink</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-btns">
+        <button class="btn-add-cart" id="addCartBtn" onclick="addToCart()">🛒 Thêm Vào Giỏ</button>
+        <button class="btn-buy-now" onclick="buyNow()">⚡ Mua Ngay</button>
+      </div>
+
+    </div><!-- /col-right -->
+  </div><!-- /detail-wrapper -->
+
+  <style>
+    @keyframes spin{to{transform:rotate(360deg);}}
+  </style>
+
+  <script>
+    // ============================================================
+    // PRODUCTS DATA (đồng bộ với products.html)
+    // ============================================================
+    const PRODUCTS = [
+      {id:1,  cat:'vga',  brand:'ASUS',     name:'ASUS ROG RTX 4090 24GB OC',        specs:'Ada Lovelace · 24GB GDDR6X · 384-bit',          price:45900000, oldPrice:52000000, rating:4.9, reviews:128, stock:'in',  badge:'hot',  img:'https://placehold.co/800x560/081120/7dd3fc?text=RTX+4090'},
+      {id:2,  cat:'cpu',  brand:'AMD',      name:'AMD Ryzen 9 7950X',                specs:'Socket AM5 · 16 Nhân 32 Luồng · 5.7GHz',         price:18500000, oldPrice:22000000, rating:4.8, reviews:94,  stock:'in',  badge:'sale', img:'https://placehold.co/800x560/081120/7dd3fc?text=Ryzen+9+7950X'},
+      {id:3,  cat:'main', brand:'ASUS',     name:'ASUS ROG Maximus Z790 Hero',       specs:'LGA1700 · DDR5 · PCIe 5.0',                       price:14200000, oldPrice:16500000, rating:4.7, reviews:61,  stock:'low', badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=ROG+Z790'},
+      {id:4,  cat:'ram',  brand:'Corsair',  name:'Corsair Dominator DDR5 32GB',      specs:'DDR5 · 32GB (2x16) · 6400MHz',                   price:4800000,  oldPrice:5500000,  rating:4.6, reviews:210, stock:'in',  badge:'new',  img:'https://placehold.co/800x560/081120/7dd3fc?text=DDR5+32GB'},
+      {id:5,  cat:'ssd',  brand:'Samsung', name:'Samsung 990 Pro NVMe 2TB',          specs:'PCIe 4.0 · 7450 MB/s · M.2 2280',                price:3200000,  oldPrice:3800000,  rating:4.9, reviews:445, stock:'in',  badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=Samsung+990+Pro'},
+      {id:6,  cat:'vga',  brand:'MSI',      name:'MSI Gaming X Trio RTX 4070 Ti',   specs:'Ada Lovelace · 12GB GDDR6X · 192-bit',            price:19500000, oldPrice:23000000, rating:4.7, reviews:77,  stock:'in',  badge:'sale', img:'https://placehold.co/800x560/081120/7dd3fc?text=RTX+4070+Ti'},
+      {id:7,  cat:'cpu',  brand:'Intel',    name:'Intel Core i9-14900K',             specs:'LGA1700 · 24 Nhân · 6.0GHz Boost',               price:15900000, oldPrice:19000000, rating:4.8, reviews:132, stock:'low', badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=i9-14900K'},
+      {id:8,  cat:'psu',  brand:'Corsair', name:'Corsair HX1200 Platinum',           specs:'1200W · 80+ Platinum · Full Modular',             price:5600000,  oldPrice:6200000,  rating:4.8, reviews:89,  stock:'in',  badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=HX1200+PSU'},
+      {id:9,  cat:'vga',  brand:'Gigabyte', name:'Gigabyte RX 7900 XTX Gaming OC',  specs:'RDNA 3 · 24GB GDDR6 · 384-bit',                  price:22500000, oldPrice:26000000, rating:4.6, reviews:55,  stock:'out', badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=RX+7900+XTX'},
+      {id:10, cat:'main', brand:'MSI',      name:'MSI MEG X670E ACE',                specs:'Socket AM5 · DDR5 · PCIe 5.0',                   price:11900000, oldPrice:13500000, rating:4.5, reviews:43,  stock:'in',  badge:'new',  img:'https://placehold.co/800x560/081120/7dd3fc?text=MSI+X670E'},
+      {id:11, cat:'ssd',  brand:'Samsung', name:'Samsung 870 EVO SATA 1TB',          specs:'SATA III · 560 MB/s · 2.5"',                     price:1800000,  oldPrice:2200000,  rating:4.7, reviews:630, stock:'in',  badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=870+EVO'},
+      {id:12, cat:'ram',  brand:'Corsair', name:'Corsair Vengeance DDR5 64GB',       specs:'DDR5 · 64GB (2x32) · 5600MHz',                   price:7200000,  oldPrice:8500000,  rating:4.5, reviews:38,  stock:'low', badge:'new',  img:'https://placehold.co/800x560/081120/7dd3fc?text=Vengeance+64GB'},
+    ];
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    const fmt = n => n.toLocaleString('vi-VN') + ' ₫';
+    const calcDiscount = (p, o) => Math.round((1 - p / o) * 100);
+    const getStars = r => '★'.repeat(Math.floor(r)) + (r % 1 >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.floor(r) - (r % 1 >= 0.5 ? 1 : 0));
+
+    // Category label map
+    const CAT_LABEL = { vga:'VGA / Card Đồ Họa', cpu:'CPU / Bộ Vi Xử Lý', main:'Mainboard', ram:'RAM', ssd:'SSD / Ổ Cứng', psu:'Nguồn / PSU' };
+
+    // Quick-spec icons & labels per category
+    const SPEC_MAP = {
+      vga:  [{icon:'🎮',label:'Loại GPU',    key:'brand'}, {icon:'📡',label:'Bus',       key:'bus'},    {icon:'⚡',label:'TDP',     key:'tdp'},    {icon:'🔌',label:'Giao Tiếp', key:'pcie'}],
+      cpu:  [{icon:'🧠',label:'Socket',     key:'socket'}, {icon:'⚡',label:'Tốc Độ',   key:'speed'},  {icon:'📡',label:'Nhân',   key:'cores'},   {icon:'🔋',label:'TDP',      key:'tdp'}],
+      main: [{icon:'🗂️',label:'Chipset',    key:'chip'},   {icon:'📡',label:'Socket',   key:'socket'}, {icon:'💾',label:'RAM',    key:'ram'},     {icon:'⚡',label:'PCIe',     key:'pcie'}],
+      ram:  [{icon:'💾',label:'Loại RAM',   key:'type'},   {icon:'⚡',label:'Tốc Độ',   key:'speed'},  {icon:'📦',label:'Dung Lượng', key:'cap'}, {icon:'🔌',label:'Số Thanh', key:'sticks'}],
+      ssd:  [{icon:'💽',label:'Giao Tiếp',  key:'pcie'},   {icon:'⚡',label:'Đọc/Ghi',  key:'speed'},  {icon:'📦',label:'Form Factor',key:'form'},{icon:'🏭',label:'Hãng',     key:'brand'}],
+      psu:  [{icon:'🔋',label:'Công Suất',  key:'watt'},   {icon:'🏅',label:'Chuẩn',    key:'cert'},   {icon:'🔌',label:'Modular',key:'modular'},{icon:'🌡️',label:'Hãng',     key:'brand'}],
+    };
+
+    // Parse specs string into key-value from pattern "key · key · ..."
+    function parseSpecs(specsStr, cat) {
+      const parts = specsStr.split('·').map(s => s.trim());
+      const map = SPEC_MAP[cat] || SPEC_MAP['vga'];
+      return map.map((def, i) => ({ icon: def.icon, label: def.label, value: parts[i] || '—' }));
+    }
+
+    // Stock display
+    function stockInfo(s) {
+      if (s === 'in')  return { icon:'✓', text:'Còn hàng',   cls:'#22d3a0' };
+      if (s === 'low') return { icon:'⚠', text:'Sắp hết',    cls:'#fbbf24' };
+      return                  { icon:'✕', text:'Hết hàng',   cls:'#f87171' };
+    }
+
+    // ============================================================
+    // POPULATE PAGE
+    // ============================================================
+    function populatePage(p) {
+      // Page title
+      document.title = `HYPER CORE - ${p.name}`;
+
+      // Breadcrumb
+      document.getElementById('bc-cat').textContent  = CAT_LABEL[p.cat] || p.cat;
+      document.getElementById('bc-cat').href          = `/Products`;
+      document.getElementById('bc-name').textContent = p.name;
+
+      // Product name
+      document.getElementById('pd-name').textContent = p.name;
+
+      // Rating & stock
+      const st = stockInfo(p.stock);
+      document.getElementById('pd-stars').textContent  = getStars(p.rating);
+      document.getElementById('pd-rating').textContent = `${p.rating} (${p.reviews} đánh giá)`;
+      document.getElementById('pd-stock').textContent  = `${st.icon} ${st.text}`;
+      document.getElementById('pd-stock').style.color  = st.cls;
+
+      // Price
+      document.getElementById('pd-price').textContent = fmt(p.price);
+      if (p.oldPrice) {
+        document.getElementById('pd-old').textContent   = fmt(p.oldPrice);
+        document.getElementById('pd-disc').textContent  = `-${calcDiscount(p.price, p.oldPrice)}%`;
+        document.getElementById('pd-old').style.display  = '';
+        document.getElementById('pd-disc').style.display = '';
+      } else {
+        document.getElementById('pd-old').style.display  = 'none';
+        document.getElementById('pd-disc').style.display = 'none';
+      }
+
+      // Quick specs
+      const specBoxes = document.querySelectorAll('.spec-box');
+      const specs = parseSpecs(p.specs, p.cat);
+      specs.forEach((s, i) => {
+        if (!specBoxes[i]) return;
+        specBoxes[i].querySelector('.spec-icon').textContent  = s.icon;
+        specBoxes[i].querySelector('.spec-label').textContent = s.label;
+        specBoxes[i].querySelector('.spec-value').textContent = s.value;
+      });
+
+      // Main image (gallery) — populate vào media-frame
+      const mainImg = document.getElementById('mainImg');
+      mainImg.src = p.img;
+      mainImg.alt = p.name;
+
+      // Badge
+      const badge = document.getElementById('imgBadge');
+      if (badge) badge.textContent = p.badge ? p.badge.toUpperCase() : 'FEATURED';
+
+      // Thumbnails — generate 4 angle views
+      const thumbContainer = document.getElementById('thumbnails');
+      thumbContainer.innerHTML = '';
+      const angles = ['Front','Side','Top','Detail'];
+      angles.forEach((angle, i) => {
+        const bigSrc   = `https://placehold.co/800x560/081120/7dd3fc?text=${encodeURIComponent(p.name + ' - ' + angle)}`;
+        const thumbSrc = `https://placehold.co/160x160/081120/7dd3fc?text=${encodeURIComponent(angle)}`;
+        const div = document.createElement('div');
+        div.className = 'thumb' + (i === 0 ? ' active' : '');
+        div.onclick = function() { changeImg(this, bigSrc); };
+        div.innerHTML = `<img src="${thumbSrc}" alt="${angle}"/>`;
+        thumbContainer.appendChild(div);
+      });
+      // Reset main to product image
+      mainImg.src = p.img;
+
+      // Store product for cart
+      window._productName  = p.name;
+      window._productPrice = p.price;
+    }
+
+    // ============================================================
+    // READ ID FROM URL & INIT
+    // ============================================================
+    const params  = new URLSearchParams(window.location.search);
+    const idParam = parseInt(params.get('id'), 10);
+    const product = PRODUCTS.find(p => p.id === idParam);
+
+    if (!product) {
+      // Không tìm thấy → redirect về trang sản phẩm
+      window.location.href = '/Products';
+    } else {
+      populatePage(product);
+    }
+
+    // ============================================================
+    // HEADER SCROLL
+    // ============================================================
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ============================================================
+    // TOGGLE 3D vs GALLERY — đã hợp nhất, hàm này dự phòng không còn dùng
+    // ============================================================
+
+    // ============================================================
+    // SWITCH VIEW: 3D ↔ Image
+    // ============================================================
+    function switchView(mode) {
+      const frame   = document.getElementById('mediaFrame');
+      const pill3d  = document.getElementById('pill3d');
+      const pillImg = document.getElementById('pillImg');
+      const badge   = document.getElementById('imgBadge');
+      if (mode === '3d') {
+        frame.classList.remove('gallery-mode');
+        pill3d.classList.add('active');
+        pillImg.classList.remove('active');
+        if (badge) badge.textContent = '3D';
+      } else {
+        frame.classList.add('gallery-mode');
+        pill3d.classList.remove('active');
+        pillImg.classList.add('active');
+        if (badge) badge.textContent = 'IMG';
+      }
+    }
+
+    // ============================================================
+    // THUMBNAIL CLICK — switch to image mode automatically
+    // ============================================================
+    function changeImg(thumb, src) {
+      document.getElementById('mainImg').src = src;
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      // Auto switch to image view
+      switchView('img');
+    }
+
+    // ============================================================
+    // COLOR / VARIANT PICKERS
+    // ============================================================
+    function pickColor(el, name) {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('colorName').textContent = name;
+    }
+    function pickVariant(btn) {
+      btn.closest('.variant-options').querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // ============================================================
+    // ADD TO CART
+    // ============================================================
+    function addToCart() {
+      // 1. Get current cart from localStorage
+      let cart = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
+      
+      // 2. Add or update quantity
+      let existing = cart.find(x => x.id === product.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          title: product.name,
+          img: product.images[0],
+          price: parseInt(product.price.replace(/[^0-9]/g, '')),
+          variant: "Mặc định",
+          qty: 1
+        });
+      }
+      
+      // 3. Save back to localStorage
+      localStorage.setItem('hypercore_cart_items', JSON.stringify(cart));
+
+      // 4. UI Feedback
+      const btn  = document.getElementById('addCartBtn');
+      const orig = btn.innerHTML;
+      btn.innerHTML              = '✓ Đã thêm vào giỏ!';
+      btn.style.borderColor      = '#22d3a0';
+      btn.style.color            = '#22d3a0';
+      btn.style.background       = 'rgba(34,211,160,.12)';
+      setTimeout(() => {
+        btn.innerHTML         = orig;
+        btn.style.borderColor = '';
+        btn.style.color       = '';
+        btn.style.background  = '';
+      }, 2200);
+    }
+
+    // ============================================================
+    // BUY NOW
+    // ============================================================
+    function buyNow() {
+      window.location.href = '/shoppingcart';
+    }
+  </script>
+
+</body>
+</html>
+

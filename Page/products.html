@@ -88,6 +88,80 @@
     }
     .cart-btn:hover { transform: translateY(-2px); background: rgba(255, 255, 255, .12); }
 
+    /* LOGIN GLASS BUTTON */
+    .login-glass-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 24px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(255, 255, 255, .08);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: background .35s ease, border .35s ease, transform .35s ease, box-shadow .35s ease;
+    }
+    .login-glass-btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -120%;
+      width: 80%; height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .35), transparent);
+      transform: skewX(-20deg);
+      transition: .7s;
+    }
+    .login-glass-btn:hover::before { left: 140%; }
+    .login-glass-btn:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, .95), rgba(14, 165, 233, .95));
+      border: 1px solid rgba(125, 211, 252, .6);
+      box-shadow: 0 10px 30px rgba(56, 189, 248, .35), 0 0 20px rgba(125, 211, 252, .25);
+      transform: translateY(-3px);
+    }
+
+    /* REGISTER GLASS BUTTON */
+    .register-glass-btn {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 24px;
+      border-radius: 18px;
+      border: 1px solid rgba(125, 211, 252, .3);
+      background: linear-gradient(135deg, rgba(56, 189, 248, .2), rgba(14, 165, 233, .2));
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      overflow: hidden;
+      transition: .35s ease;
+    }
+    .register-glass-btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -120%;
+      width: 80%; height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .25), transparent);
+      transform: skewX(-20deg);
+      transition: .7s;
+    }
+    .register-glass-btn:hover::before { left: 140%; }
+    .register-glass-btn:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, .4), rgba(14, 165, 233, .4));
+      border: 1px solid rgba(125, 211, 252, .8);
+      box-shadow: 0 10px 30px rgba(56, 189, 248, .2);
+      transform: translateY(-3px);
+    }
+
+    .login-icon { font-size: 17px; display: flex; align-items: center; justify-content: center; }
+
     /* LAYOUT */
     .page-wrapper {
       padding: 120px 60px 60px;
@@ -207,13 +281,6 @@
     .badge-sale { background: rgba(251, 191, 36, .15); border: 1px solid rgba(251, 191, 36, .3); color: var(--gold); }
     .badge-hot { background: rgba(248, 113, 113, .15); border: 1px solid rgba(248, 113, 113, .3); color: var(--red); }
 
-    .wishlist-btn {
-      position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 10px;
-      background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .12);
-      color: rgba(255, 255, 255, .4); cursor: pointer; font-size: 15px;
-      display: flex; align-items: center; justify-content: center; transition: .25s; z-index: 2;
-    }
-    .wishlist-btn:hover, .wishlist-btn.active { color: var(--red); background: rgba(248, 113, 113, .12); border-color: rgba(248, 113, 113, .3); }
 
     .card-body { padding: 20px; position: relative; z-index: 5; }
     .card-name { font-size: 16px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; color: white; }
@@ -260,6 +327,7 @@
     .btn-detail {
       flex: 1; padding: 11px; background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .12);
       color: white; font-weight: 600; border-radius: 12px; cursor: pointer; font-size: 13px; transition: .35s;
+      text-decoration: none; display: flex; align-items: center; justify-content: center;
     }
     .btn-detail:hover { background: rgba(255, 255, 255, .12); transform: translateY(-2px); }
 
@@ -314,6 +382,18 @@
       <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
         🛒
         <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center">0</span>
+      </button>
+
+      <!-- LOGIN BUTTON -->
+      <button class="login-glass-btn" onclick="window.location.href='/Login'">
+        <span class="login-icon">👤</span>
+        <span>Đăng Nhập</span>
+      </button>
+
+      <!-- REGISTER BUTTON -->
+      <button class="register-glass-btn" onclick="window.location.href='/Register'">
+        <span class="login-icon">📝</span>
+        <span>Đăng Ký</span>
       </button>
     </div>
   </header>
@@ -504,7 +584,6 @@
           <div class="card-img-wrap">
             <img src="${p.img}" alt="${p.name}" loading="lazy"/>
             ${getBadgeHTML(p.badge)}
-            <button class="wishlist-btn" title="Yêu thích">♡</button>
           </div>
           <div class="card-body">
             <div class="card-name">${p.name}</div>
@@ -526,7 +605,7 @@
                 <span class="btn-text">${isOut ? 'Hết hàng' : 'Thêm vào giỏ'}</span>
                 <span class="btn-check">✓ Đã thêm</span>
               </button>
-              <button class="btn-detail">Chi tiết</button>
+              <a href="/product-detail?id=${p.id}" class="btn-detail">Chi tiết</a>
             </div>
           </div>
         `;
@@ -545,14 +624,7 @@
         setTimeout(() => card.classList.add('active'), i * 50);
       });
 
-      // Wishlist event setup
-      grid.querySelectorAll('.wishlist-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          btn.classList.toggle('active');
-          btn.textContent = btn.classList.contains('active') ? '♥' : '♡';
-        });
-      });
+
 
       // Cart event setup
       grid.querySelectorAll('.btn-add:not([disabled])').forEach(btn => {
