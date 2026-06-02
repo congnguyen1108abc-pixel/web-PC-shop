@@ -514,9 +514,8 @@
         <!-- LEFT -->
 
         <div class="glass-box" id="cartItemsContainer">
-
             <!-- Dynamic Items will be rendered here by JS -->
-
+            <!-- Items will be rendered here dynamically -->
         </div>
 
         <!-- RIGHT -->
@@ -616,7 +615,22 @@
 
     <script>
         let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
-        if (localStorage.getItem('hyper_core_cart') === null) {
+        let cartItems = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
+        let deletedItemData = null;
+
+        if (cart.length === 0 && cartItems.length > 0) {
+            cart = cartItems.map(item => ({
+                id: item.id ?? Date.now(),
+                name: item.title,
+                specs: item.variant,
+                price: item.price,
+                currency: "VND",
+                qty: item.qty,
+                img: item.img
+            }));
+        }
+
+        if (localStorage.getItem('hyper_core_cart') === null && cart.length === 0) {
             cart = [{
                 id: 999,
                 name: "Beast X Pro Magnesium Gaming Mouse",
@@ -626,16 +640,29 @@
                 qty: 1,
                 img: "https://placehold.co/100x100/0f172a/7dd3fc?text=Beast+X"
             }];
-            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
         }
-        
+
         const subtotal = document.getElementById("subtotal");
         const total = document.getElementById("total");
+        const cartContainer = document.getElementById("cartItemsContainer");
+
+        function syncCartStorage() {
+            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+            cartItems = cart.map(item => ({
+                id: item.id,
+                title: item.name,
+                variant: item.specs,
+                price: item.currency === 'USD' ? item.price * 25000 : item.price,
+                qty: item.qty,
+                img: item.img
+            }));
+            localStorage.setItem('hypercore_cart_items', JSON.stringify(cartItems));
+        }
 
         function renderCartPage() {
-            const container = document.getElementById('cartItemsContainer');
+            const container = cartContainer;
             if (!container) return;
-            
+
             if (cart.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; padding: 50px 20px;">
@@ -647,23 +674,23 @@
                 `;
                 subtotal.innerText = '0đ';
                 total.innerText = '0đ';
-                
+
                 const savingsEl = document.querySelector('.save-money');
                 if (savingsEl) savingsEl.style.display = 'none';
                 return;
             }
-            
+
             container.innerHTML = '';
             let sum = 0;
-            
+
             cart.forEach(item => {
                 let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
                 sum += itemPriceVnd * item.qty;
-                
-                const formattedPrice = item.currency === 'USD' 
-                  ? `$${item.price.toFixed(2)} USD` 
-                  : item.price.toLocaleString('vi-VN') + ' đ';
-                  
+
+                const formattedPrice = item.currency === 'USD'
+                    ? `$${item.price.toFixed(2)} USD`
+                    : item.price.toLocaleString('vi-VN') + ' đ';
+
                 const itemEl = document.createElement('div');
                 itemEl.className = 'cart-item';
                 itemEl.innerHTML = `
@@ -685,15 +712,15 @@
                 `;
                 container.appendChild(itemEl);
             });
-            
+
             subtotal.innerText = sum.toLocaleString('vi-VN') + ' đ';
-            
+
             let discount = sum > 1000000 ? 1000000 : 0;
             let shipping = 40000;
             let finalTotal = Math.max(0, sum - discount + shipping);
-            
+
             total.innerText = finalTotal.toLocaleString('vi-VN') + ' đ';
-            
+
             const savingsEl = document.querySelector('.save-money');
             if (savingsEl) {
                 if (discount > 0) {
@@ -704,6 +731,7 @@
                 }
             }
             renderPageRecommendations();
+            syncCartStorage();
         }
 
         const RECOMMEND_PRODUCTS = [
@@ -809,8 +837,11 @@
         };
         
         window.removePageItem = function(id) {
+            deletedItemData = cart.find(i => i.id === id) ?? null;
             cart = cart.filter(i => i.id !== id);
-            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+            syncCartStorage();
+            const undoBox = document.getElementById("undoBox");
+            if (undoBox) undoBox.style.display = "flex";
             renderCartPage();
         };
 
@@ -821,12 +852,48 @@
             });
         });
 
+        function renderCart() {
+            renderCartPage();
+        }
+
+        function updateTotal() {
+            let sum = 0;
+            cartItems.forEach(item => {
+                sum += item.qty * item.price;
+            });
+
+            subtotal.innerText = sum.toLocaleString("vi-VN") + "đ";
+            let discountAmount = sum > 0 ? 1000000 : 0;
+            let shippingFee = sum > 0 ? 40000 : 0;
+
+            let finalTotal = sum - discountAmount + shippingFee;
+            if (finalTotal < 0) finalTotal = 0;
+
+            total.innerText = finalTotal.toLocaleString("vi-VN") + "đ";
+        }
+
+        const undoBtn = document.getElementById("undoBtn");
+        if (undoBtn) {
+            undoBtn.addEventListener("click", () => {
+                if (deletedItemData) {
+                    cart.push(deletedItemData);
+                    deletedItemData = null;
+                    const undoBox = document.getElementById("undoBox");
+                    if (undoBox) undoBox.style.display = "none";
+                    renderCartPage();
+                }
+            });
+        }
+
         // Redirect to filladdress page on clicking Checkout
         const checkoutBtn = document.querySelector(".checkout-btn");
         if (checkoutBtn) {
             checkoutBtn.addEventListener("click", () => {
-                if (cart.length === 0) return;
-                
+                if (cart.length === 0) {
+                    alert("Giỏ hàng đang trống!");
+                    return;
+                }
+
                 let sum = 0;
                 cart.forEach(item => {
                     let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
@@ -843,22 +910,24 @@
                     discount: discount,
                     total: finalTotal
                 };
- 
+
                 cart.forEach(item => {
                     let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
-                    cartData.items.push({ 
-                        img: item.img, 
-                        title: item.name, 
-                        variant: item.specs, 
-                        price: itemPriceVnd, 
-                        qty: item.qty 
+                    cartData.items.push({
+                        img: item.img,
+                        title: item.name,
+                        variant: item.specs,
+                        price: itemPriceVnd,
+                        qty: item.qty
                     });
                 });
- 
                 localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
                 window.location.href = "/filladdress";
             });
         }
+        
+        // Initial Render
+        renderCart();
 
         // Initial render on load
         renderCartPage();

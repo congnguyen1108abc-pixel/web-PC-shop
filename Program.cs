@@ -134,6 +134,12 @@ app.MapGet("/Register", async context =>
     await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "register.html"));
 });
 
+app.MapGet("/product-detail", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "product-detail.html"));
+});
+
 app.MapControllers();
 
 app.Run();
