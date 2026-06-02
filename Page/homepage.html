@@ -659,13 +659,142 @@
         /* FOOTER */
         /* ================================= */
 
-        footer {
-            padding: 50px;
+        /* ================================================= */
+        /* WLMOUSE STYLE PREMIUM MULTI-COLUMN FOOTER */
+        /* ================================================= */
+
+        .site-footer {
+            background: rgba(2, 6, 23, 0.98);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 80px 60px 40px;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-info-col {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .footer-logo {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, #ffffff, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .footer-logo::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 15%;
+            height: 70%;
+            width: 4px;
+            background: #38bdf8;
+            box-shadow: 0 0 10px #38bdf8;
+            border-radius: 2px;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-icon {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.45);
+            text-decoration: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .social-icon:hover {
+            color: #ffffff;
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-4px) scale(1.08);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.25);
+        }
+
+        .footer-links-col h4 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 22px;
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-links-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0;
+        }
+
+        .footer-links-col ul li a {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.45);
+            text-decoration: none;
+            transition: all 0.25s ease;
+            display: inline-block;
+        }
+
+        .footer-links-col ul li a:hover {
+            color: #38bdf8;
+            transform: translateX(4px);
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+        }
+
+        .footer-bottom {
+            max-width: 1600px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 30px;
             text-align: center;
-            color: rgba(255, 255, 255, .65);
-            background: rgba(255, 255, 255, .04);
-            border-top: 1px solid rgba(255, 255, 255, .08);
-            backdrop-filter: blur(20px);
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+        }
+
+        @media(max-width: 1024px) {
+            .footer-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .site-footer {
+                padding: 50px 24px 30px;
+            }
         }
 
         /* ================================= */
@@ -974,6 +1103,278 @@
             z-index: 99999;
             background: linear-gradient(90deg, #38bdf8, #7dd3fc);
             box-shadow: 0 0 20px #38bdf8;
+        }
+
+        /* ================================= */
+        /* FLOATING CHATBOT BUTTON */
+        /* ================================= */
+
+        .chatbot-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            border: 2px solid rgba(125, 211, 252, 0.5);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 5px 20px rgba(56, 189, 248, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            animation: chatbotFloat 3s ease-in-out infinite;
+        }
+
+        .chatbot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(56, 189, 248, 0.6);
+        }
+
+        .chatbot-button.active {
+            animation: none;
+            transform: scale(0.95) rotate(180deg);
+        }
+
+        @keyframes chatbotFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* ================================= */
+        /* CHATBOT MODAL */
+        /* ================================= */
+
+        .chatbot-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 450px;
+            height: 600px;
+            background: rgba(8, 17, 32, 0.95);
+            border: 1px solid rgba(125, 211, 252, 0.3);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+
+        .chatbot-modal.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .chatbot-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 8px;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 14px;
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: white;
+            border-radius: 10px 0 10px 10px;
+        }
+
+        .bot-message .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0f2fe;
+            border-radius: 0 10px 10px 10px;
+            border-left: 3px solid #38bdf8;
+        }
+
+        .loading {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 10px 12px;
+        }
+
+        .loading span {
+            width: 6px;
+            height: 6px;
+            background: #38bdf8;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .loading span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .chatbot-input-section {
+            display: flex;
+            gap: 8px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .chatbot-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid rgba(125, 211, 252, 0.3);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .chatbot-input:focus {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .chatbot-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .chatbot-send {
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .chatbot-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
+        }
+
+        .chatbot-send:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .chatbot-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.3);
+            border-radius: 3px;
+        }
+
+        .chatbot-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.6);
+        }
+
+        @media(max-width: 768px) {
+            .chatbot-modal {
+                width: calc(100% - 40px);
+                height: 500px;
+                bottom: 90px;
+                right: 20px;
+            }
         }
 
         /* ================================= */
@@ -1582,229 +1983,772 @@
             }
         }
 
-        /* ========================================= */
-        /* SUPPORT BUTTON */
-        /* ========================================= */
-        .support-wrapper {
+        /* ================================================= */
+        /* WLMOUSE PREMIUM EFFECTS */
+        /* ================================================= */
+
+        /* 1. Interactive Cursor Glow Background */
+        .cursor-glow {
             position: fixed;
-            right: 35px;
-            bottom: 35px;
-            z-index: 99999;
-        }
-
-        .support-btn {
-            position: relative;
-            width: 75px;
-            height: 75px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.16) 0%, rgba(14, 165, 233, 0.05) 50%, transparent 100%);
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 30px;
-            color: white;
-            background: rgba(255, 255, 255, .08);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, .14);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, .35);
-            overflow: hidden;
-            transition: .4s;
-        }
-
-        .support-btn:hover {
-            transform: scale(1.08);
-        }
-
-        .support-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 1px solid rgba(125, 211, 252, .4);
-            animation: pulseRing 2.5s infinite;
-        }
-
-        @keyframes pulseRing {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            100% {
-                transform: scale(1.6);
-                opacity: 0;
-            }
-        }
-
-        /* ========================================= */
-        /* CHAT BOX */
-        /* ========================================= */
-        .support-chat {
-            position: absolute;
-            bottom: 100px;
-            right: 0;
-            width: 380px;
-            height: 520px;
-            border-radius: 35px;
-            background: rgba(255, 255, 255, .08);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, .12);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
-            overflow: hidden;
-            opacity: 0;
             pointer-events: none;
-            transform: translateY(40px) scale(.9);
-            transition: .6s cubic-bezier(.22, 1, .36, 1);
+            z-index: -5; /* Behind content but above background wrapper */
+            transform: translate(-50%, -50%);
+            transition: opacity 0.5s ease;
+            mix-blend-mode: screen;
+            will-change: transform;
+            opacity: 0;
         }
 
-        .support-chat.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0) scale(1);
+        /* 2. Infinite Technical Gaming Ticker (Marquee) */
+        .marquee-container {
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+            overflow: hidden;
+            background: rgba(2, 6, 23, 0.45);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 22px 0;
+            position: relative;
+            z-index: 10;
         }
 
-        .chat-header {
+        .marquee-track {
             display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 25px;
-            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            width: max-content;
+            animation: marquee 24s linear infinite;
         }
 
-        .chat-avatar {
-            width: 55px;
-            height: 55px;
-            border-radius: 18px;
+        .marquee-content {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            gap: 40px;
+            padding-right: 40px;
+            white-space: nowrap;
+        }
+
+        .marquee-content span {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             font-size: 26px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: rgba(255, 255, 255, 0.07);
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
+            transition: color 0.4s, text-shadow 0.4s, transform 0.4s;
+            display: inline-block;
         }
 
-        .chat-header h3 {
-            margin-bottom: 5px;
+        .marquee-content span:hover {
+            color: #38bdf8;
+            -webkit-text-stroke: 1px #38bdf8;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+            transform: scale(1.05);
+            cursor: default;
         }
 
-        .chat-header span {
-            color: #7dd3fc;
-            font-size: 13px;
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
-        .chat-body {
-            height: 340px;
-            overflow-y: auto;
-            padding: 25px;
+        /* 3. Text Clip-path Reveal Masks */
+        .reveal-text-container {
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: bottom;
+            line-height: 1.2;
+        }
+
+        .reveal-text-line {
+            display: inline-block;
+            transform: translateY(105%);
+            transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        .reveal.active .reveal-text-line {
+            transform: translateY(0);
+        }
+
+        /* 4. Product Card Advanced Glow & Reflect */
+        .product-card {
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+            transition: border-color 0.4s, box-shadow 0.4s, transform 0.2s;
+        }
+
+        .product-card::before {
+            /* Override existing border light with dynamic radial gradient spotlight reflection */
+            content: "" !important;
+            position: absolute !important;
+            inset: 0 !important;
+            background: radial-gradient(350px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 80%) !important;
+            opacity: 0 !important;
+            transition: opacity 0.5s ease !important;
+            z-index: 4 !important;
+            pointer-events: none !important;
+        }
+
+        .product-card:hover::before {
+            opacity: 1 !important;
+        }
+        
+        .product-card:hover {
+            border-color: rgba(56, 189, 248, 0.4) !important;
+            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.15), 0 0 1px 1px rgba(56, 189, 248, 0.3) inset !important;
+        }
+
+        /* ================================================= */
+        /* WLMOUSE STYLE MEGA DROPDOWN MENU */
+        /* ================================================= */
+
+        .mega-menu {
+            position: absolute;
+            top: calc(78px + 10px); /* 10px spacing from the header bottom */
+            left: 0;
+            width: 100%;
+            background: rgba(4, 9, 20, 0.96);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border-radius: 24px;
+            border: 1px solid rgba(56, 189, 248, 0.16);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(56, 189, 248, 0.08) inset;
+            padding: 50px 60px;
+            display: flex;
+            gap: 60px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px) scaleY(0.98);
+            transform-origin: top center;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 990;
+        }
+
+        .mega-menu.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scaleY(1);
+        }
+
+        /* Mega Left Column: Categories List */
+        .mega-categories-col {
+            min-width: 360px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            justify-content: space-between;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding-right: 40px;
         }
 
-        .message {
-            max-width: 80%;
-            padding: 15px 18px;
-            border-radius: 20px;
-            line-height: 1.6;
-            animation: messagePop .5s ease;
+        .mega-category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
         }
 
-        .bot {
-            background: rgba(56, 189, 248, .16);
-            border: 1px solid rgba(125, 211, 252, .18);
+        .mega-category-item {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            position: relative;
+            padding-left: 25px;
+            user-select: none;
+            white-space: nowrap;
+            /* Entrance stagger animation starting state */
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+                        color 0.3s ease;
         }
 
-        .user {
-            margin-left: auto;
-            background: rgba(255, 255, 255, .08);
+        /* Staggered delay for each category item when menu is active */
+        .mega-menu.active .mega-category-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .mega-menu.active .mega-category-item:nth-child(1) { transition-delay: 0.08s; }
+        .mega-menu.active .mega-category-item:nth-child(2) { transition-delay: 0.14s; }
+        .mega-menu.active .mega-category-item:nth-child(3) { transition-delay: 0.20s; }
+        .mega-menu.active .mega-category-item:nth-child(4) { transition-delay: 0.26s; }
+        .mega-menu.active .mega-category-item:nth-child(5) { transition-delay: 0.32s; }
+        .mega-menu.active .mega-category-item:nth-child(6) { transition-delay: 0.38s; }
+
+        .mega-category-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 12px #38bdf8;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        @keyframes messagePop {
-            from {
+        .mega-category-item:hover {
+            color: rgba(255, 255, 255, 0.85);
+            transform: translateX(4px);
+        }
+
+        .mega-category-item.active {
+            color: #ffffff;
+            font-weight: 800;
+            transform: translateX(6px);
+        }
+
+        .mega-category-item.active::before {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .mega-view-all {
+            margin-top: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #38bdf8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            /* Entrance stagger animation starting state */
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+                        color 0.3s, gap 0.3s;
+        }
+
+        .mega-menu.active .mega-view-all {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.44s;
+        }
+
+        .mega-view-all:hover {
+            color: #7dd3fc;
+            gap: 12px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Mega Right Column: Dynamic Products Grid */
+        .mega-products-col {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .mega-products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .mega-products-grid.fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .mega-products-grid.fade-in {
+            animation: megaProductFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes megaProductFadeIn {
+            0% {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(15px);
             }
-
-            to {
+            100% {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        .chat-input {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            padding: 20px;
+        /* Mega Product Card Item */
+        .mega-product-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px 25px;
             display: flex;
-            gap: 12px;
-            border-top: 1px solid rgba(255, 255, 255, .08);
-        }
-
-        .chat-input input {
-            flex: 1;
-            height: 52px;
-            border: none;
-            outline: none;
-            border-radius: 18px;
-            padding: 0 18px;
-            background: rgba(255, 255, 255, .08);
-            color: white;
-        }
-
-        .chat-input button {
-            width: 55px;
-            height: 52px;
-            border: none;
-            border-radius: 18px;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
             cursor: pointer;
-            color: white;
-            font-size: 18px;
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-            transition: .3s;
+            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .chat-input button:hover {
-            transform: scale(1.08);
+        .mega-product-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(56, 189, 248, 0.35);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 1px 1px rgba(56, 189, 248, 0.2) inset;
+        }
+
+        .mega-product-img {
+            width: 175px;
+            height: 175px;
+            object-fit: contain;
+            margin-bottom: 22px;
+            filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.4));
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .mega-product-card:hover .mega-product-img {
+            transform: scale(1.12) rotate(2deg);
+        }
+
+        .mega-product-info {
+            width: 100%;
+        }
+
+        .mega-product-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mega-product-desc {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 18px;
+            height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .mega-product-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        /* ========================================== */
+        /* PREMIUM CART DRAWER (WLMOUSE STYLE) CSS */
+        /* ========================================== */
+
+        /* CART DRAWER OVERLAY */
+        .cart-drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+        }
+        .cart-drawer-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* CART DRAWER PANEL */
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 520px;
+            max-width: 100vw;
+            height: 100vh;
+            background: rgba(8, 16, 28, 0.85); /* Deep dark glass */
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            color: #ffffff;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            border-radius: 40px 0 0 40px;
+            border-left: 1px solid rgba(56, 189, 248, 0.15); /* Sleek neon cyan border line */
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            transform: translateX(100%);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); /* Slower, premium easing */
+        }
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+
+        /* Drawer Header */
+        .cart-drawer-header {
+            padding: 30px 40px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .cart-drawer-tabs {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .cart-tab {
+            font-size: 20px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .cart-tab.active {
+            color: #ffffff;
+        }
+        .cart-badge-count {
+            font-size: 14px;
+            vertical-align: super;
+            color: #7dd3fc;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(125, 211, 252, 0.4);
+        }
+        .cart-drawer-close {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s, border-color 0.3s, transform 0.3s;
+        }
+        .cart-drawer-close:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: #38bdf8;
+            transform: rotate(90deg);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+        .continue-shopping-btn:hover {
+            background: #e2e8f0 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Drawer Content scroll area */
+        .cart-drawer-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* Scrollbar */
+        .cart-drawer-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .cart-drawer-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .cart-drawer-content::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.2);
+            border-radius: 99px;
+        }
+
+        /* Cart Items list */
+        .cart-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .cart-item-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            position: relative;
+        }
+        .cart-item-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            object-fit: contain;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .cart-item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .cart-item-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+        .cart-item-specs {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.45);
+        }
+        .cart-item-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: #7dd3fc;
+            text-shadow: 0 0 10px rgba(125, 211, 252, 0.2);
+            margin-top: 4px;
+        }
+        .cart-item-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 4px 8px;
+            gap: 12px;
+        }
+        .qty-display {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            min-width: 16px;
+            text-align: center;
+        }
+        .qty-btn-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .qty-btn-arrow {
+            border: none;
+            background: none;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            padding: 0;
+            font-size: 10px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+        .qty-btn-arrow:hover {
+            color: #7dd3fc;
+        }
+        .cart-remove-link {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.35);
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .cart-remove-link:hover {
+            color: #f87171;
+        }
+
+        /* Recommendations Section */
+        .cart-recommendations {
+            background: transparent;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 30px;
+        }
+        .cart-recommendations h5 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+        .recommend-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .recommend-card img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .recommend-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .recommend-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+        .recommend-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .price-usd-new {
+            font-size: 14px;
+            font-weight: 700;
+            color: #7dd3fc;
+        }
+        .price-usd-old {
+            font-size: 12px;
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.35);
+        }
+        .recommend-add-btn {
+            background: rgba(56, 189, 248, 0.06);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.3s;
+        }
+        .recommend-add-btn:hover {
+            background: #38bdf8;
+            color: #08101b;
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        /* Actions Bar */
+        .cart-drawer-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(4, 11, 20, 0.5);
+        }
+        .action-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 18px 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .action-item:not(:last-child) {
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .action-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #7dd3fc;
+        }
+        .action-icon {
+            font-size: 16px;
+        }
+
+        /* Drawer Footer */
+        .cart-drawer-footer {
+            padding: 30px 40px 40px;
+            background: rgba(4, 11, 20, 0.9);
+            border-top: 1px solid rgba(56, 189, 248, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .cart-subtotal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+        .subtotal-left {
+            flex: 1;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.4;
+        }
+        .subtotal-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+        .subtotal-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .subtotal-amount {
+            font-size: 24px;
+            font-weight: 800;
+            color: #7dd3fc;
+            text-shadow: 0 0 15px rgba(125, 211, 252, 0.3);
+        }
+        .cart-checkout-btn {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            color: #ffffff;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.35);
+            transition: all 0.3s ease;
+        }
+        .cart-checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.5);
         }
     </style>
 </head>
 
 <body>
 
+    <!-- 1. Interactive Cursor Glow Background -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
     <div class="scroll-line" id="scrollLine"></div>
-
-
-
-    <!-- SUPPORT BUTTON -->
-    <div class="support-wrapper">
-        <div class="support-chat" id="supportChat">
-            <div class="chat-header">
-                <div class="chat-avatar">🤖</div>
-                <div>
-                    <h3>PC MASTER CHAT</h3>
-                    <span>Đang hoạt động</span>
-                </div>
-            </div>
-            <div class="chat-body">
-                <div class="message bot">
-                    Xin chào 👋<br>
-                    Tôi có thể hỗ trợ bạn chọn gaming gear, build PC hoặc tư vấn sản phẩm.
-                </div>
-                <div class="message user">Tôi muốn build PC RTX.</div>
-                <div class="message bot">Bạn muốn build theo ngân sách nào?</div>
-            </div>
-            <div class="chat-input">
-                <input type="text" placeholder="Nhập tin nhắn..." />
-                <button>➜</button>
-            </div>
-        </div>
-
-        <!-- FLOATING BUTTON -->
-        <div class="support-btn" id="supportBtn">
-            <div class="support-ring"></div>
-            💬
-        </div>
-    </div>
 
 
     <!-- BACKGROUND -->
@@ -1839,8 +2783,7 @@
 
         <nav>
 
-            <a href="#">Trang Chủ</a>
-            <a href="/Products">Sản Phẩm</a>
+            <a href="/Products" id="nav-products">Sản Phẩm</a>
             <a href="#">Gaming Gear</a>
             <a href="#">PC Build</a>
             <a href="#">Trạng thái đơn hàng</a>
@@ -1850,8 +2793,9 @@
 
         <div class="nav-actions">
 
-            <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
+            <button class="cart-btn">
                 🛒
+                <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;color:white;">0</span>
             </button>
 
             <!-- LOGIN BUTTON -->
@@ -1876,6 +2820,31 @@
 
         </div>
 
+        <!-- MEGA DROPDOWN MENU -->
+        <div class="mega-menu" id="megaMenu">
+            <!-- Left Categories Column -->
+            <div class="mega-categories-col">
+                <div class="mega-category-list">
+                    <div class="mega-category-item active" data-category="vga">Card Màn Hình (VGA)</div>
+                    <div class="mega-category-item" data-category="cpu">Bộ Vi Xử Lý (CPU)</div>
+                    <div class="mega-category-item" data-category="mainboard">Bo Mạch Chủ (Mainboard)</div>
+                    <div class="mega-category-item" data-category="ram">Bộ Nhớ Trong (RAM)</div>
+                    <div class="mega-category-item" data-category="ssd">SSD / Ổ Cứng</div>
+                    <div class="mega-category-item" data-category="psu">Nguồn / PSU</div>
+                </div>
+                <a href="/Products" class="mega-view-all">
+                    Xem Tất Cả Sản Phẩm <span>➔</span>
+                </a>
+            </div>
+
+            <!-- Right Products Column -->
+            <div class="mega-products-col">
+                <div class="mega-products-grid" id="megaProductsGrid">
+                    <!-- Products will be dynamically populated by JS -->
+                </div>
+            </div>
+        </div>
+
     </header>
 
     <!-- HERO -->
@@ -1884,10 +2853,10 @@
 
         <div class="hero-left">
 
-            <h1>
-
-                CHINH PHỤC MỌI GIỚI HẠN CẤU HÌNH
-
+            <h1 class="reveal active">
+                <span class="reveal-text-container">
+                    <span class="reveal-text-line">CHINH PHỤC MỌI GIỚI HẠN CẤU HÌNH</span>
+                </span>
             </h1>
 
             <p>
@@ -1929,6 +2898,30 @@
 
     </section>
 
+    <!-- 2. Infinite Technical Gaming Ticker (Marquee) -->
+    <div class="marquee-container">
+        <div class="marquee-track">
+            <div class="marquee-content">
+                <span>HYPER CORE //</span>
+                <span>NEXT-GEN PERFORMANCE //</span>
+                <span>RTX 5090 READY //</span>
+                <span>4K ULTRA GAMING //</span>
+                <span>ULTRA LIGHTWEIGHT GEAR //</span>
+                <span>8K POLLING RATE //</span>
+                <span>FUTURE SETUP //</span>
+            </div>
+            <div class="marquee-content">
+                <span>HYPER CORE //</span>
+                <span>NEXT-GEN PERFORMANCE //</span>
+                <span>RTX 5090 READY //</span>
+                <span>4K ULTRA GAMING //</span>
+                <span>ULTRA LIGHTWEIGHT GEAR //</span>
+                <span>8K POLLING RATE //</span>
+                <span>FUTURE SETUP //</span>
+            </div>
+        </div>
+    </div>
+
     <!-- SHOWCASE -->
 
     <section class="showcase page-section">
@@ -1941,9 +2934,13 @@
                     FUTURE GAMING
                 </span>
 
-                <h2>
-                    PREMIUM<br>
-                    SETUP
+                <h2 class="reveal">
+                    <span class="reveal-text-container" style="display: block;">
+                        <span class="reveal-text-line">PREMIUM</span>
+                    </span>
+                    <span class="reveal-text-container" style="display: block;">
+                        <span class="reveal-text-line">SETUP</span>
+                    </span>
                 </h2>
 
                 <p>
@@ -1974,8 +2971,10 @@
 
     <section class="products page-section">
 
-        <h2 class="section-title">
-            SẢN PHẨM HOT
+        <h2 class="section-title reveal">
+            <span class="reveal-text-container">
+                <span class="reveal-text-line">SẢN PHẨM HOT</span>
+            </span>
         </h2>
 
         <div class="product-grid">
@@ -2117,8 +3116,12 @@
             </span>
 
             <h2 class="gear-title">
-                GAMING<br>
-                ACCESSORIES
+                <span class="reveal-text-container" style="display: block;">
+                    <span class="reveal-text-line">GAMING</span>
+                </span>
+                <span class="reveal-text-container" style="display: block;">
+                    <span class="reveal-text-line">ACCESSORIES</span>
+                </span>
             </h2>
 
             <p class="gear-desc">
@@ -2239,8 +3242,12 @@
                 </span>
 
                 <h2 class="laptop-title">
-                    GAMING<br>
-                    LAPTOPS
+                    <span class="reveal-text-container" style="display: block;">
+                        <span class="reveal-text-line">GAMING</span>
+                    </span>
+                    <span class="reveal-text-container" style="display: block;">
+                        <span class="reveal-text-line">LAPTOPS</span>
+                    </span>
                 </h2>
 
                 <p class="laptop-text">
@@ -2314,7 +3321,9 @@
             </span>
 
             <h2 class="audio-title">
-                PREMIUM AUDIO
+                <span class="reveal-text-container">
+                    <span class="reveal-text-line">PREMIUM AUDIO</span>
+                </span>
             </h2>
 
         </div>
@@ -2373,13 +3382,155 @@
 
     </section>
 
+    <!-- CHATBOT UI -->
+    <div id="chatbot-button" class="chatbot-button" title="Mở trợ lý AI">
+        💬
+    </div>
+
+    <div id="chatbot-modal" class="chatbot-modal">
+        <div class="chatbot-header">
+            <h3>🤖 AI Assistant</h3>
+            <button id="chatbot-close" class="chatbot-close">✕</button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages">
+            <div class="message bot-message">
+                <div class="message-content">
+                    👋 Xin chào! Tôi là trợ lý AI của PC Store. Hỏi tôi bất kỳ điều gì về PC, Laptop, linh kiện hoặc các sản phẩm khác!
+                </div>
+            </div>
+        </div>
+        <div class="chatbot-input-section">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="Nhập câu hỏi..." autocomplete="off">
+            <button id="chatbot-send" class="chatbot-send">Gửi</button>
+        </div>
+    </div>
+
     <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <!-- Left Info Column -->
+            <div class="footer-info-col">
+                <div class="footer-logo">HYPER CORE</div>
+                <div class="footer-socials">
+                    <a href="#" class="social-icon" title="Instagram">📸</a>
+                    <a href="#" class="social-icon" title="YouTube">📺</a>
+                    <a href="#" class="social-icon" title="TikTok">🎵</a>
+                    <a href="#" class="social-icon" title="Discord">💬</a>
+                </div>
+            </div>
 
-    <footer>
+            <!-- Links Columns -->
+            <div class="footer-links-col">
+                <h4>Linh Kiện</h4>
+                <ul>
+                    <li><a href="/Products?cat=vga">Card Màn Hình (VGA)</a></li>
+                    <li><a href="/Products?cat=cpu">Bộ Vi Xử Lý (CPU)</a></li>
+                    <li><a href="/Products?cat=main">Bo Mạch Chủ (Main)</a></li>
+                    <li><a href="/Products?cat=ram">Bộ Nhớ Trong (RAM)</a></li>
+                    <li><a href="/Products?cat=ssd">SSD / Ổ Cứng</a></li>
+                    <li><a href="/Products?cat=psu">Nguồn / PSU</a></li>
+                </ul>
+            </div>
 
-        © 2026 HYPER CORE - NEXT GEN ELECTRONICS EXPERIENCE
+            <div class="footer-links-col">
+                <h4>Hỗ Trợ</h4>
+                <ul>
+                    <li><a href="#">Liên Hệ</a></li>
+                    <li><a href="#">Câu Hỏi FAQs</a></li>
+                    <li><a href="#">Tải Driver & Software</a></li>
+                    <li><a href="#">Trung Tâm Bảo Hành</a></li>
+                </ul>
+            </div>
 
+            <div class="footer-links-col">
+                <h4>Khám Phá</h4>
+                <ul>
+                    <li><a href="#">Về Chúng Tôi</a></li>
+                    <li><a href="#">Cộng Đồng Discord</a></li>
+                    <li><a href="#">Tin Tức Công Nghệ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Chính Sách</h4>
+                <ul>
+                    <li><a href="#">Chính Sách Giao Hàng</a></li>
+                    <li><a href="#">Chính Sách Đổi Trả</a></li>
+                    <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+                    <li><a href="#">Chính Sách Bảo Mật</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
+        </div>
     </footer>
+
+    <!-- CART DRAWER OVERLAY -->
+    <div class="cart-drawer-overlay" id="cartOverlay"></div>
+
+    <!-- CART DRAWER -->
+    <div class="cart-drawer" id="cartDrawer">
+      <!-- Header -->
+      <div class="cart-drawer-header">
+        <div class="cart-drawer-tabs">
+          <span class="cart-tab active">Cart <span class="cart-badge-count" id="drawerCartCount">0</span></span>
+          <span class="cart-tab">Recently viewed</span>
+        </div>
+        <button class="cart-drawer-close" id="cartCloseBtn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scrollable Content -->
+      <div class="cart-drawer-content">
+        <!-- Cart Items -->
+        <div class="cart-items-list" id="cartItemsList"></div>
+
+        <!-- Recommendation Section -->
+        <div class="cart-recommendations"></div>
+      </div>
+
+      <!-- Actions Bar -->
+      <div class="cart-drawer-actions">
+        <div class="action-item">
+          <span class="action-icon">📝</span>
+          <span>Order note</span>
+        </div>
+        <div class="action-item">
+          <span class="action-icon">🚚</span>
+          <span>Shipping</span>
+        </div>
+        <div class="action-item">
+          <span class="action-icon">🏷️</span>
+          <span>Discount</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="cart-drawer-footer">
+        <div class="cart-subtotal-row">
+          <div class="subtotal-left">
+            <span>Taxes included and shipping calculated at checkout.</span>
+          </div>
+          <div class="subtotal-right">
+            <span class="subtotal-label">Subtotal</span>
+            <span class="subtotal-amount" id="drawerSubtotal">$0.00 USD</span>
+          </div>
+        </div>
+        <button class="cart-checkout-btn" onclick="window.location.href='/shoppingcart'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Thanh toán
+        </button>
+      </div>
+    </div>
 
     <!-- SCRIPT -->
 
@@ -2439,77 +3590,721 @@
 
         revealOnScroll();
 
-        /* 3D PRODUCT TILT */
+        /* ================================================= */
+        /* WLMOUSE PREMIUM ANIMATION LOGIC */
+        /* ================================================= */
 
-        const cards = document.querySelectorAll(".product-card");
+        /* ================================================= */
+        /* WLMOUSE STYLE MEGA DROPDOWN MENU LOGIC */
+        /* ================================================= */
 
-        cards.forEach(card => {
+        // 1. Dynamic Products Data for Mega Menu
+        const megaProductsData = {
+            vga: [
+                {
+                    name: "NVIDIA RTX 5090 FE",
+                    desc: "32GB GDDR7 | Băng thông thế hệ mới",
+                    price: "59.990.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "ASUS ROG Strix RTX 4090",
+                    desc: "24GB GDDR6X | ROG Premium Cooling",
+                    price: "52.490.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "MSI RTX 4070 Ti Super",
+                    desc: "16GB GDDR6X | Gaming X Slim",
+                    price: "24.990.000đ",
+                    img: "/images/pc1.jpg"
+                }
+            ],
+            cpu: [
+                {
+                    name: "Intel Core Ultra 9 285K",
+                    desc: "24 nhân 24 luồng | Lên đến 5.7GHz",
+                    price: "16.490.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "AMD Ryzen 9 9950X",
+                    desc: "16 nhân 32 luồng | Kiến trúc Zen 5",
+                    price: "17.290.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "Intel Core i7 14700K",
+                    desc: "20 nhân 28 luồng | Tối ưu gaming",
+                    price: "10.490.000đ",
+                    img: "/images/pc1.jpg"
+                }
+            ],
+            mainboard: [
+                {
+                    name: "ASUS ROG Maximus Z890 Hero",
+                    desc: "LGA1851 | WiFi 7 | Thunderbolt 4",
+                    price: "18.990.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "MSI MEG X870E GODLIKE",
+                    desc: "AM5 | Extreme Power Phase | OLED",
+                    price: "29.990.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "GIGABYTE Z890 AORUS Master",
+                    desc: "LGA1851 | Extreme Gaming Design",
+                    price: "13.490.000đ",
+                    img: "/images/pc1.jpg"
+                }
+            ],
+            ram: [
+                {
+                    name: "Corsair Dominator Titanium DDR5",
+                    desc: "64GB (2x32GB) | 7200MHz | CL34",
+                    price: "9.990.000đ",
+                    img: "/images/keyboard.jpg"
+                },
+                {
+                    name: "G.Skill Trident Z5 RGB DDR5",
+                    desc: "32GB (2x16GB) | 6800MHz | Intel XMP",
+                    price: "4.890.000đ",
+                    img: "/images/keyboard.jpg"
+                },
+                {
+                    name: "Kingston FURY Beast DDR5",
+                    desc: "32GB (2x16GB) | 5600MHz | Giá cực tốt",
+                    price: "2.990.000đ",
+                    img: "/images/keyboard.jpg"
+                }
+            ],
+            ssd: [
+                {
+                    name: "Samsung 990 Pro NVMe 2TB",
+                    desc: "PCIe 4.0 · 7450 MB/s · Cực kỳ ổn định",
+                    price: "3.200.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "Kingston KC3000 PCIe 4.0",
+                    desc: "2TB | Tốc độ đọc ghi lên đến 7000MB/s",
+                    price: "2.890.000đ",
+                    img: "/images/pc1.jpg"
+                },
+                {
+                    name: "WD Black SN850X 1TB",
+                    desc: "1TB | Tối ưu hóa tải game cực nhanh",
+                    price: "1.990.000đ",
+                    img: "/images/pc1.jpg"
+                }
+            ],
+            psu: [
+                {
+                    name: "Corsair HX1200 Platinum",
+                    desc: "1200W · 80 Plus Platinum · Cáp rời",
+                    price: "5.600.000đ",
+                    img: "/images/keyboard.jpg"
+                },
+                {
+                    name: "ASUS ROG Thor 1000W Platinum II",
+                    desc: "1000W | Có màn hình OLED hiển thị công suất",
+                    price: "8.490.000đ",
+                    img: "/images/keyboard.jpg"
+                },
+                {
+                    name: "MSI MAG A850GL PCIe 5.0",
+                    desc: "850W | Đạt chuẩn ATX 3.0 & PCIe 5.0",
+                    price: "2.790.000đ",
+                    img: "/images/keyboard.jpg"
+                }
+            ]
+        };
 
+        // 2. DOM Elements
+        const navProductsLink = document.getElementById("nav-products");
+        const megaDropdownMenu = document.getElementById("megaMenu");
+        const megaProductsGrid = document.getElementById("megaProductsGrid");
+        const megaCategoryItems = document.querySelectorAll(".mega-category-item");
+
+        let megaHoverTimeout;
+
+        // 3. Render function for products in grid
+        function renderMegaProducts(categoryKey) {
+            const products = megaProductsData[categoryKey];
+            if (!products || !megaProductsGrid) return;
+
+            // Apply fade-out class first for smooth transition animation
+            megaProductsGrid.classList.remove("fade-in");
+            megaProductsGrid.classList.add("fade-out");
+
+            setTimeout(() => {
+                megaProductsGrid.innerHTML = "";
+                products.forEach((prod, index) => {
+                    const card = document.createElement("div");
+                    card.className = "mega-product-card";
+                    
+                    // Set initial starting states for smooth staggered slide up reveal
+                    card.style.opacity = "0";
+                    card.style.transform = "translateY(45px)";
+                    card.style.transition = "opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease";
+                    
+                    card.innerHTML = `
+                        <img src="${prod.img}" class="mega-product-img" alt="${prod.name}">
+                        <div class="mega-product-info">
+                            <div class="mega-product-name" title="${prod.name}">${prod.name}</div>
+                            <div class="mega-product-desc" title="${prod.desc}">${prod.desc}</div>
+                            <div class="mega-product-price">${prod.price}</div>
+                        </div>
+                    `;
+                    
+                    // Wire up the same premium 3D tilt effect on mega menu product cards
+                    card.addEventListener("mousemove", (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const percentX = (x / rect.width) * 100;
+                        const percentY = (y / rect.height) * 100;
+                        card.style.setProperty("--mouse-x", `${percentX}%`);
+                        card.style.setProperty("--mouse-y", `${percentY}%`);
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = -(y - centerY) / 12;
+                        const rotateY = (x - centerX) / 12;
+                        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px) scale(1.02)`;
+                    });
+
+                    // Click card to go to Products page with category filter applied
+                    card.addEventListener("click", () => {
+                        let catUrlKey = categoryKey;
+                        if (catUrlKey === "mainboard") catUrlKey = "main";
+                        window.location.href = `/Products?cat=${catUrlKey}`;
+                    });
+
+                    card.addEventListener("mouseleave", () => {
+                        card.style.transform = "rotateX(0) rotateY(0) translateY(0) scale(1)";
+                        card.style.setProperty("--mouse-x", "50%");
+                        card.style.setProperty("--mouse-y", "50%");
+                    });
+                    
+                    megaProductsGrid.appendChild(card);
+
+                    // Trigger the staggered float-up reveal for each card!
+                    setTimeout(() => {
+                        card.style.opacity = "1";
+                        card.style.transform = "translateY(0)";
+                    }, index * 160); // 160ms cascade delay between cards (clearly staggered left-to-right, elegant slow glide)
+                });
+
+                // Trigger fade-in animation
+                megaProductsGrid.classList.remove("fade-out");
+                megaProductsGrid.classList.add("fade-in");
+            }, 120); // 120ms delay matches CSS fade transition perfectly
+        }
+
+        // 4. Toggle active categories logic & redirect on click
+        megaCategoryItems.forEach(item => {
+            // Switch tabs on hover
+            item.addEventListener("mouseenter", () => {
+                if (item.classList.contains("active")) return;
+                
+                // Clear active from all other items and set this as active
+                megaCategoryItems.forEach(i => i.classList.remove("active"));
+                item.classList.add("active");
+
+                const category = item.getAttribute("data-category");
+                renderMegaProducts(category);
+            });
+
+            // Redirect to filtered Products page on click
+            item.addEventListener("click", () => {
+                let catKey = item.getAttribute("data-category");
+                if (catKey === "mainboard") catKey = "main";
+                window.location.href = `/Products?cat=${catKey}`;
+            });
+        });
+
+        // 5. Open/Close Mega Menu with Delay to prevent jittering
+        function showMegaDropdown() {
+            clearTimeout(megaHoverTimeout);
+            if (megaDropdownMenu) {
+                const wasActive = megaDropdownMenu.classList.contains("active");
+                megaDropdownMenu.classList.add("active");
+                
+                // Trigger staggered entrance from scratch every single time the menu is opened!
+                if (!wasActive) {
+                    const activeCategory = document.querySelector(".mega-category-item.active");
+                    const catKey = activeCategory ? activeCategory.getAttribute("data-category") : "vga";
+                    renderMegaProducts(catKey);
+                }
+            }
+        }
+
+        function hideMegaDropdown() {
+            megaHoverTimeout = setTimeout(() => {
+                if (megaDropdownMenu) {
+                    megaDropdownMenu.classList.remove("active");
+                }
+            }, 250); // 250ms buffer time to move mouse into menu container
+        }
+
+        if (navProductsLink && megaDropdownMenu) {
+            navProductsLink.addEventListener("mouseenter", showMegaDropdown);
+            navProductsLink.addEventListener("mouseleave", hideMegaDropdown);
+
+            megaDropdownMenu.addEventListener("mouseenter", showMegaDropdown);
+            megaDropdownMenu.addEventListener("mouseleave", hideMegaDropdown);
+        }
+
+        /* 1. INTERACTIVE CURSOR GLOW (SPOTLIGHT LERP) */
+        let mouseX = 0, mouseY = 0;
+        let glowX = 0, glowY = 0;
+        const cursorGlow = document.getElementById("cursorGlow");
+
+        document.addEventListener("mousemove", (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            if (cursorGlow) {
+                if (cursorGlow.style.opacity === "0" || !cursorGlow.style.opacity) {
+                    cursorGlow.style.opacity = "1";
+                }
+            }
+        });
+
+        document.addEventListener("mouseleave", () => {
+            if (cursorGlow) cursorGlow.style.opacity = "0";
+        });
+
+        function updateGlowPosition() {
+            if (cursorGlow) {
+                // Lerp interpolation (0.07 speed gives a highly smooth trail feel)
+                glowX += (mouseX - glowX) * 0.07;
+                glowY += (mouseY - glowY) * 0.07;
+                
+                cursorGlow.style.left = `${glowX}px`;
+                cursorGlow.style.top = `${glowY}px`;
+            }
+            requestAnimationFrame(updateGlowPosition);
+        }
+        updateGlowPosition();
+
+        /* 2. ADVANCED 3D PRODUCT CARD TILT & METALLIC SHINE */
+        const productCards = document.querySelectorAll(".product-card");
+
+        productCards.forEach(card => {
             card.addEventListener("mousemove", (e) => {
-
                 const rect = card.getBoundingClientRect();
-
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
+
+                // Calculate mouse position percentages for CSS variables
+                const percentX = (x / rect.width) * 100;
+                const percentY = (y / rect.height) * 100;
+
+                card.style.setProperty("--mouse-x", `${percentX}%`);
+                card.style.setProperty("--mouse-y", `${percentY}%`);
 
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
 
-                const rotateX = -(y - centerY) / 18;
-                const rotateY = (x - centerX) / 18;
+                // 3D rotations
+                const rotateX = -(y - centerY) / 16;
+                const rotateY = (x - centerX) / 16;
 
-                card.style.transform =
-                    `
+                card.style.transform = `
                     rotateX(${rotateX}deg)
                     rotateY(${rotateY}deg)
                     translateY(-10px)
-                    scale(1.02)
-                    `;
-
+                    scale(1.025)
+                `;
             });
 
             card.addEventListener("mouseleave", () => {
+                card.style.transform = "rotateX(0) rotateY(0) translateY(0) scale(1)";
+                card.style.setProperty("--mouse-x", "50%");
+                card.style.setProperty("--mouse-y", "50%");
+            });
+        });
 
-                card.style.transform =
-                    "rotateX(0) rotateY(0) translateY(0) scale(1)";
+        /* 3. MAGNETIC HOVER BUTTONS EFFECT */
+        const magneticBtns = document.querySelectorAll(".hero-btn, .login-glass-btn, .register-glass-btn, .cart-btn, .gear-btn");
 
+        magneticBtns.forEach(btn => {
+            btn.addEventListener("mousemove", (e) => {
+                const rect = btn.getBoundingClientRect();
+                // Find vector from button center to mouse position
+                const btnCenterX = rect.left + rect.width / 2;
+                const btnCenterY = rect.top + rect.height / 2;
+                const vectorX = e.clientX - btnCenterX;
+                const vectorY = e.clientY - btnCenterY;
+
+                // Magnetic attraction force (pull 30% towards the mouse position)
+                const pullX = vectorX * 0.3;
+                const pullY = vectorY * 0.3;
+
+                btn.style.transform = `translate(${pullX}px, ${pullY}px) scale(1.05)`;
             });
 
+            btn.addEventListener("mouseleave", () => {
+                btn.style.transform = "translate(0, 0) scale(1)";
+            });
         });
 
-        /* HERO PARALLAX */
-
-        const banner = document.querySelector(".banner-image");
+        /* 4. HERO PARALLAX & PERSPECTIVE WARP */
+        const heroBanner = document.querySelector(".banner-image");
+        const gridBg = document.querySelector(".grid-bg");
 
         document.addEventListener("mousemove", (e) => {
+            const x = (window.innerWidth / 2 - e.clientX) / 45;
+            const y = (window.innerHeight / 2 - e.clientY) / 45;
 
-            const x = (window.innerWidth / 2 - e.clientX) / 40;
-            const y = (window.innerHeight / 2 - e.clientY) / 40;
+            // Move the hero banner image
+            if (heroBanner) {
+                heroBanner.style.transform = `translate(${x}px, ${y}px)`;
+            }
 
-            banner.style.transform =
-                `translate(${x}px, ${y}px)`;
-
-        });
-
-
-
-        /* ========================================= */
-        /* SUPPORT CHAT */
-        /* ========================================= */
-        const supportBtn = document.getElementById("supportBtn");
-        const supportChat = document.getElementById("supportChat");
-
-        let chatOpen = false;
-
-        supportBtn.addEventListener("click", () => {
-            chatOpen = !chatOpen;
-            if (chatOpen) {
-                supportChat.classList.add("active");
-            } else {
-                supportChat.classList.remove("active");
+            // Move grid background slightly for deep parallax depth
+            if (gridBg) {
+                gridBg.style.transform = `translate(${x * 0.4}px, ${y * 0.4}px)`;
             }
         });
+
+        /* AI CHATBOT */
+        const chatbotButton = document.getElementById("chatbot-button");
+        const chatbotModal = document.getElementById("chatbot-modal");
+        const chatbotClose = document.getElementById("chatbot-close");
+        const chatbotMessages = document.getElementById("chatbot-messages");
+        const chatbotInput = document.getElementById("chatbot-input");
+        const chatbotSend = document.getElementById("chatbot-send");
+        const CHATBOT_API = "/api/chatbot";
+
+        function addMessage(text, type) {
+            const message = document.createElement("div");
+            message.className = `message ${type}-message`;
+            message.innerHTML = `<div class="message-content">${text}</div>`;
+            chatbotMessages.appendChild(message);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function toggleChatbot() {
+            chatbotModal.classList.toggle("active");
+            chatbotButton.classList.toggle("active");
+            if (chatbotModal.classList.contains("active")) {
+                chatbotInput.focus();
+            }
+        }
+
+        function createLoadingMessage() {
+            const loadingWrap = document.createElement("div");
+            loadingWrap.className = "message bot-message";
+            loadingWrap.id = "chatbot-loading";
+            loadingWrap.innerHTML = `
+                <div class="message-content loading">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            chatbotMessages.appendChild(loadingWrap);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function removeLoadingMessage() {
+            const loading = document.getElementById("chatbot-loading");
+            if (loading) loading.remove();
+        }
+
+        async function sendChatMessage() {
+            const text = chatbotInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, "user");
+            chatbotInput.value = "";
+            chatbotSend.disabled = true;
+            createLoadingMessage();
+
+            try {
+                const response = await fetch(CHATBOT_API, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text })
+                });
+
+                if (!response.ok) {
+                    throw new Error("API_ERROR");
+                }
+
+                const data = await response.json();
+                const reply =
+                    data.reply ||
+                    data.message ||
+                    "Xin lỗi, tôi chưa thể phản hồi lúc này.";
+                addMessage(reply, "bot");
+            } catch (error) {
+                addMessage("Xin lỗi, kết nối AI đang gián đoạn. Vui lòng thử lại sau.", "bot");
+            } finally {
+                removeLoadingMessage();
+                chatbotSend.disabled = false;
+                chatbotInput.focus();
+            }
+        }
+
+        if (chatbotButton && chatbotModal && chatbotClose && chatbotMessages && chatbotInput && chatbotSend) {
+            chatbotButton.addEventListener("click", toggleChatbot);
+            chatbotClose.addEventListener("click", toggleChatbot);
+            chatbotSend.addEventListener("click", sendChatMessage);
+            chatbotInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    sendChatMessage();
+                }
+            });
+        }
+
+        // SHARED CART LOGIC (LOCAL STORAGE & SLIDE-OUT DRAWER)
+        let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+        if (localStorage.getItem('hyper_core_cart') === null) {
+          cart = [{
+            id: 999,
+            name: "Beast X Pro Magnesium Gaming Mouse",
+            specs: "Black · OMRON Opticals · Side Slits",
+            price: 145.00,
+            currency: "USD",
+            qty: 1,
+            img: "https://placehold.co/100x100/0f172a/7dd3fc?text=Beast+X"
+          }];
+          localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+        }
+
+        const RECOMMEND_PRODUCTS = [
+          {
+            id: 4,
+            name: "Corsair Dominator DDR5 32GB",
+            specs: "DDR5 · 32GB (2x16) · 6400MHz",
+            price: 4800000,
+            oldPrice: 5500000,
+            currency: "VND",
+            img: "https://placehold.co/100x100/081120/7dd3fc?text=DDR5+32GB"
+          },
+          {
+            id: 5,
+            name: "Samsung 990 Pro NVMe 2TB",
+            specs: "PCIe 4.0 · 7450 MB/s · M.2 2280",
+            price: 3200000,
+            oldPrice: 3800000,
+            currency: "VND",
+            img: "https://placehold.co/100x100/081120/7dd3fc?text=Samsung+990+Pro"
+          }
+        ];
+
+        function renderRecommendations() {
+          const recContainer = document.querySelector('.cart-recommendations');
+          if (!recContainer) return;
+          
+          const availableRecs = RECOMMEND_PRODUCTS.filter(rec => !cart.some(item => item.id === rec.id));
+          
+          if (availableRecs.length === 0) {
+            recContainer.style.display = 'none';
+            return;
+          }
+          
+          recContainer.style.display = 'block';
+          let html = `<h5>You may also like</h5><div style="display:flex; flex-direction:column; gap:16px;">`;
+          
+          availableRecs.forEach(rec => {
+            const formattedPrice = rec.price.toLocaleString('vi-VN') + ' đ';
+            const formattedOldPrice = rec.oldPrice ? rec.oldPrice.toLocaleString('vi-VN') + ' đ' : '';
+            
+            html += `
+              <div class="recommend-card">
+                <img src="${rec.img}" alt="${rec.name}">
+                <div class="recommend-info">
+                  <span class="recommend-title">${rec.name}</span>
+                  <div class="recommend-price">
+                    <span class="price-usd-new" style="color: #7dd3fc;">${formattedPrice}</span>
+                    ${formattedOldPrice ? `<span class="price-usd-old">${formattedOldPrice}</span>` : ''}
+                  </div>
+                </div>
+                <button class="recommend-add-btn" onclick="addRecommendedItem(${rec.id})">+ Add</button>
+              </div>
+            `;
+          });
+          
+          html += `</div>`;
+          recContainer.innerHTML = html;
+        }
+
+        window.addRecommendedItem = function(id) {
+          const rec = RECOMMEND_PRODUCTS.find(r => r.id === id);
+          if (rec) {
+            const existing = cart.find(i => i.id === rec.id);
+            if (existing) {
+              existing.qty++;
+            } else {
+              cart.push({
+                id: rec.id,
+                name: rec.name,
+                specs: rec.specs,
+                price: rec.price,
+                currency: rec.currency,
+                qty: 1,
+                img: rec.img
+              });
+            }
+            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+            renderCartDrawer();
+          }
+        };
+
+        function renderCartDrawer() {
+          const listEl = document.getElementById('cartItemsList');
+          const countEl = document.getElementById('drawerCartCount');
+          const badgeEl = document.getElementById('cartCount');
+          const subtotalEl = document.getElementById('drawerSubtotal');
+          
+          if (!listEl) return;
+          
+          const recEl = document.querySelector('.cart-recommendations');
+          const actionsEl = document.querySelector('.cart-drawer-actions');
+          const footerEl = document.querySelector('.cart-drawer-footer');
+
+          if (cart.length === 0) {
+            listEl.innerHTML = `
+              <div class="cart-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px; min-height: 380px;">
+                <h2 style="font-size: 26px; font-weight: 700; margin-bottom: 12px; color: #fff; font-family: 'Inter', sans-serif;">Your cart is currently empty.</h2>
+                <p style="font-size: 15px; color: rgba(255, 255, 255, 0.5); line-height: 1.6; margin-bottom: 30px; font-family: 'Inter', sans-serif;">Not sure where to start?<br>Try these collections:</p>
+                <button class="continue-shopping-btn" onclick="closeCartDrawer(); window.location.href='/Products'" style="background: #fff; color: #020617; border: none; padding: 14px 28px; border-radius: 99px; font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif;">
+                  Continue shopping 
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: translateY(1px);">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </button>
+              </div>
+            `;
+            if (recEl) recEl.style.display = 'none';
+            if (actionsEl) actionsEl.style.display = 'none';
+            if (footerEl) footerEl.style.display = 'none';
+            if (countEl) countEl.textContent = '0';
+            if (badgeEl) badgeEl.style.display = 'none';
+            return;
+          }
+
+          if (recEl) recEl.style.display = 'block';
+          if (actionsEl) actionsEl.style.display = 'flex';
+          if (footerEl) footerEl.style.display = 'block';
+
+          listEl.innerHTML = '';
+          let totalUsd = 0;
+          let totalVnd = 0;
+          let totalItems = 0;
+          
+          cart.forEach(item => {
+            totalItems += item.qty;
+            if (item.currency === 'USD') {
+              totalUsd += item.price * item.qty;
+            } else {
+              totalVnd += item.price * item.qty;
+            }
+            
+            const formattedPrice = item.currency === 'USD' 
+              ? `$${(item.price * item.qty).toFixed(2)} USD` 
+              : (item.price * item.qty).toLocaleString('vi-VN') + ' đ';
+              
+            const itemEl = document.createElement('div');
+            itemEl.className = 'cart-item-row';
+            itemEl.innerHTML = `
+              <img src="${item.img}" class="cart-item-img" alt="${item.name}">
+              <div class="cart-item-details">
+                <span class="cart-item-name">${item.name}</span>
+                <span class="cart-item-specs">${item.specs}</span>
+                <span class="cart-item-price">${formattedPrice}</span>
+              </div>
+              <div class="cart-item-controls">
+                <div class="quantity-selector">
+                  <span class="qty-display">${item.qty}</span>
+                  <div class="qty-btn-col">
+                    <button class="qty-btn-arrow" onclick="changeQty(${item.id}, 1)">▲</button>
+                    <button class="qty-btn-arrow" onclick="changeQty(${item.id}, -1)">▼</button>
+                  </div>
+                </div>
+                <span class="cart-remove-link" onclick="removeFromCart(${item.id})">Remove</span>
+              </div>
+            `;
+            listEl.appendChild(itemEl);
+          });
+          
+          let subtotalText = '';
+          if (totalUsd > 0 && totalVnd > 0) {
+            subtotalText = `$${totalUsd.toFixed(2)} USD + ${totalVnd.toLocaleString('vi-VN')} đ`;
+          } else if (totalUsd > 0) {
+            subtotalText = `$${totalUsd.toFixed(2)} USD`;
+          } else {
+            subtotalText = `${totalVnd.toLocaleString('vi-VN')} đ`;
+          }
+          
+          if (subtotalEl) subtotalEl.textContent = subtotalText;
+          if (countEl) countEl.textContent = totalItems;
+          
+          if (badgeEl) {
+            badgeEl.textContent = totalItems;
+            badgeEl.style.display = totalItems > 0 ? 'flex' : 'none';
+          }
+          renderRecommendations();
+        }
+
+        window.changeQty = function(id, delta) {
+          const item = cart.find(i => i.id === id);
+          if (item) {
+            item.qty += delta;
+            if (item.qty <= 0) {
+              cart = cart.filter(i => i.id !== id);
+            }
+            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+            renderCartDrawer();
+          }
+        };
+
+        window.removeFromCart = function(id) {
+          cart = cart.filter(i => i.id !== id);
+          localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+          renderCartDrawer();
+        };
+
+        // Removed static recommend listener
+
+        // CART DRAWER INTERACTIONS
+        const cartBtn = document.querySelector('.cart-btn');
+        const cartDrawer = document.getElementById('cartDrawer');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartCloseBtn = document.getElementById('cartCloseBtn');
+
+        function openCartDrawer() {
+          if (cartDrawer && cartOverlay) {
+            cartDrawer.classList.add('open');
+            cartOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+          }
+        }
+
+        function closeCartDrawer() {
+          if (cartDrawer && cartOverlay) {
+            cartDrawer.classList.remove('open');
+            cartOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+          }
+        }
+
+        cartBtn?.addEventListener('click', (e) => {
+          e.preventDefault();
+          openCartDrawer();
+        });
+
+        cartCloseBtn?.addEventListener('click', closeCartDrawer);
+        cartOverlay?.addEventListener('click', closeCartDrawer);
+
+        // Initial startup
+        renderCartDrawer();
     </script>
+
     <!-- DYNAMIC POPUP CONTAINER -->
     <div id="login-popup-container"></div>
     <div id="register-popup-container"></div>

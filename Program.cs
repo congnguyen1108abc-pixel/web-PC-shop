@@ -1,10 +1,32 @@
-using Microsoft.AspNetCore.StaticFiles;
+﻿using Microsoft.AspNetCore.StaticFiles;
+using PC_Store.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Dang ky Chatbot Service voi Google Gemini API (Free)
+var geminiApiKey = builder.Configuration["Gemini:ApiKey"];
+if (string.IsNullOrEmpty(geminiApiKey))
+{
+    Console.WriteLine("Canh bao: Gemini:ApiKey khong duoc cau hinh trong appsettings.json");
+}
+builder.Services.AddScoped<IChatbotService>(sp =>
+    new ChatbotService(geminiApiKey ?? "")
+);
+
+// Them CORS de frontend co the goi API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -22,6 +44,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+// Su dung CORS
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
@@ -111,7 +136,4 @@ app.MapGet("/Register", async context =>
 
 app.MapControllers();
 
-
-
 app.Run();
-

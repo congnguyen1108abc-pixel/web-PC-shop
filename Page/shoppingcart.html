@@ -513,95 +513,9 @@
 
         <!-- LEFT -->
 
-        <div class="glass-box">
+        <div class="glass-box" id="cartItemsContainer">
 
-            <!-- ITEM -->
-
-            <div class="cart-item">
-
-                <img src="/images/pc1.jpg">
-
-                <div class="item-info">
-
-                    <h3>RTX Gaming PC</h3>
-
-                    <div class="variant">
-                        Màu: Đen RGB • RTX 5090 • Intel Ultra 9
-                    </div>
-
-                    <div class="quantity-box">
-
-                        <button class="qty-btn minus">-</button>
-
-                        <input type="number" class="qty-input" value="1">
-
-                        <button class="qty-btn plus">+</button>
-
-                    </div>
-
-                    <div class="save-later">
-                        💙 Lưu mua sau
-                    </div>
-
-                </div>
-
-                <div class="price-box">
-
-                    <div class="price item-price" data-price="59990000">
-                        59.990.000đ
-                    </div>
-
-                    <button class="delete-btn">
-                        🗑
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- ITEM -->
-
-            <div class="cart-item">
-
-                <img src="/images/headphone.jpg">
-
-                <div class="item-info">
-
-                    <h3>Gaming Headset</h3>
-
-                    <div class="variant">
-                        Màu: White • 7.1 Surround
-                    </div>
-
-                    <div class="quantity-box">
-
-                        <button class="qty-btn minus">-</button>
-
-                        <input type="number" class="qty-input" value="1">
-
-                        <button class="qty-btn plus">+</button>
-
-                    </div>
-
-                    <div class="save-later">
-                        💙 Lưu mua sau
-                    </div>
-
-                </div>
-
-                <div class="price-box">
-
-                    <div class="price item-price" data-price="3290000">
-                        3.290.000đ
-                    </div>
-
-                    <button class="delete-btn">
-                        🗑
-                    </button>
-
-                </div>
-
-            </div>
+            <!-- Dynamic Items will be rendered here by JS -->
 
         </div>
 
@@ -678,68 +592,8 @@
                 Thường Được Mua Cùng
             </h2>
 
-            <div class="cross-grid">
-
-                <div class="cross-card">
-
-                    <img src="/images/mouse.jpg">
-
-                    <div class="cross-info">
-
-                        <h3>Wireless Mouse</h3>
-
-                        <div class="cross-price">
-                            1.990.000đ
-                        </div>
-
-                        <button class="add-btn">
-                            Thêm vào giỏ
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="cross-card">
-
-                    <img src="/images/keyboard.jpg">
-
-                    <div class="cross-info">
-
-                        <h3>Mechanical Keyboard</h3>
-
-                        <div class="cross-price">
-                            2.490.000đ
-                        </div>
-
-                        <button class="add-btn">
-                            Thêm vào giỏ
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="cross-card">
-
-                    <img src="/images/monitor.jpg">
-
-                    <div class="cross-info">
-
-                        <h3>4K Gaming Monitor</h3>
-
-                        <div class="cross-price">
-                            12.990.000đ
-                        </div>
-
-                        <button class="add-btn">
-                            Thêm vào giỏ
-                        </button>
-
-                    </div>
-
-                </div>
-
+            <div class="cross-grid" id="crossGridContainer">
+                <!-- Dynamic Recommendations will be rendered here by JS -->
             </div>
 
         </div>
@@ -761,176 +615,253 @@
     <!-- SCRIPT -->
 
     <script>
+        let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+        if (localStorage.getItem('hyper_core_cart') === null) {
+            cart = [{
+                id: 999,
+                name: "Beast X Pro Magnesium Gaming Mouse",
+                specs: "Black · OMRON Opticals · Side Slits",
+                price: 145.00,
+                currency: "USD",
+                qty: 1,
+                img: "https://placehold.co/100x100/0f172a/7dd3fc?text=Beast+X"
+            }];
+            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+        }
+        
+        const subtotal = document.getElementById("subtotal");
+        const total = document.getElementById("total");
 
-        const minusBtns =
-            document.querySelectorAll(".minus");
-
-        const plusBtns =
-            document.querySelectorAll(".plus");
-
-        const deleteBtns =
-            document.querySelectorAll(".delete-btn");
-
-        const subtotal =
-            document.getElementById("subtotal");
-
-        const total =
-            document.getElementById("total");
-
-        let deletedItem = null;
-
-        /* ===================== */
-        /* UPDATE TOTAL */
-        /* ===================== */
-
-        function updateTotal() {
-
+        function renderCartPage() {
+            const container = document.getElementById('cartItemsContainer');
+            if (!container) return;
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 50px 20px;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">🛒</div>
+                        <h2 style="font-size: 28px; margin-bottom: 12px; color: white;">Giỏ hàng trống</h2>
+                        <p style="color: rgba(255,255,255,0.6); margin-bottom: 30px;">Bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+                        <button class="checkout-btn" onclick="window.location.href='/Products'" style="width: auto; padding: 0 40px;">Tiếp tục mua sắm</button>
+                    </div>
+                `;
+                subtotal.innerText = '0đ';
+                total.innerText = '0đ';
+                
+                const savingsEl = document.querySelector('.save-money');
+                if (savingsEl) savingsEl.style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = '';
             let sum = 0;
-
-            document.querySelectorAll(".cart-item")
-                .forEach(item => {
-
-                    const qty =
-                        parseInt(item.querySelector(".qty-input").value);
-
-                    const price =
-                        parseInt(item.querySelector(".item-price")
-                            .dataset.price);
-
-                    sum += qty * price;
-
-                });
-
-            subtotal.innerText =
-                sum.toLocaleString("vi-VN") + "đ";
-
-            total.innerText =
-                (sum - 1000000 + 40000)
-                    .toLocaleString("vi-VN") + "đ";
+            
+            cart.forEach(item => {
+                let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
+                sum += itemPriceVnd * item.qty;
+                
+                const formattedPrice = item.currency === 'USD' 
+                  ? `$${item.price.toFixed(2)} USD` 
+                  : item.price.toLocaleString('vi-VN') + ' đ';
+                  
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                itemEl.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <div class="item-info">
+                        <h3 style="color: white; margin-bottom: 12px; font-size: 28px;">${item.name}</h3>
+                        <div class="variant" style="color: rgba(255,255,255,0.6); margin-bottom: 10px;">${item.specs}</div>
+                        <div class="quantity-box" style="display:flex; align-items:center; gap:12px; margin-top:18px;">
+                            <button class="qty-btn" onclick="changePageQty(${item.id}, -1)">-</button>
+                            <input type="number" class="qty-input" value="${item.qty}" readonly style="width: 60px; height: 38px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); text-align: center; color: white; font-size: 16px;">
+                            <button class="qty-btn" onclick="changePageQty(${item.id}, 1)">+</button>
+                        </div>
+                        <div class="save-later" style="color: #7dd3fc; cursor: pointer; font-size: 14px; margin-top: 12px; display: inline-block;">💙 Lưu mua sau</div>
+                    </div>
+                    <div class="price-box" style="text-align: right;">
+                        <div class="price item-price" data-price="${itemPriceVnd}" style="font-size: 24px; color: #7dd3fc; margin-bottom: 18px;">${formattedPrice}</div>
+                        <button class="delete-btn" onclick="removePageItem(${item.id})" style="border: none; background: rgba(255,0,0,0.12); color: #ff6b6b; width: 42px; height: 42px; border-radius: 14px; cursor: pointer; transition: 0.3s;">🗑</button>
+                    </div>
+                `;
+                container.appendChild(itemEl);
+            });
+            
+            subtotal.innerText = sum.toLocaleString('vi-VN') + ' đ';
+            
+            let discount = sum > 1000000 ? 1000000 : 0;
+            let shipping = 40000;
+            let finalTotal = Math.max(0, sum - discount + shipping);
+            
+            total.innerText = finalTotal.toLocaleString('vi-VN') + ' đ';
+            
+            const savingsEl = document.querySelector('.save-money');
+            if (savingsEl) {
+                if (discount > 0) {
+                    savingsEl.style.display = 'block';
+                    savingsEl.innerText = `Bạn đã tiết kiệm được ${discount.toLocaleString('vi-VN')} đ 🎉`;
+                } else {
+                    savingsEl.style.display = 'none';
+                }
+            }
+            renderPageRecommendations();
         }
 
-        /* ===================== */
-        /* QUANTITY */
-        /* ===================== */
+        const RECOMMEND_PRODUCTS = [
+          {
+            id: 4,
+            name: "Corsair Dominator DDR5 32GB",
+            specs: "DDR5 · 32GB (2x16) · 6400MHz",
+            price: 4800000,
+            oldPrice: 5500000,
+            currency: "VND",
+            img: "https://placehold.co/300x200/081120/7dd3fc?text=DDR5+32GB"
+          },
+          {
+            id: 5,
+            name: "Samsung 990 Pro NVMe 2TB",
+            specs: "PCIe 4.0 · 7450 MB/s · M.2 2280",
+            price: 3200000,
+            oldPrice: 3800000,
+            currency: "VND",
+            img: "https://placehold.co/300x200/081120/7dd3fc?text=Samsung+990+Pro"
+          },
+          {
+            id: 12,
+            name: "Corsair Vengeance DDR5 64GB",
+            specs: "DDR5 · 64GB (2x32) · 5600MHz",
+            price: 7200000,
+            oldPrice: 8500000,
+            currency: "VND",
+            img: "https://placehold.co/300x200/081120/7dd3fc?text=Vengeance+64GB"
+          }
+        ];
 
-        plusBtns.forEach(btn => {
+        function renderPageRecommendations() {
+            const grid = document.getElementById("crossGridContainer");
+            const crossSellSection = document.querySelector(".cross-sell");
+            if (!grid) return;
 
-            btn.addEventListener("click", () => {
+            // Filter out items already in the cart
+            const visibleRecs = RECOMMEND_PRODUCTS.filter(rec => !cart.some(item => item.id === rec.id));
 
-                const input =
-                    btn.parentElement.querySelector(".qty-input");
+            if (visibleRecs.length === 0) {
+                if (crossSellSection) crossSellSection.style.display = 'none';
+                return;
+            }
+            if (crossSellSection) crossSellSection.style.display = 'block';
 
-                input.value++;
+            grid.innerHTML = '';
+            visibleRecs.forEach(rec => {
+                const discount = rec.oldPrice ? Math.round((1 - rec.price / rec.oldPrice) * 100) : 0;
+                const formattedPrice = rec.price.toLocaleString('vi-VN') + ' đ';
+                const formattedOldPrice = rec.oldPrice ? rec.oldPrice.toLocaleString('vi-VN') + ' đ' : '';
 
-                updateTotal();
-
+                const card = document.createElement("div");
+                card.className = "cross-card";
+                card.innerHTML = `
+                    <img src="${rec.img}" alt="${rec.name}">
+                    <div class="cross-info">
+                        <h3 style="font-size: 20px; color: white; margin-bottom: 8px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${rec.name}</h3>
+                        <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin-bottom: 12px; height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${rec.specs}</p>
+                        <div class="cross-price" style="font-size: 18px; font-weight: bold; color: #7dd3fc; margin-bottom: 15px;">
+                            ${formattedPrice}
+                            ${formattedOldPrice ? `<span style="text-decoration: line-through; color: rgba(255,255,255,0.4); font-size: 13px; margin-left: 8px;">${formattedOldPrice}</span>` : ''}
+                        </div>
+                        <button class="add-btn" onclick="addPageRecommendedItem(${rec.id})" style="width: 100%; height: 46px; border: none; border-radius: 14px; background: rgba(56, 189, 248, 0.15); color: #7dd3fc; cursor: pointer; transition: 0.3s;">Thêm vào giỏ</button>
+                    </div>
+                `;
+                grid.appendChild(card);
             });
+        }
 
-        });
-
-        minusBtns.forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                const input =
-                    btn.parentElement.querySelector(".qty-input");
-
-                if (input.value > 1) {
-
-                    input.value--;
-
-                    updateTotal();
+        window.addPageRecommendedItem = function(id) {
+            const rec = RECOMMEND_PRODUCTS.find(r => r.id === id);
+            if (rec) {
+                const existing = cart.find(i => i.id === rec.id);
+                if (existing) {
+                    existing.qty++;
+                } else {
+                    cart.push({
+                        id: rec.id,
+                        name: rec.name,
+                        specs: rec.specs,
+                        price: rec.price,
+                        currency: rec.currency,
+                        qty: 1,
+                        img: rec.img
+                    });
                 }
+                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+                renderCartPage();
+            }
+        };
 
-            });
-
-        });
-
-        document.querySelectorAll(".qty-input")
-            .forEach(input => {
-
-                input.addEventListener("input", () => {
-
-                    if (input.value < 1) {
-                        input.value = 1;
-                    }
-
-                    updateTotal();
-
-                });
-
-            });
-
-        /* ===================== */
-        /* DELETE + UNDO */
-        /* ===================== */
-
-        deleteBtns.forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                deletedItem =
-                    btn.closest(".cart-item");
-
-                deletedItem.remove();
-
-                document
-                    .getElementById("undoBox")
-                    .style.display = "flex";
-
-                updateTotal();
-
-            });
-
-        });
-
-        document
-            .getElementById("undoBtn")
-            .addEventListener("click", () => {
-
-                if (deletedItem) {
-
-                    document
-                        .querySelector(".glass-box")
-                        .appendChild(deletedItem);
-
-                    deletedItem = null;
-
-                    document
-                        .getElementById("undoBox")
-                        .style.display = "none";
-
-                    updateTotal();
+        window.changePageQty = function(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
                 }
+                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+                renderCartPage();
+            }
+        };
+        
+        window.removePageItem = function(id) {
+            cart = cart.filter(i => i.id !== id);
+            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+            renderCartPage();
+        };
 
+        // Apply Voucher Code handlers
+        document.querySelectorAll(".voucher").forEach(el => {
+            el.addEventListener("click", () => {
+                document.querySelector(".coupon-input").value = el.innerText;
             });
+        });
 
         // Redirect to filladdress page on clicking Checkout
         const checkoutBtn = document.querySelector(".checkout-btn");
         if (checkoutBtn) {
             checkoutBtn.addEventListener("click", () => {
+                if (cart.length === 0) return;
+                
+                let sum = 0;
+                cart.forEach(item => {
+                    let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
+                    sum += itemPriceVnd * item.qty;
+                });
+                let discount = sum > 1000000 ? 1000000 : 0;
+                let shipping = 40000;
+                let finalTotal = Math.max(0, sum - discount + shipping);
+
                 let cartData = {
                     items: [],
-                    subtotal: parseInt(subtotal.innerText.replace(/\D/g, '')),
-                    shipping: 40000, // Hardcoded for demo, could be dynamic
-                    discount: 1000000,
-                    total: parseInt(total.innerText.replace(/\D/g, ''))
+                    subtotal: sum,
+                    shipping: shipping,
+                    discount: discount,
+                    total: finalTotal
                 };
-
-                document.querySelectorAll(".cart-item").forEach(item => {
-                    const img = item.querySelector("img").src;
-                    const title = item.querySelector("h3").innerText;
-                    const variant = item.querySelector(".variant").innerText;
-                    const price = parseInt(item.querySelector(".item-price").dataset.price);
-                    const qty = parseInt(item.querySelector(".qty-input").value);
-                    cartData.items.push({ img, title, variant, price, qty });
+ 
+                cart.forEach(item => {
+                    let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
+                    cartData.items.push({ 
+                        img: item.img, 
+                        title: item.name, 
+                        variant: item.specs, 
+                        price: itemPriceVnd, 
+                        qty: item.qty 
+                    });
                 });
-
+ 
                 localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
                 window.location.href = "/filladdress";
             });
         }
 
+        // Initial render on load
+        renderCartPage();
     </script>
 
 </body>
