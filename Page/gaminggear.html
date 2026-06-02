@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYPER CORE - Premium Gaming Gear</title>
+    <style>
+        /* CSS VARIABLES */
+        :root {
+            --bg-color: #f4f4f5;
+            --text-color: #000000;
+            --ceramic-light: #ffffff;
+            --ceramic-shadow: #d1d5db;
+        }
+
+        /* GLOBAL STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        /* DYNAMIC MOUSE LIGHT */
+        .mouse-light {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+            mix-blend-mode: overlay;
+        }
+
+        /* PARTICLES */
+        .particle {
+            position: absolute;
+            background-color: #000;
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+            animation: float-up linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.15;
+            }
+
+            80% {
+                opacity: 0.15;
+            }
+
+            100% {
+                transform: translateY(-150px) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* HEADER MORPHING */
+        header {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            z-index: 100;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        header.scrolled {
+            top: 15px;
+            width: 90%;
+            padding: 15px 30px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), inset 0 0 15px rgba(255, 255, 255, 0.8);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        header.scrolled .logo {
+            font-size: 20px;
+        }
+
+        nav {
+            display: flex;
+            gap: 5px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            margin: 0 15px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: opacity 0.3s ease;
+        }
+
+        nav a:hover {
+            opacity: 0.5;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-actions button {
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ffffff, #e6e6e6);
+            color: #000;
+            box-shadow: 4px 4px 10px var(--ceramic-shadow), -4px -4px 10px #ffffff;
+            border: 1px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        .nav-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 15px var(--ceramic-shadow), -6px -6px 15px #ffffff;
+        }
+
+        .nav-actions .register-btn {
+            background: #000;
+            color: #fff;
+            box-shadow: 4px 4px 10px var(--ceramic-shadow);
+        }
+
+        .nav-actions .register-btn:hover {
+            background: #333;
+        }
+
+        /* MAIN & EDITORIAL TYPOGRAPHY */
+        main {
+            position: relative;
+            z-index: 10;
+            padding: 180px 0 50px;
+            overflow: hidden;
+        }
+
+        .bg-text {
+            position: absolute;
+            font-size: 16vw;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.04);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s linear;
+        }
+
+        /* SHOWCASE SECTIONS */
+        .showcase-container {
+            position: relative;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 50px;
+        }
+
+        .item-section {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            margin-bottom: 80px;
+            perspective: 2000px;
+        }
+
+        .align-left {
+            justify-content: flex-start;
+        }
+
+        .align-right {
+            justify-content: flex-end;
+        }
+
+        .align-center {
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        /* SCROLL REVEAL ANIMATION */
+        .item-section .tilt-card {
+            opacity: 0;
+            transform: translateX(-100px) scale(0.9);
+            /* Transition này chỉ dùng cho lúc Reveal. Khi di chuột JS sẽ ngắt nó đi */
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.1s;
+        }
+
+        .item-section.align-right .tilt-card {
+            transform: translateX(100px) scale(0.9);
+        }
+
+        .item-section .side-content {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.3s;
+        }
+
+        .item-section.align-right .side-content {
+            transform: translateX(-100px);
+        }
+
+        .item-section.show .tilt-card,
+        .item-section.show .side-content {
+            opacity: 1;
+            transform: translate(0) scale(1);
+        }
+
+        /* 3D PRODUCT CARD & SIZES */
+        .tilt-card {
+            position: relative;
+            z-index: 5;
+            border-radius: 40px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f3);
+            box-shadow: 15px 15px 40px var(--ceramic-shadow), -15px -15px 40px #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-style: preserve-3d;
+            will-change: transform;
+            cursor: crosshair;
+        }
+
+        .card-sm {
+            width: 350px;
+            padding: 50px 30px;
+        }
+
+        .card-md {
+            width: 500px;
+            padding: 70px 50px;
+        }
+
+        .card-lg {
+            width: 700px;
+            padding: 90px 60px;
+        }
+
+        .card-xl {
+            width: 950px;
+            padding: 120px 60px;
+        }
+
+        .glass-base {
+            position: absolute;
+            bottom: 15%;
+            width: 70%;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 50%;
+            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.9), inset 0 -5px 10px rgba(0, 0, 0, 0.05), 0 15px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transform: translateZ(20px);
+        }
+
+        .product-img {
+            object-fit: contain;
+            margin-bottom: 40px;
+            transform: translateZ(80px);
+            filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.25));
+            -webkit-box-reflect: below 5px linear-gradient(transparent 70%, rgba(0, 0, 0, 0.15));
+            transition: filter 0.4s ease, transform 0.4s ease;
+        }
+
+        .tilt-card:hover .product-img {
+            transform: translateZ(120px) scale(1.05);
+        }
+
+        .card-sm .product-img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .card-md .product-img {
+            width: 280px;
+            height: 280px;
+        }
+
+        .card-lg .product-img {
+            width: 400px;
+            height: 400px;
+        }
+
+        .card-xl .product-img {
+            width: 550px;
+            height: 450px;
+        }
+
+        .item-info {
+            transform: translateZ(50px);
+            text-align: center;
+        }
+
+        .item-name {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .card-sm .item-name {
+            font-size: 22px;
+        }
+
+        .card-xl .item-name {
+            font-size: 50px;
+        }
+
+        .item-tag {
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+
+        .item-price {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        /* SIDE CONTENT */
+        .side-content {
+            width: 450px;
+            padding: 40px;
+            z-index: 6;
+        }
+
+        .align-left .side-content {
+            margin-left: 60px;
+        }
+
+        .align-right .side-content {
+            margin-right: 60px;
+            text-align: right;
+        }
+
+        .side-title {
+            font-size: 55px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .side-desc {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* =============== KHU VỰC FILTER & GRID =============== */
+        .section-heading {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 900;
+            margin: 150px 0 50px;
+            letter-spacing: 2px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .filter-bar {
+            max-width: 1400px;
+            margin: 0 auto 50px;
+            padding: 0 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            z-index: 10;
+            position: relative;
+        }
+
+        .category-menu {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .cat-btn {
+            padding: 12px 28px;
+            border-radius: 30px;
+            border: 1px solid #fff;
+            background: linear-gradient(135deg, #ffffff, #e6e6e6);
+            box-shadow: 4px 4px 10px var(--ceramic-shadow), -4px -4px 10px #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #000;
+        }
+
+        .cat-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 15px var(--ceramic-shadow), -6px -6px 15px #ffffff;
+        }
+
+        .cat-btn.active {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .price-filter {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .price-filter label {
+            font-weight: 700;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .glass-select {
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid #fff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.9));
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05), 4px 4px 10px var(--ceramic-shadow);
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .glass-select:hover {
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05), 6px 6px 15px var(--ceramic-shadow);
+        }
+
+        .grid-container {
+            max-width: 1400px;
+            margin: 0 auto 100px;
+            padding: 0 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .grid-item {
+            width: 100%;
+            padding: 40px 20px;
+            opacity: 1;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .grid-item.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+            position: absolute;
+            visibility: hidden;
+        }
+
+        .grid-item .product-img {
+            width: 160px;
+            height: 160px;
+            margin-bottom: 30px;
+        }
+
+        .grid-item .item-name {
+            font-size: 18px;
+        }
+
+        .grid-item .item-price {
+            font-size: 16px;
+            color: #e50000;
+        }
+
+        .grid-item .add-cart-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #000;
+            background: transparent;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            transform: translateZ(30px);
+        }
+
+        .grid-item .add-cart-btn:hover {
+            background: #000;
+            color: #fff;
+        }
+
+        /* Grid Responsive */
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            header.scrolled {
+                width: 95%;
+            }
+
+            .filter-bar {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .item-section {
+                flex-direction: column !important;
+                text-align: center;
+            }
+
+            .side-content {
+                text-align: center !important;
+                margin: 0 !important;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .item-section .tilt-card,
+            .item-section .side-content {
+                transform: translateY(50px) scale(0.9);
+            }
+
+            .item-section.show .tilt-card,
+            .item-section.show .side-content {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-actions span {
+                display: none;
+            }
+
+            .showcase-container {
+                padding: 0 20px;
+            }
+
+            .tilt-card {
+                width: 100% !important;
+            }
+        }
+
+        /* FOOTER LIQUID GLASS */
+        footer {
+            position: relative;
+            z-index: 10;
+            margin: 50px;
+            padding: 80px 50px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255, 255, 255, 1);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            footer {
+                grid-template-columns: 1fr;
+                margin: 20px;
+                padding: 40px 20px;
+            }
+        }
+
+        .footer-brand h2 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .footer-links h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #000;
+            padding-left: 5px;
+        }
+
+        .footer-newsletter h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .input-glass {
+            display: flex;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 30px;
+            padding: 5px;
+            border: 1px solid #fff;
+        }
+
+        .input-glass input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 20px;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .input-glass button {
+            border: none;
+            background: #000;
+            color: #fff;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .input-glass button:hover {
+            background: #333;
+        }
+
+        .footer-bottom {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mouse-light" id="mouse-light"></div>
+
+    <header id="header">
+        <div class="logo" onclick="window.location.href='/Homepage'">HYPER CORE</div>
+        <nav>
+            <a href="#">TRANG CHỦ</a>
+            <a href="/Products">SẢN PHẨM</a>
+            <a href="#">GAMING GEAR</a>
+            <a href="#">PC BUILD</a>
+            <a href="#">LIÊN HỆ</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="cart-btn" onclick="window.location.href='/shoppingcart'">🛒</button>
+            <button class="login-glass-btn"><span class="login-icon">👤</span> <span>Đăng Nhập</span></button>
+            <button class="register-btn"><span class="register-icon">✨</span> <span>Đăng Ký</span></button>
+        </div>
+    </header>
+
+    <main>
+        <div class="showcase-container">
+            <div class="item-section align-left">
+                <div class="bg-text">PRECISION</div>
+                <div class="tilt-card card-md">
+                    <div class="glass-base"></div>
+                    <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png"
+                        alt="Chuột" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Wireless Esports Mouse</p>
+                        <h2 class="item-name">CORE M-PRO</h2>
+                        <p class="item-price">2,450,000 ₫</p>
+                    </div>
+                </div>
+                <div class="side-content">
+                    <h2 class="side-title">VƯỢT QUA<br>GIỚI HẠN.</h2>
+                    <p class="side-desc">Cảm biến thế hệ mới, trọng lượng siêu nhẹ, mang lại độ chính xác tuyệt đối trên
+                        từng pixel cho game thủ FPS.</p>
+                </div>
+            </div>
+
+            <div class="item-section align-right">
+                <div class="bg-text">TACTILE</div>
+                <div class="side-content">
+                    <h2 class="side-title">CẢM GIÁC<br>GÕ TỐI THƯỢNG.</h2>
+                    <p class="side-desc">Khung gốm nguyên khối kết hợp switch cơ học custom. Phản hồi 0.1ms mượt mà
+                        không độ trễ.</p>
+                </div>
+                <div class="tilt-card card-md">
+                    <div class="glass-base" style="width: 85%;"></div>
+                    <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png"
+                        alt="Bàn phím" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Mechanical Keyboard</p>
+                        <h2 class="item-name">CORE K-ELITE</h2>
+                        <p class="item-price">3,890,000 ₫</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 id="all-gear" class="section-heading">ALL PREMIUM GEAR</h2>
+
+        <div class="filter-bar">
+            <div class="category-menu">
+                <button class="cat-btn active" data-filter="all">Tất Cả</button>
+                <button class="cat-btn" data-filter="mouse">Chuột Gaming</button>
+                <button class="cat-btn" data-filter="keyboard">Bàn Phím</button>
+                <button class="cat-btn" data-filter="headset">Tai Nghe</button>
+                <button class="cat-btn" data-filter="mic">Mic Studio</button>
+                <button class="cat-btn" data-filter="gamepad">Tay Cầm</button>
+                <button class="cat-btn" data-filter="pad">Lót Chuột</button>
+                <button class="cat-btn" data-filter="acc">Phụ kiện</button>
+            </div>
+
+            <div class="price-filter">
+                <label for="priceSelect">Mức giá:</label>
+                <select id="priceSelect" class="glass-select">
+                    <option value="all">Tất cả</option>
+                    <option value="under2">Dưới 2.000.000 ₫</option>
+                    <option value="2to4">2.000.000 ₫ - 4.000.000 ₫</option>
+                    <option value="over4">Trên 4.000.000 ₫</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <div class="product-grid" id="productGrid">
+
+                <div class="tilt-card grid-item" data-category="mouse" data-price="2450000">
+                    <div class="glass-base"></div>
+                    <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png"
+                        alt="Chuột" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Mouse</p>
+                        <h2 class="item-name">CORE M-PRO</h2>
+                        <p class="item-price">2,450,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+                <div class="tilt-card grid-item" data-category="keyboard" data-price="3890000">
+                    <div class="glass-base"></div>
+                    <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png"
+                        alt="Bàn phím" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Keyboard</p>
+                        <h2 class="item-name">CORE K-ELITE</h2>
+                        <p class="item-price">3,890,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+                <div class="tilt-card grid-item" data-category="headset" data-price="2890000">
+                    <div class="glass-base"></div>
+                    <img src="https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png"
+                        alt="Tai nghe" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Headset</p>
+                        <h2 class="item-name">CORE H-SOUND</h2>
+                        <p class="item-price">2,890,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+                <div class="tilt-card grid-item" data-category="mic" data-price="3100000">
+                    <div class="glass-base"></div>
+                    <img src="https://cdn.shopify.com/s/files/1/0073/3288/8687/products/Yeti-Black-Front_1024x1024.png"
+                        alt="Mic Gaming" class="product-img" style="width: 100px;">
+                    <div class="item-info">
+                        <p class="item-tag">Mic</p>
+                        <h2 class="item-name">CORE STUDIO</h2>
+                        <p class="item-price">3,100,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+                <div class="tilt-card grid-item" data-category="gamepad" data-price="4500000">
+                    <div class="glass-base"></div>
+                    <img src="https://compass-ssl.xbox.com/assets/80/75/807530ce-2e8f-4d32-8ea7-a3aa7ccb68fc.png?n=Elite-Series-2_Gallery_1084x794_02.png"
+                        alt="Tay cầm" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Gamepad</p>
+                        <h2 class="item-name">CORE G-CMD</h2>
+                        <p class="item-price">4,500,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+                <div class="tilt-card grid-item" data-category="pad" data-price="1800000">
+                    <div class="glass-base"></div>
+                    <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Mousepads/MM700_RGB_Extended/Gallery/MM700_RGB_EXTENDED_01.png"
+                        alt="Lót chuột" class="product-img" style="transform: translateZ(80px) rotate(-10deg);">
+                    <div class="item-info">
+                        <p class="item-tag">Mousepad</p>
+                        <h2 class="item-name">CORE PAD PRO</h2>
+                        <p class="item-price">1,800,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+                <div class="tilt-card grid-item" data-category="acc" data-price="1200000">
+                    <div class="glass-base"></div>
+                    <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Accessories/ST100/Gallery/ST100_01.png"
+                        alt="Stand Tai nghe" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Accessories</p>
+                        <h2 class="item-name">CORE BASE RGB</h2>
+                        <p class="item-price">1,200,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+                <div class="tilt-card grid-item" data-category="acc" data-price="9500000">
+                    <div class="glass-base"></div>
+                    <img src="https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g923-and-trueforce/g923-gallery-1.png?v=1"
+                        alt="Vô lăng" class="product-img">
+                    <div class="item-info">
+                        <p class="item-tag">Racing</p>
+                        <h2 class="item-name">CORE WHEEL</h2>
+                        <p class="item-price">9,500,000 ₫</p>
+                        <button class="add-cart-btn">+ Giỏ Hàng</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <div class="footer-brand">
+            <h2>HYPER CORE</h2>
+            <p>Nơi cung cấp những thiết bị ngoại vi (Gaming Gear) đẳng cấp nhất, giúp bạn làm chủ mọi trò chơi và nâng
+                tầm góc máy.</p>
+        </div>
+        <div class="footer-links">
+            <h3>Danh Mục</h3>
+            <ul>
+                <li><a href="#">Chuột Gaming</a></li>
+                <li><a href="#">Bàn phím cơ</a></li>
+                <li><a href="#">Tai nghe & Mic</a></li>
+                <li><a href="#">Tay cầm & Vô lăng</a></li>
+            </ul>
+        </div>
+        <div class="footer-newsletter">
+            <h3>Đăng ký nhận ưu đãi</h3>
+            <p style="font-size: 14px; color: #555; margin-bottom: 15px;">Nhận tin tức về các món Gear Premium mới nhất.
+            </p>
+            <div class="input-glass">
+                <input type="email" placeholder="Email của bạn...">
+                <button>Gửi</button>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 HYPER CORE. All rights reserved. Premium Gaming Gear.
+        </div>
+    </footer>
+
+    <script>
+        // 1. ÁNH SÁNG CHUỘT
+        const light = document.getElementById('mouse-light');
+        document.addEventListener('mousemove', (e) => {
+            light.style.left = `${e.clientX}px`;
+            light.style.top = `${e.clientY}px`;
+        });
+
+        // 2. HEADER MORPHING TRÊN SCROLL
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        // 3. HIỆU ỨNG SCROLL REVEAL & TEXT PARALLAX
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, { threshold: 0.2 });
+        document.querySelectorAll('.item-section').forEach(section => observer.observe(section));
+
+        window.addEventListener('scroll', () => {
+            document.querySelectorAll('.item-section').forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const bgText = section.querySelector('.bg-text');
+                if (bgText && rect.top < window.innerHeight && rect.bottom > 0) {
+                    const scrollOffset = (window.innerHeight - rect.top) * 0.15;
+                    bgText.style.transform = `translate(-50%, calc(-50% + ${scrollOffset}px))`;
+                }
+            });
+        });
+
+        // 4. PARTICLES
+        function createParticles() {
+            const body = document.querySelector('body');
+            const pageHeight = document.body.scrollHeight;
+            for (let i = 0; i < 60; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.top = `${Math.random() * pageHeight}px`;
+                particle.style.animationDuration = `${Math.random() * 8 + 5}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                body.appendChild(particle);
+            }
+        }
+        window.onload = createParticles;
+
+        // 5. HIỆU ỨNG 3D TILT ĐÃ ĐƯỢC FIX LỖI ĐƠ THẺ
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+
+            // Xóa bỏ transition của CSS khi chuột bắt đầu đi vào để JS kiểm soát hoàn toàn
+            card.addEventListener('mouseenter', () => {
+                card.style.transition = 'none';
+            });
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const intensity = card.classList.contains('grid-item') ? 8 : 12;
+                const rotateX = ((y - centerY) / centerY) * -intensity;
+                const rotateY = ((x - centerX) / centerX) * intensity;
+
+                card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                card.style.boxShadow = `${-rotateY}px ${rotateX}px 40px rgba(0,0,0,0.1), 0 0 20px rgba(255,255,255,0.8)`;
+            });
+
+            // Khi chuột rời đi, bật lại transition để thẻ nhả về mượt mà
+            card.addEventListener('mouseleave', () => {
+                card.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
+                card.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                card.style.boxShadow = `15px 15px 40px var(--ceramic-shadow), -15px -15px 40px #ffffff`;
+            });
+        });
+
+        // 6. XỬ LÝ LỌC SẢN PHẨM (DANH MỤC + GIÁ TIỀN)
+        const catButtons = document.querySelectorAll('.cat-btn');
+        const priceSelect = document.getElementById('priceSelect');
+        const gridItems = document.querySelectorAll('.grid-item');
+        let currentCategory = 'all';
+
+        function filterProducts() {
+            const priceVal = priceSelect.value;
+
+            gridItems.forEach(item => {
+                const itemPrice = parseInt(item.getAttribute('data-price'));
+                const itemCat = item.getAttribute('data-category');
+
+                let catMatch = (currentCategory === 'all' || currentCategory === itemCat);
+                let priceMatch = true;
+
+                if (priceVal === 'under2' && itemPrice >= 2000000) priceMatch = false;
+                if (priceVal === '2to4' && (itemPrice < 2000000 || itemPrice > 4000000)) priceMatch = false;
+                if (priceVal === 'over4' && itemPrice <= 4000000) priceMatch = false;
+
+                if (catMatch && priceMatch) {
+                    item.classList.remove('hidden');
+                    item.style.position = 'relative';
+                } else {
+                    item.classList.add('hidden');
+                    setTimeout(() => {
+                        if (item.classList.contains('hidden')) {
+                            item.style.position = 'absolute';
+                        }
+                    }, 400);
+                }
+            });
+        }
+
+        catButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                catButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.getAttribute('data-filter');
+                filterProducts();
+            });
+        });
+
+        priceSelect.addEventListener('change', filterProducts);
+    </script>
+</body>
+
+</html>

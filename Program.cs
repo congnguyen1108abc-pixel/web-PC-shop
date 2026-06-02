@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.StaticFiles;
 using PC_Store.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -138,6 +138,18 @@ app.MapGet("/product-detail", async context =>
 {
     context.Response.ContentType = "text/html";
     await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "product-detail.html"));
+});
+
+app.MapGet("/gaminggear", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "gaminggear.html"));
+});
+
+app.MapGet("/gaminggear.html", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "gaminggear.html"));
 });
 
 app.MapControllers();
