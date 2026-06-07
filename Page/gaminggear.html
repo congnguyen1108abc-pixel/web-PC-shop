@@ -78,103 +78,204 @@
             }
         }
 
-        /* HEADER MORPHING */
+        /* ================================= */
+        /* HEADER */
+        /* ================================= */
+
         header {
             position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            transform: none;
             width: 100%;
+            height: 78px;
+            padding: 0 45px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-            z-index: 100;
-            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 999;
+            border-radius: 0 0 20px 20px;
+            background: #FFFFFF;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+            transition: .4s ease;
+        }
+
+        header, header * {
+            font-family: 'Segoe UI', sans-serif !important;
         }
 
         header.scrolled {
-            top: 15px;
-            width: 90%;
-            padding: 15px 30px;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05), inset 0 0 15px rgba(255, 255, 255, 0.8);
+            background: #FFFFFF;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            transition: all 0.3s;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #000000;
             cursor: pointer;
-        }
-
-        header.scrolled .logo {
-            font-size: 20px;
         }
 
         nav {
             display: flex;
-            gap: 5px;
+            gap: 35px;
+            align-items: center;
         }
 
         nav a {
             text-decoration: none;
-            color: var(--text-color);
-            margin: 0 15px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: opacity 0.3s ease;
+            color: #000000;
+            font-size: 15px;
+            position: relative;
+            transition: .3s;
+            display: flex;
+            align-items: center;
         }
 
         nav a:hover {
-            opacity: 0.5;
+            color: #000000;
         }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            width: 0%;
+            height: 2px;
+            border-radius: 10px;
+            background: #555555;
+            transition: .3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* ================================= */
+        /* HEADER ACTIONS */
+        /* ================================= */
 
         .nav-actions {
             display: flex;
-            gap: 15px;
             align-items: center;
+            gap: 14px;
         }
 
-        .nav-actions button {
+        .cart-btn {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, .12);
+            background: rgba(0, 0, 0, .06);
+            backdrop-filter: blur(20px);
+            color: #000000;
             cursor: pointer;
-            border: none;
+            font-size: 18px;
+            transition: .35s;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 13px;
-            padding: 10px 20px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #ffffff, #e6e6e6);
-            color: #000;
-            box-shadow: 4px 4px 10px var(--ceramic-shadow), -4px -4px 10px #ffffff;
-            border: 1px solid #fff;
-            transition: all 0.3s ease;
+            justify-content: center;
         }
 
-        .nav-actions button:hover {
+        .cart-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 6px 6px 15px var(--ceramic-shadow), -6px -6px 15px #ffffff;
+            background: rgba(0, 0, 0, .12);
         }
 
-        .nav-actions .register-btn {
-            background: #000;
-            color: #fff;
-            box-shadow: 4px 4px 10px var(--ceramic-shadow);
+        .login-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .14);
+            background: rgba(0, 0, 0, .08);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background .35s ease, border .35s ease, transform .35s ease, box-shadow .35s ease;
         }
 
-        .nav-actions .register-btn:hover {
-            background: #333;
+        .login-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, #555555, transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .login-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .login-glass-btn:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, .95), rgba(14, 165, 233, .95));
+            border: 1px solid rgba(125, 211, 252, .6);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, .35), 0 0 20px rgba(125, 211, 252, .25);
+            transform: translateY(-3px);
+            color: #FFFFFF;
+        }
+
+        .login-icon {
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .3);
+            background: linear-gradient(135deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2));
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: .35s ease;
+        }
+
+        .register-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(0, 0, 0, .25), transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .register-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .register-glass-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            color: #000000;
         }
 
         /* MAIN & EDITORIAL TYPOGRAPHY */
@@ -553,12 +654,20 @@
                 grid-template-columns: repeat(3, 1fr);
             }
 
-            header.scrolled {
-                width: 95%;
-            }
-
             .filter-bar {
                 justify-content: center;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            header {
+                width: calc(100% - 20px);
+                padding: 0 20px;
+                left: 10px;
+            }
+
+            nav {
+                display: none;
             }
         }
 
@@ -723,16 +832,24 @@
     <header id="header">
         <div class="logo" onclick="window.location.href='/Homepage'">HYPER CORE</div>
         <nav>
-            <a href="/Homepage">TRANG CHỦ</a>
-            <a href="/Products">SẢN PHẨM</a>
-            <a href="#">GAMING GEAR</a>
-            <a href="#">PC BUILD</a>
-            <a href="#">LIÊN HỆ</a>
+            <a href="/Homepage">Trang Chủ</a>
+            <a href="/Products">Sản Phẩm</a>
+            <a href="/Gaminggear">Gaming Gear</a>
+            <a href="#">PC Build</a>
+            <a href="#">Trạng thái đơn hàng</a>
+            <a href="#">Liên Hệ</a>
         </nav>
         <div class="nav-actions">
-            <button class="cart-btn" onclick="window.location.href='/shoppingcart'">🛒</button>
-            <button class="login-glass-btn"><span class="login-icon">👤</span> <span>Đăng Nhập</span></button>
-            <button class="register-btn"><span class="register-icon">✨</span> <span>Đăng Ký</span></button>
+            <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
+                🛒
+                <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;color:white;">0</span>
+            </button>
+            <button class="login-glass-btn" onclick="window.location.href='/Login'">
+                <span class="login-icon">👤</span> <span>Đăng Nhập</span>
+            </button>
+            <button class="register-glass-btn" onclick="window.location.href='/Register'">
+                <span class="login-icon">📝</span> <span>Đăng Ký</span>
+            </button>
         </div>
     </header>
 
@@ -1066,6 +1183,21 @@
         });
 
         priceSelect.addEventListener('change', filterProducts);
+
+        // Update cart count badge from localStorage
+        (function() {
+            const cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+            const countEl = document.getElementById("cartCount");
+            if (countEl) {
+                const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+                if (totalQty > 0) {
+                    countEl.innerText = totalQty;
+                    countEl.style.display = "flex";
+                } else {
+                    countEl.style.display = "none";
+                }
+            }
+        })();
     </script>
 </body>
 

@@ -29,29 +29,223 @@
             --border: rgba(0, 0, 0, 0.05);
         }
 
-        /* ========================= */
+        /* ================================= */
         /* HEADER */
-        /* ========================= */
+        /* ================================= */
 
-        .cart-header {
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: none;
             width: 100%;
-            padding: 30px 70px;
+            height: 78px;
+            padding: 0 45px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 999;
+            border-radius: 0 0 20px 20px;
+            background: #FFFFFF;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+            transition: .4s ease;
+        }
+
+        header, header * {
+            font-family: 'Segoe UI', sans-serif !important;
+        }
+
+        header.scrolled {
+            background: #FFFFFF;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
         }
 
         .logo {
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             color: #000000;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 15px;
+            position: relative;
+            transition: .3s;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a:hover {
+            color: #000000;
+        }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            width: 0%;
+            height: 2px;
+            border-radius: 10px;
+            background: #555555;
+            transition: .3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* ================================= */
+        /* HEADER ACTIONS */
+        /* ================================= */
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .cart-btn {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, .12);
+            background: rgba(0, 0, 0, .06);
+            backdrop-filter: blur(20px);
+            color: #000000;
+            cursor: pointer;
+            font-size: 18px;
+            transition: .35s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, .12);
+        }
+
+        .login-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .14);
+            background: rgba(0, 0, 0, .08);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background .35s ease, border .35s ease, transform .35s ease, box-shadow .35s ease;
+        }
+
+        .login-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, #555555, transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .login-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .login-glass-btn:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, .95), rgba(14, 165, 233, .95));
+            border: 1px solid rgba(125, 211, 252, .6);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, .35), 0 0 20px rgba(125, 211, 252, .25);
+            transform: translateY(-3px);
+            color: #FFFFFF;
+        }
+
+        .login-icon {
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .3);
+            background: linear-gradient(135deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2));
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: .35s ease;
+        }
+
+        .register-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(0, 0, 0, .25), transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .register-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .register-glass-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            color: #000000;
+        }
+
+        /* ========================= */
+        /* CHECKOUT PROGRESS */
+        /* ========================= */
+
+        .checkout-progress-wrapper {
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px 70px 10px;
         }
 
         .progress {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 25px;
         }
 
         .step {
@@ -59,6 +253,7 @@
             align-items: center;
             gap: 10px;
             color: rgba(0, 0, 0, .5);
+            font-weight: 600;
         }
 
         .step.active {
@@ -476,36 +671,49 @@
 
     <!-- HEADER -->
 
-    <div class="cart-header">
-
-        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
-            HYPER CORE
+    <header id="header">
+        <div class="logo" onclick="window.location.href='/Homepage'">HYPER CORE</div>
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <a href="/Products">Sản Phẩm</a>
+            <a href="/Gaminggear">Gaming Gear</a>
+            <a href="#">PC Build</a>
+            <a href="#">Trạng thái đơn hàng</a>
+            <a href="#">Liên Hệ</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
+                🛒
+                <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;color:white;">0</span>
+            </button>
+            <button class="login-glass-btn" onclick="window.location.href='/Login'">
+                <span class="login-icon">👤</span> <span>Đăng Nhập</span>
+            </button>
+            <button class="register-glass-btn" onclick="window.location.href='/Register'">
+                <span class="login-icon">📝</span> <span>Đăng Ký</span>
+            </button>
         </div>
+    </header>
 
+    <div class="checkout-progress-wrapper">
         <div class="progress">
-
             <div class="step active">
                 <div class="step-circle">1</div>
                 <span>Giỏ hàng</span>
             </div>
-
             <div class="step">
                 <div class="step-circle">2</div>
                 <span>Địa chỉ</span>
             </div>
-
             <div class="step">
                 <div class="step-circle">3</div>
                 <span>Thanh toán</span>
             </div>
-
             <div class="step">
                 <div class="step-circle">4</div>
                 <span>Hoàn tất</span>
             </div>
-
         </div>
-
     </div>
 
     <!-- MAIN -->
@@ -658,6 +866,7 @@
                 img: item.img
             }));
             localStorage.setItem('hypercore_cart_items', JSON.stringify(cartItems));
+            updateHeaderCartCount();
         }
 
         function renderCartPage() {
@@ -736,33 +945,33 @@
         }
 
         const RECOMMEND_PRODUCTS = [
-          {
-            id: 4,
-            name: "Corsair Dominator DDR5 32GB",
-            specs: "DDR5 · 32GB (2x16) · 6400MHz",
-            price: 4800000,
-            oldPrice: 5500000,
-            currency: "VND",
-            img: "https://placehold.co/300x200/ffffff/111827?text=DDR5+32GB"
-          },
-          {
-            id: 5,
-            name: "Samsung 990 Pro NVMe 2TB",
-            specs: "PCIe 4.0 · 7450 MB/s · M.2 2280",
-            price: 3200000,
-            oldPrice: 3800000,
-            currency: "VND",
-            img: "https://placehold.co/300x200/ffffff/111827?text=Samsung+990+Pro"
-          },
-          {
-            id: 12,
-            name: "Corsair Vengeance DDR5 64GB",
-            specs: "DDR5 · 64GB (2x32) · 5600MHz",
-            price: 7200000,
-            oldPrice: 8500000,
-            currency: "VND",
-            img: "https://placehold.co/300x200/ffffff/111827?text=Vengeance+64GB"
-          }
+            {
+                id: 4,
+                name: "Corsair Dominator DDR5 32GB",
+                specs: "DDR5 · 32GB (2x16) · 6400MHz",
+                price: 4800000,
+                oldPrice: 5500000,
+                currency: "VND",
+                img: "https://placehold.co/300x200/ffffff/111827?text=DDR5+32GB"
+            },
+            {
+                id: 5,
+                name: "Samsung 990 Pro NVMe 2TB",
+                specs: "PCIe 4.0 · 7450 MB/s · M.2 2280",
+                price: 3200000,
+                oldPrice: 3800000,
+                currency: "VND",
+                img: "https://placehold.co/300x200/ffffff/111827?text=Samsung+990+Pro"
+            },
+            {
+                id: 12,
+                name: "Corsair Vengeance DDR5 64GB",
+                specs: "DDR5 · 64GB (2x32) · 5600MHz",
+                price: 7200000,
+                oldPrice: 8500000,
+                currency: "VND",
+                img: "https://placehold.co/300x200/ffffff/111827?text=Vengeance+64GB"
+            }
         ];
 
         function renderPageRecommendations() {
@@ -803,7 +1012,7 @@
             });
         }
 
-        window.addPageRecommendedItem = function(id) {
+        window.addPageRecommendedItem = function (id) {
             const rec = RECOMMEND_PRODUCTS.find(r => r.id === id);
             if (rec) {
                 const existing = cart.find(i => i.id === rec.id);
@@ -825,7 +1034,7 @@
             }
         };
 
-        window.changePageQty = function(id, delta) {
+        window.changePageQty = function (id, delta) {
             const item = cart.find(i => i.id === id);
             if (item) {
                 item.qty += delta;
@@ -836,8 +1045,8 @@
                 renderCartPage();
             }
         };
-        
-        window.removePageItem = function(id) {
+
+        window.removePageItem = function (id) {
             deletedItemData = cart.find(i => i.id === id) ?? null;
             cart = cart.filter(i => i.id !== id);
             syncCartStorage();
@@ -926,12 +1135,31 @@
                 window.location.href = "/filladdress";
             });
         }
-        
+
+        // Update cart count badge from localStorage
+        function updateHeaderCartCount() {
+            let cartData = [];
+            try {
+                cartData = JSON.parse(localStorage.getItem('hyper_core_cart')) || JSON.parse(localStorage.getItem('hypercore_cart_items')) || [];
+            } catch(e) {}
+            const countEl = document.getElementById("cartCount");
+            if (countEl) {
+                const totalQty = cartData.reduce((acc, item) => acc + item.qty, 0);
+                if (totalQty > 0) {
+                    countEl.innerText = totalQty;
+                    countEl.style.display = "flex";
+                } else {
+                    countEl.style.display = "none";
+                }
+            }
+        }
+
         // Initial Render
         renderCart();
 
         // Initial render on load
         renderCartPage();
+        updateHeaderCartCount();
     </script>
 
 </body>
