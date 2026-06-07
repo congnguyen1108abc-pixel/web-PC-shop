@@ -1126,31 +1126,91 @@
                 confirmPayBtn.innerText = "ĐANG TẠO ĐƠN HÀNG...";
                 confirmPayBtn.disabled = true;
 
-                // 2. Chuẩn bị dữ liệu đơn hàng
+                // 2. Lấy token và user từ sessionStorage
+                const token = sessionStorage.getItem('hypercore_token');
+                const user = JSON.parse(sessionStorage.getItem('hypercore_user') || 'null');
+                const addressId = sessionStorage.getItem('checkout_addressId');
+                const addressInfo = JSON.parse(sessionStorage.getItem('checkout_address') || 'null');
+
+                if (!token || !user) {
+                    alert('Vui lòng đăng nhập trước khi thanh toán!');
+                    window.location.href = '/Homepage';
+                    return;
+                }
+
+                if (!addressId || !addressInfo) {
+                    alert('Vui lòng nhập địa chỉ giao hàng trước!');
+                    window.location.href = '/filladdress';
+                    return;
+                }
+
+                // 3. Tạo đơn hàng trước
                 const orderPayload = {
-                    orderId: "HC" + Date.now(),
-                    amount: totalAmount,
-                    items: cartData.items, // Gửi danh sách sản phẩm
-                    description: "Thanh toan don hang HYPER CORE"
+                    userId: parseInt(user.userId),
+                    shippingAddress: addressInfo.fullAddress,
+                    paymentMethod: 'VNPay',
+                    voucherCode: null // Có thể thêm voucher sau
                 };
 
-                // 3. Gọi API Backend của bạn (Thay URL bằng endpoint thật của bạn)
-                const response = await fetch("https://api.yourdomain.com/v1/payments/create", {
-                    method: "POST",
+                const orderResponse = await fetch('http://localhost:5187/api/orders/place', {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json"
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(orderPayload)
                 });
 
-                const data = await response.json();
+                if (!orderResponse.ok) {
+                    const errorData = await orderResponse.json();
+                    alert('Lỗi tạo đơn hàng: ' + (errorData.message || 'Không xác định'));
+                    confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+                    confirmPayBtn.disabled = false;
+                    return;
+                }
 
-                // 4. Kiểm tra URL thanh toán trả về từ Backend
-                if (response.ok && data.checkoutUrl) {
-                    // REDIRECT NGƯỜI DÙNG SANG TRANG THANH TOÁN THẬT
-                    window.location.href = data.checkoutUrl;
+                const orderData = await orderResponse.json();
+                const orderId = orderData.newOrderId;
+
+                // 4. Tạo payment URL với VNPay
+                confirmPayBtn.innerText = "ĐANG KẾT NỐI VNPAY...";
+
+                const vnpayPayload = {
+                    orderID: orderId,
+                    amount: totalAmount,
+                    orderInfo: `Thanh toan don hang #${orderId} - HYPER CORE`,
+                    returnUrl: 'http://localhost:5187/api/vnpay/return',
+                    locale: 'vn'
+                };
+
+                const vnpayResponse = await fetch('http://localhost:5187/api/vnpay/create-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(vnpayPayload)
+                });
+
+                if (!vnpayResponse.ok) {
+                    const errorData = await vnpayResponse.json();
+                    alert('Lỗi kết nối VNPay: ' + (errorData.message || 'Không xác định'));
+                    confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+                    confirmPayBtn.disabled = false;
+                    return;
+                }
+
+                const vnpayData = await vnpayResponse.json();
+
+                // 5. Redirect sang VNPay để quét QR
+                if (vnpayData.paymentUrl) {
+                    // Lưu orderId vào sessionStorage để dùng sau
+                    sessionStorage.setItem('current_orderId', orderId);
+                    
+                    // Redirect sang VNPay
+                    window.location.href = vnpayData.paymentUrl;
                 } else {
-                    alert("Lỗi tạo thanh toán: " + (data.message || "Không xác định"));
+                    alert('Không nhận được URL thanh toán từ VNPay');
                     confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
                     confirmPayBtn.disabled = false;
                 }

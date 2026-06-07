@@ -11,6 +11,9 @@
     <!-- POPUP SYSTEM CSS -->
     <link rel="stylesheet" href="/assets/popup/popup.css">
 
+    <!-- AUTH CSS -->
+    <link rel="stylesheet" href="/assets/css/auth.css">
+
 
     <style>
         * {
@@ -2381,6 +2384,142 @@
 
     </footer>
 
+    <!-- ============================================ -->
+    <!-- LOGIN & REGISTER POPUPS -->
+    <!-- ============================================ -->
+
+    <!-- LOGIN POPUP -->
+    <div class="widget-popup" id="loginPopup">
+        <div class="widget-box">
+            <!-- CLOSE BUTTON -->
+            <button class="widget-close" onclick="closeLoginPopup()">
+                ✕
+            </button>
+
+            <!-- TITLE -->
+            <h2 class="widget-title">
+                Đăng Nhập
+            </h2>
+
+            <p class="widget-subtitle">
+                Chào mừng quay trở lại HYPER CORE
+            </p>
+
+            <!-- FORM -->
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <!-- INPUT -->
+                <input type="email" id="loginEmail" class="widget-input" placeholder="Email" required />
+                <input type="password" id="loginPassword" class="widget-input" placeholder="Mật khẩu" required />
+
+                <!-- OPTIONS -->
+                <div class="widget-options">
+                    <label class="remember-box">
+                        <input type="checkbox" />
+                        <span>Nhớ mật khẩu</span>
+                    </label>
+
+                    <a href="#" class="forgot-link">
+                        Quên mật khẩu?
+                    </a>
+                </div>
+
+                <!-- LOGIN BUTTON -->
+                <button type="submit" class="widget-submit">
+                    Đăng Nhập
+                </button>
+            </form>
+
+            <!-- DIVIDER -->
+            <div class="divider">
+                HOẶC
+            </div>
+
+            <!-- GOOGLE LOGIN -->
+            <button class="google-btn">
+                <div class="google-icon">
+                    G
+                </div>
+
+                <span>
+                    Đăng nhập bằng Google
+                </span>
+            </button>
+
+            <!-- REGISTER -->
+            <div class="register-text">
+                Chưa có tài khoản?
+
+                <a href="javascript:void(0)" class="register-link" onclick="switchToRegister()">
+                    Đăng ký ngay
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER POPUP -->
+    <div class="widget-popup" id="registerPopup">
+        <div class="widget-box">
+            <!-- CLOSE BUTTON -->
+            <button class="widget-close" onclick="closeRegisterPopup()">
+                ✕
+            </button>
+
+            <!-- TITLE -->
+            <h2 class="widget-title">
+                Đăng Ký
+            </h2>
+
+            <p class="widget-subtitle">
+                Tạo tài khoản để trải nghiệm HYPER CORE
+            </p>
+
+            <!-- FORM -->
+            <form id="registerForm" onsubmit="return handleRegister(event)">
+                <!-- USERNAME -->
+                <input type="text" class="widget-input" id="regUser" placeholder="Tên đăng nhập" required />
+
+                <div id="userError" class="error-msg">
+                    Tên đăng nhập tối thiểu 3 ký tự
+                </div>
+
+                <!-- EMAIL -->
+                <input type="email" class="widget-input" id="regEmail" placeholder="Email" required />
+
+                <div id="emailError" class="error-msg">
+                    Email không hợp lệ
+                </div>
+
+                <!-- PASSWORD -->
+                <input type="password" class="widget-input" id="regPass" placeholder="Mật khẩu" required />
+
+                <div id="passError" class="error-msg">
+                    Mật khẩu tối thiểu 6 ký tự
+                </div>
+
+                <!-- CONFIRM PASSWORD -->
+                <input type="password" class="widget-input" id="regConfirm" placeholder="Xác nhận mật khẩu" required />
+
+                <div id="confirmError" class="error-msg">
+                    Mật khẩu xác nhận không khớp
+                </div>
+
+                <!-- SUBMIT -->
+                <button type="submit" class="widget-submit">
+                    Đăng Ký Ngay
+                </button>
+            </form>
+
+            <!-- LOGIN -->
+            <div class="login-text">
+                Đã có tài khoản?
+
+                <a class="login-link" href="javascript:void(0)" onclick="switchToLogin()">
+                    Đăng nhập
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPT -->
 
     <script>
@@ -2515,6 +2654,9 @@
     <div id="register-popup-container"></div>
 
     <script src="/assets/popup/popup.js"></script>
+
+    <!-- AUTH JAVASCRIPT -->
+    <script src="/assets/js/auth.js"></script>
 
 </body>
 

@@ -22,37 +22,43 @@
             Chào mừng quay trở lại HYPER CORE
         </p>
 
-        <!-- INPUT -->
+        <!-- FORM -->
 
-        <input type="text" class="widget-input" placeholder="Tên đăng nhập" />
+        <form id="loginForm" onsubmit="return handleLogin(event)">
 
-        <input type="password" class="widget-input" placeholder="Mật khẩu" />
+            <!-- INPUT -->
 
-        <!-- OPTIONS -->
+            <input type="email" id="loginEmail" class="widget-input" placeholder="Email" required />
 
-        <div class="widget-options">
+            <input type="password" id="loginPassword" class="widget-input" placeholder="Mật khẩu" required />
 
-            <label class="remember-box">
+            <!-- OPTIONS -->
 
-                <input type="checkbox" />
+            <div class="widget-options">
 
-                <span>Nhớ mật khẩu</span>
+                <label class="remember-box">
 
-            </label>
+                    <input type="checkbox" />
 
-            <a href="#" class="forgot-link">
+                    <span>Nhớ mật khẩu</span>
 
-                Quên mật khẩu?
+                </label>
 
-            </a>
+                <a href="#" class="forgot-link">
 
-        </div>
+                    Quên mật khẩu?
 
-        <!-- LOGIN BUTTON -->
+                </a>
 
-        <button class="widget-submit">
-            Đăng Nhập
-        </button>
+            </div>
+
+            <!-- LOGIN BUTTON -->
+
+            <button type="submit" class="widget-submit">
+                Đăng Nhập
+            </button>
+
+        </form>
 
         <!-- DIVIDER -->
 

@@ -933,6 +933,104 @@
 
     </script>
 
+    <!-- ===== SIGNALR REAL-TIME NOTIFICATIONS ===== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script src="/js/signalr-client.js"></script>
+
+    <style>
+        .snr-toast-wrap {
+            position: fixed; bottom: 28px; right: 28px;
+            z-index: 99999; display: flex; flex-direction: column;
+            gap: 12px; pointer-events: none;
+        }
+        .snr-toast {
+            min-width: 320px; max-width: 400px;
+            background: rgba(8,16,27,0.94);
+            border: 1px solid rgba(56,189,248,0.25);
+            border-radius: 18px; padding: 16px 20px 14px;
+            display: flex; align-items: flex-start; gap: 14px;
+            backdrop-filter: blur(24px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            pointer-events: all;
+            transform: translateX(120%); opacity: 0;
+            transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .4s ease;
+        }
+        .snr-toast.show { transform: translateX(0); opacity: 1; }
+        .snr-toast.hide { transform: translateX(120%); opacity: 0; }
+        .snr-toast-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+        .snr-toast-body { flex: 1; }
+        .snr-toast-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .snr-toast-msg   { font-size: 13px; color: rgba(255,255,255,.72); line-height: 1.45; }
+        .snr-toast-badge {
+            font-size: 10px; font-weight: 700; padding: 2px 8px;
+            border-radius: 999px; margin-bottom: 6px; display: inline-block;
+            letter-spacing: .8px; text-transform: uppercase;
+        }
+        .snr-badge-Order    { background: rgba(56,189,248,.18);  color: #38bdf8; }
+        .snr-badge-Warranty { background: rgba(52,211,153,.18);  color: #34d399; }
+        .snr-badge-System   { background: rgba(167,139,250,.18); color: #a78bfa; }
+        .snr-toast-close {
+            background: none; border: none; color: rgba(255,255,255,.4);
+            font-size: 18px; cursor: pointer; padding: 0; line-height: 1;
+            flex-shrink: 0; transition: color .2s;
+        }
+        .snr-toast-close:hover { color: white; }
+        .snr-toast-progress {
+            height: 2px; border-radius: 999px; margin-top: 10px;
+            background: linear-gradient(90deg,#38bdf8,#0ea5e9);
+            transform-origin: left; animation: snrProgress 5s linear forwards;
+        }
+        @keyframes snrProgress { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+    </style>
+
+    <div class="snr-toast-wrap" id="snrToastWrap"></div>
+
+    <script>
+        (function () {
+            var _user = JSON.parse(localStorage.getItem('pc_store_user') || 'null');
+            if (_user && _user.userId) {
+                SignalRClient.connect(_user.userId);
+            }
+
+            /* Khi đặt hàng thành công → server push về đây */
+            window.addEventListener('signalr:notification', function (e) {
+                var d = e.detail || {};
+                showSignalRToast(d.title || 'Thông báo', d.message || '', d.type || 'System');
+            });
+
+            function showSignalRToast(title, msg, type) {
+                var icons = { Order: '📦', Warranty: '🛡️', System: '🔔' };
+                var wrap  = document.getElementById('snrToastWrap');
+                if (!wrap) return;
+
+                var t = document.createElement('div');
+                t.className = 'snr-toast';
+                t.innerHTML =
+                    '<div class="snr-toast-icon">' + (icons[type]||'🔔') + '</div>' +
+                    '<div class="snr-toast-body">' +
+                        '<span class="snr-toast-badge snr-badge-'+type+'">'+type+'</span><br>' +
+                        '<div class="snr-toast-title">' + _esc(title) + '</div>' +
+                        '<div class="snr-toast-msg">'   + _esc(msg)   + '</div>' +
+                        '<div class="snr-toast-progress"></div>' +
+                    '</div>' +
+                    '<button class="snr-toast-close" onclick="this.parentElement.remove()">×</button>';
+
+                wrap.appendChild(t);
+                requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show');});});
+                setTimeout(function(){
+                    t.classList.replace('show','hide');
+                    setTimeout(function(){t.remove();},420);
+                },5000);
+            }
+
+            function _esc(s){
+                return String(s)
+                    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            }
+        })();
+    </script>
+
 </body>
 
 </html>

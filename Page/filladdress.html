@@ -707,6 +707,7 @@
 
 
     <!-- SCRIPT -->
+    <script src="/assets/js/checkout.js"></script>
     <script>
         // =========================
         // LOAD ALL PROVINCES (API)
@@ -823,10 +824,10 @@
             });
         }
 
-        // 3. Submit button validation & redirect
+        // 3. Submit button validation & save to database
         const submitBtn = document.querySelector(".submit-btn");
         if (submitBtn) {
-            submitBtn.addEventListener("click", (e) => {
+            submitBtn.addEventListener("click", async (e) => {
                 e.preventDefault();
 
                 // Get inputs
@@ -883,8 +884,60 @@
                     return;
                 }
 
-                // Thông tin hợp lệ → chuyển sang trang thanh toán
-                window.location.href = "/payments";
+                // Thông tin hợp lệ → Bắt buộc phải đăng nhập
+                
+                // Kiểm tra đăng nhập
+                const user = JSON.parse(sessionStorage.getItem('hypercore_user') || 'null');
+                const token = sessionStorage.getItem('hypercore_token');
+                
+                if (!user || !token) {
+                    alert('Vui lòng đăng nhập trước khi tiếp tục thanh toán!');
+                    window.location.href = '/Homepage';
+                    return;
+                }
+                
+                // Lưu địa chỉ vào database
+                const addressData = {
+                    userId: parseInt(user.userId),
+                    receiverName: fullName.value.trim(),
+                    phoneNumber: phoneNumber.value.trim(),
+                    province: citySelect.value,
+                    district: districtSelect.value,
+                    ward: wardSelect.value,
+                    detailAddress: `${streetAddress.value.trim()}, ${wardSelect.value}, ${districtSelect.value}, ${citySelect.value}`,
+                    isDefault: document.getElementById('defaultAddress').checked
+                };
+                
+                try {
+                    const response = await fetch('http://localhost:5187/api/users/addresses', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(addressData)
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        
+                        // Lưu addressId và thông tin địa chỉ vào sessionStorage
+                        sessionStorage.setItem('checkout_addressId', result.newAddressId);
+                        sessionStorage.setItem('checkout_address', JSON.stringify({
+                            receiverName: addressData.receiverName,
+                            phoneNumber: addressData.phoneNumber,
+                            fullAddress: addressData.detailAddress
+                        }));
+                        
+                        // Chuyển sang trang thanh toán
+                        window.location.href = '/payments';
+                    } else {
+                        const error = await response.json();
+                        alert(error.message || 'Không thể lưu địa chỉ. Vui lòng thử lại!');
+                    }
+                } catch (error) {
+                    alert('Có lỗi xảy ra khi kết nối đến server. Vui lòng kiểm tra kết nối!');
+                }
             });
         }
     </script>
