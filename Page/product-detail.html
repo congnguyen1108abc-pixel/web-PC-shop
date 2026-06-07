@@ -8,16 +8,14 @@
   <style>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
     :root{
-      --blue:#38bdf8;--blue-light:#7dd3fc;--blue-dark:#0ea5e9;
-      --glass:rgba(255,255,255,.06);--glass-border:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.65);--cyan:#00d9ff;
+      --blue:#000000;--blue-light:#374151;--blue-dark:#111827;
+      --glass:rgba(255, 255, 255, 0.8);--glass-border:rgba(0, 0, 0, 0.1);
+      --text:#4b5563;--cyan:#000000;
     }
     html{scroll-behavior:smooth;}
     body{
-      font-family:'Segoe UI',Arial,sans-serif;color:#fff;
-      background:radial-gradient(circle at top left,rgba(56,189,248,.18),transparent 25%),
-        radial-gradient(circle at bottom right,rgba(14,165,233,.12),transparent 25%),
-        linear-gradient(180deg,#08101b 0%,#040b14 55%,#01050b 100%);
+      font-family:'Segoe UI',Arial,sans-serif;color:#111827;
+      background:#ffffff;
       min-height:100vh;overflow-x:hidden;
     }
     ::-webkit-scrollbar{width:6px;}
@@ -31,27 +29,27 @@
       display:flex;justify-content:space-between;align-items:center;
       z-index:999;border-radius:28px;transition:.4s ease;
     }
-    header.scrolled{background:rgba(255,255,255,.08);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 8px 40px rgba(0,0,0,.35);}
-    .logo{font-size:30px;font-weight:800;letter-spacing:4px;background:linear-gradient(90deg,#fff,#7dd3fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
+    header.scrolled{background:rgba(255,255,255,.9);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 8px 40px rgba(0,0,0,.05);}
+    .logo{font-size:30px;font-weight:800;letter-spacing:4px;color:#000000;cursor:pointer;}
     nav{display:flex;gap:30px;align-items:center;}
-    nav a{text-decoration:none;color:rgba(255,255,255,.78);font-size:15px;position:relative;transition:.3s;}
-    nav a:hover{color:#fff;}
+    nav a{text-decoration:none;color:rgba(0,0,0,.78);font-size:15px;position:relative;transition:.3s;}
+    nav a:hover{color:#111827;}
     nav a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;border-radius:10px;background:var(--blue-light);transition:.3s;}
     nav a:hover::after,nav a.active::after{width:100%;}
     nav a.active{color:var(--blue-light);}
     .nav-actions{display:flex;align-items:center;gap:12px;}
-    .cart-btn{position:relative;width:48px;height:48px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:18px;transition:.35s;display:flex;align-items:center;justify-content:center;}
-    .cart-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.12);}
-    .login-glass-btn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);backdrop-filter:blur(22px);color:#fff;font-size:14px;font-weight:600;cursor:pointer;overflow:hidden;transition:.35s;}
-    .login-glass-btn:hover{background:linear-gradient(135deg,rgba(56,189,248,.95),rgba(14,165,233,.95));transform:translateY(-2px);}
-    .register-glass-btn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:16px;border:1px solid rgba(125,211,252,.3);background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(14,165,233,.2));color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:.35s;}
-    .register-glass-btn:hover{background:linear-gradient(135deg,rgba(56,189,248,.4),rgba(14,165,233,.4));transform:translateY(-2px);}
+    .cart-btn{position:relative;width:48px;height:48px;border-radius:16px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.06);color:#111827;cursor:pointer;font-size:18px;transition:.35s;display:flex;align-items:center;justify-content:center;}
+    .cart-btn:hover{transform:translateY(-2px);background:rgba(0,0,0,.12);}
+    .login-glass-btn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:16px;border:1px solid rgba(0,0,0,.14);background:rgba(0,0,0,.08);backdrop-filter:blur(22px);color:#111827;font-size:14px;font-weight:600;cursor:pointer;overflow:hidden;transition:.35s;}
+    .login-glass-btn:hover{background:linear-gradient(135deg,#e5e7eb,#f3f4f6);transform:translateY(-2px);}
+    .register-glass-btn{position:relative;display:flex;align-items:center;gap:8px;padding:11px 20px;border-radius:16px;border:1px solid rgba(0,0,0,.3);background:linear-gradient(135deg,rgba(0,0,0,.05),rgba(0,0,0,.05));color:#111827;font-size:14px;font-weight:600;cursor:pointer;transition:.35s;}
+    .register-glass-btn:hover{background:linear-gradient(135deg,rgba(0,0,0,.1),rgba(0,0,0,.1));transform:translateY(-2px);}
 
     /* BREADCRUMB */
     .breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);flex-wrap:wrap;}
     .breadcrumb a{color:var(--text);text-decoration:none;transition:.2s;}
     .breadcrumb a:hover{color:var(--blue-light);}
-    .breadcrumb span{color:rgba(255,255,255,.3);}
+    .breadcrumb span{color:rgba(0,0,0,.3);}
     .breadcrumb .current{color:var(--blue-light);}
 
     /* MAIN LAYOUT */
@@ -73,7 +71,7 @@
       position:relative;
       border-radius:28px;
       overflow:hidden;
-      background:rgba(255,255,255,.04);
+      background:#f3f4f6;
       border:1px solid var(--glass-border);
       width:100%;
       min-height:60vh;
@@ -99,26 +97,26 @@
     .media-frame.gallery-mode img#mainImg{ display:block; }
     .img-badge{
       position:absolute;top:18px;left:18px;padding:6px 14px;z-index:10;
-      border-radius:99px;background:rgba(56,189,248,.2);border:1px solid rgba(56,189,248,.35);
-      color:var(--blue-light);font-size:12px;font-weight:700;letter-spacing:1px;
+      border-radius:99px;background:rgba(0,0,0,.1);border:1px solid rgba(0,0,0,.2);
+      color:#000000;font-size:12px;font-weight:700;letter-spacing:1px;
     }
     /* mini view toggle pill inside frame */
     .view-pill{
       position:absolute;top:18px;right:18px;z-index:20;
       display:flex;gap:4px;
-      background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.8);border:1px solid rgba(0,0,0,.12);
       backdrop-filter:blur(16px);border-radius:99px;padding:4px;
     }
     .view-pill button{
       padding:5px 14px;border-radius:99px;border:none;
       font-size:12px;font-weight:700;cursor:pointer;transition:.25s;
-      background:transparent;color:rgba(255,255,255,.55);
+      background:transparent;color:rgba(0,0,0,.55);
     }
     .view-pill button.active{
-      background:rgba(56,189,248,.25);color:var(--blue-light);
-      box-shadow:0 0 10px rgba(56,189,248,.3);
+      background:#e5e7eb;color:#000000;
+      box-shadow:0 0 10px rgba(0,0,0,.1);
     }
-    .view-pill button:hover{ color:#fff; }
+    .view-pill button:hover{ color:#111827; }
 
     /* THUMBNAILS — always below media frame */
     .thumbnails{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;}
@@ -130,7 +128,7 @@
     }
     .thumb img{width:100%;height:100%;object-fit:cover;}
     .thumb:hover{border-color:var(--blue);}
-    .thumb.active{border-color:var(--blue-light);box-shadow:0 0 14px rgba(56,189,248,.4);}
+    .thumb.active{border-color:#000000;box-shadow:0 0 14px rgba(0,0,0,.2);}
 
     /* RIGHT COLUMN */
     .col-right{width:480px;flex-shrink:0;display:flex;flex-direction:column;gap:24px;}
@@ -138,8 +136,7 @@
     /* PRODUCT TITLE */
     .product-title{
       font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;line-height:1.15;
-      background:linear-gradient(90deg,#fff,#7dd3fc);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      color:#000000;
     }
 
     /* RATING */
@@ -150,21 +147,21 @@
 
     /* PRICE */
     .price-block{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-    .price-current{font-size:2rem;font-weight:800;color:var(--blue-light);text-shadow:0 0 20px rgba(125,211,252,.4);}
-    .price-original{font-size:1.1rem;color:rgba(255,255,255,.35);text-decoration:line-through;}
+    .price-current{font-size:2rem;font-weight:800;color:#000000;}
+    .price-original{font-size:1.1rem;color:rgba(0,0,0,.45);text-decoration:line-through;}
     .price-badge{padding:4px 12px;border-radius:99px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:#f87171;font-size:12px;font-weight:700;}
 
     /* QUICK SPECS */
     .specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
     .spec-box{
-      background:var(--glass);border:1px solid var(--glass-border);
+      background:#f3f4f6;border:1px solid #e5e7eb;
       border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;
       transition:.3s;
     }
-    .spec-box:hover{border-color:rgba(56,189,248,.4);background:rgba(56,189,248,.06);}
+    .spec-box:hover{border-color:#000000;background:#ffffff;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
     .spec-icon{font-size:22px;width:36px;text-align:center;}
     .spec-label{font-size:11px;color:var(--text);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
-    .spec-value{font-size:14px;font-weight:700;color:#fff;}
+    .spec-value{font-size:14px;font-weight:700;color:#111827;}
 
     /* VARIANTS */
     .variant-group{display:flex;flex-direction:column;gap:12px;}
@@ -172,11 +169,11 @@
     .variant-options{display:flex;gap:10px;flex-wrap:wrap;}
     .variant-btn{
       padding:9px 20px;border-radius:12px;border:1px solid var(--glass-border);
-      background:var(--glass);color:var(--text);font-size:14px;font-weight:600;
+      background:#f3f4f6;color:var(--text);font-size:14px;font-weight:600;
       cursor:pointer;transition:.3s;
     }
-    .variant-btn:hover{border-color:var(--blue);color:#fff;}
-    .variant-btn.active{border-color:var(--blue-light);color:var(--blue-light);background:rgba(56,189,248,.12);box-shadow:0 0 14px rgba(56,189,248,.2);}
+    .variant-btn:hover{border-color:#000000;color:#111827;}
+    .variant-btn.active{border-color:#000000;color:#000000;background:#ffffff;box-shadow:0 0 14px rgba(0,0,0,.1);}
 
     /* COLOR SWATCHES */
     .color-options{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
@@ -197,25 +194,25 @@
     /* ACTION BUTTONS */
     .action-btns{display:flex;gap:14px;}
     .btn-add-cart{
-      flex:1;padding:16px;border-radius:18px;border:1px solid rgba(56,189,248,.4);
-      background:rgba(56,189,248,.1);color:var(--blue-light);
+      flex:1;padding:16px;border-radius:18px;border:1px solid #000000;
+      background:#ffffff;color:#000000;
       font-size:16px;font-weight:700;cursor:pointer;transition:.35s;
       display:flex;align-items:center;justify-content:center;gap:8px;
     }
-    .btn-add-cart:hover{background:rgba(56,189,248,.2);transform:translateY(-2px);box-shadow:0 8px 30px rgba(56,189,248,.2);}
+    .btn-add-cart:hover{background:#f3f4f6;transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,.05);}
     .btn-buy-now{
       flex:1;padding:16px;border-radius:18px;border:none;
-      background:linear-gradient(135deg,#38bdf8,#0ea5e9);color:#fff;
+      background:#000000;color:#fff;
       font-size:16px;font-weight:700;cursor:pointer;transition:.35s;
       display:flex;align-items:center;justify-content:center;gap:8px;
-      box-shadow:0 8px 25px rgba(56,189,248,.3);
+      box-shadow:0 8px 25px rgba(0,0,0,.15);
     }
-    .btn-buy-now:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(56,189,248,.5);}
+    .btn-buy-now:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(0,0,0,.3);}
 
     /* SECTION TITLE */
     .section-label{
       font-size:12px;font-weight:700;letter-spacing:2px;
-      text-transform:uppercase;color:var(--blue-light);
+      text-transform:uppercase;color:#111827;
       margin-bottom:-8px;
     }
 
@@ -279,8 +276,8 @@
           tone-mapping="neutral"
           shadow-intensity="1"
           camera-orbit="0deg 75deg 1.5m">
-          <div slot="poster" style="display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;height:100%;color:#00d9ff;font-weight:700;gap:16px;">
-            <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(0,217,255,.15);border-left-color:#00d9ff;animation:spin 1s linear infinite;"></div>
+          <div slot="poster" style="display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;height:100%;color:#000000;font-weight:700;gap:16px;">
+            <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(0,0,0,.15);border-left-color:#000000;animation:spin 1s linear infinite;"></div>
             <span>ĐANG TẢI MÔ HÌNH 3D...</span>
           </div>
         </model-viewer>
@@ -301,17 +298,17 @@
 
       <!-- THUMBNAILS — always below -->
       <div class="thumbnails" id="thumbnails">
-        <div class="thumb active" onclick="changeImg(this,'https://placehold.co/800x600/08101b/7dd3fc?text=Front')">
-          <img src="https://placehold.co/160x160/08101b/7dd3fc?text=Front" alt="Front"/>
+        <div class="thumb active" onclick="changeImg(this,'https://placehold.co/800x600/ffffff/000000?text=Front')">
+          <img src="https://placehold.co/160x160/f3f4f6/111827?text=Front" alt="Front"/>
         </div>
-        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/0f172a/38bdf8?text=Side')">
-          <img src="https://placehold.co/160x160/0f172a/38bdf8?text=Side" alt="Side"/>
+        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/ffffff/000000?text=Side')">
+          <img src="https://placehold.co/160x160/f3f4f6/111827?text=Side" alt="Side"/>
         </div>
-        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/040b14/0ea5e9?text=Top')">
-          <img src="https://placehold.co/160x160/040b14/0ea5e9?text=Top" alt="Top"/>
+        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/ffffff/000000?text=Top')">
+          <img src="https://placehold.co/160x160/f3f4f6/111827?text=Top" alt="Top"/>
         </div>
-        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/020617/7dd3fc?text=Detail')">
-          <img src="https://placehold.co/160x160/020617/7dd3fc?text=Detail" alt="Detail"/>
+        <div class="thumb" onclick="changeImg(this,'https://placehold.co/800x600/ffffff/000000?text=Detail')">
+          <img src="https://placehold.co/160x160/f3f4f6/111827?text=Detail" alt="Detail"/>
         </div>
       </div>
 
@@ -385,7 +382,7 @@
 
       <!-- COLOR VARIANT -->
       <div class="variant-group">
-        <span class="variant-label">Màu Sắc: <span id="colorName" style="color:#fff;font-weight:700;">Black</span></span>
+        <span class="variant-label">Màu Sắc: <span id="colorName" style="color:#000000;font-weight:700;">Black</span></span>
         <div class="color-options">
           <div class="color-swatch black active" title="Black" onclick="pickColor(this,'Black')"></div>
           <div class="color-swatch white" title="White" onclick="pickColor(this,'White')"></div>
@@ -425,18 +422,18 @@
     // PRODUCTS DATA (đồng bộ với products.html)
     // ============================================================
     const PRODUCTS = [
-      {id:1,  cat:'vga',  brand:'ASUS',     name:'ASUS ROG RTX 4090 24GB OC',        specs:'Ada Lovelace · 24GB GDDR6X · 384-bit',          price:45900000, oldPrice:52000000, rating:4.9, reviews:128, stock:'in',  badge:'hot',  img:'https://placehold.co/800x560/081120/7dd3fc?text=RTX+4090'},
-      {id:2,  cat:'cpu',  brand:'AMD',      name:'AMD Ryzen 9 7950X',                specs:'Socket AM5 · 16 Nhân 32 Luồng · 5.7GHz',         price:18500000, oldPrice:22000000, rating:4.8, reviews:94,  stock:'in',  badge:'sale', img:'https://placehold.co/800x560/081120/7dd3fc?text=Ryzen+9+7950X'},
-      {id:3,  cat:'main', brand:'ASUS',     name:'ASUS ROG Maximus Z790 Hero',       specs:'LGA1700 · DDR5 · PCIe 5.0',                       price:14200000, oldPrice:16500000, rating:4.7, reviews:61,  stock:'low', badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=ROG+Z790'},
-      {id:4,  cat:'ram',  brand:'Corsair',  name:'Corsair Dominator DDR5 32GB',      specs:'DDR5 · 32GB (2x16) · 6400MHz',                   price:4800000,  oldPrice:5500000,  rating:4.6, reviews:210, stock:'in',  badge:'new',  img:'https://placehold.co/800x560/081120/7dd3fc?text=DDR5+32GB'},
-      {id:5,  cat:'ssd',  brand:'Samsung', name:'Samsung 990 Pro NVMe 2TB',          specs:'PCIe 4.0 · 7450 MB/s · M.2 2280',                price:3200000,  oldPrice:3800000,  rating:4.9, reviews:445, stock:'in',  badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=Samsung+990+Pro'},
-      {id:6,  cat:'vga',  brand:'MSI',      name:'MSI Gaming X Trio RTX 4070 Ti',   specs:'Ada Lovelace · 12GB GDDR6X · 192-bit',            price:19500000, oldPrice:23000000, rating:4.7, reviews:77,  stock:'in',  badge:'sale', img:'https://placehold.co/800x560/081120/7dd3fc?text=RTX+4070+Ti'},
-      {id:7,  cat:'cpu',  brand:'Intel',    name:'Intel Core i9-14900K',             specs:'LGA1700 · 24 Nhân · 6.0GHz Boost',               price:15900000, oldPrice:19000000, rating:4.8, reviews:132, stock:'low', badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=i9-14900K'},
-      {id:8,  cat:'psu',  brand:'Corsair', name:'Corsair HX1200 Platinum',           specs:'1200W · 80+ Platinum · Full Modular',             price:5600000,  oldPrice:6200000,  rating:4.8, reviews:89,  stock:'in',  badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=HX1200+PSU'},
-      {id:9,  cat:'vga',  brand:'Gigabyte', name:'Gigabyte RX 7900 XTX Gaming OC',  specs:'RDNA 3 · 24GB GDDR6 · 384-bit',                  price:22500000, oldPrice:26000000, rating:4.6, reviews:55,  stock:'out', badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=RX+7900+XTX'},
-      {id:10, cat:'main', brand:'MSI',      name:'MSI MEG X670E ACE',                specs:'Socket AM5 · DDR5 · PCIe 5.0',                   price:11900000, oldPrice:13500000, rating:4.5, reviews:43,  stock:'in',  badge:'new',  img:'https://placehold.co/800x560/081120/7dd3fc?text=MSI+X670E'},
-      {id:11, cat:'ssd',  brand:'Samsung', name:'Samsung 870 EVO SATA 1TB',          specs:'SATA III · 560 MB/s · 2.5"',                     price:1800000,  oldPrice:2200000,  rating:4.7, reviews:630, stock:'in',  badge:null,   img:'https://placehold.co/800x560/081120/7dd3fc?text=870+EVO'},
-      {id:12, cat:'ram',  brand:'Corsair', name:'Corsair Vengeance DDR5 64GB',       specs:'DDR5 · 64GB (2x32) · 5600MHz',                   price:7200000,  oldPrice:8500000,  rating:4.5, reviews:38,  stock:'low', badge:'new',  img:'https://placehold.co/800x560/081120/7dd3fc?text=Vengeance+64GB'},
+      {id:1,  cat:'vga',  brand:'ASUS',     name:'ASUS ROG RTX 4090 24GB OC',        specs:'Ada Lovelace · 24GB GDDR6X · 384-bit',          price:45900000, oldPrice:52000000, rating:4.9, reviews:128, stock:'in',  badge:'hot',  img:'https://placehold.co/800x560/ffffff/000000?text=RTX+4090'},
+      {id:2,  cat:'cpu',  brand:'AMD',      name:'AMD Ryzen 9 7950X',                specs:'Socket AM5 · 16 Nhân 32 Luồng · 5.7GHz',         price:18500000, oldPrice:22000000, rating:4.8, reviews:94,  stock:'in',  badge:'sale', img:'https://placehold.co/800x560/ffffff/000000?text=Ryzen+9+7950X'},
+      {id:3,  cat:'main', brand:'ASUS',     name:'ASUS ROG Maximus Z790 Hero',       specs:'LGA1700 · DDR5 · PCIe 5.0',                       price:14200000, oldPrice:16500000, rating:4.7, reviews:61,  stock:'low', badge:null,   img:'https://placehold.co/800x560/ffffff/000000?text=ROG+Z790'},
+      {id:4,  cat:'ram',  brand:'Corsair',  name:'Corsair Dominator DDR5 32GB',      specs:'DDR5 · 32GB (2x16) · 6400MHz',                   price:4800000,  oldPrice:5500000,  rating:4.6, reviews:210, stock:'in',  badge:'new',  img:'https://placehold.co/800x560/ffffff/000000?text=DDR5+32GB'},
+      {id:5,  cat:'ssd',  brand:'Samsung', name:'Samsung 990 Pro NVMe 2TB',          specs:'PCIe 4.0 · 7450 MB/s · M.2 2280',                price:3200000,  oldPrice:3800000,  rating:4.9, reviews:445, stock:'in',  badge:null,   img:'https://placehold.co/800x560/ffffff/000000?text=Samsung+990+Pro'},
+      {id:6,  cat:'vga',  brand:'MSI',      name:'MSI Gaming X Trio RTX 4070 Ti',   specs:'Ada Lovelace · 12GB GDDR6X · 192-bit',            price:19500000, oldPrice:23000000, rating:4.7, reviews:77,  stock:'in',  badge:'sale', img:'https://placehold.co/800x560/ffffff/000000?text=RTX+4070+Ti'},
+      {id:7,  cat:'cpu',  brand:'Intel',    name:'Intel Core i9-14900K',             specs:'LGA1700 · 24 Nhân · 6.0GHz Boost',               price:15900000, oldPrice:19000000, rating:4.8, reviews:132, stock:'low', badge:null,   img:'https://placehold.co/800x560/ffffff/000000?text=i9-14900K'},
+      {id:8,  cat:'psu',  brand:'Corsair', name:'Corsair HX1200 Platinum',           specs:'1200W · 80+ Platinum · Full Modular',             price:5600000,  oldPrice:6200000,  rating:4.8, reviews:89,  stock:'in',  badge:null,   img:'https://placehold.co/800x560/ffffff/000000?text=HX1200+PSU'},
+      {id:9,  cat:'vga',  brand:'Gigabyte', name:'Gigabyte RX 7900 XTX Gaming OC',  specs:'RDNA 3 · 24GB GDDR6 · 384-bit',                  price:22500000, oldPrice:26000000, rating:4.6, reviews:55,  stock:'out', badge:null,   img:'https://placehold.co/800x560/ffffff/000000?text=RX+7900+XTX'},
+      {id:10, cat:'main', brand:'MSI',      name:'MSI MEG X670E ACE',                specs:'Socket AM5 · DDR5 · PCIe 5.0',                   price:11900000, oldPrice:13500000, rating:4.5, reviews:43,  stock:'in',  badge:'new',  img:'https://placehold.co/800x560/ffffff/000000?text=MSI+X670E'},
+      {id:11, cat:'ssd',  brand:'Samsung', name:'Samsung 870 EVO SATA 1TB',          specs:'SATA III · 560 MB/s · 2.5"',                     price:1800000,  oldPrice:2200000,  rating:4.7, reviews:630, stock:'in',  badge:null,   img:'https://placehold.co/800x560/ffffff/000000?text=870+EVO'},
+      {id:12, cat:'ram',  brand:'Corsair', name:'Corsair Vengeance DDR5 64GB',       specs:'DDR5 · 64GB (2x32) · 5600MHz',                   price:7200000,  oldPrice:8500000,  rating:4.5, reviews:38,  stock:'low', badge:'new',  img:'https://placehold.co/800x560/ffffff/000000?text=Vengeance+64GB'},
     ];
 
     // ============================================================
@@ -531,8 +528,8 @@
       thumbContainer.innerHTML = '';
       const angles = ['Front','Side','Top','Detail'];
       angles.forEach((angle, i) => {
-        const bigSrc   = `https://placehold.co/800x560/081120/7dd3fc?text=${encodeURIComponent(p.name + ' - ' + angle)}`;
-        const thumbSrc = `https://placehold.co/160x160/081120/7dd3fc?text=${encodeURIComponent(angle)}`;
+        const bigSrc   = `https://placehold.co/800x560/ffffff/000000?text=${encodeURIComponent(p.name + ' - ' + angle)}`;
+        const thumbSrc = `https://placehold.co/160x160/f3f4f6/111827?text=${encodeURIComponent(angle)}`;
         const div = document.createElement('div');
         div.className = 'thumb' + (i === 0 ? ' active' : '');
         div.onclick = function() { changeImg(this, bigSrc); };

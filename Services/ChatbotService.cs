@@ -34,7 +34,7 @@ namespace PC_Store.Services
                     contents: fullPrompt
                 );
 
-                var text = response?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
+                var text = response?.Text;
 
                 if (!string.IsNullOrEmpty(text))
                 {
