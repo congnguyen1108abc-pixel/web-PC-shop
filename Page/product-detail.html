@@ -25,16 +25,22 @@
       --cyan: #000000;
     }
 
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
     html {
       scroll-behavior: smooth;
     }
 
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       color: #111827;
       background: #ffffff;
       min-height: 100vh;
       overflow-x: hidden;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
     }
 
     ::-webkit-scrollbar {
@@ -73,7 +79,7 @@
     }
 
     header, header * {
-      font-family: 'Segoe UI', sans-serif !important;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     }
 
     header.scrolled {

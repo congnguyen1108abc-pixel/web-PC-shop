@@ -28,16 +28,22 @@
       --gold: #555555;
     }
 
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
     html {
       scroll-behavior: smooth;
     }
 
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       color: #000000;
       background: #FFFFFF;
       min-height: 100vh;
       overflow-x: hidden;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
     }
 
     ::-webkit-scrollbar {
@@ -80,7 +86,7 @@
     }
 
     header, header * {
-      font-family: 'Segoe UI', sans-serif !important;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
     }
 
     header.scrolled {
@@ -915,7 +921,7 @@
       background: rgba(255, 255, 255, 0.98);
       border-top: 1px solid rgba(0, 0, 0, 0.05);
       padding: 80px 60px 40px;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       position: relative;
       z-index: 10;
       margin-top: 80px;
