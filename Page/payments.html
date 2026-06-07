@@ -19,31 +19,18 @@
         :root {
             --blue: #38bdf8;
             --blue-light: #7dd3fc;
-            --dark: #020617;
-            --dark2: #081120;
-            --glass: rgba(255, 255, 255, .06);
-            --border: rgba(255, 255, 255, .12);
-            --text: rgba(255, 255, 255, .7);
+            --dark: #ffffff;
+            --dark2: #ffffff;
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.1);
+            --text: #4b5563;
         }
 
         body {
             min-height: 100vh;
             overflow-x: hidden;
-            color: white;
-
-            background:
-                radial-gradient(circle at top left,
-                    rgba(56, 189, 248, .18),
-                    transparent 25%),
-
-                radial-gradient(circle at bottom right,
-                    rgba(14, 165, 233, .15),
-                    transparent 25%),
-
-                linear-gradient(180deg,
-                    #08101b 0%,
-                    #040b14 55%,
-                    #01050b 100%);
+            color: #111827;
+            background: #ffffff;
         }
 
         /* BACKGROUND */
@@ -59,7 +46,7 @@
         .orb1 {
             width: 450px;
             height: 450px;
-            background: #38bdf8;
+            background: #f3f4f6;
             top: -140px;
             left: -120px;
         }
@@ -67,7 +54,7 @@
         .orb2 {
             width: 380px;
             height: 380px;
-            background: #0ea5e9;
+            background: #e5e7eb;
             right: -100px;
             bottom: -120px;
             animation-delay: 2s;
@@ -107,11 +94,11 @@
 
         /* GLASS */
         .glass-card {
-            background: rgba(15, 23, 42, .72);
-            border: 1px solid rgba(255, 255, 255, .1);
+            background: var(--glass);
+            border: 1px solid var(--border);
             backdrop-filter: blur(28px);
             border-radius: 34px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, .45), inset 0 1px 1px rgba(255, 255, 255, .05);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             position: relative;
         }
@@ -121,7 +108,7 @@
             position: absolute;
             width: 240px;
             height: 240px;
-            background: rgba(56, 189, 248, .12);
+            background: rgba(0, 0, 0, 0.02);
             border-radius: 50%;
             filter: blur(90px);
             top: -120px;
@@ -137,9 +124,7 @@
             font-size: 42px;
             font-weight: 900;
             margin-bottom: 12px;
-            background: linear-gradient(90deg, #fff, #7dd3fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #111827;
         }
 
         .subtitle {
@@ -169,21 +154,21 @@
             align-items: center;
             padding: 26px;
             border-radius: 26px;
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .08);
+            background: #ffffff;
+            border: 1px solid #d1d5db;
             cursor: pointer;
             transition: .35s;
         }
 
         .method-label:hover {
             transform: translateY(-4px);
-            background: rgba(255, 255, 255, .08);
+            background: #f3f4f6;
         }
 
         .method-card input:checked+.method-label {
-            border-color: #38bdf8;
-            background: rgba(56, 189, 248, .12);
-            box-shadow: 0 0 20px rgba(56, 189, 248, .18);
+            border-color: #000000;
+            background: #f3f4f6;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
         .method-left {
@@ -200,7 +185,8 @@
             justify-content: center;
             align-items: center;
             font-size: 28px;
-            background: rgba(255, 255, 255, .08);
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .method-info h3 {
@@ -217,14 +203,14 @@
             width: 24px;
             height: 24px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, .3);
+            border: 2px solid #d1d5db;
             transition: .3s;
         }
 
         .method-card input:checked+.method-label .radio-circle {
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 6px rgba(56, 189, 248, .18);
-            background: #38bdf8;
+            border-color: #000000;
+            box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.1);
+            background: #000000;
         }
 
         /* PAYMENT DETAIL */
@@ -232,14 +218,14 @@
             margin-top: 30px;
             padding: 25px;
             border-radius: 24px;
-            background: rgba(255, 255, 255, .04);
-            border: 1px solid rgba(255, 255, 255, .08);
+            background: #f9fafb;
+            border: 1px solid #d1d5db;
         }
 
         .detail-title {
             font-size: 18px;
             margin-bottom: 20px;
-            color: #7dd3fc;
+            color: #111827;
         }
 
         /* PAYMENT QR */
@@ -258,8 +244,8 @@
             margin: 25px auto;
             padding: 14px;
             border-radius: 30px;
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .1);
+            background: #ffffff;
+            border: 1px solid #d1d5db;
             backdrop-filter: blur(20px);
             display: flex;
             justify-content: center;
@@ -282,8 +268,8 @@
             display: flex;
             align-items: center;
             gap: 14px;
-            background: rgba(255, 255, 255, .04);
-            border: 1px solid rgba(255, 255, 255, .08);
+            background: #ffffff;
+            border: 1px solid #d1d5db;
             padding: 16px 18px;
             border-radius: 18px;
             transition: .3s;
@@ -291,7 +277,7 @@
 
         .guide-item:hover {
             transform: translateX(6px);
-            background: rgba(255, 255, 255, .07);
+            background: #f3f4f6;
         }
 
         .guide-item span {
@@ -301,7 +287,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            background: #000000;
+            color: #ffffff;
             font-weight: bold;
             flex-shrink: 0;
         }
@@ -314,12 +301,12 @@
             display: flex;
             justify-content: space-between;
             padding: 15px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, .06);
-            color: rgba(255, 255, 255, .75);
+            border-bottom: 1px solid #e5e7eb;
+            color: #4b5563;
         }
 
         .info-row strong {
-            color: white;
+            color: #111827;
         }
 
         .cod-box {
@@ -327,8 +314,8 @@
             height: 130px;
             margin: 35px auto;
             border-radius: 35px;
-            background: rgba(56, 189, 248, .12);
-            border: 1px solid rgba(56, 189, 248, .2);
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -338,7 +325,7 @@
 
         .cod-text {
             text-align: center;
-            color: rgba(255, 255, 255, .7);
+            color: #4b5563;
             line-height: 1.8;
         }
 
@@ -371,7 +358,7 @@
             gap: 18px;
             margin-bottom: 22px;
             padding-bottom: 22px;
-            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .product-item img {
@@ -393,7 +380,7 @@
         }
 
         .price {
-            color: #7dd3fc;
+            color: #111827;
             font-weight: bold;
         }
 
@@ -401,13 +388,13 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 16px;
-            color: rgba(255, 255, 255, .75);
+            color: #4b5563;
         }
 
         .summary-total {
             margin-top: 25px;
             padding-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, .08);
+            border-top: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -420,7 +407,7 @@
         .summary-total span {
             font-size: 32px;
             font-weight: 900;
-            color: #7dd3fc;
+            color: #111827;
         }
 
         /* BUTTONS */
@@ -430,7 +417,7 @@
             margin-top: 35px;
             border: none;
             border-radius: 20px;
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            background: #000000;
             color: white;
             font-size: 17px;
             font-weight: 700;
@@ -440,19 +427,19 @@
 
         .pay-btn:hover:not(:disabled) {
             transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 18px 35px rgba(56, 189, 248, .4);
+            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.2);
         }
 
         .pay-btn:disabled {
-            background: #334155;
-            color: #94a3b8;
+            background: #e5e7eb;
+            color: #9ca3af;
             cursor: not-allowed;
         }
 
         .secure-box {
             margin-top: 24px;
             text-align: center;
-            color: rgba(255, 255, 255, .55);
+            color: #9ca3af;
             font-size: 14px;
         }
 
@@ -462,17 +449,17 @@
             margin: 15px auto;
             padding: 10px 20px;
             border-radius: 12px;
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px dashed #38bdf8;
-            color: #38bdf8;
+            background: #f3f4f6;
+            border: 1px dashed #d1d5db;
+            color: #111827;
             cursor: pointer;
             font-weight: bold;
             transition: 0.3s;
         }
 
         .sandbox-btn:hover {
-            background: #38bdf8;
-            color: white;
+            background: #e5e7eb;
+            color: #000000;
         }
 
         .success-msg {
@@ -500,14 +487,12 @@
             left: 0;
             right: 0;
             z-index: 100;
-            background: rgba(15, 23, 42, .95);
-            border: 1px solid rgba(56, 189, 248, .2);
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #e5e7eb;
             border-radius: 22px;
             padding: 10px;
             backdrop-filter: blur(30px);
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, .6),
-                0 0 30px rgba(56, 189, 248, .1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
             animation: dropDown .3s ease;
         }
 
@@ -535,28 +520,28 @@
             border-radius: 16px;
             cursor: pointer;
             transition: .3s;
-            color: rgba(255, 255, 255, .75);
+            color: #4b5563;
         }
 
         .bank-drop-item:hover {
-            background: rgba(255, 255, 255, .08);
-            color: white;
+            background: #f9fafb;
+            color: #111827;
         }
 
         .bank-drop-item.active {
-            background: rgba(56, 189, 248, .15);
-            border: 1px solid rgba(56, 189, 248, .25);
-            color: white;
+            background: #f3f4f6;
+            border: 1px solid #111827;
+            color: #111827;
         }
 
         .bank-drop-item p {
             font-size: 12px;
-            color: rgba(255, 255, 255, .5);
+            color: #9ca3af;
             margin-top: 3px;
         }
 
         .bank-drop-item.active p {
-            color: rgba(125, 211, 252, .7);
+            color: #4b5563;
         }
 
         .drop-icon {
@@ -567,7 +552,8 @@
             justify-content: center;
             align-items: center;
             border-radius: 14px;
-            background: rgba(255, 255, 255, .06);
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
             flex-shrink: 0;
         }
 
@@ -585,23 +571,23 @@
             width: 100%;
             height: 52px;
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, .1);
-            background: rgba(255, 255, 255, .05);
+            border: 1px solid #d1d5db;
+            background: #f3f4f6;
             padding: 0 18px;
-            color: white;
+            color: #111827;
             font-size: 15px;
             outline: none;
             transition: .3s;
         }
 
         .input-field:focus {
-            border-color: #38bdf8;
-            background: rgba(255, 255, 255, .08);
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, .12);
+            border-color: #000000;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1);
         }
 
         .input-field::placeholder {
-            color: rgba(255, 255, 255, .42);
+            color: #9ca3af;
         }
 
         @media(max-width:950px) {
@@ -619,67 +605,251 @@
             }
         }
 
-        /* ========================= */
+        /* ================================= */
         /* HEADER */
-        /* ========================= */
+        /* ================================= */
 
-        .cart-header {
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: none;
             width: 100%;
-            padding: 30px 70px;
+            height: 78px;
+            padding: 0 45px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
-            z-index: 10;
+            z-index: 999;
+            border-radius: 0 0 20px 20px;
+            background: #FFFFFF;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+            transition: .4s ease;
+        }
+
+        header, header * {
+            font-family: 'Segoe UI', sans-serif !important;
+        }
+
+        header.scrolled {
+            background: #FFFFFF;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
         }
 
         .logo {
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 800;
-            letter-spacing: 3px;
-            background: linear-gradient(90deg, #fff, #7dd3fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+            color: #000000;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 15px;
+            position: relative;
+            transition: .3s;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a:hover {
+            color: #000000;
+        }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            width: 0%;
+            height: 2px;
+            border-radius: 10px;
+            background: #555555;
+            transition: .3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* ================================= */
+        /* HEADER ACTIONS */
+        /* ================================= */
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .cart-btn {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, .12);
+            background: rgba(0, 0, 0, .06);
+            backdrop-filter: blur(20px);
+            color: #000000;
+            cursor: pointer;
+            font-size: 18px;
+            transition: .35s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, .12);
+        }
+
+        .login-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .14);
+            background: rgba(0, 0, 0, .08);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background .35s ease, border .35s ease, transform .35s ease, box-shadow .35s ease;
+        }
+
+        .login-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, #555555, transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .login-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .login-glass-btn:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, .95), rgba(14, 165, 233, .95));
+            border: 1px solid rgba(125, 211, 252, .6);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, .35), 0 0 20px rgba(125, 211, 252, .25);
+            transform: translateY(-3px);
+            color: #FFFFFF;
+        }
+
+        .login-icon {
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .3);
+            background: linear-gradient(135deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2));
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: .35s ease;
+        }
+
+        .register-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(0, 0, 0, .25), transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .register-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .register-glass-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            color: #000000;
+        }
+
+        /* ========================= */
+        /* CHECKOUT PROGRESS */
+        /* ========================= */
+
+        .checkout-progress-wrapper {
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px 70px 10px;
         }
 
         .progress {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 25px;
         }
 
         .step {
             display: flex;
             align-items: center;
             gap: 10px;
-            color: rgba(255, 255, 255, .5);
+            color: rgba(0, 0, 0, .5);
+            font-weight: 600;
         }
 
         .step.active {
-            color: white;
+            color: #000000;
         }
 
         .step-circle {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(0, 0, 0, .05);
+            border: 1px solid rgba(0, 0, 0, .1);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .step.active .step-circle {
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-        }
-
-        @media(max-width:1000px) {
-            .cart-header {
-                padding: 25px 20px;
-                flex-direction: column;
-                gap: 20px;
-            }
+            background: #000000;
+            color: #ffffff;
         }
     </style>
 
@@ -691,10 +861,31 @@
     <div class="orb orb2"></div>
 
     <!-- HEADER -->
-    <div class="cart-header">
-        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
-            HYPER CORE
+    <header id="header">
+        <div class="logo" onclick="window.location.href='/Homepage'">HYPER CORE</div>
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <a href="/Products">Sản Phẩm</a>
+            <a href="/Gaminggear">Gaming Gear</a>
+            <a href="#">PC Build</a>
+            <a href="#">Trạng thái đơn hàng</a>
+            <a href="#">Liên Hệ</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
+                🛒
+                <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;color:white;">0</span>
+            </button>
+            <button class="login-glass-btn" onclick="window.location.href='/Login'">
+                <span class="login-icon">👤</span> <span>Đăng Nhập</span>
+            </button>
+            <button class="register-glass-btn" onclick="window.location.href='/Register'">
+                <span class="login-icon">📝</span> <span>Đăng Ký</span>
+            </button>
         </div>
+    </header>
+
+    <div class="checkout-progress-wrapper">
         <div class="progress">
             <div class="step active">
                 <div class="step-circle">1</div>
@@ -823,7 +1014,7 @@
                             <div class="payment-info" style="text-align: center; padding: 30px 10px;">
                                 <div style="font-size: 40px; margin-bottom: 15px;">⏱️</div>
                                 <h4 style="margin-bottom: 10px;">Chuyển hướng đến Cổng Thanh Toán</h4>
-                                <p style="color: rgba(255,255,255,.6); font-size: 14px;">
+                                <p style="color: rgba(0,0,0,.6); font-size: 14px;">
                                     Bạn sẽ được chuyển sang trang quét mã QR an toàn để hoàn tất giao dịch.
                                 </p>
                             </div>
@@ -894,7 +1085,7 @@
                 </div>
                 <div class="summary-row">
                     <span>Giảm giá</span>
-                    <span style="color:#38bdf8;" id="summary-discount"></span>
+                    <span style="color:#000000; font-weight:bold;" id="summary-discount"></span>
                 </div>
 
                 <div class="summary-total">
@@ -1223,6 +1414,25 @@
             }
         }
 
+        // Update cart count badge from localStorage
+        function updateHeaderCartCount() {
+            let cartData = [];
+            try {
+                cartData = JSON.parse(localStorage.getItem('hyper_core_cart')) || JSON.parse(localStorage.getItem('hypercore_cart_items')) || [];
+            } catch(e) {}
+            const countEl = document.getElementById("cartCount");
+            if (countEl) {
+                const totalQty = cartData.reduce((acc, item) => acc + item.qty, 0);
+                if (totalQty > 0) {
+                    countEl.innerText = totalQty;
+                    countEl.style.display = "flex";
+                } else {
+                    countEl.style.display = "none";
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", updateHeaderCartCount);
     </script>
 
 </body>

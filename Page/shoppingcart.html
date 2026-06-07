@@ -17,71 +17,263 @@
         }
 
         body {
-            background:
-                radial-gradient(circle at top left, rgba(56, 189, 248, .18), transparent 25%),
-                linear-gradient(180deg, #08101b 0%, #020617 100%);
-            color: white;
+            background: #ffffff;
+            color: #111827;
             overflow-x: hidden;
         }
 
         :root {
-            --blue: #38bdf8;
-            --blue-light: #7dd3fc;
-            --glass: rgba(255, 255, 255, .05);
-            --border: rgba(255, 255, 255, .12);
+            --blue: #000000;
+            --blue-light: #111827;
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 0, 0, 0.05);
         }
 
-        /* ========================= */
+        /* ================================= */
         /* HEADER */
-        /* ========================= */
+        /* ================================= */
 
-        .cart-header {
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: none;
             width: 100%;
-            padding: 30px 70px;
+            height: 78px;
+            padding: 0 45px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 999;
+            border-radius: 0 0 20px 20px;
+            background: #FFFFFF;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+            transition: .4s ease;
+        }
+
+        header, header * {
+            font-family: 'Segoe UI', sans-serif !important;
+        }
+
+        header.scrolled {
+            background: #FFFFFF;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
         }
 
         .logo {
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 800;
-            letter-spacing: 3px;
-            background: linear-gradient(90deg, #fff, #7dd3fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            letter-spacing: 4px;
+            color: #000000;
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 15px;
+            position: relative;
+            transition: .3s;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a:hover {
+            color: #000000;
+        }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            width: 0%;
+            height: 2px;
+            border-radius: 10px;
+            background: #555555;
+            transition: .3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* ================================= */
+        /* HEADER ACTIONS */
+        /* ================================= */
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .cart-btn {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, .12);
+            background: rgba(0, 0, 0, .06);
+            backdrop-filter: blur(20px);
+            color: #000000;
+            cursor: pointer;
+            font-size: 18px;
+            transition: .35s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, .12);
+        }
+
+        .login-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .14);
+            background: rgba(0, 0, 0, .08);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: background .35s ease, border .35s ease, transform .35s ease, box-shadow .35s ease;
+        }
+
+        .login-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, #555555, transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .login-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .login-glass-btn:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, .95), rgba(14, 165, 233, .95));
+            border: 1px solid rgba(125, 211, 252, .6);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, .35), 0 0 20px rgba(125, 211, 252, .25);
+            transform: translateY(-3px);
+            color: #FFFFFF;
+        }
+
+        .login-icon {
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .register-glass-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, .3);
+            background: linear-gradient(135deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2));
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            color: #000000;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            overflow: hidden;
+            transition: .35s ease;
+        }
+
+        .register-glass-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(0, 0, 0, .25), transparent);
+            transform: skewX(-20deg);
+            transition: .7s;
+        }
+
+        .register-glass-btn:hover::before {
+            left: 140%;
+        }
+
+        .register-glass-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            color: #000000;
+        }
+
+        /* ========================= */
+        /* CHECKOUT PROGRESS */
+        /* ========================= */
+
+        .checkout-progress-wrapper {
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px 70px 10px;
         }
 
         .progress {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 25px;
         }
 
         .step {
             display: flex;
             align-items: center;
             gap: 10px;
-            color: rgba(255, 255, 255, .5);
+            color: rgba(0, 0, 0, .5);
+            font-weight: 600;
         }
 
         .step.active {
-            color: white;
+            color: #000000;
         }
 
         .step-circle {
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(0, 0, 0, .05);
+            border: 1px solid rgba(0, 0, 0, .1);
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .step.active .step-circle {
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            background: #000000;
+            color: #ffffff;
         }
 
         /* ========================= */
@@ -101,14 +293,12 @@
         /* ========================= */
 
         .glass-box {
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             backdrop-filter: blur(24px);
             border-radius: 32px;
             padding: 30px;
-            box-shadow:
-                0 20px 40px rgba(0, 0, 0, .35),
-                inset 0 1px 1px rgba(255, 255, 255, .05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
         }
 
         /* ========================= */
@@ -120,7 +310,7 @@
             gap: 25px;
             align-items: center;
             padding: 25px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            border-bottom: 1px solid rgba(0, 0, 0, .08);
             animation: fadeUp .5s ease;
         }
 
@@ -145,12 +335,13 @@
         }
 
         .variant {
-            color: rgba(255, 255, 255, .6);
+            color: rgba(0, 0, 0, .6);
             margin-bottom: 10px;
         }
 
         .save-later {
-            color: var(--blue-light);
+            color: #000000;
+            font-weight: bold;
             cursor: pointer;
             font-size: 14px;
             margin-top: 12px;
@@ -169,8 +360,8 @@
             height: 38px;
             border: none;
             border-radius: 12px;
-            background: rgba(255, 255, 255, .08);
-            color: white;
+            background: rgba(0, 0, 0, .05);
+            color: #000000;
             font-size: 18px;
             cursor: pointer;
             transition: .3s;
@@ -178,16 +369,17 @@
 
         .qty-btn:hover {
             background: var(--blue);
+            color: #ffffff;
         }
 
         .qty-input {
             width: 60px;
             height: 38px;
             border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, .1);
-            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(0, 0, 0, .1);
+            background: rgba(255, 255, 255, 0.5);
             text-align: center;
-            color: white;
+            color: #111827;
             font-size: 16px;
         }
 
@@ -229,7 +421,7 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 18px;
-            color: rgba(255, 255, 255, .75);
+            color: rgba(0, 0, 0, .75);
         }
 
         .summary-total {
@@ -242,8 +434,9 @@
         .save-money {
             padding: 16px;
             border-radius: 18px;
-            background: rgba(56, 189, 248, .12);
-            color: #7dd3fc;
+            background: rgba(0, 0, 0, .05);
+            color: #111827;
+            font-weight: bold;
             margin-bottom: 25px;
         }
 
@@ -257,17 +450,17 @@
             flex: 1;
             height: 52px;
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, .1);
-            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(0, 0, 0, .1);
+            background: rgba(255, 255, 255, 0.5);
             padding: 0 18px;
-            color: white;
+            color: #111827;
         }
 
         .apply-btn {
             padding: 0 22px;
             border-radius: 16px;
             border: none;
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            background: #000000;
             color: white;
             cursor: pointer;
             font-weight: bold;
@@ -283,15 +476,16 @@
         .voucher {
             padding: 10px 16px;
             border-radius: 999px;
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(0, 0, 0, .05);
+            border: 1px solid rgba(0, 0, 0, .1);
+            color: #111827;
             cursor: pointer;
             transition: .3s;
         }
 
         .voucher:hover {
-            background: rgba(56, 189, 248, .15);
-            border-color: rgba(125, 211, 252, .25);
+            background: rgba(0, 0, 0, .1);
+            border-color: rgba(0, 0, 0, .2);
         }
 
         .checkout-btn {
@@ -299,7 +493,7 @@
             height: 62px;
             border: none;
             border-radius: 18px;
-            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            background: #000000;
             color: white;
             font-size: 18px;
             font-weight: bold;
@@ -309,7 +503,7 @@
 
         .checkout-btn:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(56, 189, 248, .35);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .2);
         }
 
         /* ========================= */
@@ -324,9 +518,9 @@
             width: 100%;
             height: 52px;
             border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, .1);
-            background: rgba(255, 255, 255, .05);
-            color: white;
+            border: 1px solid rgba(0, 0, 0, .1);
+            background: rgba(255, 255, 255, 0.5);
+            color: #111827;
             padding: 0 15px;
         }
 
@@ -350,8 +544,8 @@
         }
 
         .cross-card {
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 28px;
             overflow: hidden;
             transition: .4s;
@@ -386,15 +580,16 @@
             height: 46px;
             border: none;
             border-radius: 14px;
-            background: rgba(56, 189, 248, .15);
-            color: #7dd3fc;
+            background: rgba(0, 0, 0, .05);
+            color: #000000;
+            font-weight: bold;
             cursor: pointer;
             transition: .3s;
         }
 
         .add-btn:hover {
-            background: var(--blue);
-            color: white;
+            background: #000000 !important;
+            color: white !important;
         }
 
         /* ========================= */
@@ -405,8 +600,9 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: rgba(15, 23, 42, .92);
-            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid rgba(0, 0, 0, .12);
+            color: #111827;
             padding: 18px 24px;
             border-radius: 20px;
             display: none;
@@ -475,36 +671,49 @@
 
     <!-- HEADER -->
 
-    <div class="cart-header">
-
-        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
-            HYPER CORE
+    <header id="header">
+        <div class="logo" onclick="window.location.href='/Homepage'">HYPER CORE</div>
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <a href="/Products">Sản Phẩm</a>
+            <a href="/Gaminggear">Gaming Gear</a>
+            <a href="#">PC Build</a>
+            <a href="#">Trạng thái đơn hàng</a>
+            <a href="#">Liên Hệ</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
+                🛒
+                <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;color:white;">0</span>
+            </button>
+            <button class="login-glass-btn" onclick="window.location.href='/Login'">
+                <span class="login-icon">👤</span> <span>Đăng Nhập</span>
+            </button>
+            <button class="register-glass-btn" onclick="window.location.href='/Register'">
+                <span class="login-icon">📝</span> <span>Đăng Ký</span>
+            </button>
         </div>
+    </header>
 
+    <div class="checkout-progress-wrapper">
         <div class="progress">
-
             <div class="step active">
                 <div class="step-circle">1</div>
                 <span>Giỏ hàng</span>
             </div>
-
             <div class="step">
                 <div class="step-circle">2</div>
                 <span>Địa chỉ</span>
             </div>
-
             <div class="step">
                 <div class="step-circle">3</div>
                 <span>Thanh toán</span>
             </div>
-
             <div class="step">
                 <div class="step-circle">4</div>
                 <span>Hoàn tất</span>
             </div>
-
         </div>
-
     </div>
 
     <!-- MAIN -->
@@ -513,96 +722,9 @@
 
         <!-- LEFT -->
 
-        <div class="glass-box">
-
-            <!-- ITEM -->
-
-            <div class="cart-item">
-
-                <img src="/images/pc1.jpg">
-
-                <div class="item-info">
-
-                    <h3>RTX Gaming PC</h3>
-
-                    <div class="variant">
-                        Màu: Đen RGB • RTX 5090 • Intel Ultra 9
-                    </div>
-
-                    <div class="quantity-box">
-
-                        <button class="qty-btn minus">-</button>
-
-                        <input type="number" class="qty-input" value="1">
-
-                        <button class="qty-btn plus">+</button>
-
-                    </div>
-
-                    <div class="save-later">
-                        💙 Lưu mua sau
-                    </div>
-
-                </div>
-
-                <div class="price-box">
-
-                    <div class="price item-price" data-price="59990000">
-                        59.990.000đ
-                    </div>
-
-                    <button class="delete-btn">
-                        🗑
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- ITEM -->
-
-            <div class="cart-item">
-
-                <img src="/images/headphone.jpg">
-
-                <div class="item-info">
-
-                    <h3>Gaming Headset</h3>
-
-                    <div class="variant">
-                        Màu: White • 7.1 Surround
-                    </div>
-
-                    <div class="quantity-box">
-
-                        <button class="qty-btn minus">-</button>
-
-                        <input type="number" class="qty-input" value="1">
-
-                        <button class="qty-btn plus">+</button>
-
-                    </div>
-
-                    <div class="save-later">
-                        💙 Lưu mua sau
-                    </div>
-
-                </div>
-
-                <div class="price-box">
-
-                    <div class="price item-price" data-price="3290000">
-                        3.290.000đ
-                    </div>
-
-                    <button class="delete-btn">
-                        🗑
-                    </button>
-
-                </div>
-
-            </div>
-
+        <div class="glass-box" id="cartItemsContainer">
+            <!-- Dynamic Items will be rendered here by JS -->
+            <!-- Items will be rendered here dynamically -->
         </div>
 
         <!-- RIGHT -->
@@ -678,68 +800,8 @@
                 Thường Được Mua Cùng
             </h2>
 
-            <div class="cross-grid">
-
-                <div class="cross-card">
-
-                    <img src="/images/mouse.jpg">
-
-                    <div class="cross-info">
-
-                        <h3>Wireless Mouse</h3>
-
-                        <div class="cross-price">
-                            1.990.000đ
-                        </div>
-
-                        <button class="add-btn">
-                            Thêm vào giỏ
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="cross-card">
-
-                    <img src="/images/keyboard.jpg">
-
-                    <div class="cross-info">
-
-                        <h3>Mechanical Keyboard</h3>
-
-                        <div class="cross-price">
-                            2.490.000đ
-                        </div>
-
-                        <button class="add-btn">
-                            Thêm vào giỏ
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="cross-card">
-
-                    <img src="/images/monitor.jpg">
-
-                    <div class="cross-info">
-
-                        <h3>4K Gaming Monitor</h3>
-
-                        <div class="cross-price">
-                            12.990.000đ
-                        </div>
-
-                        <button class="add-btn">
-                            Thêm vào giỏ
-                        </button>
-
-                    </div>
-
-                </div>
-
+            <div class="cross-grid" id="crossGridContainer">
+                <!-- Dynamic Recommendations will be rendered here by JS -->
             </div>
 
         </div>
@@ -761,176 +823,343 @@
     <!-- SCRIPT -->
 
     <script>
+        let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+        let cartItems = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
+        let deletedItemData = null;
 
-        const minusBtns =
-            document.querySelectorAll(".minus");
-
-        const plusBtns =
-            document.querySelectorAll(".plus");
-
-        const deleteBtns =
-            document.querySelectorAll(".delete-btn");
-
-        const subtotal =
-            document.getElementById("subtotal");
-
-        const total =
-            document.getElementById("total");
-
-        let deletedItem = null;
-
-        /* ===================== */
-        /* UPDATE TOTAL */
-        /* ===================== */
-
-        function updateTotal() {
-
-            let sum = 0;
-
-            document.querySelectorAll(".cart-item")
-                .forEach(item => {
-
-                    const qty =
-                        parseInt(item.querySelector(".qty-input").value);
-
-                    const price =
-                        parseInt(item.querySelector(".item-price")
-                            .dataset.price);
-
-                    sum += qty * price;
-
-                });
-
-            subtotal.innerText =
-                sum.toLocaleString("vi-VN") + "đ";
-
-            total.innerText =
-                (sum - 1000000 + 40000)
-                    .toLocaleString("vi-VN") + "đ";
+        if (cart.length === 0 && cartItems.length > 0) {
+            cart = cartItems.map(item => ({
+                id: item.id ?? Date.now(),
+                name: item.title,
+                specs: item.variant,
+                price: item.price,
+                currency: "VND",
+                qty: item.qty,
+                img: item.img
+            }));
         }
 
-        /* ===================== */
-        /* QUANTITY */
-        /* ===================== */
+        if (localStorage.getItem('hyper_core_cart') === null && cart.length === 0) {
+            cart = [{
+                id: 999,
+                name: "Beast X Pro Magnesium Gaming Mouse",
+                specs: "Black · OMRON Opticals · Side Slits",
+                price: 145.00,
+                currency: "USD",
+                qty: 1,
+                img: "https://placehold.co/100x100/ffffff/111827?text=Beast+X"
+            }];
+        }
 
-        plusBtns.forEach(btn => {
+        const subtotal = document.getElementById("subtotal");
+        const total = document.getElementById("total");
+        const cartContainer = document.getElementById("cartItemsContainer");
 
-            btn.addEventListener("click", () => {
+        function syncCartStorage() {
+            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+            cartItems = cart.map(item => ({
+                id: item.id,
+                title: item.name,
+                variant: item.specs,
+                price: item.currency === 'USD' ? item.price * 25000 : item.price,
+                qty: item.qty,
+                img: item.img
+            }));
+            localStorage.setItem('hypercore_cart_items', JSON.stringify(cartItems));
+            updateHeaderCartCount();
+        }
 
-                const input =
-                    btn.parentElement.querySelector(".qty-input");
+        function renderCartPage() {
+            const container = cartContainer;
+            if (!container) return;
 
-                input.value++;
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 50px 20px;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">🛒</div>
+                        <h2 style="font-size: 28px; margin-bottom: 12px; color: #111827;">Giỏ hàng trống</h2>
+                        <p style="color: rgba(0,0,0,0.6); margin-bottom: 30px;">Bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+                        <button class="checkout-btn" onclick="window.location.href='/Products'" style="width: auto; padding: 0 40px;">Tiếp tục mua sắm</button>
+                    </div>
+                `;
+                subtotal.innerText = '0đ';
+                total.innerText = '0đ';
 
-                updateTotal();
+                const savingsEl = document.querySelector('.save-money');
+                if (savingsEl) savingsEl.style.display = 'none';
+                return;
+            }
 
+            container.innerHTML = '';
+            let sum = 0;
+
+            cart.forEach(item => {
+                let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
+                sum += itemPriceVnd * item.qty;
+
+                const formattedPrice = item.currency === 'USD'
+                    ? `$${item.price.toFixed(2)} USD`
+                    : item.price.toLocaleString('vi-VN') + ' đ';
+
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                itemEl.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <div class="item-info">
+                        <h3 style="color: #111827; margin-bottom: 12px; font-size: 28px;">${item.name}</h3>
+                        <div class="variant" style="color: rgba(0,0,0,0.6); margin-bottom: 10px;">${item.specs}</div>
+                        <div class="quantity-box" style="display:flex; align-items:center; gap:12px; margin-top:18px;">
+                            <button class="qty-btn" onclick="changePageQty(${item.id}, -1)">-</button>
+                            <input type="number" class="qty-input" value="${item.qty}" readonly style="width: 60px; height: 38px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); text-align: center; color: #111827; font-size: 16px;">
+                            <button class="qty-btn" onclick="changePageQty(${item.id}, 1)">+</button>
+                        </div>
+                        <div class="save-later" style="color: #000000; font-weight: bold; cursor: pointer; font-size: 14px; margin-top: 12px; display: inline-block;">💙 Lưu mua sau</div>
+                    </div>
+                    <div class="price-box" style="text-align: right;">
+                        <div class="price item-price" data-price="${itemPriceVnd}" style="font-size: 24px; color: #000000; font-weight: bold; margin-bottom: 18px;">${formattedPrice}</div>
+                        <button class="delete-btn" onclick="removePageItem(${item.id})" style="border: none; background: rgba(255,0,0,0.12); color: #ff6b6b; width: 42px; height: 42px; border-radius: 14px; cursor: pointer; transition: 0.3s;">🗑</button>
+                    </div>
+                `;
+                container.appendChild(itemEl);
             });
 
-        });
+            subtotal.innerText = sum.toLocaleString('vi-VN') + ' đ';
 
-        minusBtns.forEach(btn => {
+            let discount = sum > 1000000 ? 1000000 : 0;
+            let shipping = 40000;
+            let finalTotal = Math.max(0, sum - discount + shipping);
 
-            btn.addEventListener("click", () => {
+            total.innerText = finalTotal.toLocaleString('vi-VN') + ' đ';
 
-                const input =
-                    btn.parentElement.querySelector(".qty-input");
-
-                if (input.value > 1) {
-
-                    input.value--;
-
-                    updateTotal();
+            const savingsEl = document.querySelector('.save-money');
+            if (savingsEl) {
+                if (discount > 0) {
+                    savingsEl.style.display = 'block';
+                    savingsEl.innerText = `Bạn đã tiết kiệm được ${discount.toLocaleString('vi-VN')} đ 🎉`;
+                } else {
+                    savingsEl.style.display = 'none';
                 }
+            }
+            renderPageRecommendations();
+            syncCartStorage();
+        }
 
+        const RECOMMEND_PRODUCTS = [
+            {
+                id: 4,
+                name: "Corsair Dominator DDR5 32GB",
+                specs: "DDR5 · 32GB (2x16) · 6400MHz",
+                price: 4800000,
+                oldPrice: 5500000,
+                currency: "VND",
+                img: "https://placehold.co/300x200/ffffff/111827?text=DDR5+32GB"
+            },
+            {
+                id: 5,
+                name: "Samsung 990 Pro NVMe 2TB",
+                specs: "PCIe 4.0 · 7450 MB/s · M.2 2280",
+                price: 3200000,
+                oldPrice: 3800000,
+                currency: "VND",
+                img: "https://placehold.co/300x200/ffffff/111827?text=Samsung+990+Pro"
+            },
+            {
+                id: 12,
+                name: "Corsair Vengeance DDR5 64GB",
+                specs: "DDR5 · 64GB (2x32) · 5600MHz",
+                price: 7200000,
+                oldPrice: 8500000,
+                currency: "VND",
+                img: "https://placehold.co/300x200/ffffff/111827?text=Vengeance+64GB"
+            }
+        ];
+
+        function renderPageRecommendations() {
+            const grid = document.getElementById("crossGridContainer");
+            const crossSellSection = document.querySelector(".cross-sell");
+            if (!grid) return;
+
+            // Filter out items already in the cart
+            const visibleRecs = RECOMMEND_PRODUCTS.filter(rec => !cart.some(item => item.id === rec.id));
+
+            if (visibleRecs.length === 0) {
+                if (crossSellSection) crossSellSection.style.display = 'none';
+                return;
+            }
+            if (crossSellSection) crossSellSection.style.display = 'block';
+
+            grid.innerHTML = '';
+            visibleRecs.forEach(rec => {
+                const discount = rec.oldPrice ? Math.round((1 - rec.price / rec.oldPrice) * 100) : 0;
+                const formattedPrice = rec.price.toLocaleString('vi-VN') + ' đ';
+                const formattedOldPrice = rec.oldPrice ? rec.oldPrice.toLocaleString('vi-VN') + ' đ' : '';
+
+                const card = document.createElement("div");
+                card.className = "cross-card";
+                card.innerHTML = `
+                    <img src="${rec.img}" alt="${rec.name}">
+                    <div class="cross-info">
+                        <h3 style="font-size: 20px; color: #111827; margin-bottom: 8px; font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${rec.name}</h3>
+                        <p style="color: rgba(0,0,0,0.5); font-size: 13px; margin-bottom: 12px; height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${rec.specs}</p>
+                        <div class="cross-price" style="font-size: 18px; font-weight: bold; color: #000000; margin-bottom: 15px;">
+                            ${formattedPrice}
+                            ${formattedOldPrice ? `<span style="text-decoration: line-through; color: rgba(0,0,0,0.4); font-size: 13px; margin-left: 8px;">${formattedOldPrice}</span>` : ''}
+                        </div>
+                        <button class="add-btn" onclick="addPageRecommendedItem(${rec.id})" style="width: 100%; height: 46px; border: none; border-radius: 14px; background: rgba(0, 0, 0, 0.05); color: #000000; font-weight: bold; cursor: pointer; transition: 0.3s;">Thêm vào giỏ</button>
+                    </div>
+                `;
+                grid.appendChild(card);
             });
+        }
 
-        });
-
-        document.querySelectorAll(".qty-input")
-            .forEach(input => {
-
-                input.addEventListener("input", () => {
-
-                    if (input.value < 1) {
-                        input.value = 1;
-                    }
-
-                    updateTotal();
-
-                });
-
-            });
-
-        /* ===================== */
-        /* DELETE + UNDO */
-        /* ===================== */
-
-        deleteBtns.forEach(btn => {
-
-            btn.addEventListener("click", () => {
-
-                deletedItem =
-                    btn.closest(".cart-item");
-
-                deletedItem.remove();
-
-                document
-                    .getElementById("undoBox")
-                    .style.display = "flex";
-
-                updateTotal();
-
-            });
-
-        });
-
-        document
-            .getElementById("undoBtn")
-            .addEventListener("click", () => {
-
-                if (deletedItem) {
-
-                    document
-                        .querySelector(".glass-box")
-                        .appendChild(deletedItem);
-
-                    deletedItem = null;
-
-                    document
-                        .getElementById("undoBox")
-                        .style.display = "none";
-
-                    updateTotal();
+        window.addPageRecommendedItem = function (id) {
+            const rec = RECOMMEND_PRODUCTS.find(r => r.id === id);
+            if (rec) {
+                const existing = cart.find(i => i.id === rec.id);
+                if (existing) {
+                    existing.qty++;
+                } else {
+                    cart.push({
+                        id: rec.id,
+                        name: rec.name,
+                        specs: rec.specs,
+                        price: rec.price,
+                        currency: rec.currency,
+                        qty: 1,
+                        img: rec.img
+                    });
                 }
+                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+                renderCartPage();
+            }
+        };
 
+        window.changePageQty = function (id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+                renderCartPage();
+            }
+        };
+
+        window.removePageItem = function (id) {
+            deletedItemData = cart.find(i => i.id === id) ?? null;
+            cart = cart.filter(i => i.id !== id);
+            syncCartStorage();
+            const undoBox = document.getElementById("undoBox");
+            if (undoBox) undoBox.style.display = "flex";
+            renderCartPage();
+        };
+
+        // Apply Voucher Code handlers
+        document.querySelectorAll(".voucher").forEach(el => {
+            el.addEventListener("click", () => {
+                document.querySelector(".coupon-input").value = el.innerText;
             });
+        });
+
+        function renderCart() {
+            renderCartPage();
+        }
+
+        function updateTotal() {
+            let sum = 0;
+            cartItems.forEach(item => {
+                sum += item.qty * item.price;
+            });
+
+            subtotal.innerText = sum.toLocaleString("vi-VN") + "đ";
+            let discountAmount = sum > 0 ? 1000000 : 0;
+            let shippingFee = sum > 0 ? 40000 : 0;
+
+            let finalTotal = sum - discountAmount + shippingFee;
+            if (finalTotal < 0) finalTotal = 0;
+
+            total.innerText = finalTotal.toLocaleString("vi-VN") + "đ";
+        }
+
+        const undoBtn = document.getElementById("undoBtn");
+        if (undoBtn) {
+            undoBtn.addEventListener("click", () => {
+                if (deletedItemData) {
+                    cart.push(deletedItemData);
+                    deletedItemData = null;
+                    const undoBox = document.getElementById("undoBox");
+                    if (undoBox) undoBox.style.display = "none";
+                    renderCartPage();
+                }
+            });
+        }
 
         // Redirect to filladdress page on clicking Checkout
         const checkoutBtn = document.querySelector(".checkout-btn");
         if (checkoutBtn) {
             checkoutBtn.addEventListener("click", () => {
+                if (cart.length === 0) {
+                    alert("Giỏ hàng đang trống!");
+                    return;
+                }
+
+                let sum = 0;
+                cart.forEach(item => {
+                    let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
+                    sum += itemPriceVnd * item.qty;
+                });
+                let discount = sum > 1000000 ? 1000000 : 0;
+                let shipping = 40000;
+                let finalTotal = Math.max(0, sum - discount + shipping);
+
                 let cartData = {
                     items: [],
-                    subtotal: parseInt(subtotal.innerText.replace(/\D/g, '')),
-                    shipping: 40000, // Hardcoded for demo, could be dynamic
-                    discount: 1000000,
-                    total: parseInt(total.innerText.replace(/\D/g, ''))
+                    subtotal: sum,
+                    shipping: shipping,
+                    discount: discount,
+                    total: finalTotal
                 };
 
-                document.querySelectorAll(".cart-item").forEach(item => {
-                    const img = item.querySelector("img").src;
-                    const title = item.querySelector("h3").innerText;
-                    const variant = item.querySelector(".variant").innerText;
-                    const price = parseInt(item.querySelector(".item-price").dataset.price);
-                    const qty = parseInt(item.querySelector(".qty-input").value);
-                    cartData.items.push({ img, title, variant, price, qty });
+                cart.forEach(item => {
+                    let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
+                    cartData.items.push({
+                        img: item.img,
+                        title: item.name,
+                        variant: item.specs,
+                        price: itemPriceVnd,
+                        qty: item.qty
+                    });
                 });
-
                 localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
                 window.location.href = "/filladdress";
             });
         }
 
+        // Update cart count badge from localStorage
+        function updateHeaderCartCount() {
+            let cartData = [];
+            try {
+                cartData = JSON.parse(localStorage.getItem('hyper_core_cart')) || JSON.parse(localStorage.getItem('hypercore_cart_items')) || [];
+            } catch(e) {}
+            const countEl = document.getElementById("cartCount");
+            if (countEl) {
+                const totalQty = cartData.reduce((acc, item) => acc + item.qty, 0);
+                if (totalQty > 0) {
+                    countEl.innerText = totalQty;
+                    countEl.style.display = "flex";
+                } else {
+                    countEl.style.display = "none";
+                }
+            }
+        }
+
+        // Initial Render
+        renderCart();
+
+        // Initial render on load
+        renderCartPage();
+        updateHeaderCartCount();
     </script>
 
     <!-- ===== SIGNALR REAL-TIME NOTIFICATIONS ===== -->
