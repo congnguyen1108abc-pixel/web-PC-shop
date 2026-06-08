@@ -376,5 +376,5 @@ user-secrets/
 
 # ===================================
 
-# Large video files
-*.mp4
+# Large video files (chặn push clip nặng lên GitHub)
+wwwroot/images/*.mp4
