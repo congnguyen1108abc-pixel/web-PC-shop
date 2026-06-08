@@ -11,11 +11,6 @@
     <!-- Model Viewer -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
-    <!-- POPUP SYSTEM CSS -->
-    <link rel="stylesheet" href="/assets/popup/popup.css?v=2">
-
-    <!-- AUTH CSS -->
-    <link rel="stylesheet" href="/assets/css/auth.css">
 
 
     <style>
@@ -524,13 +519,6 @@
             backdrop-filter: blur(20px);
             border-radius: 30px;
             overflow: hidden;
-            transition: .4s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            background: rgba(0, 0, 0, .08);
-            box-shadow: 0 20px 40px #555555;
         }
 
         .product-image {
@@ -850,88 +838,6 @@
             opacity: 1;
             transform: translateY(0) scale(1);
         }
-
-        /* ================================= */
-        /* PRODUCT ADVANCED EFFECT */
-        /* ================================= */
-
-        .product-card {
-            position: relative;
-            transform-style: preserve-3d;
-            perspective: 1000px;
-            overflow: hidden;
-        }
-
-        /* LIGHT EFFECT */
-
-        .product-card::before {
-            content: "";
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(135deg,
-                    rgba(125, 211, 252, .0),
-                    rgba(125, 211, 252, .35),
-                    rgba(56, 189, 248, .0));
-            opacity: 0;
-            transition: .5s;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .product-card:hover::before {
-            opacity: 1;
-        }
-
-        /* GLOW EFFECT */
-
-        .product-card::after {
-            content: "";
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: rgba(56, 189, 248, .15);
-            border-radius: 50%;
-            filter: blur(80px);
-            top: -120px;
-            right: -120px;
-            opacity: 0;
-            transition: .5s;
-        }
-
-        .product-card:hover::after {
-            opacity: 1;
-        }
-
-        /* IMAGE ZOOM */
-
-        .product-image {
-            transition: transform .8s ease;
-        }
-
-        .product-card:hover .product-image {
-            transform: scale(1.08);
-        }
-
-        /* PRODUCT CONTENT FLOAT */
-
-        .product-info {
-            position: relative;
-            z-index: 5;
-            transition: .4s;
-        }
-
-        .product-card:hover .product-info {
-            transform: translateY(-8px);
-        }
-
-        /* PRICE GLOW */
-
-        .price {
-            text-shadow: 0 0 12px rgba(125, 211, 252, .5);
-        }
-
-
-
 
 
         /* ================================= */
@@ -1598,278 +1504,6 @@
 
         }
 
-        /* ========================================= */
-        /* CART PANEL */
-        /* ========================================= */
-        .cart-panel {
-            position: fixed;
-            top: 0;
-            right: -420px;
-            width: 400px;
-            height: 100vh;
-            background: rgba(0, 0, 0, .08);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-left: 1px solid rgba(0, 0, 0, .12);
-            z-index: 99999;
-            transition: .7s cubic-bezier(.22, 1, .36, 1);
-            display: flex;
-            flex-direction: column;
-            box-shadow: -20px 0 50px #555555;
-        }
-
-        .cart-panel.active {
-            right: 0;
-        }
-
-        .cart-overlay {
-            position: fixed;
-            inset: 0;
-            background: #555555;
-            backdrop-filter: blur(5px);
-            opacity: 0;
-            pointer-events: none;
-            transition: .4s;
-            z-index: 99990;
-        }
-
-        .cart-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px;
-            border-bottom: 1px solid rgba(0, 0, 0, .08);
-        }
-
-        .cart-header h2 {
-            font-size: 28px;
-            background: linear-gradient(90deg, #fff, #000000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .close-cart {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            border: none;
-            cursor: pointer;
-            background: rgba(0, 0, 0, .08);
-            color: #000000;
-            font-size: 18px;
-            transition: .3s;
-        }
-
-        .close-cart:hover {
-            transform: rotate(90deg);
-            background: rgba(0, 0, 0, .15);
-        }
-
-        .cart-items {
-            flex: 1;
-            overflow-y: auto;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .cart-item {
-            display: flex;
-            gap: 18px;
-            padding: 18px;
-            border-radius: 24px;
-            background: rgba(0, 0, 0, .06);
-            border: 1px solid rgba(0, 0, 0, .08);
-            backdrop-filter: blur(20px);
-            transition: .4s;
-        }
-
-        .cart-item:hover {
-            transform: translateX(-5px);
-            background: rgba(0, 0, 0, .1);
-        }
-
-        .cart-item img {
-            width: 90px;
-            height: 90px;
-            object-fit: cover;
-            border-radius: 18px;
-        }
-
-        .cart-info h4 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .cart-info p {
-            color: #000000;
-            font-weight: bold;
-        }
-
-        .cart-footer {
-            padding: 25px;
-            border-top: 1px solid rgba(0, 0, 0, .08);
-        }
-
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 20px;
-        }
-
-        .cart-total span {
-            color: #000000;
-            font-weight: bold;
-        }
-
-        /* ========================================= */
-        /* DISCOUNT BOX */
-        /* ========================================= */
-
-        .discount-box {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 22px;
-        }
-
-        .discount-box input {
-            flex: 1;
-            height: 58px;
-
-            border: 1px solid rgba(0, 0, 0, .10);
-            border-radius: 18px;
-
-            padding: 0 18px;
-
-            outline: none;
-
-            color: #000000;
-            font-size: 15px;
-
-            background: rgba(0, 0, 0, .06);
-
-            backdrop-filter: blur(20px);
-
-            transition: .35s;
-        }
-
-        .discount-box input::placeholder {
-            color: #555555;
-        }
-
-        .discount-box input:focus {
-
-            border-color: rgba(125, 211, 252, .6);
-
-            background: rgba(0, 0, 0, .10);
-
-            box-shadow:
-                0 0 20px rgba(56, 189, 248, .18);
-
-        }
-
-        .apply-discount {
-
-            min-width: 120px;
-            height: 58px;
-
-            border: none;
-            border-radius: 18px;
-
-            cursor: pointer;
-
-            font-weight: 700;
-            color: #000000;
-
-            background:
-                linear-gradient(135deg,
-                    rgba(56, 189, 248, .9),
-                    rgba(14, 165, 233, .9));
-
-            box-shadow:
-                0 10px 25px rgba(56, 189, 248, .18);
-
-            transition: .35s;
-        }
-
-        .apply-discount:hover {
-
-            transform: translateY(-3px);
-
-            box-shadow:
-                0 15px 35px rgba(56, 189, 248, .30);
-
-        }
-
-        .apply-discount:active {
-            transform: scale(.97);
-        }
-
-        /* ========================================= */
-        /* CHECKOUT BUTTON */
-        /* ========================================= */
-        .checkout-btn {
-            position: relative;
-            width: 100%;
-            height: 65px;
-            border: none;
-            border-radius: 22px;
-            overflow: hidden;
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            color: #000000;
-            background: linear-gradient(135deg, rgba(125, 211, 252, .25), rgba(56, 189, 248, .35));
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, .12);
-            transition: .4s;
-        }
-
-        .checkout-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 40px rgba(56, 189, 248, .35);
-        }
-
-        .checkout-btn span {
-            position: relative;
-            z-index: 5;
-        }
-
-        .checkout-glow {
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            background: rgba(125, 211, 252, .45);
-            filter: blur(60px);
-            top: -50px;
-            left: -50px;
-            animation: glowMove 4s linear infinite;
-        }
-
-        @keyframes glowMove {
-            0% {
-                transform: translateX(0);
-            }
-
-            50% {
-                transform: translateX(180px);
-            }
-
-            100% {
-                transform: translateX(0);
-            }
-        }
-
-        /* ================================================= */
-        /* WLMOUSE PREMIUM EFFECTS */
-        /* ================================================= */
 
         /* 1. Interactive Cursor Glow Background */
         .cursor-glow {
@@ -1907,34 +1541,6 @@
 
         .reveal.active .reveal-text-line {
             transform: translateY(0);
-        }
-
-        /* 4. Product Card Advanced Glow & Reflect */
-        .product-card {
-            --mouse-x: 50%;
-            --mouse-y: 50%;
-            transition: border-color 0.4s, box-shadow 0.4s, transform 0.2s;
-        }
-
-        .product-card::before {
-            /* Override existing border light with dynamic radial gradient spotlight reflection */
-            content: "" !important;
-            position: absolute !important;
-            inset: 0 !important;
-            background: radial-gradient(350px circle at var(--mouse-x) var(--mouse-y), rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0) 80%) !important;
-            opacity: 0 !important;
-            transition: opacity 0.5s ease !important;
-            z-index: 4 !important;
-            pointer-events: none !important;
-        }
-
-        .product-card:hover::before {
-            opacity: 1 !important;
-        }
-
-        .product-card:hover {
-            border-color: #555555 !important;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 0 1px 1px #D1D5DB inset !important;
         }
 
         /* ================================================= */
@@ -2794,9 +2400,9 @@
 
         <nav>
 
-            <a href="#">Trang Chủ</a>
+            <a href="/Homepage">Trang Chủ</a>
             <a href="/Products" id="nav-products">Sản Phẩm</a>
-            <a href="/Gaminggear">Gaming Gear</a>
+            <a href="/gaminggear">Gaming Gear</a>
             <a href="#">PC Build</a>
             <a href="#">Trạng thái đơn hàng</a>
             <a href="#">Liên Hệ</a>
@@ -2826,7 +2432,7 @@
             </div>
 
             <!-- ACCOUNT -->
-            <a href="/Login" class="header-icon-btn" title="Tài khoản" aria-label="Tài khoản">
+            <a href="/Login" style="text-decoration: none; color: inherit;" class="header-icon-btn" title="Tài khoản" aria-label="Tài khoản">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
@@ -2834,7 +2440,7 @@
             </a>
 
             <!-- CART -->
-            <a href="/shoppingcart" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
+            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="9" cy="21" r="1"/>
                     <circle cx="20" cy="21" r="1"/>
@@ -2851,7 +2457,7 @@
 
     <section class="hero page-section">
 
-        <video src="/images/ROGAstralGeForceRTX5090_clip.mp4" autoplay loop muted playsinline preload="auto"></video>
+        <video src="/assets/image/ROGAstralGeForceRTX5090_clip.mp4" autoplay loop muted playsinline preload="auto"></video>
 
     </section>
 
@@ -2927,7 +2533,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/pc1.jpg" class="product-image" alt="Gaming PC" />
+                <img src="/assets/image/pc1.jpg" class="product-image" alt="Gaming PC" />
 
                 <div class="product-info">
 
@@ -2947,7 +2553,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/keyboard.jpg" class="product-image" alt="Keyboard" />
+                <img src="/assets/image/keyboard.jpg" class="product-image" alt="Keyboard" />
 
                 <div class="product-info">
 
@@ -2967,7 +2573,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/mouse.jpg" class="product-image" alt="Mouse" />
+                <img src="/assets/image/mouse.jpg" class="product-image" alt="Mouse" />
 
                 <div class="product-info">
 
@@ -2987,7 +2593,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/headphone.jpg" class="product-image" alt="Headphone" />
+                <img src="/assets/image/headphone.jpg" class="product-image" alt="Headphone" />
 
                 <div class="product-info">
 
@@ -3007,7 +2613,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/monitor.jpg" class="product-image" alt="Monitor" />
+                <img src="/assets/image/monitor.jpg" class="product-image" alt="Monitor" />
 
                 <div class="product-info">
 
@@ -3027,7 +2633,7 @@
 
             <div class="product-card">
 
-                <img src="/images/laptop.jpg" class="product-image" alt="Laptop" />
+                <img src="/assets/image/laptop.jpg" class="product-image" alt="Laptop" />
 
                 <div class="product-info">
 
@@ -3085,7 +2691,7 @@
 
                 <div class="gear-overlay"></div>
 
-                <img src="/images/controller.png" class="gear-big-image" alt="Gaming Controller" />
+                <img src="/assets/image/controller.png" class="gear-big-image" alt="Gaming Controller" />
 
                 <div class="gear-content">
 
@@ -3113,7 +2719,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/headphone.jpg" alt="Headphone" />
+                    <img src="/assets/image/headphone.jpg" alt="Headphone" />
 
                     <div class="small-info">
 
@@ -3127,7 +2733,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/mouse.jpg" alt="Mouse" />
+                    <img src="/assets/image/mouse.jpg" alt="Mouse" />
 
                     <div class="small-info">
 
@@ -3141,7 +2747,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/keyboard.jpg" alt="Keyboard" />
+                    <img src="/assets/image/keyboard.jpg" alt="Keyboard" />
 
                     <div class="small-info">
 
@@ -3155,7 +2761,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/gamepad.jpg" alt="Gamepad" />
+                    <img src="/assets/image/gamepad.jpg" alt="Gamepad" />
 
                     <div class="small-info">
 
@@ -3214,7 +2820,7 @@
 
                 <div class="laptop-card reveal">
 
-                    <img src="/images/laptop.jpg" alt="Laptop" />
+                    <img src="/assets/image/laptop.jpg" alt="Laptop" />
 
                     <div class="laptop-info">
 
@@ -3232,7 +2838,7 @@
 
                 <div class="laptop-card reveal">
 
-                    <img src="/images/laptop2.jpg" alt="Laptop" />
+                    <img src="/assets/image/laptop2.jpg" alt="Laptop" />
 
                     <div class="laptop-info">
 
@@ -3278,7 +2884,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/images/headphone.jpg" alt="Audio" />
+                <img src="/assets/image/headphone.jpg" alt="Audio" />
 
                 <div class="audio-content">
 
@@ -3294,7 +2900,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/images/speaker.jpg" alt="Speaker" />
+                <img src="/assets/image/speaker.jpg" alt="Speaker" />
 
                 <div class="audio-content">
 
@@ -3310,7 +2916,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/images/mic.jpg" alt="Microphone" />
+                <img src="/assets/image/mic.jpg" alt="Microphone" />
 
                 <div class="audio-content">
 
@@ -3411,209 +3017,6 @@
             © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
         </div>
     </footer>
-
-    <!-- ============================================ -->
-    <!-- LOGIN & REGISTER POPUPS -->
-    <!-- ============================================ -->
-
-    <!-- LOGIN POPUP -->
-    <div class="widget-popup" id="loginPopup">
-        <div class="widget-box">
-            <!-- CLOSE BUTTON -->
-            <button class="widget-close" onclick="closeLoginPopup()">
-                ✕
-            </button>
-
-            <!-- TITLE -->
-            <h2 class="widget-title">
-                Đăng Nhập
-            </h2>
-
-            <p class="widget-subtitle">
-                Chào mừng quay trở lại HYPER CORE
-            </p>
-
-            <!-- FORM -->
-            <form id="loginForm" onsubmit="return handleLogin(event)">
-                <!-- INPUT -->
-                <input type="email" id="loginEmail" class="widget-input" placeholder="Email" required />
-                <input type="password" id="loginPassword" class="widget-input" placeholder="Mật khẩu" required />
-
-                <!-- OPTIONS -->
-                <div class="widget-options">
-                    <label class="remember-box">
-                        <input type="checkbox" />
-                        <span>Nhớ mật khẩu</span>
-                    </label>
-
-                    <a href="#" class="forgot-link">
-                        Quên mật khẩu?
-                    </a>
-                </div>
-
-                <!-- LOGIN BUTTON -->
-                <button type="submit" class="widget-submit">
-                    Đăng Nhập
-                </button>
-            </form>
-
-            <!-- DIVIDER -->
-            <div class="divider">
-                HOẶC
-            </div>
-
-            <!-- GOOGLE LOGIN -->
-            <button class="google-btn">
-                <div class="google-icon">
-                    G
-                </div>
-
-                <span>
-                    Đăng nhập bằng Google
-                </span>
-            </button>
-
-            <!-- REGISTER -->
-            <div class="register-text">
-                Chưa có tài khoản?
-
-                <a href="javascript:void(0)" class="register-link" onclick="switchToRegister()">
-                    Đăng ký ngay
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- REGISTER POPUP -->
-    <div class="widget-popup" id="registerPopup">
-        <div class="widget-box">
-            <!-- CLOSE BUTTON -->
-            <button class="widget-close" onclick="closeRegisterPopup()">
-                ✕
-            </button>
-
-            <!-- TITLE -->
-            <h2 class="widget-title">
-                Đăng Ký
-            </h2>
-
-            <p class="widget-subtitle">
-                Tạo tài khoản để trải nghiệm HYPER CORE
-            </p>
-
-            <!-- FORM -->
-            <form id="registerForm" onsubmit="return handleRegister(event)">
-                <!-- USERNAME -->
-                <input type="text" class="widget-input" id="regUser" placeholder="Tên đăng nhập" required />
-
-                <div id="userError" class="error-msg">
-                    Tên đăng nhập tối thiểu 3 ký tự
-                </div>
-
-                <!-- EMAIL -->
-                <input type="email" class="widget-input" id="regEmail" placeholder="Email" required />
-
-                <div id="emailError" class="error-msg">
-                    Email không hợp lệ
-                </div>
-
-                <!-- PASSWORD -->
-                <input type="password" class="widget-input" id="regPass" placeholder="Mật khẩu" required />
-
-                <div id="passError" class="error-msg">
-                    Mật khẩu tối thiểu 6 ký tự
-                </div>
-
-                <!-- CONFIRM PASSWORD -->
-                <input type="password" class="widget-input" id="regConfirm" placeholder="Xác nhận mật khẩu" required />
-
-                <div id="confirmError" class="error-msg">
-                    Mật khẩu xác nhận không khớp
-                </div>
-
-                <!-- SUBMIT -->
-                <button type="submit" class="widget-submit">
-                    Đăng Ký Ngay
-                </button>
-            </form>
-
-            <!-- LOGIN -->
-            <div class="login-text">
-                Đã có tài khoản?
-
-                <a class="login-link" href="javascript:void(0)" onclick="switchToLogin()">
-                    Đăng nhập
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- CART DRAWER OVERLAY -->
-    <div class="cart-drawer-overlay" id="cartOverlay"></div>
-
-    <!-- CART DRAWER -->
-    <div class="cart-drawer" id="cartDrawer">
-        <!-- Header -->
-        <div class="cart-drawer-header">
-            <div class="cart-drawer-tabs">
-                <span class="cart-tab active">Cart <span class="cart-badge-count" id="drawerCartCount">0</span></span>
-                <span class="cart-tab">Recently viewed</span>
-            </div>
-            <button class="cart-drawer-close" id="cartCloseBtn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-
-        <!-- Scrollable Content -->
-        <div class="cart-drawer-content">
-            <!-- Cart Items -->
-            <div class="cart-items-list" id="cartItemsList"></div>
-
-            <!-- Recommendation Section -->
-            <div class="cart-recommendations"></div>
-        </div>
-
-        <!-- Actions Bar -->
-        <div class="cart-drawer-actions">
-            <div class="action-item">
-                <span class="action-icon">📝</span>
-                <span>Order note</span>
-            </div>
-            <div class="action-item">
-                <span class="action-icon">🚚</span>
-                <span>Shipping</span>
-            </div>
-            <div class="action-item">
-                <span class="action-icon">🏷️</span>
-                <span>Discount</span>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="cart-drawer-footer">
-            <div class="cart-subtotal-row">
-                <div class="subtotal-left">
-                    <span>Taxes included and shipping calculated at checkout.</span>
-                </div>
-                <div class="subtotal-right">
-                    <span class="subtotal-label">Subtotal</span>
-                    <span class="subtotal-amount" id="drawerSubtotal">$0.00 USD</span>
-                </div>
-            </div>
-            <button class="cart-checkout-btn" onclick="window.location.href='/shoppingcart'">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                Thanh toán
-            </button>
-        </div>
-    </div>
 
     <!-- SCRIPT -->
 
@@ -3742,30 +3145,6 @@
                 card.style.transform = "rotateX(0) rotateY(0) translateY(0) scale(1)";
                 card.style.setProperty("--mouse-x", "50%");
                 card.style.setProperty("--mouse-y", "50%");
-            });
-        });
-
-        /* 3. MAGNETIC HOVER BUTTONS EFFECT */
-        const magneticBtns = document.querySelectorAll(".hero-btn, .login-glass-btn, .register-glass-btn, .cart-btn, .gear-btn");
-
-        magneticBtns.forEach(btn => {
-            btn.addEventListener("mousemove", (e) => {
-                const rect = btn.getBoundingClientRect();
-                // Find vector from button center to mouse position
-                const btnCenterX = rect.left + rect.width / 2;
-                const btnCenterY = rect.top + rect.height / 2;
-                const vectorX = e.clientX - btnCenterX;
-                const vectorY = e.clientY - btnCenterY;
-
-                // Magnetic attraction force (pull 30% towards the mouse position)
-                const pullX = vectorX * 0.3;
-                const pullY = vectorY * 0.3;
-
-                btn.style.transform = `translate(${pullX}px, ${pullY}px) scale(1.05)`;
-            });
-
-            btn.addEventListener("mouseleave", () => {
-                btn.style.transform = "translate(0, 0) scale(1)";
             });
         });
 
@@ -3966,159 +3345,22 @@
                     });
                 }
                 localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
-                renderCartDrawer();
+                updateCartBadge();
             }
         };
 
-        function renderCartDrawer() {
-            const listEl = document.getElementById('cartItemsList');
-            const countEl = document.getElementById('drawerCartCount');
+        // Update cart badge count
+        function updateCartBadge() {
             const badgeEl = document.getElementById('cartCount');
-            const subtotalEl = document.getElementById('drawerSubtotal');
-
-            if (!listEl) return;
-
-            const recEl = document.querySelector('.cart-recommendations');
-            const actionsEl = document.querySelector('.cart-drawer-actions');
-            const footerEl = document.querySelector('.cart-drawer-footer');
-
-            if (cart.length === 0) {
-                listEl.innerHTML = `
-              <div class="cart-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px; min-height: 380px;">
-                <h2 style="font-size: 26px; font-weight: 700; margin-bottom: 12px; color: #fff; font-family: 'Inter', sans-serif;">Your cart is currently empty.</h2>
-                <p style="font-size: 15px; color: rgba(255, 255, 255, 0.5); line-height: 1.6; margin-bottom: 30px; font-family: 'Inter', sans-serif;">Not sure where to start?<br>Try these collections:</p>
-                <button class="continue-shopping-btn" onclick="closeCartDrawer(); window.location.href='/Products'" style="background: #fff; color: #020617; border: none; padding: 14px 28px; border-radius: 99px; font-size: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.3s; font-family: 'Inter', sans-serif;">
-                  Continue shopping 
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: translateY(1px);">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </button>
-              </div>
-            `;
-                if (recEl) recEl.style.display = 'none';
-                if (actionsEl) actionsEl.style.display = 'none';
-                if (footerEl) footerEl.style.display = 'none';
-                if (countEl) countEl.textContent = '0';
-                if (badgeEl) badgeEl.style.display = 'none';
-                return;
-            }
-
-            if (recEl) recEl.style.display = 'block';
-            if (actionsEl) actionsEl.style.display = 'flex';
-            if (footerEl) footerEl.style.display = 'block';
-
-            listEl.innerHTML = '';
-            let totalUsd = 0;
-            let totalVnd = 0;
-            let totalItems = 0;
-
-            cart.forEach(item => {
-                totalItems += item.qty;
-                if (item.currency === 'USD') {
-                    totalUsd += item.price * item.qty;
-                } else {
-                    totalVnd += item.price * item.qty;
-                }
-
-                const formattedPrice = item.currency === 'USD'
-                    ? `$${(item.price * item.qty).toFixed(2)} USD`
-                    : (item.price * item.qty).toLocaleString('vi-VN') + ' đ';
-
-                const itemEl = document.createElement('div');
-                itemEl.className = 'cart-item-row';
-                itemEl.innerHTML = `
-              <img src="${item.img}" class="cart-item-img" alt="${item.name}">
-              <div class="cart-item-details">
-                <span class="cart-item-name">${item.name}</span>
-                <span class="cart-item-specs">${item.specs}</span>
-                <span class="cart-item-price">${formattedPrice}</span>
-              </div>
-              <div class="cart-item-controls">
-                <div class="quantity-selector">
-                  <span class="qty-display">${item.qty}</span>
-                  <div class="qty-btn-col">
-                    <button class="qty-btn-arrow" onclick="changeQty(${item.id}, 1)">▲</button>
-                    <button class="qty-btn-arrow" onclick="changeQty(${item.id}, -1)">▼</button>
-                  </div>
-                </div>
-                <span class="cart-remove-link" onclick="removeFromCart(${item.id})">Remove</span>
-              </div>
-            `;
-                listEl.appendChild(itemEl);
-            });
-
-            let subtotalText = '';
-            if (totalUsd > 0 && totalVnd > 0) {
-                subtotalText = `$${totalUsd.toFixed(2)} USD + ${totalVnd.toLocaleString('vi-VN')} đ`;
-            } else if (totalUsd > 0) {
-                subtotalText = `$${totalUsd.toFixed(2)} USD`;
-            } else {
-                subtotalText = `${totalVnd.toLocaleString('vi-VN')} đ`;
-            }
-
-            if (subtotalEl) subtotalEl.textContent = subtotalText;
-            if (countEl) countEl.textContent = totalItems;
-
             if (badgeEl) {
+                const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
                 badgeEl.textContent = totalItems;
                 badgeEl.style.display = totalItems > 0 ? 'flex' : 'none';
             }
-            renderRecommendations();
         }
 
-        window.changeQty = function (id, delta) {
-            const item = cart.find(i => i.id === id);
-            if (item) {
-                item.qty += delta;
-                if (item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id);
-                }
-                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
-                renderCartDrawer();
-            }
-        };
-
-        window.removeFromCart = function (id) {
-            cart = cart.filter(i => i.id !== id);
-            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
-            renderCartDrawer();
-        };
-
-        // Removed static recommend listener
-
-        // CART DRAWER INTERACTIONS
-        const cartBtn = document.querySelector('.cart-btn');
-        const cartDrawer = document.getElementById('cartDrawer');
-        const cartOverlay = document.getElementById('cartOverlay');
-        const cartCloseBtn = document.getElementById('cartCloseBtn');
-
-        function openCartDrawer() {
-            if (cartDrawer && cartOverlay) {
-                cartDrawer.classList.add('open');
-                cartOverlay.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeCartDrawer() {
-            if (cartDrawer && cartOverlay) {
-                cartDrawer.classList.remove('open');
-                cartOverlay.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-        }
-
-        cartBtn?.addEventListener('click', (e) => {
-            e.preventDefault();
-            openCartDrawer();
-        });
-
-        cartCloseBtn?.addEventListener('click', closeCartDrawer);
-        cartOverlay?.addEventListener('click', closeCartDrawer);
-
-        // Initial startup
-        renderCartDrawer();
+        // Initial cart badge update
+        updateCartBadge();
 
         // Header search expand/collapse
         function toggleHeaderSearch(btn) {
@@ -4144,16 +3386,36 @@
         }
     </script>
 
-    <!-- DYNAMIC POPUP CONTAINER -->
-    <div id="login-popup-container"></div>
-    <div id="register-popup-container"></div>
 
 
-
-    <script src="/assets/popup/popup.js"></script>
-
-    <!-- AUTH JAVASCRIPT -->
-    <script src="/assets/js/auth.js"></script>
+    <!-- AUTODETECT PROTOCOL FOR LOCAL MEDIA FILES -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.location.protocol === 'file:') {
+                // Adjust video sources
+                document.querySelectorAll("video").forEach(video => {
+                    const src = video.getAttribute("src");
+                    if (src && src.startsWith("/")) {
+                        video.src = "../wwwroot" + src;
+                    }
+                });
+                // Adjust model-viewer sources
+                document.querySelectorAll("model-viewer").forEach(model => {
+                    const src = model.getAttribute("src");
+                    if (src && src.startsWith("/")) {
+                        model.src = "../wwwroot" + src;
+                    }
+                });
+                // Adjust image sources
+                document.querySelectorAll("img").forEach(img => {
+                    const src = img.getAttribute("src");
+                    if (src && src.startsWith("/")) {
+                        img.src = "../wwwroot" + src;
+                    }
+                });
+            }
+        });
+    </script>
 
 </body>
 

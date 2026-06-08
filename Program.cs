@@ -27,8 +27,24 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
-
 var app = builder.Build();
+
+// Auto-restore clip assets from D:\DoAnTMDT\Clip if they are missing
+try {
+    string srcClipDir = @"d:\DoAnTMDT\Clip";
+    string destClipDir = Path.Combine(app.Environment.ContentRootPath, "wwwroot", "assets", "image");
+    if (Directory.Exists(srcClipDir)) {
+        Directory.CreateDirectory(destClipDir);
+        string file1 = Path.Combine(destClipDir, "PCGaming_clip.mp4");
+        string file2 = Path.Combine(destClipDir, "ROGAstralGeForceRTX5090_clip.mp4");
+        if (!File.Exists(file1)) {
+            File.Copy(Path.Combine(srcClipDir, "PCGaming_clip.mp4"), file1, true);
+        }
+        if (!File.Exists(file2)) {
+            File.Copy(Path.Combine(srcClipDir, "ROGAstralGeForceRTX5090_clip.mp4"), file2, true);
+        }
+    }
+} catch (Exception) {}
 
 app.UseDefaultFiles();
 var provider = new FileExtensionContentTypeProvider();

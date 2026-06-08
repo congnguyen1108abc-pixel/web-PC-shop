@@ -1,99 +1,332 @@
-<!-- LOGIN POPUP -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Nhập - HYPER CORE</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<div class="widget-popup" id="loginPopup">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-    <div class="widget-box">
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-        <!-- CLOSE BUTTON -->
+        .widget-popup {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            animation: fadeIn 0.5s ease;
+        }
 
-        <button class="widget-close" onclick="closeLoginPopup()">
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-            ✕
+        .widget-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
 
-        </button>
+        .widget-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        <!-- TITLE -->
+        .widget-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: rotate(90deg);
+        }
 
-        <h2 class="widget-title">
-            Đăng Nhập
-        </h2>
+        .widget-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
 
-        <p class="widget-subtitle">
-            Chào mừng quay trở lại HYPER CORE
-        </p>
+        .widget-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 30px;
+        }
 
-        <!-- FORM -->
+        .widget-input {
+            width: 100%;
+            height: 52px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 0 18px;
+            font-size: 15px;
+            margin-bottom: 16px;
+            outline: none;
+            transition: 0.3s;
+            background: #fff;
+        }
 
-        <form id="loginForm" onsubmit="return handleLogin(event)">
+        .widget-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
 
-            <!-- INPUT -->
+        .widget-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
 
-            <input type="email" id="loginEmail" class="widget-input" placeholder="Email" required />
+        .remember-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+        }
 
-            <input type="password" id="loginPassword" class="widget-input" placeholder="Mật khẩu" required />
+        .remember-box input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
 
-            <!-- OPTIONS -->
+        .forgot-link {
+            font-size: 14px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
 
-            <div class="widget-options">
+        .forgot-link:hover {
+            color: #764ba2;
+        }
 
-                <label class="remember-box">
+        .widget-submit {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
 
-                    <input type="checkbox" />
+        .widget-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
 
-                    <span>Nhớ mật khẩu</span>
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #999;
+            font-size: 13px;
+            font-weight: 600;
+            position: relative;
+        }
 
-                </label>
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #e0e0e0;
+        }
 
-                <a href="#" class="forgot-link">
+        .divider::before {
+            left: 0;
+        }
 
-                    Quên mật khẩu?
+        .divider::after {
+            right: 0;
+        }
 
-                </a>
+        .google-btn {
+            width: 100%;
+            height: 52px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 24px;
+        }
 
-            </div>
+        .google-btn:hover {
+            background: #f8f8f8;
+            border-color: #667eea;
+        }
 
-            <!-- LOGIN BUTTON -->
+        .google-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #4285f4;
+            font-size: 18px;
+        }
 
-            <button type="submit" class="widget-submit">
-                Đăng Nhập
+        .register-text {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .register-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 4px;
+            transition: 0.3s;
+        }
+
+        .register-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-popup" id="loginPopup">
+        <div class="widget-box">
+            <!-- CLOSE BUTTON -->
+            <button class="widget-close" onclick="window.location.href='/Homepage'">
+                ✕
             </button>
 
-        </form>
+            <!-- TITLE -->
+            <h2 class="widget-title">
+                Đăng Nhập
+            </h2>
 
-        <!-- DIVIDER -->
+            <p class="widget-subtitle">
+                Chào mừng quay trở lại HYPER CORE
+            </p>
 
-        <div class="divider">
-            HOẶC
-        </div>
+            <!-- FORM -->
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <!-- INPUT -->
+                <input type="email" id="loginEmail" class="widget-input" placeholder="Email" required />
+                <input type="password" id="loginPassword" class="widget-input" placeholder="Mật khẩu" required />
 
-        <!-- GOOGLE LOGIN -->
+                <!-- OPTIONS -->
+                <div class="widget-options">
+                    <label class="remember-box">
+                        <input type="checkbox" />
+                        <span>Nhớ mật khẩu</span>
+                    </label>
 
-        <button class="google-btn">
+                    <a href="#" class="forgot-link">
+                        Quên mật khẩu?
+                    </a>
+                </div>
 
-            <div class="google-icon">
-                G
+                <!-- LOGIN BUTTON -->
+                <button type="submit" class="widget-submit">
+                    Đăng Nhập
+                </button>
+            </form>
+
+            <!-- DIVIDER -->
+            <div class="divider">
+                HOẶC
             </div>
 
-            <span>
-                Đăng nhập bằng Google
-            </span>
+            <!-- GOOGLE LOGIN -->
+            <button class="google-btn">
+                <div class="google-icon">
+                    G
+                </div>
+                <span>
+                    Đăng nhập bằng Google
+                </span>
+            </button>
 
-        </button>
-
-        <!-- REGISTER -->
-
-        <div class="register-text">
-
-            Chưa có tài khoản?
-
-            <a href="javascript:void(0)" class="register-link" onclick="switchToRegister()">
-
-                Đăng ký ngay
-
-            </a>
-
+            <!-- REGISTER -->
+            <div class="register-text">
+                Chưa có tài khoản?
+                <a href="/Register" class="register-link">
+                    Đăng ký ngay
+                </a>
+            </div>
         </div>
-
     </div>
 
-</div>
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // Basic validation
+            if (!email || !password) {
+                alert('Vui lòng nhập đầy đủ thông tin!');
+                return false;
+            }
+
+            // Here you would normally send the data to your backend
+            console.log('Login attempt:', { email, password });
+            
+            // For demo purposes, redirect to homepage
+            alert('Đăng nhập thành công!');
+            window.location.href = '/Homepage';
+            
+            return false;
+        }
+    </script>
+</body>
+</html>

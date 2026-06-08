@@ -1,95 +1,248 @@
-<!-- REGISTER POPUP -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng Ký - HYPER CORE</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<div class="widget-popup" id="registerPopup">
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-    <div class="widget-box">
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-        <!-- CLOSE BUTTON -->
+        .widget-popup {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            animation: fadeIn 0.5s ease;
+        }
 
-        <button class="widget-close" onclick="closeRegisterPopup()">
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-            ✕
+        .widget-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
 
-        </button>
+        .widget-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0, 0, 0, 0.05);
+            color: #333;
+            font-size: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        <!-- TITLE -->
+        .widget-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: rotate(90deg);
+        }
 
-        <h2 class="widget-title">
-            Đăng Ký
-        </h2>
+        .widget-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
 
-        <p class="widget-subtitle">
-            Tạo tài khoản để trải nghiệm HYPER CORE
-        </p>
+        .widget-subtitle {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 30px;
+        }
 
-        <!-- FORM -->
+        .widget-input {
+            width: 100%;
+            height: 52px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 0 18px;
+            font-size: 15px;
+            margin-bottom: 8px;
+            outline: none;
+            transition: 0.3s;
+            background: #fff;
+        }
 
-        <form id="registerForm" onsubmit="return handleRegister(event)">
+        .widget-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
 
-            <!-- USERNAME -->
+        .error-msg {
+            font-size: 13px;
+            color: #ef4444;
+            margin-bottom: 12px;
+            display: none;
+        }
 
-            <input type="text" class="widget-input" id="regUser" placeholder="Tên đăng nhập" required />
+        .widget-submit {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+            margin-bottom: 20px;
+        }
 
-            <div id="userError" class="error-msg">
+        .widget-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
 
-                Tên đăng nhập tối thiểu 3 ký tự
+        .login-text {
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
 
-            </div>
+        .login-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            margin-left: 4px;
+            transition: 0.3s;
+        }
 
-            <!-- EMAIL -->
+        .login-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
 
-            <input type="email" class="widget-input" id="regEmail" placeholder="Email" required />
+        @media(max-width: 600px) {
+            .widget-box {
+                padding: 30px 24px;
+            }
 
-            <div id="emailError" class="error-msg">
-
-                Email không hợp lệ
-
-            </div>
-
-            <!-- PASSWORD -->
-
-            <input type="password" class="widget-input" id="regPass" placeholder="Mật khẩu" required />
-
-            <div id="passError" class="error-msg">
-
-                Mật khẩu tối thiểu 6 ký tự
-
-            </div>
-
-            <!-- CONFIRM PASSWORD -->
-
-            <input type="password" class="widget-input" id="regConfirm" placeholder="Xác nhận mật khẩu" required />
-
-            <div id="confirmError" class="error-msg">
-
-                Mật khẩu xác nhận không khớp
-
-            </div>
-
-            <!-- SUBMIT -->
-
-            <button type="submit" class="widget-submit">
-
-                Đăng Ký Ngay
-
+            .widget-title {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-popup" id="registerPopup">
+        <div class="widget-box">
+            <!-- CLOSE BUTTON -->
+            <button class="widget-close" onclick="window.location.href='/Homepage'">
+                ✕
             </button>
 
-        </form>
+            <!-- TITLE -->
+            <h2 class="widget-title">
+                Đăng Ký
+            </h2>
 
-        <!-- LOGIN -->
+            <p class="widget-subtitle">
+                Tạo tài khoản để trải nghiệm HYPER CORE
+            </p>
 
-        <div class="login-text">
+            <!-- FORM -->
+            <form id="registerForm" onsubmit="return handleRegister(event)">
+                <!-- USERNAME -->
+                <input type="text" class="widget-input" id="regUser" placeholder="Tên đăng nhập" required minlength="3" />
 
-            Đã có tài khoản?
+                <!-- EMAIL -->
+                <input type="email" class="widget-input" id="regEmail" placeholder="Email" required />
 
-            <a class="login-link" href="javascript:void(0)" onclick="switchToLogin()">
+                <!-- PASSWORD -->
+                <input type="password" class="widget-input" id="regPass" placeholder="Mật khẩu" required minlength="6" />
 
-                Đăng nhập
+                <!-- CONFIRM PASSWORD -->
+                <input type="password" class="widget-input" id="regConfirm" placeholder="Xác nhận mật khẩu" required />
 
-            </a>
+                <!-- SUBMIT -->
+                <button type="submit" class="widget-submit">
+                    Đăng Ký Ngay
+                </button>
+            </form>
 
+            <!-- LOGIN -->
+            <div class="login-text">
+                Đã có tài khoản?
+                <a class="login-link" href="/Login">
+                    Đăng nhập
+                </a>
+            </div>
         </div>
-
     </div>
 
-</div>
+    <script>
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('regUser').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
+            const confirmPassword = document.getElementById('regConfirm').value;
+
+            // Validation
+            if (username.length < 3) {
+                alert('Tên đăng nhập phải có ít nhất 3 ký tự!');
+                return false;
+            }
+
+            if (password.length < 6) {
+                alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Mật khẩu xác nhận không khớp!');
+                return false;
+            }
+
+            // Here you would normally send the data to your backend
+            console.log('Register attempt:', { username, email, password });
+            
+            // For demo purposes, redirect to login page
+            alert('Đăng ký thành công! Vui lòng đăng nhập.');
+            window.location.href = '/Login';
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
