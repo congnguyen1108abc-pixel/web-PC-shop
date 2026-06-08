@@ -2326,9 +2326,10 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
+<body class="homepage-body">
 
     <!-- Floating Social Sidebar -->
     <div class="social-sidebar">
@@ -2403,10 +2404,10 @@
 
         <nav>
 
-            <a href="/Homepage">Trang Chủ</a>
+            <a href="/Homepage" class="active">Trang Chủ</a>
             <a href="/Products" id="nav-products">Sản Phẩm</a>
             <a href="/gaminggear">Gaming Gear</a>
-            <a href="#">PC Build</a>
+            <a href="/pcbuild">PC Build</a>
             <a href="#">Trạng thái đơn hàng</a>
             <a href="#">Liên Hệ</a>
 
@@ -2460,7 +2461,7 @@
 
     <section class="hero page-section">
 
-        <video src="/assets/image/ROGAstralGeForceRTX5090_clip.mp4" autoplay loop muted playsinline preload="auto"></video>
+        <video src="/images/ROGAstralGeForceRTX5090_clip.mp4" autoplay loop muted playsinline preload="auto"></video>
 
     </section>
 
@@ -2536,7 +2537,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/assets/image/pc1.jpg" class="product-image" alt="Gaming PC" />
+                <img src="/images/pc1.jpg" class="product-image" alt="Gaming PC" />
 
                 <div class="product-info">
 
@@ -2556,7 +2557,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/assets/image/keyboard.jpg" class="product-image" alt="Keyboard" />
+                <img src="/images/keyboard.jpg" class="product-image" alt="Keyboard" />
 
                 <div class="product-info">
 
@@ -2576,7 +2577,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/assets/image/mouse.jpg" class="product-image" alt="Mouse" />
+                <img src="/images/mouse.jpg" class="product-image" alt="Mouse" />
 
                 <div class="product-info">
 
@@ -2596,7 +2597,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/assets/image/headphone.jpg" class="product-image" alt="Headphone" />
+                <img src="/images/headphone.jpg" class="product-image" alt="Headphone" />
 
                 <div class="product-info">
 
@@ -2616,7 +2617,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/assets/image/monitor.jpg" class="product-image" alt="Monitor" />
+                <img src="/images/monitor.jpg" class="product-image" alt="Monitor" />
 
                 <div class="product-info">
 
@@ -2636,7 +2637,7 @@
 
             <div class="product-card">
 
-                <img src="/assets/image/laptop.jpg" class="product-image" alt="Laptop" />
+                <img src="/images/laptop.jpg" class="product-image" alt="Laptop" />
 
                 <div class="product-info">
 
@@ -2694,7 +2695,7 @@
 
                 <div class="gear-overlay"></div>
 
-                <img src="/assets/image/controller.png" class="gear-big-image" alt="Gaming Controller" />
+                <img src="/images/controller.png" class="gear-big-image" alt="Gaming Controller" />
 
                 <div class="gear-content">
 
@@ -2722,7 +2723,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/assets/image/headphone.jpg" alt="Headphone" />
+                    <img src="/images/headphone.jpg" alt="Headphone" />
 
                     <div class="small-info">
 
@@ -2736,7 +2737,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/assets/image/mouse.jpg" alt="Mouse" />
+                    <img src="/images/mouse.jpg" alt="Mouse" />
 
                     <div class="small-info">
 
@@ -2750,7 +2751,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/assets/image/keyboard.jpg" alt="Keyboard" />
+                    <img src="/images/keyboard.jpg" alt="Keyboard" />
 
                     <div class="small-info">
 
@@ -2764,7 +2765,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/assets/image/gamepad.jpg" alt="Gamepad" />
+                    <img src="/images/gamepad.jpg" alt="Gamepad" />
 
                     <div class="small-info">
 
@@ -2823,7 +2824,7 @@
 
                 <div class="laptop-card reveal">
 
-                    <img src="/assets/image/laptop.jpg" alt="Laptop" />
+                    <img src="/images/laptop.jpg" alt="Laptop" />
 
                     <div class="laptop-info">
 
@@ -2841,7 +2842,7 @@
 
                 <div class="laptop-card reveal">
 
-                    <img src="/assets/image/laptop2.jpg" alt="Laptop" />
+                    <img src="/images/laptop2.jpg" alt="Laptop" />
 
                     <div class="laptop-info">
 
@@ -2887,7 +2888,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/assets/image/headphone.jpg" alt="Audio" />
+                <img src="/images/headphone.jpg" alt="Audio" />
 
                 <div class="audio-content">
 
@@ -2903,7 +2904,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/assets/image/speaker.jpg" alt="Speaker" />
+                <img src="/images/speaker.jpg" alt="Speaker" />
 
                 <div class="audio-content">
 
@@ -2919,7 +2920,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/assets/image/mic.jpg" alt="Microphone" />
+                <img src="/images/mic.jpg" alt="Microphone" />
 
                 <div class="audio-content">
 
@@ -3397,6 +3398,19 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (window.location.protocol === 'file:') {
+                // Adjust link hrefs for local navigation
+                document.querySelectorAll("a").forEach(a => {
+                    const href = a.getAttribute("href");
+                    if (href && href.startsWith("/")) {
+                        const path = href.toLowerCase();
+                        if (path === '/homepage') a.href = 'homepage.html';
+                        else if (path === '/products') a.href = 'products.html';
+                        else if (path === '/gaminggear') a.href = 'gaminggear.html';
+                        else if (path === '/pcbuild') a.href = 'pcbuild.html';
+                        else if (path === '/login') a.href = 'login.html';
+                        else if (path === '/shoppingcart') a.href = 'shoppingcart.html';
+                    }
+                });
                 // Adjust video sources
                 document.querySelectorAll("video").forEach(video => {
                     const src = video.getAttribute("src");

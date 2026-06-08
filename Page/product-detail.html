@@ -5,7 +5,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>HYPER CORE - Chi Tiết Sản Phẩm</title>
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
   <style>
     *,
     *::before,
@@ -19,9 +18,9 @@
       --blue: #000000;
       --blue-light: #374151;
       --blue-dark: #111827;
-      --glass: rgba(255, 255, 255, 0.8);
-      --glass-border: rgba(0, 0, 0, 0.1);
-      --text: #4b5563;
+      --glass: #ffffff;
+      --glass-border: #eaeaea;
+      --text: #666666;
       --cyan: #000000;
     }
 
@@ -32,7 +31,7 @@
     }
 
     body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
       color: #111827;
       background: #ffffff;
       min-height: 100vh;
@@ -48,11 +47,11 @@
     }
 
     ::-webkit-scrollbar-track {
-      background: #040b14;
+      background: #f4f4f5;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, .25);
+      background: #d4d4d8;
       border-radius: 99px;
     }
 
@@ -72,19 +71,19 @@
       justify-content: space-between;
       align-items: center;
       z-index: 999;
-      border-radius: 0 0 20px 20px;
+      border-radius: 0;
       background: #FFFFFF;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
-      transition: .4s ease;
+      border-bottom: 1px solid #eaeaea;
+      transition: .2s ease;
     }
 
     header, header * {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+      font-family: 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
     }
 
     header.scrolled {
       background: #FFFFFF;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
+      border-bottom: 1px solid #eaeaea;
     }
 
     .logo {
@@ -163,99 +162,6 @@
       background: rgba(0, 0, 0, .12);
     }
 
-    .login-glass-btn {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 24px;
-      border-radius: 18px;
-      border: 1px solid rgba(0, 0, 0, .14);
-      background: rgba(0, 0, 0, .08);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      color: #000000;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      overflow: hidden;
-      transition: background .35s ease, border .35s ease, transform .35s ease, box-shadow .35s ease;
-    }
-
-    .login-glass-btn::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -120%;
-      width: 80%;
-      height: 100%;
-      background: linear-gradient(120deg, transparent, #555555, transparent);
-      transform: skewX(-20deg);
-      transition: .7s;
-    }
-
-    .login-glass-btn:hover::before {
-      left: 140%;
-    }
-
-    .login-glass-btn:hover {
-      background: linear-gradient(135deg, rgba(56, 189, 248, .95), rgba(14, 165, 233, .95));
-      border: 1px solid rgba(125, 211, 252, .6);
-      box-shadow: 0 10px 30px rgba(56, 189, 248, .35), 0 0 20px rgba(125, 211, 252, .25);
-      transform: translateY(-3px);
-      color: #FFFFFF;
-    }
-
-    .login-icon {
-      font-size: 17px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .register-glass-btn {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 24px;
-      border-radius: 18px;
-      border: 1px solid rgba(0, 0, 0, .3);
-      background: linear-gradient(135deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2));
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      color: #000000;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      overflow: hidden;
-      transition: .35s ease;
-    }
-
-    .register-glass-btn::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -120%;
-      width: 80%;
-      height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(0, 0, 0, .25), transparent);
-      transform: skewX(-20deg);
-      transition: .7s;
-    }
-
-    .register-glass-btn:hover::before {
-      left: 140%;
-      }
-
-    .register-glass-btn:hover {
-      background: rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(0, 0, 0, 0.4);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transform: translateY(-3px);
-      color: #000000;
-    }
-
     /* BREADCRUMB */
     .breadcrumb {
       display: flex;
@@ -305,13 +211,13 @@
       gap: 16px;
     }
 
-    /* MAIN MEDIA FRAME (3D or image) */
+    /* MAIN MEDIA FRAME (image container) */
     .media-frame {
       position: relative;
-      border-radius: 28px;
+      border-radius: 12px;
       overflow: hidden;
-      background: #f3f4f6;
-      border: 1px solid var(--glass-border);
+      background: transparent;
+      border: 1px solid #eaeaea;
       width: 100%;
       min-height: 60vh;
       display: flex;
@@ -319,34 +225,13 @@
       justify-content: center;
     }
 
-    /* model-viewer fills the frame */
-    .media-frame model-viewer {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 28px;
-      background: transparent;
-    }
-
-    /* main img fills the frame, hidden by default */
+    /* main img fills the frame */
     .media-frame img#mainImg {
-      position: absolute;
-      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      transition: .4s ease;
-      display: none;
-    }
-
-    /* show img when gallery mode */
-    .media-frame.gallery-mode model-viewer {
-      display: none;
-    }
-
-    .media-frame.gallery-mode img#mainImg {
-      display: block;
+      background-color: transparent;
+      transition: opacity 0.2s ease;
     }
 
     .img-badge {
@@ -364,43 +249,6 @@
       letter-spacing: 1px;
     }
 
-    /* mini view toggle pill inside frame */
-    .view-pill {
-      position: absolute;
-      top: 18px;
-      right: 18px;
-      z-index: 20;
-      display: flex;
-      gap: 4px;
-      background: rgba(255, 255, 255, .8);
-      border: 1px solid rgba(0, 0, 0, .12);
-      backdrop-filter: blur(16px);
-      border-radius: 99px;
-      padding: 4px;
-    }
-
-    .view-pill button {
-      padding: 5px 14px;
-      border-radius: 99px;
-      border: none;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .25s;
-      background: transparent;
-      color: rgba(0, 0, 0, .55);
-    }
-
-    .view-pill button.active {
-      background: #e5e7eb;
-      color: #000000;
-      box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    }
-
-    .view-pill button:hover {
-      color: #111827;
-    }
-
     /* THUMBNAILS — always below media frame */
     .thumbnails {
       display: flex;
@@ -414,7 +262,7 @@
     }
 
     .thumbnails::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, .3);
+      background: #d4d4d8;
       border-radius: 99px;
     }
 
@@ -422,27 +270,28 @@
       flex-shrink: 0;
       width: 82px;
       height: 82px;
-      border-radius: 14px;
+      border-radius: 8px;
       overflow: hidden;
       border: 2px solid transparent;
       cursor: pointer;
-      transition: .3s;
-      background: var(--glass);
+      transition: all 0.2s ease;
+      background: #ffffff;
     }
 
     .thumb img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      background: transparent;
     }
 
     .thumb:hover {
-      border-color: var(--blue);
+      border-color: #111827;
     }
 
     .thumb.active {
       border-color: #000000;
-      box-shadow: 0 0 14px rgba(0, 0, 0, .2);
+      box-shadow: none;
     }
 
     /* RIGHT COLUMN */
@@ -524,20 +373,20 @@
     }
 
     .spec-box {
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
+      background: #f9f9f9;
+      border: 1px solid #eaeaea;
+      border-radius: 8px;
       padding: 16px;
       display: flex;
       align-items: center;
       gap: 12px;
-      transition: .3s;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
 
     .spec-box:hover {
       border-color: #000000;
       background: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      box-shadow: none;
     }
 
     .spec-icon {
@@ -583,18 +432,18 @@
 
     .variant-btn {
       padding: 9px 20px;
-      border-radius: 12px;
-      border: 1px solid var(--glass-border);
-      background: #f3f4f6;
-      color: var(--text);
+      border-radius: 8px;
+      border: 1px solid #eaeaea;
+      background: #f9f9f9;
+      color: #666666;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: .3s;
+      transition: all 0.2s ease;
     }
 
     .variant-btn:hover {
-      border-color: #000000;
+      border-color: #111827;
       color: #111827;
     }
 
@@ -602,7 +451,7 @@
       border-color: #000000;
       color: #000000;
       background: #ffffff;
-      box-shadow: 0 0 14px rgba(0, 0, 0, .1);
+      box-shadow: none;
     }
 
     /* COLOR SWATCHES */
@@ -619,17 +468,17 @@
       border-radius: 50%;
       cursor: pointer;
       border: 2px solid transparent;
-      transition: .3s;
+      transition: transform 0.2s ease, border-color 0.2s ease;
       position: relative;
     }
 
     .color-swatch:hover {
-      transform: scale(1.15);
+      transform: scale(1.08);
     }
 
     .color-swatch.active {
-      border-color: var(--blue-light);
-      box-shadow: 0 0 14px rgba(125, 211, 252, .5);
+      border-color: #111827;
+      box-shadow: none;
     }
 
     .color-swatch.black {
@@ -663,14 +512,14 @@
     .btn-add-cart {
       flex: 1;
       padding: 16px;
-      border-radius: 18px;
+      border-radius: 8px;
       border: 1px solid #000000;
       background: #ffffff;
       color: #000000;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      transition: .35s;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -678,32 +527,33 @@
     }
 
     .btn-add-cart:hover {
-      background: #f3f4f6;
+      background: #f9f9f9;
       transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, .05);
+      box-shadow: none;
     }
 
     .btn-buy-now {
       flex: 1;
       padding: 16px;
-      border-radius: 18px;
+      border-radius: 8px;
       border: none;
       background: #000000;
       color: #fff;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      transition: .35s;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, .15);
+      box-shadow: none;
     }
 
     .btn-buy-now:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, .3);
+      background: #333333;
+      transform: translateY(-2px);
+      box-shadow: none;
     }
 
     /* SECTION TITLE */
@@ -752,24 +602,22 @@
       transform: translateY(-50%);
       z-index: 1000;
       width: 50px;
-      background: rgba(228, 228, 231, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: #f9f9f9;
+      border: 1px solid #eaeaea;
       border-radius: 100px;
       padding: 24px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 22px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: none;
+      transition: background 0.2s ease;
     }
 
     .social-sidebar:hover {
-      background: rgba(228, 228, 231, 0.95);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-      transform: translateY(-50%) scale(1.02);
+      background: #f1f1f1;
+      box-shadow: none;
+      transform: translateY(-50%);
     }
 
     .social-item {
@@ -779,8 +627,8 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      color: #1f1f23;
-      transition: all 0.3s ease;
+      color: #111111;
+      transition: all 0.2s ease;
       text-decoration: none;
     }
 
@@ -788,11 +636,11 @@
       width: 20px;
       height: 20px;
       fill: currentColor;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
     .social-item:hover {
-      transform: scale(1.1);
+      transform: translateY(-2px);
     }
 
     .social-item[title="X (Twitter)"]:hover {
@@ -837,6 +685,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
@@ -862,30 +711,60 @@
 
   <!-- HEADER -->
   <header id="header">
-    <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
-      <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" style="height: 38px; display: block; object-fit: contain;">
-    </div>
-    <nav>
-      <a href="/Homepage">Trang Chủ</a>
-      <a href="/Products">Sản Phẩm</a>
-      <a href="/Gaminggear">Gaming Gear</a>
-      <a href="#">PC Build</a>
-      <a href="#">Trạng thái đơn hàng</a>
-      <a href="#">Liên Hệ</a>
-    </nav>
-    <div class="nav-actions">
-      <button class="cart-btn" onclick="window.location.href='/shoppingcart'">
-        🛒
-        <span id="cartCount" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:99px;background:linear-gradient(135deg,#38bdf8,#0ea5e9);font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;color:white;">0</span>
-      </button>
-      <button class="login-glass-btn" onclick="window.location.href='/Login'">
-        <span class="login-icon">👤</span> <span>Đăng Nhập</span>
-      </button>
-      <button class="register-glass-btn" onclick="window.location.href='/Register'">
-        <span class="login-icon">📝</span> <span>Đăng Ký</span>
-      </button>
-    </div>
-  </header>
+        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                style="height: 38px; display: block; object-fit: contain;">
+        </div>
+
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <a href="/Products" id="nav-products">Sản Phẩm</a>
+            <a href="/gaminggear">Gaming Gear</a>
+            <a href="/pcbuild">PC Build</a>
+            <a href="#">Trạng thái đơn hàng</a>
+            <a href="#">Liên Hệ</a>
+        </nav>
+
+        <div class="nav-actions">
+            <!-- SEARCH -->
+            <div class="header-search-container" id="headerSearchWrap">
+                <input
+                    type="text"
+                    id="headerSearchInput"
+                    class="header-search-input"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+                <button
+                    class="header-icon-btn search-toggle-btn"
+                    onclick="toggleHeaderSearch(this)"
+                    title="Tìm kiếm"
+                    aria-label="Tìm kiếm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ACCOUNT -->
+            <a href="/Login" style="text-decoration: none; color: inherit;" class="header-icon-btn" title="Tài khoản" aria-label="Tài khoản">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+
+            <!-- CART -->
+            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
 
   <!-- MAIN -->
   <div class="detail-wrapper">
@@ -895,32 +774,8 @@
 
       <!-- MAIN MEDIA FRAME -->
       <div class="media-frame" id="mediaFrame">
-
-        <!-- 3D MODEL VIEWER (default) -->
-        <model-viewer id="modelViewer" src="/assets/models/gaming_room.glb" camera-controls auto-rotate
-          auto-rotate-delay="0" rotation-per-second="25deg" interaction-prompt="none" tone-mapping="neutral"
-          shadow-intensity="1" camera-orbit="0deg 75deg 1.5m">
-          <div slot="poster"
-            style="display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;height:100%;color:#000000;font-weight:700;gap:16px;">
-            <div
-              style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(0,0,0,.15);border-left-color:#000000;animation:spin 1s linear infinite;">
-            </div>
-            <span>ĐANG TẢI MÔ HÌNH 3D...</span>
-          </div>
-        </model-viewer>
-
-        <!-- IMAGE (hidden by default, shown when thumbnail clicked) -->
+        <!-- IMAGE -->
         <img id="mainImg" src="" alt="Product Image" />
-
-        <!-- BADGE -->
-        <div class="img-badge" id="imgBadge">3D</div>
-
-        <!-- MINI TOGGLE PILL -->
-        <div class="view-pill">
-          <button id="pill3d" class="active" onclick="switchView('3d')">🔮 3D</button>
-          <button id="pillImg" onclick="switchView('img')">🖼 Ảnh</button>
-        </div>
-
       </div>
 
       <!-- THUMBNAILS — always below -->
@@ -1151,10 +1006,6 @@
       mainImg.src = p.img;
       mainImg.alt = p.name;
 
-      // Badge
-      const badge = document.getElementById('imgBadge');
-      if (badge) badge.textContent = p.badge ? p.badge.toUpperCase() : 'FEATURED';
-
       // Thumbnails — generate 4 angle views
       const thumbContainer = document.getElementById('thumbnails');
       thumbContainer.innerHTML = '';
@@ -1199,39 +1050,12 @@
     });
 
     // ============================================================
-    // TOGGLE 3D vs GALLERY — đã hợp nhất, hàm này dự phòng không còn dùng
-    // ============================================================
-
-    // ============================================================
-    // SWITCH VIEW: 3D ↔ Image
-    // ============================================================
-    function switchView(mode) {
-      const frame = document.getElementById('mediaFrame');
-      const pill3d = document.getElementById('pill3d');
-      const pillImg = document.getElementById('pillImg');
-      const badge = document.getElementById('imgBadge');
-      if (mode === '3d') {
-        frame.classList.remove('gallery-mode');
-        pill3d.classList.add('active');
-        pillImg.classList.remove('active');
-        if (badge) badge.textContent = '3D';
-      } else {
-        frame.classList.add('gallery-mode');
-        pill3d.classList.remove('active');
-        pillImg.classList.add('active');
-        if (badge) badge.textContent = 'IMG';
-      }
-    }
-
-    // ============================================================
-    // THUMBNAIL CLICK — switch to image mode automatically
+    // THUMBNAIL CLICK
     // ============================================================
     function changeImg(thumb, src) {
       document.getElementById('mainImg').src = src;
       document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
       thumb.classList.add('active');
-      // Auto switch to image view
-      switchView('img');
     }
 
     // ============================================================

@@ -168,6 +168,18 @@ app.MapGet("/gaminggear.html", async context =>
     await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "gaminggear.html"));
 });
 
+app.MapGet("/pcbuild", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "pcbuild.html"));
+});
+
+app.MapGet("/pcbuild.html", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "pcbuild.html"));
+});
+
 app.MapControllers();
 
 app.Run();

@@ -375,3 +375,6 @@ secrets.json
 user-secrets/
 
 # ===================================
+
+# Large video files
+*.mp4
