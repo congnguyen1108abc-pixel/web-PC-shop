@@ -889,7 +889,7 @@
             height: 60px;
             border-radius: 50%;
             background: linear-gradient(135deg, #000000, #000000);
-            border: 2px solid rgba(125, 211, 252, 0.5);
+            border: 2px solid rgba(0, 0, 0, 0.1);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -933,15 +933,17 @@
             right: 30px;
             width: 450px;
             height: 600px;
-            background: rgba(8, 17, 32, 0.95);
-            border: 1px solid rgba(125, 211, 252, 0.3);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 20px;
-            box-shadow: 0 10px 40px #D1D5DB;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: none;
             flex-direction: column;
             z-index: 1000;
             animation: slideUp 0.3s ease;
+            color: #000000;
         }
 
         .chatbot-modal.active {
@@ -961,12 +963,13 @@
         }
 
         .chatbot-header {
-            background: linear-gradient(135deg, #000000, #000000);
+            background: #FFFFFF;
             padding: 20px;
             border-radius: 20px 20px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         }
 
         .chatbot-header h3 {
@@ -1033,16 +1036,16 @@
         }
 
         .user-message .message-content {
-            background: linear-gradient(135deg, #000000, #000000);
-            color: #000000;
-            border-radius: 10px 0 10px 10px;
+            background: #000000;
+            color: #FFFFFF;
+            border-radius: 14px 14px 0 14px;
         }
 
         .bot-message .message-content {
-            background: rgba(0, 0, 0, 0.1);
-            color: #e0f2fe;
-            border-radius: 0 10px 10px 10px;
-            border-left: 3px solid #000000;
+            background: #F4F4F5;
+            color: #000000;
+            border-radius: 14px 14px 14px 0;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .loading {
@@ -1093,7 +1096,7 @@
         .chatbot-input {
             flex: 1;
             padding: 10px 12px;
-            border: 1px solid rgba(125, 211, 252, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.15);
             border-radius: 15px;
             background: #F4F4F5;
             color: #000000;
@@ -1113,8 +1116,8 @@
 
         .chatbot-send {
             padding: 10px 16px;
-            background: linear-gradient(135deg, #000000, #000000);
-            color: #000000;
+            background: #000000;
+            color: #FFFFFF;
             border: none;
             border-radius: 15px;
             cursor: pointer;
@@ -1289,7 +1292,7 @@
             border: none;
             border-radius: 16px;
             background: linear-gradient(135deg, #000000, #000000);
-            color: #000000;
+            color: #FFFFFF;
             font-weight: 700;
             cursor: pointer;
             transition: .4s;
@@ -2137,7 +2140,7 @@
 
         .recommend-add-btn:hover {
             background: #000000;
-            color: #08101b;
+            color: #FFFFFF;
             border-color: #000000;
             transform: translateY(-2px);
             box-shadow: 0 0 15px #D1D5DB;
@@ -2225,7 +2228,7 @@
 
         .cart-checkout-btn {
             background: linear-gradient(135deg, #000000, #000000);
-            color: #000000;
+            color: #FFFFFF;
             border: none;
             border-radius: 16px;
             padding: 16px;
@@ -3156,14 +3159,16 @@
 
         let chatOpen = false;
 
-        supportBtn.addEventListener("click", () => {
-            chatOpen = !chatOpen;
-            if (chatOpen) {
-                supportChat.classList.add("active");
-            } else {
-                supportChat.classList.remove("active");
-            }
-        });
+        if (supportBtn && supportChat) {
+            supportBtn.addEventListener("click", () => {
+                chatOpen = !chatOpen;
+                if (chatOpen) {
+                    supportChat.classList.add("active");
+                } else {
+                    supportChat.classList.remove("active");
+                }
+            });
+        }
 
         /* AI CHATBOT */
         const chatbotButton = document.getElementById("chatbot-button");

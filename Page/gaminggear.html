@@ -32,53 +32,7 @@
             scroll-behavior: smooth;
         }
 
-        /* DYNAMIC MOUSE LIGHT */
-        .mouse-light {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-            opacity: 0.6;
-            transition: opacity 0.3s;
-            mix-blend-mode: overlay;
-        }
 
-        /* PARTICLES */
-        .particle {
-            position: absolute;
-            background-color: #000;
-            border-radius: 50%;
-            opacity: 0.1;
-            pointer-events: none;
-            animation: float-up linear infinite;
-            z-index: 1;
-        }
-
-        @keyframes float-up {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 0;
-            }
-
-            20% {
-                opacity: 0.15;
-            }
-
-            80% {
-                opacity: 0.15;
-            }
-
-            100% {
-                transform: translateY(-150px) scale(0.5);
-                opacity: 0;
-            }
-        }
 
         /* ================================= */
         /* HEADER */
@@ -88,7 +42,6 @@
             position: fixed;
             top: 0;
             left: 0;
-            transform: none;
             width: 100%;
             height: 78px;
             padding: 0 45px;
@@ -97,9 +50,10 @@
             align-items: center;
             z-index: 999;
             border-radius: 0 0 20px 20px;
-            background: #FFFFFF;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
-            transition: .4s ease;
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            transition: background 0.5s ease, backdrop-filter 0.5s ease, box-shadow 0.5s ease, border 0.5s ease;
         }
 
         header, header * {
@@ -107,8 +61,10 @@
         }
 
         header.scrolled {
-            background: #FFFFFF;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.1);
         }
 
         .logo {
@@ -255,19 +211,7 @@
             overflow: hidden;
         }
 
-        .bg-text {
-            position: absolute;
-            font-size: 16vw;
-            font-weight: 900;
-            color: rgba(0, 0, 0, 0.04);
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 0;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s linear;
-        }
+
 
         /* SHOWCASE SECTIONS */
         .showcase-container {
@@ -301,46 +245,37 @@
         }
 
         /* SCROLL REVEAL ANIMATION */
-        .item-section .tilt-card {
-            opacity: 0;
-            transform: translateX(-100px) scale(0.9);
-            /* Transition này chỉ dùng cho lúc Reveal. Khi di chuột JS sẽ ngắt nó đi */
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.1s;
-        }
-
-        .item-section.align-right .tilt-card {
-            transform: translateX(100px) scale(0.9);
-        }
-
+        .item-section .tilt-card,
         .item-section .side-content {
             opacity: 0;
-            transform: translateX(100px);
-            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1) 0.3s;
-        }
-
-        .item-section.align-right .side-content {
-            transform: translateX(-100px);
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
         }
 
         .item-section.show .tilt-card,
         .item-section.show .side-content {
             opacity: 1;
-            transform: translate(0) scale(1);
+            transform: translateY(0);
         }
 
-        /* 3D PRODUCT CARD & SIZES */
+        /* PRODUCT CARD & SIZES */
         .tilt-card {
             position: relative;
             z-index: 5;
             border-radius: 40px;
-            background: linear-gradient(145deg, #ffffff, #f0f0f3);
-            box-shadow: 15px 15px 40px var(--ceramic-shadow), -15px -15px 40px #ffffff;
+            background: linear-gradient(145deg, #ffffff, #f9f9fb);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.03);
             display: flex;
             flex-direction: column;
             align-items: center;
-            transform-style: preserve-3d;
-            will-change: transform;
-            cursor: crosshair;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            cursor: pointer;
+        }
+
+        .tilt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
         }
 
         .card-sm {
@@ -368,25 +303,20 @@
             bottom: 15%;
             width: 70%;
             height: 30px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
             border-radius: 50%;
-            box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.9), inset 0 -5px 10px rgba(0, 0, 0, 0.05), 0 15px 25px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            transform: translateZ(20px);
+            filter: blur(8px);
         }
 
         .product-img {
             object-fit: contain;
             margin-bottom: 40px;
-            transform: translateZ(80px);
-            filter: drop-shadow(0 20px 20px rgba(0, 0, 0, 0.25));
-            -webkit-box-reflect: below 5px linear-gradient(transparent 70%, rgba(0, 0, 0, 0.15));
-            transition: filter 0.4s ease, transform 0.4s ease;
+            filter: drop-shadow(0 15px 20px rgba(0, 0, 0, 0.12));
+            transition: transform 0.4s ease;
         }
 
         .tilt-card:hover .product-img {
-            transform: translateZ(120px) scale(1.05);
+            transform: translateY(-3px);
         }
 
         .card-sm .product-img {
@@ -410,7 +340,6 @@
         }
 
         .item-info {
-            transform: translateZ(50px);
             text-align: center;
         }
 
@@ -466,6 +395,7 @@
             line-height: 1.1;
             margin-bottom: 20px;
             text-transform: uppercase;
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .side-desc {
@@ -507,25 +437,27 @@
         .cat-btn {
             padding: 12px 28px;
             border-radius: 30px;
-            border: 1px solid #fff;
-            background: linear-gradient(135deg, #ffffff, #e6e6e6);
-            box-shadow: 4px 4px 10px var(--ceramic-shadow), -4px -4px 10px #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             color: #000;
         }
 
         .cat-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 6px 6px 15px var(--ceramic-shadow), -6px -6px 15px #ffffff;
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.55);
         }
 
         .cat-btn.active {
-            background: #000;
+            background: #111;
             color: #fff;
-            border-color: #000;
+            border-color: #111;
+            backdrop-filter: blur(10px);
         }
 
         .price-filter {
@@ -558,7 +490,7 @@
 
         .grid-container {
             max-width: 1400px;
-            margin: 0 auto 100px;
+            margin: 0 auto 150px;
             padding: 0 50px;
             position: relative;
             z-index: 10;
@@ -567,7 +499,7 @@
         .product-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 40px;
+            gap: 50px;
         }
 
         .grid-item {
@@ -579,10 +511,8 @@
 
         .grid-item.hidden {
             opacity: 0;
-            transform: scale(0.9);
+            transform: translateY(10px);
             pointer-events: none;
-            position: absolute;
-            visibility: hidden;
         }
 
         .grid-item .product-img {
@@ -604,16 +534,16 @@
             margin-top: 20px;
             padding: 10px 20px;
             border-radius: 20px;
-            border: 1px solid #000;
-            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-            transform: translateZ(30px);
+            transition: all 0.3s ease;
         }
 
         .grid-item .add-cart-btn:hover {
-            background: #000;
+            background: rgba(0, 0, 0, 0.9);
             color: #fff;
         }
 
@@ -690,22 +620,27 @@
         footer {
             position: relative;
             z-index: 10;
-            margin: 50px;
+            margin: 0;
             padding: 80px 50px;
-            border-radius: 40px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 0 20px rgba(255, 255, 255, 1);
+            background: #fafafa;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        footer.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         @media (max-width: 768px) {
             footer {
                 grid-template-columns: 1fr;
-                margin: 20px;
+                margin: 0;
                 padding: 40px 20px;
             }
         }
@@ -743,7 +678,7 @@
 
         .footer-links a:hover {
             color: #000;
-            padding-left: 5px;
+            padding-left: 4px;
         }
 
         .footer-newsletter h3 {
@@ -753,10 +688,10 @@
 
         .input-glass {
             display: flex;
-            background: rgba(255, 255, 255, 0.6);
+            background: #ffffff;
             border-radius: 30px;
             padding: 5px;
-            border: 1px solid #fff;
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .input-glass input {
@@ -886,7 +821,7 @@
         </a>
     </div>
 
-    <div class="mouse-light" id="mouse-light"></div>
+
 
     <header id="header">
         <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
@@ -942,7 +877,7 @@
     <main>
         <div class="showcase-container">
             <div class="item-section align-left">
-                <div class="bg-text">PRECISION</div>
+
                 <div class="tilt-card card-md">
                     <div class="glass-base"></div>
                     <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png"
@@ -961,7 +896,7 @@
             </div>
 
             <div class="item-section align-right">
-                <div class="bg-text">TACTILE</div>
+
                 <div class="side-content">
                     <h2 class="side-title">CẢM GIÁC<br>GÕ TỐI THƯỢNG.</h2>
                     <p class="side-desc">Khung gốm nguyên khối kết hợp switch cơ học custom. Phản hồi 0.1ms mượt mà
@@ -1071,7 +1006,7 @@
                 <div class="tilt-card grid-item" data-category="pad" data-price="1800000">
                     <div class="glass-base"></div>
                     <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Mousepads/MM700_RGB_Extended/Gallery/MM700_RGB_EXTENDED_01.png"
-                        alt="Lót chuột" class="product-img" style="transform: translateZ(80px) rotate(-10deg);">
+                        alt="Lót chuột" class="product-img" style="transform: rotate(-10deg);">
                     <div class="item-info">
                         <p class="item-tag">Mousepad</p>
                         <h2 class="item-name">CORE PAD PRO</h2>
@@ -1139,12 +1074,7 @@
     </footer>
 
     <script>
-        // 1. ÁNH SÁNG CHUỘT
-        const light = document.getElementById('mouse-light');
-        document.addEventListener('mousemove', (e) => {
-            light.style.left = `${e.clientX}px`;
-            light.style.top = `${e.clientY}px`;
-        });
+
 
         // 2. HEADER MORPHING TRÊN SCROLL
         const header = document.getElementById('header');
@@ -1162,68 +1092,9 @@
             });
         }, { threshold: 0.2 });
         document.querySelectorAll('.item-section').forEach(section => observer.observe(section));
+        observer.observe(document.querySelector('footer'));
 
-        window.addEventListener('scroll', () => {
-            document.querySelectorAll('.item-section').forEach(section => {
-                const rect = section.getBoundingClientRect();
-                const bgText = section.querySelector('.bg-text');
-                if (bgText && rect.top < window.innerHeight && rect.bottom > 0) {
-                    const scrollOffset = (window.innerHeight - rect.top) * 0.15;
-                    bgText.style.transform = `translate(-50%, calc(-50% + ${scrollOffset}px))`;
-                }
-            });
-        });
 
-        // 4. PARTICLES
-        function createParticles() {
-            const body = document.querySelector('body');
-            const pageHeight = document.body.scrollHeight;
-            for (let i = 0; i < 60; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                const size = Math.random() * 4 + 2;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.left = `${Math.random() * 100}vw`;
-                particle.style.top = `${Math.random() * pageHeight}px`;
-                particle.style.animationDuration = `${Math.random() * 8 + 5}s`;
-                particle.style.animationDelay = `${Math.random() * 5}s`;
-                body.appendChild(particle);
-            }
-        }
-        window.onload = createParticles;
-
-        // 5. HIỆU ỨNG 3D TILT ĐÃ ĐƯỢC FIX LỖI ĐƠ THẺ
-        const cards = document.querySelectorAll('.tilt-card');
-        cards.forEach(card => {
-
-            // Xóa bỏ transition của CSS khi chuột bắt đầu đi vào để JS kiểm soát hoàn toàn
-            card.addEventListener('mouseenter', () => {
-                card.style.transition = 'none';
-            });
-
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-
-                const intensity = card.classList.contains('grid-item') ? 8 : 12;
-                const rotateX = ((y - centerY) / centerY) * -intensity;
-                const rotateY = ((x - centerX) / centerX) * intensity;
-
-                card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                card.style.boxShadow = `${-rotateY}px ${rotateX}px 40px rgba(0,0,0,0.1), 0 0 20px rgba(255,255,255,0.8)`;
-            });
-
-            // Khi chuột rời đi, bật lại transition để thẻ nhả về mượt mà
-            card.addEventListener('mouseleave', () => {
-                card.style.transition = 'transform 0.5s ease, box-shadow 0.5s ease';
-                card.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                card.style.boxShadow = `15px 15px 40px var(--ceramic-shadow), -15px -15px 40px #ffffff`;
-            });
-        });
 
         // 6. XỬ LÝ LỌC SẢN PHẨM (DANH MỤC + GIÁ TIỀN)
         const catButtons = document.querySelectorAll('.cat-btn');
@@ -1246,13 +1117,15 @@
                 if (priceVal === 'over4' && itemPrice <= 4000000) priceMatch = false;
 
                 if (catMatch && priceMatch) {
-                    item.classList.remove('hidden');
-                    item.style.position = 'relative';
+                    item.style.display = 'flex';
+                    setTimeout(() => {
+                        item.classList.remove('hidden');
+                    }, 10);
                 } else {
                     item.classList.add('hidden');
                     setTimeout(() => {
                         if (item.classList.contains('hidden')) {
-                            item.style.position = 'absolute';
+                            item.style.display = 'none';
                         }
                     }, 400);
                 }
@@ -1270,8 +1143,8 @@
 
         priceSelect.addEventListener('change', filterProducts);
 
-        // Update cart count badge from localStorage
-        (function() {
+        // 7. GIỎ HÀNG
+        function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
             const countEl = document.getElementById("cartCount");
             if (countEl) {
@@ -1283,7 +1156,52 @@
                     countEl.style.display = "none";
                 }
             }
-        })();
+        }
+        updateCartBadge();
+
+        const addToCartBtns = document.querySelectorAll('.add-cart-btn');
+        addToCartBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const card = e.target.closest('.grid-item');
+                if (!card) return;
+
+                const name = card.querySelector('.item-name').innerText;
+                const priceText = card.querySelector('.item-price').innerText;
+                const price = parseInt(priceText.replace(/,/g, '').replace(' ₫', ''));
+                const img = card.querySelector('.product-img').src;
+
+                let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+                const existingItem = cart.find(item => item.name === name);
+
+                if (existingItem) {
+                    existingItem.qty += 1;
+                } else {
+                    cart.push({
+                        name: name,
+                        price: price,
+                        img: img,
+                        qty: 1
+                    });
+                }
+
+                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+                updateCartBadge();
+
+                const originalText = btn.innerText;
+                btn.innerText = 'Đã Thêm ✔';
+                btn.style.background = '#000';
+                btn.style.color = '#fff';
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 1500);
+            });
+        });
 
         // Header search expand/collapse
         function toggleHeaderSearch(btn) {
