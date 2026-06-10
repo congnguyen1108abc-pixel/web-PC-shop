@@ -32,14 +32,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .widget-box {
@@ -105,12 +99,34 @@
             box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
         }
 
-        .error-msg {
-            font-size: 13px;
-            color: #ef4444;
-            margin-bottom: 12px;
-            display: none;
+        .widget-input.error {
+            border-color: #ef4444;
         }
+
+        .error-msg {
+            font-size: 12px;
+            color: #ef4444;
+            margin-bottom: 10px;
+            display: none;
+            padding-left: 4px;
+        }
+
+        .error-msg.show { display: block; }
+
+        .error-banner {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #dc2626;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-banner.show { display: flex; }
 
         .widget-submit {
             width: 100%;
@@ -125,11 +141,21 @@
             transition: 0.3s;
             margin-top: 8px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .widget-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .widget-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .login-text {
@@ -152,95 +178,290 @@
         }
 
         @media(max-width: 600px) {
-            .widget-box {
-                padding: 30px 24px;
-            }
-
-            .widget-title {
-                font-size: 26px;
-            }
+            .widget-box { padding: 30px 24px; }
+            .widget-title { font-size: 26px; }
         }
+
+        /* ================================= */
+        /* SUCCESS POPUP OVERLAY */
+        /* ================================= */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 48px 40px 40px;
+            text-align: center;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            transform: scale(0.85) translateY(20px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .success-overlay.active .success-card {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .success-icon-ring {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: ringPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+        }
+
+        @keyframes ringPop {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon-ring svg {
+            width: 44px;
+            height: 44px;
+            color: #ffffff;
+            stroke-dasharray: 60;
+            stroke-dashoffset: 60;
+            animation: drawTick 0.5s ease 0.4s forwards;
+        }
+
+        @keyframes drawTick {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .success-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .success-subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .success-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            background: #000000;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .success-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Loading spinner */
+        .btn-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .widget-submit.loading .btn-spinner { display: block; }
+        .widget-submit.loading .btn-text { display: none; }
     </style>
 </head>
 <body>
+    <!-- SUCCESS POPUP -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-card">
+            <div class="success-icon-ring">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+            <div class="success-title">Đăng Ký Thành Công!</div>
+            <div class="success-subtitle">
+                Chào mừng <strong id="successName"></strong> đến với HYPER CORE!<br>
+                Tài khoản đã được tạo và lưu vào hệ thống.<br>
+                <span style="color:#888;font-size:13px;">Chuyển sang trang đăng nhập...</span>
+            </div>
+            <button class="success-btn" onclick="window.location.href='/Login'">Đăng Nhập Ngay</button>
+        </div>
+    </div>
+
     <div class="widget-popup" id="registerPopup">
         <div class="widget-box">
-            <!-- CLOSE BUTTON -->
-            <button class="widget-close" onclick="window.location.href='/Homepage'">
-                ✕
-            </button>
+            <button class="widget-close" onclick="window.location.href='/Homepage'">✕</button>
 
-            <!-- TITLE -->
-            <h2 class="widget-title">
-                Đăng Ký
-            </h2>
+            <h2 class="widget-title">Đăng Ký</h2>
+            <p class="widget-subtitle">Tạo tài khoản để trải nghiệm HYPER CORE</p>
 
-            <p class="widget-subtitle">
-                Tạo tài khoản để trải nghiệm HYPER CORE
-            </p>
+            <!-- ERROR BANNER -->
+            <div class="error-banner" id="errorBanner">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span id="errorMsg"></span>
+            </div>
 
-            <!-- FORM -->
             <form id="registerForm" onsubmit="return handleRegister(event)">
-                <!-- USERNAME -->
-                <input type="text" class="widget-input" id="regUser" placeholder="Tên đăng nhập" required minlength="3" />
+                <!-- HỌ TÊN -->
+                <input type="text" class="widget-input" id="regFullName" placeholder="Họ và tên" required minlength="2" />
+                <div class="error-msg" id="errFullName">Tên phải có ít nhất 2 ký tự</div>
 
                 <!-- EMAIL -->
                 <input type="email" class="widget-input" id="regEmail" placeholder="Email" required />
+                <div class="error-msg" id="errEmail">Email không hợp lệ hoặc đã tồn tại</div>
+
+                <!-- SỐ ĐIỆN THOẠI -->
+                <input type="tel" class="widget-input" id="regPhone" placeholder="Số điện thoại (không bắt buộc)" />
 
                 <!-- PASSWORD -->
-                <input type="password" class="widget-input" id="regPass" placeholder="Mật khẩu" required minlength="6" />
+                <input type="password" class="widget-input" id="regPass" placeholder="Mật khẩu (ít nhất 6 ký tự)" required minlength="6" />
+                <div class="error-msg" id="errPass">Mật khẩu phải có ít nhất 6 ký tự</div>
 
                 <!-- CONFIRM PASSWORD -->
                 <input type="password" class="widget-input" id="regConfirm" placeholder="Xác nhận mật khẩu" required />
+                <div class="error-msg" id="errConfirm">Mật khẩu xác nhận không khớp</div>
 
-                <!-- SUBMIT -->
-                <button type="submit" class="widget-submit">
-                    Đăng Ký Ngay
+                <button type="submit" class="widget-submit" id="registerBtn">
+                    <div class="btn-spinner"></div>
+                    <span class="btn-text">Đăng Ký Ngay</span>
                 </button>
             </form>
 
-            <!-- LOGIN -->
             <div class="login-text">
                 Đã có tài khoản?
-                <a class="login-link" href="/Login">
-                    Đăng nhập
-                </a>
+                <a class="login-link" href="/Login">Đăng nhập</a>
             </div>
         </div>
     </div>
 
     <script>
-        function handleRegister(event) {
+        const API_BASE = '';
+
+        function showError(msg) {
+            const banner = document.getElementById('errorBanner');
+            document.getElementById('errorMsg').textContent = msg;
+            banner.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('errorBanner').classList.remove('show');
+        }
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById('registerBtn');
+            if (isLoading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        function showSuccessPopup(fullName) {
+            const nameEl = document.getElementById('successName');
+            if (nameEl) nameEl.textContent = fullName || 'bạn';
+            const overlay = document.getElementById('successOverlay');
+            overlay.classList.add('active');
+            // Tự động chuyển sang login sau 3 giây
+            setTimeout(() => window.location.href = '/Login', 3000);
+        }
+
+        async function handleRegister(event) {
             event.preventDefault();
-            
-            const username = document.getElementById('regUser').value;
-            const email = document.getElementById('regEmail').value;
+            hideError();
+
+            const fullName = document.getElementById('regFullName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
             const password = document.getElementById('regPass').value;
             const confirmPassword = document.getElementById('regConfirm').value;
 
             // Validation
-            if (username.length < 3) {
-                alert('Tên đăng nhập phải có ít nhất 3 ký tự!');
+            if (fullName.length < 2) {
+                showError('Họ và tên phải có ít nhất 2 ký tự!');
+                document.getElementById('regFullName').focus();
                 return false;
             }
 
             if (password.length < 6) {
-                alert('Mật khẩu phải có ít nhất 6 ký tự!');
+                showError('Mật khẩu phải có ít nhất 6 ký tự!');
+                document.getElementById('regPass').focus();
                 return false;
             }
 
             if (password !== confirmPassword) {
-                alert('Mật khẩu xác nhận không khớp!');
+                showError('Mật khẩu xác nhận không khớp!');
+                document.getElementById('regConfirm').focus();
                 return false;
             }
 
-            // Here you would normally send the data to your backend
-            console.log('Register attempt:', { username, email, password });
-            
-            // For demo purposes, redirect to login page
-            alert('Đăng ký thành công! Vui lòng đăng nhập.');
-            window.location.href = '/Login';
-            
+            setLoading(true);
+
+            try {
+                const payload = {
+                    fullName: fullName,
+                    email: email,
+                    password: password,
+                    phoneNumber: phone || null
+                };
+
+                const response = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.message || 'Đăng ký thất bại. Email có thể đã tồn tại.');
+                    setLoading(false);
+                    return false;
+                }
+
+                setLoading(false);
+                showSuccessPopup(fullName);
+
+            } catch (err) {
+                showError('Không thể kết nối máy chủ. Vui lòng thử lại sau.');
+                setLoading(false);
+            }
+
             return false;
         }
     </script>

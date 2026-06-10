@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng Nhập - HYPER CORE</title>
-    
+
+    <!-- Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
         * {
             margin: 0;
@@ -32,14 +35,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         .widget-box {
@@ -152,6 +149,10 @@
             cursor: pointer;
             transition: 0.3s;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .widget-submit:hover {
@@ -159,6 +160,15 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
+        .widget-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ================================= */
+        /* DIVIDER */
+        /* ================================= */
         .divider {
             text-align: center;
             margin: 24px 0;
@@ -168,8 +178,7 @@
             position: relative;
         }
 
-        .divider::before,
-        .divider::after {
+        .divider::before, .divider::after {
             content: '';
             position: absolute;
             top: 50%;
@@ -178,14 +187,12 @@
             background: #e0e0e0;
         }
 
-        .divider::before {
-            left: 0;
-        }
+        .divider::before { left: 0; }
+        .divider::after  { right: 0; }
 
-        .divider::after {
-            right: 0;
-        }
-
+        /* ================================= */
+        /* GOOGLE BUTTON - Custom Style */
+        /* ================================= */
         .google-btn {
             width: 100%;
             height: 52px;
@@ -197,29 +204,57 @@
             justify-content: center;
             gap: 12px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             font-size: 15px;
             font-weight: 600;
             color: #333;
             margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
         }
 
         .google-btn:hover {
             background: #f8f8f8;
-            border-color: #000000;
+            border-color: #aaa;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-1px);
         }
 
-        .google-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
+        .google-btn:active {
+            transform: translateY(0);
+        }
+
+        .google-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .google-btn.loading {
+            pointer-events: none;
+        }
+
+        .google-btn.loading .google-btn-text { display: none; }
+        .google-btn.loading .google-btn-loading { display: flex; }
+
+        .google-btn-loading {
+            display: none;
             align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #000000;
-            font-size: 18px;
+            gap: 10px;
+            color: #555;
+            font-size: 14px;
         }
 
+        /* Google logo SVG */
+        .google-logo {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+        }
+
+        /* ================================= */
+        /* Register link */
+        /* ================================= */
         .register-text {
             text-align: center;
             font-size: 14px;
@@ -238,96 +273,534 @@
             color: #333333;
             text-decoration: underline;
         }
+
+        /* ================================= */
+        /* ERROR BANNER */
+        /* ================================= */
+        .error-banner {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 14px;
+            color: #dc2626;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .error-banner.show { display: flex; }
+
+        /* ================================= */
+        /* SUCCESS POPUP OVERLAY */
+        /* ================================= */
+        .success-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .success-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 48px 40px 40px;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            transform: scale(0.85) translateY(20px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .success-overlay.active .success-card {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .success-icon-ring {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: ringPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+        }
+
+        @keyframes ringPop {
+            from { transform: scale(0); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+
+        .success-icon-ring svg {
+            width: 44px;
+            height: 44px;
+            color: #ffffff;
+            stroke-dasharray: 60;
+            stroke-dashoffset: 60;
+            animation: drawTick 0.5s ease 0.4s forwards;
+        }
+
+        @keyframes drawTick { to { stroke-dashoffset: 0; } }
+
+        .success-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        .success-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .success-subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 28px;
+            line-height: 1.7;
+        }
+
+        .success-name-highlight {
+            font-weight: 700;
+            color: #000000;
+        }
+
+        .success-btn {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-radius: 12px;
+            background: #000000;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .success-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ================================= */
+        /* LOADING SPINNERS */
+        /* ================================= */
+        .btn-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        .google-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(0,0,0,0.15);
+            border-top-color: #555;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .widget-submit.loading .btn-spinner { display: block; }
+        .widget-submit.loading .btn-text    { display: none; }
     </style>
 </head>
 <body>
+
+    <!-- ======================================= -->
+    <!-- SUCCESS POPUP -->
+    <!-- ======================================= -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-card">
+            <div class="success-icon-ring">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+            <div class="success-badge" id="loginBadge">
+                <!-- Đăng nhập Local hoặc Google -->
+                <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <span id="loginMethod">Đăng nhập thành công</span>
+            </div>
+            <div class="success-title">Đăng Nhập Thành Công!</div>
+            <div class="success-subtitle">
+                Chào mừng trở lại,
+                <span class="success-name-highlight" id="successName"></span>!<br>
+                Đang chuyển hướng về trang chủ...
+            </div>
+            <button class="success-btn" onclick="goHome()">Về Trang Chủ</button>
+        </div>
+    </div>
+
+    <!-- ======================================= -->
+    <!-- LOGIN FORM -->
+    <!-- ======================================= -->
     <div class="widget-popup" id="loginPopup">
         <div class="widget-box">
-            <!-- CLOSE BUTTON -->
-            <button class="widget-close" onclick="window.location.href='/Homepage'">
-                ✕
-            </button>
+            <button class="widget-close" onclick="window.location.href='/Homepage'">✕</button>
 
-            <!-- TITLE -->
-            <h2 class="widget-title">
-                Đăng Nhập
-            </h2>
+            <h2 class="widget-title">Đăng Nhập</h2>
+            <p class="widget-subtitle">Chào mừng quay trở lại HYPER CORE</p>
 
-            <p class="widget-subtitle">
-                Chào mừng quay trở lại HYPER CORE
-            </p>
+            <!-- ERROR BANNER -->
+            <div class="error-banner" id="errorBanner">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span id="errorMsg">Email hoặc mật khẩu không chính xác</span>
+            </div>
 
-            <!-- FORM -->
+            <!-- EMAIL + PASSWORD FORM -->
             <form id="loginForm" onsubmit="return handleLogin(event)">
-                <!-- INPUT -->
                 <input type="email" id="loginEmail" class="widget-input" placeholder="Email" required />
                 <input type="password" id="loginPassword" class="widget-input" placeholder="Mật khẩu" required />
 
-                <!-- OPTIONS -->
                 <div class="widget-options">
                     <label class="remember-box">
-                        <input type="checkbox" />
+                        <input type="checkbox" id="rememberMe" />
                         <span>Nhớ mật khẩu</span>
                     </label>
-
-                    <a href="#" class="forgot-link">
-                        Quên mật khẩu?
-                    </a>
+                    <a href="#" class="forgot-link">Quên mật khẩu?</a>
                 </div>
 
-                <!-- LOGIN BUTTON -->
-                <button type="submit" class="widget-submit">
-                    Đăng Nhập
+                <button type="submit" class="widget-submit" id="loginBtn">
+                    <div class="btn-spinner"></div>
+                    <span class="btn-text">Đăng Nhập</span>
                 </button>
             </form>
 
-            <!-- DIVIDER -->
-            <div class="divider">
-                HOẶC
-            </div>
+            <div class="divider">HOẶC</div>
 
-            <!-- GOOGLE LOGIN -->
-            <button class="google-btn">
-                <div class="google-icon">
-                    G
+            <!-- ============================= -->
+            <!-- GOOGLE SIGN-IN BUTTON (Real)  -->
+            <!-- ============================= -->
+
+            <!-- Hidden container: Google renders its real button here -->
+            <div id="googleBtnHidden" style="display:none; position:absolute; left:-9999px;"></div>
+
+            <!-- Custom-styled button (visible to user) -->
+            <button class="google-btn" id="googleSignInBtn" onclick="triggerGoogleSignIn()">
+                <div class="google-btn-text" style="display:flex; align-items:center; gap:12px;">
+                    <!-- Google official SVG logo -->
+                    <svg class="google-logo" viewBox="0 0 48 48">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        <path fill="none" d="M0 0h48v48H0z"/>
+                    </svg>
+                    <span>Đăng nhập bằng Google</span>
                 </div>
-                <span>
-                    Đăng nhập bằng Google
-                </span>
+                <div class="google-btn-loading">
+                    <div class="google-spinner"></div>
+                    <span>Đang xác thực Google...</span>
+                </div>
             </button>
 
-            <!-- REGISTER -->
             <div class="register-text">
                 Chưa có tài khoản?
-                <a href="/Register" class="register-link">
-                    Đăng ký ngay
-                </a>
+                <a href="/Register" class="register-link">Đăng ký ngay</a>
             </div>
         </div>
     </div>
 
     <script>
-        function handleLogin(event) {
+        /* ================================================= */
+        /* CONFIG                                            */
+        /* ================================================= */
+        const API_BASE     = '';
+        const GOOGLE_CLIENT_ID = '77166037622-ejr3i3ccrjt29rgphnrkgf438f4mo071.apps.googleusercontent.com';
+
+        /* ================================================= */
+        /* REDIRECT IF ALREADY LOGGED IN                     */
+        /* ================================================= */
+        if (localStorage.getItem('pc_store_token')) {
+            window.location.href = '/Homepage';
+        }
+
+        /* ================================================= */
+        /* HELPERS                                           */
+        /* ================================================= */
+        function showError(msg) {
+            const banner = document.getElementById('errorBanner');
+            document.getElementById('errorMsg').textContent = msg;
+            banner.classList.add('show');
+            banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function hideError() {
+            document.getElementById('errorBanner').classList.remove('show');
+        }
+
+        function setLoginLoading(on) {
+            const btn = document.getElementById('loginBtn');
+            if (on) { btn.classList.add('loading'); btn.disabled = true; }
+            else     { btn.classList.remove('loading'); btn.disabled = false; }
+        }
+
+        function setGoogleLoading(on) {
+            const btn = document.getElementById('googleSignInBtn');
+            if (on) { btn.classList.add('loading'); btn.disabled = true; }
+            else     { btn.classList.remove('loading'); btn.disabled = false; }
+        }
+
+        /* ================================================= */
+        /* SUCCESS POPUP                                     */
+        /* ================================================= */
+        function showSuccessPopup(fullName, method) {
+            document.getElementById('successName').textContent = fullName || 'bạn';
+            document.getElementById('loginMethod').textContent =
+                method === 'google' ? 'Đăng nhập qua Google' : 'Đăng nhập thành công';
+            document.getElementById('successOverlay').classList.add('active');
+            setTimeout(goHome, 2200);
+        }
+
+        function goHome() {
+            window.location.href = '/Homepage';
+        }
+
+        /* ================================================= */
+        /* SAVE USER TO LOCALSTORAGE                         */
+        /* ================================================= */
+        function saveSession(data, emailFallback) {
+            localStorage.setItem('pc_store_token',
+                data.accessToken || data.token || '');
+            localStorage.setItem('pc_store_refresh_token',
+                data.refreshToken || '');
+            localStorage.setItem('pc_store_user', JSON.stringify({
+                fullName : data.fullName  || emailFallback?.split('@')[0] || 'Người dùng',
+                email    : data.email     || emailFallback || '',
+                userId   : data.userId    || data.user?.userId || '',
+                role     : data.role      || 'Customer'
+            }));
+        }
+
+        /* ================================================= */
+        /* GIẢI MÃ JWT CỦA GOOGLE (không cần thư viện)       */
+        /* ================================================= */
+        function parseGoogleJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64    = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const json      = decodeURIComponent(
+                    atob(base64).split('').map(c =>
+                        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                    ).join('')
+                );
+                return JSON.parse(json);
+            } catch {
+                return null;
+            }
+        }
+
+        /* ================================================= */
+        /* GOOGLE SIGN-IN — KHỞI TẠO                        */
+        /* ================================================= */
+        function initGoogleSignIn() {
+            if (!window.google) {
+                // SDK chưa tải xong — thử lại sau 500ms
+                setTimeout(initGoogleSignIn, 500);
+                return;
+            }
+
+            google.accounts.id.initialize({
+                client_id      : GOOGLE_CLIENT_ID,
+                callback       : handleGoogleCredentialResponse,
+                auto_select    : false,
+                cancel_on_tap_outside: true
+            });
+
+            // Render nút Google thật vào container ẩn
+            // Khi user click nút tùy biến → click vào nút này
+            google.accounts.id.renderButton(
+                document.getElementById('googleBtnHidden'),
+                { theme: 'outline', size: 'large', type: 'standard', width: 400 }
+            );
+        }
+
+        /* ================================================= */
+        /* CUSTOM BUTTON → TRIGGER GOOGLE POPUP              */
+        /* ================================================= */
+        function triggerGoogleSignIn() {
+            hideError();
+
+            if (!window.google) {
+                showError('Google SDK chưa tải xong. Vui lòng thử lại sau vài giây.');
+                return;
+            }
+
+            // Thử click nút Google thật trong container ẩn
+            const realBtn = document.querySelector('#googleBtnHidden [role="button"], #googleBtnHidden iframe');
+            if (realBtn) {
+                realBtn.click();
+            } else {
+                // Fallback: dùng One Tap prompt
+                google.accounts.id.prompt(notification => {
+                    if (notification.isNotDisplayed()) {
+                        showError(
+                            'Không thể mở cửa sổ Google. Trình duyệt có thể đang chặn popup. ' +
+                            'Vui lòng kiểm tra cài đặt trình duyệt hoặc cho phép popup cho trang này.'
+                        );
+                    }
+                });
+            }
+        }
+
+        /* ================================================= */
+        /* XỬ LÝ CREDENTIAL TỪ GOOGLE (callback)            */
+        /* ================================================= */
+        async function handleGoogleCredentialResponse(googleResponse) {
+            const credential = googleResponse.credential;
+
+            if (!credential) {
+                showError('Không nhận được thông tin xác thực từ Google.');
+                return;
+            }
+
+            // Giải mã JWT token của Google để lấy thông tin user
+            const payload = parseGoogleJwt(credential);
+            if (!payload) {
+                showError('Không thể đọc thông tin tài khoản Google.');
+                return;
+            }
+
+            const { sub, email, name, picture } = payload;
+
+            setGoogleLoading(true);
+            hideError();
+
+            try {
+                // Gửi lên backend → lưu vào database qua sp_Auth_GoogleLogin
+                const response = await fetch(`${API_BASE}/api/auth/google-login`, {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({
+                        email      : email,
+                        fullName   : name,
+                        providerKey: sub,       // Google user ID duy nhất
+                        avatarUrl  : picture || null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.message || 'Đăng nhập Google thất bại. Vui lòng thử lại.');
+                    setGoogleLoading(false);
+                    return;
+                }
+
+                // Lưu session
+                saveSession(data, email);
+                setGoogleLoading(false);
+
+                // Hiện popup thành công
+                showSuccessPopup(
+                    data.fullName || name || email.split('@')[0],
+                    'google'
+                );
+
+            } catch (err) {
+                showError('Không thể kết nối máy chủ. Vui lòng thử lại sau.');
+                setGoogleLoading(false);
+            }
+        }
+
+        /* ================================================= */
+        /* EMAIL + PASSWORD LOGIN                            */
+        /* ================================================= */
+        async function handleLogin(event) {
             event.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value;
+            hideError();
+
+            const email    = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            // Basic validation
             if (!email || !password) {
-                alert('Vui lòng nhập đầy đủ thông tin!');
+                showError('Vui lòng nhập đầy đủ email và mật khẩu!');
                 return false;
             }
 
-            // Here you would normally send the data to your backend
-            console.log('Login attempt:', { email, password });
-            
-            // For demo purposes, redirect to homepage
-            alert('Đăng nhập thành công!');
-            window.location.href = '/Homepage';
-            
+            setLoginLoading(true);
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.message || 'Email hoặc mật khẩu không chính xác');
+                    setLoginLoading(false);
+                    return false;
+                }
+
+                saveSession(data, email);
+                setLoginLoading(false);
+                showSuccessPopup(
+                    data.fullName || data.user?.fullName || email.split('@')[0],
+                    'local'
+                );
+
+            } catch (err) {
+                showError('Không thể kết nối máy chủ. Vui lòng thử lại sau.');
+                setLoginLoading(false);
+            }
+
             return false;
         }
+
+        /* ================================================= */
+        /* KHỞI CHẠY KHI TRANG TẢI XONG                     */
+        /* ================================================= */
+        // Chờ SDK tải xong rồi khởi tạo
+        window.addEventListener('load', () => {
+            // Thử ngay, SDK đã async defer nên có thể đã sẵn
+            setTimeout(initGoogleSignIn, 100);
+        });
     </script>
 </body>
 </html>
