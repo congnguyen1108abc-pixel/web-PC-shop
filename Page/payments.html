@@ -1163,58 +1163,116 @@
 
     <script>
         // ==========================================
-        // 1. CẤU HÌNH DỮ LIỆU ĐỘNG TỪ LOCAL STORAGE
+        // 1. CẤU HÌNH DỮ LIỆU ĐỘNG TỪ DATABASE / LOCAL STORAGE
         // ==========================================
         const formatCurrency = (amount) => {
             return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
         }
 
-        let cartData = JSON.parse(localStorage.getItem("hypercore_cart"));
-        if (!cartData) {
-            cartData = {
-                items: [
-                    { img: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1200&auto=format&fit=crop", title: "RTX Gaming PC", variant: "Intel Ultra + RTX 5090", price: 59990000, qty: 1 },
-                    { img: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?q=80&w=1200&auto=format&fit=crop", title: "Mechanical Keyboard", variant: "RGB Hot Swap Edition", price: 2490000, qty: 1 }
-                ],
-                subtotal: 62480000,
-                shipping: 50000,
-                discount: 1000000,
-                total: 61530000
-            };
-            // THÊM DÒNG NÀY ĐỂ LƯU VÀO TRÌNH DUYỆT
-            localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
+        const SHIPPING_FEE = 50000;
+        let totalAmount = 0;
+
+        async function loadAndRenderCart() {
+            // Nếu user đã đăng nhập → sync từ DB trước
+            const token = localStorage.getItem('pc_store_token');
+            const userRaw = localStorage.getItem('pc_store_user');
+            if (token && userRaw) {
+                try {
+                    const user = JSON.parse(userRaw);
+                    if (user && user.userId) {
+                        const res = await fetch(`http://localhost:5187/api/Cart/user/${user.userId}`, {
+                            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                        });
+                        if (res.ok) {
+                            const dbItems = await res.json();
+                            const localCart = dbItems.map(item => ({
+                                id: item.productId,
+                                cartId: item.cartId,
+                                name: item.productName,
+                                specs: item.sku || '',
+                                price: item.unitPrice,
+                                qty: item.quantity,
+                                img: item.defaultImageUrl || ''
+                            }));
+                            localStorage.setItem('hyper_core_cart', JSON.stringify(localCart));
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Không thể sync giỏ hàng từ DB:', e);
+                }
+            }
+
+            // Đọc cart từ localStorage (đã sync hoặc guest)
+            let rawItems = [];
+            try {
+                rawItems = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+            } catch (e) {}
+
+            // Nếu vẫn rỗng thử key cũ
+            if (!rawItems.length) {
+                try {
+                    rawItems = JSON.parse(localStorage.getItem('hypercore_cart_items')) || [];
+                } catch (e) {}
+            }
+
+            if (!rawItems.length) {
+                // Không có giỏ hàng → quay về trang giỏ hàng
+                const productList = document.getElementById('dynamic-product-list');
+                if (productList) productList.innerHTML = '<p style="color:#6b7280;text-align:center;padding:20px;">Giỏ hàng của bạn đang trống.</p>';
+                document.getElementById('summary-subtotal').innerText = formatCurrency(0);
+                document.getElementById('summary-shipping').innerText = formatCurrency(0);
+                document.getElementById('summary-discount').innerText = '-' + formatCurrency(0);
+                document.getElementById('display-total').innerText = formatCurrency(0);
+                return;
+            }
+
+            // Render sản phẩm
+            const productList = document.getElementById('dynamic-product-list');
+            productList.innerHTML = '';
+            let subtotal = 0;
+            rawItems.forEach(item => {
+                const name = item.name || item.title || 'Sản phẩm';
+                const variant = item.specs || item.variant || '';
+                const price = item.price || 0;
+                const qty = item.qty || 1;
+                const img = item.img || '';
+                const lineTotal = price * qty;
+                subtotal += lineTotal;
+
+                productList.innerHTML += `
+                    <div class="product-item">
+                        ${img ? `<img src="${img}" alt="${name}" onerror="this.style.display='none'" />` : ''}
+                        <div class="product-info">
+                            <h4>${name} (x${qty})</h4>
+                            <p>${variant}</p>
+                            <div class="price">${formatCurrency(lineTotal)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const shipping = SHIPPING_FEE;
+            const discount = 0;
+            totalAmount = subtotal + shipping - discount;
+
+            document.getElementById('summary-subtotal').innerText = formatCurrency(subtotal);
+            document.getElementById('summary-shipping').innerText = formatCurrency(shipping);
+            document.getElementById('summary-discount').innerText = '-' + formatCurrency(discount);
+            document.getElementById('display-total').innerText = formatCurrency(totalAmount);
+
+            // Cập nhật MoMo QR với số tiền thực
+            const momoQRText = `2|99|0909999999|HYPER CORE||0|0|${totalAmount}`;
+            const momoQRUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(momoQRText)}`;
+            const momoQRImg = document.getElementById('momo-qr-img');
+            if (momoQRImg) momoQRImg.src = momoQRUrl;
         }
 
-        const totalAmount = cartData.total;
-
-        // Render order summary dynamically
-        const productList = document.getElementById("dynamic-product-list");
-        cartData.items.forEach(item => {
-            productList.innerHTML += `
-                <div class="product-item">
-                    <img src="${item.img}" alt="${item.title}" />
-                    <div class="product-info">
-                        <h4>${item.title} (x${item.qty})</h4>
-                        <p>${item.variant}</p>
-                        <div class="price">${formatCurrency(item.price)}</div>
-                    </div>
-                </div>
-            `;
-        });
-
-        document.getElementById("summary-subtotal").innerText = formatCurrency(cartData.subtotal);
-        document.getElementById("summary-shipping").innerText = formatCurrency(cartData.shipping);
-        document.getElementById("summary-discount").innerText = "-" + formatCurrency(cartData.discount);
-        document.getElementById("display-total").innerText = formatCurrency(totalAmount);
+        // Gọi load ngay khi script chạy (không cần DOMContentLoaded vì script ở cuối body)
+        loadAndRenderCart();
 
         // Sinh link QR giả lập cho Demo (không dùng VietQR để tránh quét ra tài khoản thật)
-        const safeAmount = formatCurrency(totalAmount).replace('đ', ' VND');
+        const safeAmount = '';
 
-        // Format QR gốc của MoMo (2|99|SĐT|Tên||0|0|Số_tiền)
-        // Khi quét bằng app MoMo, nó sẽ nhận diện được số tiền, nhưng có thể báo lỗi do SĐT 0909999999 không có thật.
-        const momoQRText = `2|99|0909999999|HYPER CORE||0|0|${totalAmount}`;
-        const momoQRUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(momoQRText)}`;
-        document.getElementById("momo-qr-img").src = momoQRUrl;
 
         // ==========================================
         // 2. XỬ LÝ GIAO DIỆN CHỌN PHƯƠNG THỨC
@@ -1292,13 +1350,15 @@
 
                 if (activeBankMethod === "qrpay") {
                     createVietQRPayment();
+                } else if (activeBankMethod === "visa") {
+                    placeOrderAndRedirect('Visa');
                 } else {
-                    // Xử lý cho Visa / ATM nội địa nếu có
-                    window.location.href = `paymentcomplete.html?method=${activeBankMethod}`;
+                    placeOrderAndRedirect('ATM');
                 }
+            } else if (selectedMethod === "momo") {
+                placeOrderAndRedirect('MoMo');
             } else {
-                // Xử lý cho MoMo hoặc COD
-                window.location.href = `paymentcomplete.html?method=${selectedMethod}`;
+                placeOrderAndRedirect('COD');
             }
         });
 
@@ -1367,17 +1427,14 @@
         // ==========================================
         // VIETQR PAYMENT API
         // ==========================================
-        async function createVietQRPayment() {
+        async function placeOrderAndRedirect(paymentMethod) {
             try {
-                // 1. Khóa nút và đổi text để báo hiệu đang xử lý
                 confirmPayBtn.innerText = "ĐANG TẠO ĐƠN HÀNG...";
                 confirmPayBtn.disabled = true;
 
-                // 2. Lấy token và user từ sessionStorage
-                const token = sessionStorage.getItem('hypercore_token');
-                const user = JSON.parse(sessionStorage.getItem('hypercore_user') || 'null');
-                const addressId = sessionStorage.getItem('checkout_addressId');
-                const addressInfo = JSON.parse(sessionStorage.getItem('checkout_address') || 'null');
+                const token = localStorage.getItem('pc_store_token');
+                const user = JSON.parse(localStorage.getItem('pc_store_user') || 'null');
+                const addressInfo = JSON.parse(sessionStorage.getItem('checkout_address') || localStorage.getItem('shippingAddress') || 'null');
 
                 if (!token || !user) {
                     alert('Vui lòng đăng nhập trước khi thanh toán!');
@@ -1385,7 +1442,72 @@
                     return;
                 }
 
-                if (!addressId || !addressInfo) {
+                if (!addressInfo) {
+                    alert('Vui lòng nhập địa chỉ giao hàng trước!');
+                    window.location.href = '/filladdress';
+                    return;
+                }
+
+                const orderPayload = {
+                    userId: parseInt(user.userId),
+                    shippingAddress: addressInfo.fullAddress || addressInfo.detailAddress || '',
+                    paymentMethod: paymentMethod,
+                    voucherCode: null
+                };
+
+                const orderResponse = await fetch('http://localhost:5187/api/orders/place', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(orderPayload)
+                });
+
+                if (!orderResponse.ok) {
+                    const errorData = await orderResponse.json();
+                    alert('Lỗi tạo đơn hàng: ' + (errorData.message || 'Không xác định'));
+                    confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+                    confirmPayBtn.disabled = false;
+                    return;
+                }
+
+                const orderData = await orderResponse.json();
+                const orderId = orderData.newOrderId;
+                sessionStorage.setItem('current_orderId', orderId);
+
+                // Xóa giỏ hàng khi đặt hàng thành công
+                localStorage.setItem('hyper_core_cart', '[]');
+                localStorage.setItem('hypercore_cart_items', '[]');
+
+                window.location.href = `paymentcomplete.html?method=${paymentMethod.toLowerCase()}`;
+
+            } catch (error) {
+                console.error("Lỗi kết nối:", error);
+                alert("Không thể kết nối đến máy chủ. Vui lòng thử lại!");
+                confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
+                confirmPayBtn.disabled = false;
+            }
+        }
+
+        async function createVietQRPayment() {
+            try {
+                // 1. Khóa nút và đổi text để báo hiệu đang xử lý
+                confirmPayBtn.innerText = "ĐANG TẠO ĐƠN HÀNG...";
+                confirmPayBtn.disabled = true;
+
+                // 2. Lấy token và user từ localStorage, address từ sessionStorage/localStorage
+                const token = localStorage.getItem('pc_store_token');
+                const user = JSON.parse(localStorage.getItem('pc_store_user') || 'null');
+                const addressInfo = JSON.parse(sessionStorage.getItem('checkout_address') || localStorage.getItem('shippingAddress') || 'null');
+
+                if (!token || !user) {
+                    alert('Vui lòng đăng nhập trước khi thanh toán!');
+                    window.location.href = '/Homepage';
+                    return;
+                }
+
+                if (!addressInfo) {
                     alert('Vui lòng nhập địa chỉ giao hàng trước!');
                     window.location.href = '/filladdress';
                     return;
@@ -1394,7 +1516,7 @@
                 // 3. Tạo đơn hàng trước
                 const orderPayload = {
                     userId: parseInt(user.userId),
-                    shippingAddress: addressInfo.fullAddress,
+                    shippingAddress: addressInfo.fullAddress || addressInfo.detailAddress || '',
                     paymentMethod: 'VNPay',
                     voucherCode: null // Có thể thêm voucher sau
                 };
@@ -1454,6 +1576,10 @@
                     // Lưu orderId vào sessionStorage để dùng sau
                     sessionStorage.setItem('current_orderId', orderId);
                     
+                    // Xóa giỏ hàng local khi chuyển hướng đi thanh toán
+                    localStorage.setItem('hyper_core_cart', '[]');
+                    localStorage.setItem('hypercore_cart_items', '[]');
+
                     // Redirect sang VNPay
                     window.location.href = vnpayData.paymentUrl;
                 } else {

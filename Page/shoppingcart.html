@@ -853,8 +853,7 @@
 
     </div>
 
-    <!-- SCRIPT -->
-
+    <script src="/assets/js/cart-helper.js"></script>
     <script>
         let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
         let cartItems = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
@@ -1045,47 +1044,33 @@
             });
         }
 
-        window.addPageRecommendedItem = function (id) {
-            const rec = RECOMMEND_PRODUCTS.find(r => r.id === id);
-            if (rec) {
-                const existing = cart.find(i => i.id === rec.id);
-                if (existing) {
-                    existing.qty++;
-                } else {
-                    cart.push({
-                        id: rec.id,
-                        name: rec.name,
-                        specs: rec.specs,
-                        price: rec.price,
-                        currency: rec.currency,
-                        qty: 1,
-                        img: rec.img
-                    });
-                }
-                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
-                renderCartPage();
-            }
+        window.addPageRecommendedItem = async function (id) {
+            await addToCartHelper(id, 1);
+            renderCartPage();
         };
 
-        window.changePageQty = function (id, delta) {
+        window.changePageQty = async function (id, delta) {
             const item = cart.find(i => i.id === id);
             if (item) {
-                item.qty += delta;
-                if (item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id);
+                const newQty = item.qty + delta;
+                if (newQty <= 0) {
+                    await deleteCartItemHelper(id, item.cartId);
+                } else {
+                    await updateCartItemHelper(id, newQty, item.cartId);
                 }
-                localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
                 renderCartPage();
             }
         };
 
-        window.removePageItem = function (id) {
-            deletedItemData = cart.find(i => i.id === id) ?? null;
-            cart = cart.filter(i => i.id !== id);
-            syncCartStorage();
-            const undoBox = document.getElementById("undoBox");
-            if (undoBox) undoBox.style.display = "flex";
-            renderCartPage();
+        window.removePageItem = async function (id) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                deletedItemData = item;
+                await deleteCartItemHelper(id, item.cartId);
+                const undoBox = document.getElementById("undoBox");
+                if (undoBox) undoBox.style.display = "flex";
+                renderCartPage();
+            }
         };
 
         // Apply Voucher Code handlers
@@ -1117,9 +1102,9 @@
 
         const undoBtn = document.getElementById("undoBtn");
         if (undoBtn) {
-            undoBtn.addEventListener("click", () => {
+            undoBtn.addEventListener("click", async () => {
                 if (deletedItemData) {
-                    cart.push(deletedItemData);
+                    await addToCartHelper(deletedItemData.id, deletedItemData.qty);
                     deletedItemData = null;
                     const undoBox = document.getElementById("undoBox");
                     if (undoBox) undoBox.style.display = "none";
@@ -1193,6 +1178,17 @@
         // Initial render on load
         renderCartPage();
         updateHeaderCartCount();
+
+        // Listen for cart sync events from DB
+        window.addEventListener('cartSynced', (e) => {
+            cart = e.detail;
+            renderCartPage();
+        });
+
+        // Sync from DB if user logged in
+        if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
+            syncCartFromDb();
+        }
     </script>
 
     <!-- ===== SIGNALR REAL-TIME NOTIFICATIONS ===== -->

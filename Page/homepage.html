@@ -3192,13 +3192,12 @@
             </div>
         </div>
 
-        <div class="footer-bottom">
+                <div class="footer-bottom">
             © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
         </div>
     </footer>
 
-    <!-- SCRIPT -->
-
+    <script src="/assets/js/cart-helper.js"></script>
     <script>
 
         const header = document.getElementById("header");
@@ -3540,8 +3539,19 @@
             }
         }
 
+        // Listen for cart sync events from DB
+        window.addEventListener('cartSynced', (e) => {
+            cart = e.detail;
+            updateCartBadge();
+        });
+
         // Initial cart badge update
         updateCartBadge();
+
+        // Sync from DB if user logged in
+        if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
+            syncCartFromDb();
+        }
 
         // Header search expand/collapse
         function toggleHeaderSearch(btn) {
@@ -3645,6 +3655,11 @@
             localStorage.removeItem('pc_store_token');
             localStorage.removeItem('pc_store_refresh_token');
             localStorage.removeItem('pc_store_user');
+            
+            // Xóa giỏ hàng
+            if (typeof clearLocalCart === 'function') {
+                clearLocalCart();
+            }
 
             // Reload để cập nhật UI
             window.location.reload();

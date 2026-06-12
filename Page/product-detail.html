@@ -686,6 +686,7 @@
     }
   </style>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/assets/js/cart-helper.js"></script>
 </head>
 
 <body>
@@ -1072,67 +1073,44 @@
     }
 
     // ============================================================
-    // ADD TO CART
+    // ADD TO CART - Tích hợp với DB qua cart-helper.js
     // ============================================================
-    function addToCart() {
-      // 1. Get current cart from localStorage
-      let cart = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
-
-      // 2. Add or update quantity
-      let existing = cart.find(x => x.id === product.id);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({
-          id: product.id,
-          title: product.name,
-          img: product.images[0],
-          price: parseInt(product.price.replace(/[^0-9]/g, '')),
-          variant: "Mặc định",
-          qty: 1
-        });
-      }
-
-      // 3. Save back to localStorage
-      localStorage.setItem('hypercore_cart_items', JSON.stringify(cart));
-
-      // Update header cart count badge
-      updateHeaderCartCount();
-
-      // 4. UI Feedback
+    async function addToCart() {
       const btn = document.getElementById('addCartBtn');
       const orig = btn.innerHTML;
-      btn.innerHTML = '✓ Đã thêm vào giỏ!';
-      btn.style.borderColor = '#22d3a0';
-      btn.style.color = '#22d3a0';
-      btn.style.background = 'rgba(34,211,160,.12)';
+      btn.innerHTML = '⏳ Đang thêm...';
+      btn.disabled = true;
+
+      // Gọi addToCartHelper từ cart-helper.js (xử lý cả DB lẫn local)
+      const success = await addToCartHelper(product.id, 1);
+
+      if (success) {
+        btn.innerHTML = '✓ Đã thêm vào giỏ!';
+        btn.style.borderColor = '#22d3a0';
+        btn.style.color = '#22d3a0';
+        btn.style.background = 'rgba(34,211,160,.12)';
+      } else {
+        btn.innerHTML = '✗ Lỗi! Thử lại';
+        btn.style.borderColor = '#f87171';
+        btn.style.color = '#f87171';
+      }
+
       setTimeout(() => {
         btn.innerHTML = orig;
         btn.style.borderColor = '';
         btn.style.color = '';
         btn.style.background = '';
+        btn.disabled = false;
       }, 2200);
     }
 
-    // Update cart count badge from localStorage
-    function updateHeaderCartCount() {
-      let cart = [];
-      try {
-        cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || JSON.parse(localStorage.getItem('hypercore_cart_items')) || [];
-      } catch(e) {}
-      const countEl = document.getElementById("cartCount");
-      if (countEl) {
-        const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
-        if (totalQty > 0) {
-          countEl.innerText = totalQty;
-          countEl.style.display = "flex";
-        } else {
-          countEl.style.display = "none";
-        }
+    // DOMContentLoaded: cập nhật badge + đồng bộ DB nếu đã đăng nhập
+    document.addEventListener("DOMContentLoaded", async () => {
+      updateHeaderCartCount();
+      if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
+        await syncCartFromDb();
       }
-    }
-
-    document.addEventListener("DOMContentLoaded", updateHeaderCartCount);
+    });
 
     // ============================================================
     // BUY NOW

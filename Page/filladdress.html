@@ -938,6 +938,11 @@
         const districtSelect = document.getElementById("districtSelect");
         const wardSelect = document.getElementById("wardSelect");
 
+        let citiesLoadedResolve;
+        const citiesLoadedPromise = new Promise((resolve) => {
+            citiesLoadedResolve = resolve;
+        });
+
         async function loadCities() {
             try {
                 citySelect.innerHTML = '<option value="">Đang tải danh sách tỉnh thành...</option>';
@@ -963,6 +968,10 @@
             } catch (error) {
                 console.error("Lỗi tải tỉnh thành:", error);
                 citySelect.innerHTML = '<option value="">Lỗi tải dữ liệu tỉnh thành</option>';
+            } finally {
+                if (typeof citiesLoadedResolve === 'function') {
+                    citiesLoadedResolve();
+                }
             }
         }
 
@@ -1038,6 +1047,529 @@
         // Initialize loading of cities
         loadCities();
 
+        // =========================
+        // AUTHENTICATION & API HELPERS
+        // =========================
+        
+        /**
+         * Clear authentication data from localStorage and redirect to login page
+         */
+        function clearAuthAndRedirect() {
+            localStorage.removeItem('pc_store_token');
+            localStorage.removeItem('pc_store_refresh_token');
+            localStorage.removeItem('pc_store_user');
+            localStorage.removeItem('hyper_core_cart');
+            localStorage.removeItem('hypercore_cart_items');
+            localStorage.removeItem('hypercore_cart');
+            localStorage.removeItem('shippingAddress');
+            sessionStorage.removeItem('checkout_addressId');
+            sessionStorage.removeItem('checkout_address');
+            sessionStorage.removeItem('current_orderId');
+            window.location.href = '/Login';
+        }
+
+        /**
+         * Fetch user addresses from API
+         * @param {number} userId - The user ID to fetch addresses for
+         * @returns {Promise<Array|null>} - Array of address objects, empty array on error, null on auth failure
+         */
+        async function fetchUserAddresses(userId) {
+            const token = localStorage.getItem('pc_store_token');
+            
+            try {
+                const response = await fetch(`/api/users/addresses/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                // Handle 401 Unauthorized - redirect to login
+                if (response.status === 401) {
+                    clearAuthAndRedirect();
+                    return null;
+                }
+                
+                // Handle other errors - log and return empty array
+                if (!response.ok) {
+                    console.error('Error fetching addresses:', response.status);
+                    return [];
+                }
+                
+                // Parse and return address array
+                return await response.json();
+            } catch (error) {
+                console.error('Error:', error);
+                return [];
+            }
+        }
+
+        // =========================
+        // HELPER: Extract Form Data
+        // =========================
+        /**
+         * Extract and structure form data for API submission
+         * @param {number} userId - The user ID from authentication
+         * @returns {Object} Address data object ready for API POST request
+         */
+        function extractFormData(userId) {
+            return {
+                userId: userId,
+                receiverName: document.getElementById('fullName').value.trim(),
+                phoneNumber: document.getElementById('phoneNumber').value.trim(),
+                province: document.getElementById('citySelect').value,
+                district: document.getElementById('districtSelect').value,
+                ward: document.getElementById('wardSelect').value,
+                detailAddress: document.getElementById('streetAddress').value.trim(),
+                isDefault: document.getElementById('defaultAddress').checked
+            };
+        }
+
+        // =========================
+        // HELPER: Dropdown Selection Functions
+        // =========================
+        
+        /**
+         * Select province in dropdown and trigger district load
+         * @param {string} provinceName - The province name to select
+         * @returns {Promise<boolean>} - True if province was found and selected, false otherwise
+         */
+        async function selectProvince(provinceName) {
+            if (!provinceName) {
+                console.warn('selectProvince: No province name provided');
+                return false;
+            }
+
+            const citySelect = document.getElementById('citySelect');
+            if (!citySelect) {
+                console.error('selectProvince: citySelect element not found');
+                return false;
+            }
+
+            // Find matching option (case-insensitive)
+            const provinceNameLower = provinceName.toLowerCase().trim();
+            const options = Array.from(citySelect.options);
+            const matchingOption = options.find(opt => 
+                opt.value && opt.value.toLowerCase().trim() === provinceNameLower
+            );
+
+            if (!matchingOption) {
+                console.warn(`selectProvince: Province "${provinceName}" not found in dropdown`);
+                return false;
+            }
+
+            // Select the option
+            matchingOption.selected = true;
+
+            // Trigger change event to load districts
+            const changeEvent = new Event('change', { bubbles: true });
+            citySelect.dispatchEvent(changeEvent);
+
+            // Wait for districts to load (the change event handler is async)
+            // We'll wait for the districtSelect to be enabled and populated
+            return new Promise((resolve) => {
+                const checkInterval = setInterval(() => {
+                    const districtSelect = document.getElementById('districtSelect');
+                    // District loaded when it's enabled and has more than just the placeholder option
+                    if (districtSelect && !districtSelect.disabled && districtSelect.options.length > 1) {
+                        clearInterval(checkInterval);
+                        resolve(true);
+                    }
+                }, 100);
+
+                // Timeout after 5 seconds
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    console.warn('selectProvince: Timeout waiting for districts to load');
+                    resolve(false);
+                }, 5000);
+            });
+        }
+
+        /**
+         * Select district in dropdown and trigger ward load
+         * @param {string} districtName - The district name to select
+         * @returns {Promise<boolean>} - True if district was found and selected, false otherwise
+         */
+        async function selectDistrict(districtName) {
+            if (!districtName) {
+                console.warn('selectDistrict: No district name provided');
+                return false;
+            }
+
+            const districtSelect = document.getElementById('districtSelect');
+            if (!districtSelect) {
+                console.error('selectDistrict: districtSelect element not found');
+                return false;
+            }
+
+            // Check if district dropdown is disabled (province not selected yet)
+            if (districtSelect.disabled) {
+                console.warn('selectDistrict: District dropdown is disabled. Select province first.');
+                return false;
+            }
+
+            // Find matching option (case-insensitive)
+            const districtNameLower = districtName.toLowerCase().trim();
+            const options = Array.from(districtSelect.options);
+            const matchingOption = options.find(opt => 
+                opt.value && opt.value.toLowerCase().trim() === districtNameLower
+            );
+
+            if (!matchingOption) {
+                console.warn(`selectDistrict: District "${districtName}" not found in dropdown`);
+                return false;
+            }
+
+            // Select the option
+            matchingOption.selected = true;
+
+            // Trigger change event to load wards
+            const changeEvent = new Event('change', { bubbles: true });
+            districtSelect.dispatchEvent(changeEvent);
+
+            // Wait for wards to load
+            return new Promise((resolve) => {
+                const checkInterval = setInterval(() => {
+                    const wardSelect = document.getElementById('wardSelect');
+                    // Ward loaded when it's enabled and has more than just the placeholder option
+                    if (wardSelect && !wardSelect.disabled && wardSelect.options.length > 1) {
+                        clearInterval(checkInterval);
+                        resolve(true);
+                    }
+                }, 100);
+
+                // Timeout after 5 seconds
+                setTimeout(() => {
+                    clearInterval(checkInterval);
+                    console.warn('selectDistrict: Timeout waiting for wards to load');
+                    resolve(false);
+                }, 5000);
+            });
+        }
+
+        /**
+         * Select ward in dropdown
+         * @param {string} wardName - The ward name to select
+         * @returns {boolean} - True if ward was found and selected, false otherwise
+         */
+        function selectWard(wardName) {
+            if (!wardName) {
+                console.warn('selectWard: No ward name provided');
+                return false;
+            }
+
+            const wardSelect = document.getElementById('wardSelect');
+            if (!wardSelect) {
+                console.error('selectWard: wardSelect element not found');
+                return false;
+            }
+
+            // Check if ward dropdown is disabled (district not selected yet)
+            if (wardSelect.disabled) {
+                console.warn('selectWard: Ward dropdown is disabled. Select district first.');
+                return false;
+            }
+
+            // Find matching option (case-insensitive)
+            const wardNameLower = wardName.toLowerCase().trim();
+            const options = Array.from(wardSelect.options);
+            const matchingOption = options.find(opt => 
+                opt.value && opt.value.toLowerCase().trim() === wardNameLower
+            );
+
+            if (!matchingOption) {
+                console.warn(`selectWard: Ward "${wardName}" not found in dropdown`);
+                return false;
+            }
+
+            // Select the option
+            matchingOption.selected = true;
+
+            // Trigger change event (for any listeners that might be attached)
+            const changeEvent = new Event('change', { bubbles: true });
+            wardSelect.dispatchEvent(changeEvent);
+
+            return true;
+        }
+
+        // =========================
+        // FORM VALIDATION
+        // =========================
+        
+        /**
+         * Validate all form fields before submission
+         * Shows specific alert messages for each validation failure
+         * @returns {boolean} - True if all validations pass, false otherwise
+         */
+        function validateForm() {
+            // Get form field values
+            const fullName = document.getElementById('fullName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const province = document.getElementById('citySelect').value;
+            const district = document.getElementById('districtSelect').value;
+            const ward = document.getElementById('wardSelect').value;
+            const streetAddress = document.getElementById('streetAddress').value.trim();
+            
+            // Validate fullName is not empty after trim
+            if (!fullName) {
+                alert('Vui lòng nhập họ tên!');
+                return false;
+            }
+            
+            // Validate phoneNumber matches regex pattern "^0[0-9]{9}$"
+            const phoneRegex = /^0[0-9]{9}$/;
+            if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
+                alert('Số điện thoại không hợp lệ! (Phải là 10 số, bắt đầu bằng 0)');
+                return false;
+            }
+            
+            // Validate province, district, ward dropdowns all have non-empty values
+            if (!province || !district || !ward) {
+                alert('Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Phường/Xã!');
+                return false;
+            }
+            
+            // Validate streetAddress is not empty after trim
+            if (!streetAddress) {
+                alert('Vui lòng nhập số nhà, tên đường!');
+                return false;
+            }
+            
+            // All validations passed
+            return true;
+        }
+
+        /**
+         * Save address to database via REST API
+         * @param {Object} addressData - Address data object with userId, receiverName, phoneNumber, province, district, ward, detailAddress, isDefault
+         * @returns {Promise<Object>} - Object with success flag and data/error message
+         */
+        async function saveAddress(addressData) {
+            const token = localStorage.getItem('pc_store_token');
+            
+            try {
+                const response = await fetch('/api/users/addresses', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(addressData)
+                });
+                
+                // Handle 401 Unauthorized - redirect to login
+                if (response.status === 401) {
+                    clearAuthAndRedirect();
+                    return { success: false, error: 'Unauthorized' };
+                }
+                
+                // Handle 400 Bad Request - return error message
+                if (response.status === 400) {
+                    const errorData = await response.json();
+                    return { 
+                        success: false, 
+                        error: errorData.message || 'Dữ liệu không hợp lệ' 
+                    };
+                }
+                
+                // Handle other 4xx/5xx errors - return error message
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    return { 
+                        success: false, 
+                        error: errorData.message || `Lỗi: ${response.status}` 
+                    };
+                }
+                
+                // Success - return data
+                const result = await response.json();
+                return { success: true, data: result };
+            } catch (error) {
+                console.error('Error:', error);
+                return { 
+                    success: false, 
+                    error: 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối của bạn.' 
+                };
+            }
+        }
+
+        // =========================
+        // AUTO-FILL FORM FUNCTION
+        // =========================
+        
+        /**
+         * Auto-fill form with default address or first address from addresses array
+         * @param {Array} addresses - Array of address objects from API
+         * @returns {Promise<void>}
+         */
+        async function autoFillForm(addresses) {
+            // Return early if addresses array is empty or not provided
+            if (!addresses || addresses.length === 0) {
+                console.log('autoFillForm: No addresses to fill');
+                return;
+            }
+
+            // Find default address where isDefault equals true, fallback to first address
+            const addressToFill = addresses.find(addr => addr.isDefault === true) || addresses[0];
+
+            if (!addressToFill) {
+                console.warn('autoFillForm: No address found to fill');
+                return;
+            }
+
+            // Fill fullName field with receiverName
+            const fullNameField = document.getElementById('fullName');
+            if (fullNameField && addressToFill.receiverName) {
+                fullNameField.value = addressToFill.receiverName;
+            }
+
+            // Fill phoneNumber field with phoneNumber
+            const phoneNumberField = document.getElementById('phoneNumber');
+            if (phoneNumberField && addressToFill.phoneNumber) {
+                phoneNumberField.value = addressToFill.phoneNumber;
+            }
+
+            // Fill streetAddress field with detailAddress
+            const streetAddressField = document.getElementById('streetAddress');
+            if (streetAddressField && addressToFill.detailAddress) {
+                streetAddressField.value = addressToFill.detailAddress;
+            }
+
+            // Set defaultAddress checkbox state based on isDefault property
+            const defaultAddressCheckbox = document.getElementById('defaultAddress');
+            if (defaultAddressCheckbox) {
+                defaultAddressCheckbox.checked = addressToFill.isDefault === true;
+            }
+
+            // Call selectProvince(), selectDistrict(), selectWard() in sequence with await
+            try {
+                // Select province and wait for districts to load
+                if (addressToFill.province) {
+                    const provinceSelected = await selectProvince(addressToFill.province);
+                    if (!provinceSelected) {
+                        console.warn(`autoFillForm: Failed to select province "${addressToFill.province}"`);
+                        return;
+                    }
+                }
+
+                // Select district and wait for wards to load
+                if (addressToFill.district) {
+                    const districtSelected = await selectDistrict(addressToFill.district);
+                    if (!districtSelected) {
+                        console.warn(`autoFillForm: Failed to select district "${addressToFill.district}"`);
+                        return;
+                    }
+                }
+
+                // Select ward
+                if (addressToFill.ward) {
+                    const wardSelected = selectWard(addressToFill.ward);
+                    if (!wardSelected) {
+                        console.warn(`autoFillForm: Failed to select ward "${addressToFill.ward}"`);
+                    }
+                }
+
+                console.log('autoFillForm: Successfully filled form with address');
+            } catch (error) {
+                console.error('autoFillForm: Error filling form:', error);
+            }
+        }
+
+        // =========================
+        // LOCALSTORAGE MANAGER: Save Shipping Address
+        // =========================
+        
+        /**
+         * Save shipping address to localStorage for payment page
+         * Constructs fullAddress string and saves all required fields
+         * @returns {boolean} - True if save successful, false on error
+         */
+        function saveShippingToLocalStorage() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const email = document.getElementById('emailAddress').value.trim();
+            const province = document.getElementById('citySelect').value;
+            const district = document.getElementById('districtSelect').value;
+            const ward = document.getElementById('wardSelect').value;
+            const streetAddress = document.getElementById('streetAddress').value.trim();
+            
+            // Construct fullAddress by concatenating detailAddress, ward, district, province
+            const fullAddress = `${streetAddress}, ${ward}, ${district}, ${province}`;
+            
+            const shippingAddress = {
+                fullName: fullName,
+                phoneNumber: phoneNumber,
+                email: email,
+                province: province,
+                district: district,
+                ward: ward,
+                detailAddress: streetAddress,
+                fullAddress: fullAddress
+            };
+            
+            try {
+                localStorage.setItem('shippingAddress', JSON.stringify(shippingAddress));
+                return true;
+            } catch (e) {
+                console.error('Failed to save to localStorage:', e);
+                return false;
+            }
+        }
+
+        // =========================
+        // PAGE LOAD: Authentication & Auto-Fill
+        // =========================
+        
+        /**
+         * Check authentication and return user info (without redirecting)
+         * @returns {Object|null} User info object or null if not authenticated
+         */
+        function getAuthenticatedUser() {
+            const token = localStorage.getItem('pc_store_token');
+            const userInfoStr = localStorage.getItem('pc_store_user');
+            
+            if (!token || !userInfoStr) {
+                return null;
+            }
+            
+            try {
+                return JSON.parse(userInfoStr);
+            } catch (e) {
+                console.error('Invalid userInfo in localStorage:', e);
+                return null;
+            }
+        }
+
+        /**
+         * Load and auto-fill user addresses (only if authenticated)
+         */
+        async function loadUserAddresses() {
+            const userInfo = getAuthenticatedUser();
+            
+            if (!userInfo || !userInfo.userId) {
+                console.log('No authenticated user - skipping address load');
+                return;
+            }
+            
+            console.log('Loading addresses for userId:', userInfo.userId);
+            
+            // Wait for city dropdown to be fully loaded before auto-fill
+            await citiesLoadedPromise;
+            
+            const addresses = await fetchUserAddresses(userInfo.userId);
+            console.log('Loaded addresses:', addresses);
+            
+            // Auto-fill form if addresses exist
+            if (addresses && addresses.length > 0) {
+                console.log('Auto-filling form with', addresses.length, 'addresses');
+                await autoFillForm(addresses);
+            } else {
+                console.log('No addresses found - form will be empty');
+            }
+        }
+
         // 2. Back button click handler
         const backBtn = document.querySelector(".back-btn");
         if (backBtn) {
@@ -1046,120 +1578,63 @@
             });
         }
 
-        // 3. Submit button validation & save to database
+        // 3. Submit button - Complete integration with REST API
         const submitBtn = document.querySelector(".submit-btn");
         if (submitBtn) {
             submitBtn.addEventListener("click", async (e) => {
                 e.preventDefault();
 
-                // Get inputs
-                const fullName = document.getElementById("fullName");
-                const phoneNumber = document.getElementById("phoneNumber");
-                const emailAddress = document.getElementById("emailAddress");
-                const streetAddress = document.getElementById("streetAddress");
-
-                // Reset visual error states
-                const fields = [fullName, phoneNumber, citySelect, districtSelect, wardSelect, streetAddress];
-                fields.forEach(field => {
-                    if (field) field.style.borderColor = "rgba(0, 0, 0, 0.2)";
-                });
-
-                let isValid = true;
-                let firstInvalidField = null;
-
-                // Validate required fields
-                fields.forEach(field => {
-                    if (field && !field.value.trim()) {
-                        field.style.borderColor = "#ff4d4d";
-                        isValid = false;
-                        if (!firstInvalidField) firstInvalidField = field;
-                    }
-                });
-
-                // Validate Phone Number pattern (starts with 0, total 10 digits)
-                const phoneVal = phoneNumber ? phoneNumber.value.trim() : "";
-                const phoneRegex = /^0\d{9}$/;
-                if (phoneNumber && phoneVal && !phoneRegex.test(phoneVal)) {
-                    phoneNumber.style.borderColor = "#ff4d4d";
-                    isValid = false;
-                    if (!firstInvalidField) firstInvalidField = phoneNumber;
-                    alert("Số điện thoại không hợp lệ! Vui lòng nhập đúng định dạng 10 chữ số (bắt đầu bằng số 0).");
-                    return;
+                // 1. Validate form using validateForm()
+                if (!validateForm()) {
+                    return; // Validation failed, alert already shown
                 }
 
-                // Validate Email pattern if filled
-                const emailVal = emailAddress ? emailAddress.value.trim() : "";
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (emailAddress && emailVal && !emailRegex.test(emailVal)) {
-                    emailAddress.style.borderColor = "#ff4d4d";
-                    isValid = false;
-                    if (!firstInvalidField) firstInvalidField = emailAddress;
-                    alert("Địa chỉ email không hợp lệ!");
-                    return;
-                }
-
-                if (!isValid) {
-                    if (firstInvalidField) {
-                        firstInvalidField.focus();
-                    }
-                    alert("Vui lòng điền đầy đủ và chính xác tất cả các thông tin bắt buộc (*).");
-                    return;
-                }
-
-                // Thông tin hợp lệ → Bắt buộc phải đăng nhập
+                // 2. Check authentication (ONLY when submitting)
+                const userInfo = getAuthenticatedUser();
                 
-                // Kiểm tra đăng nhập
-                const user = JSON.parse(sessionStorage.getItem('hypercore_user') || 'null');
-                const token = sessionStorage.getItem('hypercore_token');
-                
-                if (!user || !token) {
+                if (!userInfo) {
                     alert('Vui lòng đăng nhập trước khi tiếp tục thanh toán!');
-                    window.location.href = '/Homepage';
+                    const currentPath = window.location.pathname;
+                    window.location.href = `/Login?redirect=${encodeURIComponent(currentPath)}`;
+                    return;
+                }
+
+                // 3. Extract form data
+                const addressData = extractFormData(userInfo.userId);
+                
+                console.log('Submitting address data:', addressData);
+                
+                // 4. Save address to database via API
+                const saveResult = await saveAddress(addressData);
+                
+                if (!saveResult.success) {
+                    // Show error message
+                    alert(`Lỗi: ${saveResult.error}`);
                     return;
                 }
                 
-                // Lưu địa chỉ vào database
-                const addressData = {
-                    userId: parseInt(user.userId),
-                    receiverName: fullName.value.trim(),
-                    phoneNumber: phoneNumber.value.trim(),
-                    province: citySelect.value,
-                    district: districtSelect.value,
-                    ward: wardSelect.value,
-                    detailAddress: `${streetAddress.value.trim()}, ${wardSelect.value}, ${districtSelect.value}, ${citySelect.value}`,
-                    isDefault: document.getElementById('defaultAddress').checked
-                };
+                console.log('Address saved successfully:', saveResult.data);
                 
-                try {
-                    const response = await fetch('http://localhost:5187/api/users/addresses', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify(addressData)
-                    });
-                    
-                    if (response.ok) {
-                        const result = await response.json();
-                        
-                        // Lưu addressId và thông tin địa chỉ vào sessionStorage
-                        sessionStorage.setItem('checkout_addressId', result.newAddressId);
-                        sessionStorage.setItem('checkout_address', JSON.stringify({
-                            receiverName: addressData.receiverName,
-                            phoneNumber: addressData.phoneNumber,
-                            fullAddress: addressData.detailAddress
-                        }));
-                        
-                        // Chuyển sang trang thanh toán
-                        window.location.href = '/payments';
-                    } else {
-                        const error = await response.json();
-                        alert(error.message || 'Không thể lưu địa chỉ. Vui lòng thử lại!');
-                    }
-                } catch (error) {
-                    alert('Có lỗi xảy ra khi kết nối đến server. Vui lòng kiểm tra kết nối!');
+                // 5. Save shipping address to localStorage and sessionStorage for payment page
+                const localStorageSaved = saveShippingToLocalStorage();
+                
+                // Bridge with payments.html
+                sessionStorage.setItem('checkout_addressId', saveResult.data.newAddressId || '');
+                sessionStorage.setItem('checkout_address', JSON.stringify({
+                    receiverName: addressData.receiverName,
+                    phoneNumber: addressData.phoneNumber,
+                    fullAddress: addressData.province ? `${addressData.detailAddress}, ${addressData.ward}, ${addressData.district}, ${addressData.province}` : addressData.detailAddress
+                }));
+
+                if (!localStorageSaved) {
+                    console.warn('Failed to save to localStorage');
                 }
+                
+                // 6. Show success message
+                alert('✅ Đã lưu địa chỉ thành công!');
+                
+                // 7. Redirect to payment page
+                window.location.href = '/payments';
             });
         }
 
@@ -1181,7 +1656,13 @@
             }
         }
 
-        document.addEventListener("DOMContentLoaded", updateHeaderCartCount);
+        // DOMContentLoaded: Initialize page without forcing authentication
+        document.addEventListener("DOMContentLoaded", async () => {
+            updateHeaderCartCount();
+            
+            // Try to load addresses if user is logged in (but don't force login)
+            await loadUserAddresses();
+        });
     </script>
 
 </body>

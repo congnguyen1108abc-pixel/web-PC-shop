@@ -544,6 +544,7 @@
         </div>
     </div>
 
+    <script src="/assets/js/cart-helper.js"></script>
     <script>
         /* ================================================= */
         /* CONFIG                                            */
@@ -603,16 +604,20 @@
         /* SAVE USER TO LOCALSTORAGE                         */
         /* ================================================= */
         function saveSession(data, emailFallback) {
-            localStorage.setItem('pc_store_token',
-                data.accessToken || data.token || '');
+            const token = data.accessToken || data.token || '';
+            const userId = data.userId || data.user?.userId || '';
+            localStorage.setItem('pc_store_token', token);
             localStorage.setItem('pc_store_refresh_token',
                 data.refreshToken || '');
             localStorage.setItem('pc_store_user', JSON.stringify({
                 fullName : data.fullName  || emailFallback?.split('@')[0] || 'Người dùng',
                 email    : data.email     || emailFallback || '',
-                userId   : data.userId    || data.user?.userId || '',
+                userId   : userId,
                 role     : data.role      || 'Customer'
             }));
+            if (userId && token && typeof syncGuestCartToDbHelper === 'function') {
+                syncGuestCartToDbHelper(userId, token).catch(e => console.error(e));
+            }
         }
 
         /* ================================================= */

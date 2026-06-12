@@ -1874,6 +1874,7 @@
     <span class="toast-text">Đã thêm <span class="toast-name" id="toastName"></span> vào giỏ hàng</span>
   </div>
 
+  <script src="/assets/js/cart-helper.js"></script>
   <script>
     const PRODUCTS = [
       { id: 1, cat: 'vga', brand: 'ASUS', name: 'ASUS ROG RTX 4090 24GB OC', specs: 'Ada Lovelace · 24GB GDDR6X · 384-bit', price: 45900000, oldPrice: 52000000, rating: 4.9, reviews: 128, stock: 'in', badge: 'hot', img: 'https://placehold.co/300x200/081120/7dd3fc?text=RTX+4090' },
@@ -2131,26 +2132,9 @@
       recContainer.innerHTML = html;
     }
 
-    window.addRecommendedItem = function (id) {
-      const rec = RECOMMEND_PRODUCTS.find(r => r.id === id);
-      if (rec) {
-        const existing = cart.find(i => i.id === rec.id);
-        if (existing) {
-          existing.qty++;
-        } else {
-          cart.push({
-            id: rec.id,
-            name: rec.name,
-            specs: rec.specs,
-            price: rec.price,
-            currency: rec.currency,
-            qty: 1,
-            img: rec.img
-          });
-        }
-        localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
-        renderCartDrawer();
-      }
+    window.addRecommendedItem = async function (id) {
+      await addToCartHelper(id, 1);
+      renderCartDrawer();
     };
 
     function renderCartDrawer() {
@@ -2250,44 +2234,30 @@
       renderRecommendations();
     }
 
-    window.changeQty = function (id, delta) {
+    window.changeQty = async function (id, delta) {
       const item = cart.find(i => i.id === id);
       if (item) {
-        item.qty += delta;
-        if (item.qty <= 0) {
-          cart = cart.filter(i => i.id !== id);
+        const newQty = item.qty + delta;
+        if (newQty <= 0) {
+          await deleteCartItemHelper(id);
+        } else {
+          await updateCartItemHelper(id, newQty);
         }
-        localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
         renderCartDrawer();
       }
     };
 
-    window.removeFromCart = function (id) {
-      cart = cart.filter(i => i.id !== id);
-      localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+    window.removeFromCart = async function (id) {
+      await deleteCartItemHelper(id);
       renderCartDrawer();
     };
 
     // Removed static recommend listener
 
-    function addToCart(name) {
+    async function addToCart(name) {
       const prod = PRODUCTS.find(p => p.name === name);
       if (prod) {
-        const existing = cart.find(i => i.id === prod.id);
-        if (existing) {
-          existing.qty++;
-        } else {
-          cart.push({
-            id: prod.id,
-            name: prod.name,
-            specs: prod.specs,
-            price: prod.price,
-            currency: "VND",
-            qty: 1,
-            img: prod.img
-          });
-        }
-        localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+        await addToCartHelper(prod.id, 1);
         renderCartDrawer();
         openCartDrawer(); // Automatically slide open on add!
       }
@@ -2412,10 +2382,21 @@
     cartCloseBtn?.addEventListener('click', closeCartDrawer);
     cartOverlay?.addEventListener('click', closeCartDrawer);
 
+    // Listen for cart sync events from DB
+    window.addEventListener('cartSynced', (e) => {
+      cart = e.detail;
+      renderCartDrawer();
+    });
+
     // Initial startup execution
     updateCategoryCounts();
     applyFiltersAndRender();
     renderCartDrawer();
+
+    // Sync from DB if user logged in
+    if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
+      syncCartFromDb();
+    }
   </script>
 </body>
 
