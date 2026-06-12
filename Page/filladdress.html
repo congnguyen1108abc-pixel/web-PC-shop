@@ -608,6 +608,7 @@
         }
     </style>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
 
 <body>
@@ -652,13 +653,51 @@
                 </button>
             </div>
 
-            <!-- ACCOUNT -->
-            <a href="/Login" style="text-decoration: none; color: inherit;" class="header-icon-btn" title="Tài khoản" aria-label="Tài khoản">
+            <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
+            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
                 </svg>
             </a>
+
+            <!-- USER GREETING (hiện khi đã đăng nhập) -->
+            <div class="user-greeting-wrap" id="userGreetingWrap">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-greeting-name">
+                        <em>Xin chào,</em>
+                        <span id="userDisplayName">Người dùng</span>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <span id="dropdownFullName">Người dùng</span>
+                        <small id="dropdownEmail">email@example.com</small>
+                    </div>
+                    <a href="#" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Hồ sơ của tôi
+                    </a>
+                    <a href="/shoppingcart" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Giỏ hàng
+                    </a>
+                    <a href="/payments" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Đơn hàng
+                    </a>
+                    <button class="dropdown-item logout" onclick="handleLogout()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
 
             <!-- CART -->
             <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
@@ -930,7 +969,11 @@
 
     <!-- SCRIPT -->
     <script src="/assets/js/checkout.js"></script>
+    <script src="/assets/js/cart-helper.js"></script>
+    <script src="/assets/js/auth-ui.js"></script>
     <script>
+        const API_BASE = 'http://localhost:5187';
+
         // =========================
         // LOAD ALL PROVINCES (API)
         // =========================
@@ -1077,7 +1120,7 @@
             const token = localStorage.getItem('pc_store_token');
             
             try {
-                const response = await fetch(`/api/users/addresses/${userId}`, {
+                const response = await fetch(`${API_BASE}/api/users/addresses/${userId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1115,7 +1158,7 @@
          */
         function extractFormData(userId) {
             return {
-                userId: userId,
+                userId: parseInt(userId),
                 receiverName: document.getElementById('fullName').value.trim(),
                 phoneNumber: document.getElementById('phoneNumber').value.trim(),
                 province: document.getElementById('citySelect').value,
@@ -1350,7 +1393,7 @@
             const token = localStorage.getItem('pc_store_token');
             
             try {
-                const response = await fetch('/api/users/addresses', {
+                const response = await fetch(`${API_BASE}/api/users/addresses`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1519,11 +1562,11 @@
         }
 
         // =========================
-        // PAGE LOAD: Authentication & Auto-Fill
+        // PAGE LOAD: FORCE Authentication Check
         // =========================
         
         /**
-         * Check authentication and return user info (without redirecting)
+         * Get authenticated user info (helper function for submit button)
          * @returns {Object|null} User info object or null if not authenticated
          */
         function getAuthenticatedUser() {
@@ -1541,32 +1584,81 @@
                 return null;
             }
         }
-
+        
         /**
-         * Load and auto-fill user addresses (only if authenticated)
+         * Check authentication and FORCE redirect if not logged in
+         * This page REQUIRES authentication to access
          */
-        async function loadUserAddresses() {
-            const userInfo = getAuthenticatedUser();
+        async function initializePageWithAuth() {
+            // Get authentication data
+            const token = localStorage.getItem('pc_store_token');
+            const userInfoStr = localStorage.getItem('pc_store_user');
             
-            if (!userInfo || !userInfo.userId) {
-                console.log('No authenticated user - skipping address load');
+            console.log('=== FILLADDRESS AUTHENTICATION CHECK ===');
+            console.log('Token:', token ? `${token.substring(0, 20)}...` : 'NULL');
+            console.log('UserInfo String:', userInfoStr);
+            console.log('Token exists:', !!token);
+            console.log('UserInfo exists:', !!userInfoStr);
+            
+            // Debug: Log all localStorage keys
+            console.log('All localStorage keys:', Object.keys(localStorage));
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                console.log(`  - ${key}:`, localStorage.getItem(key)?.substring(0, 50));
+            }
+            
+            // FORCE authentication - redirect if not logged in
+            if (!token || !userInfoStr) {
+                console.error('❌ NOT AUTHENTICATED - Redirecting to login');
+                console.error('Token missing:', !token);
+                console.error('UserInfo missing:', !userInfoStr);
+                alert('Vui lòng đăng nhập để tiếp tục thanh toán!');
+                const currentPath = window.location.pathname;
+                window.location.href = `/Login?redirect=${encodeURIComponent(currentPath)}`;
                 return;
             }
             
-            console.log('Loading addresses for userId:', userInfo.userId);
+            // Parse user info
+            let userInfo;
+            try {
+                userInfo = JSON.parse(userInfoStr);
+                console.log('✓ Parsed user info:', userInfo);
+                console.log('  - User ID:', userInfo.userId);
+                console.log('  - Email:', userInfo.email);
+                console.log('  - Full Name:', userInfo.fullName);
+            } catch (e) {
+                console.error('❌ Invalid userInfo JSON in localStorage:', e);
+                console.error('Raw userInfo string:', userInfoStr);
+                clearAuthAndRedirect();
+                return;
+            }
             
-            // Wait for city dropdown to be fully loaded before auto-fill
+            // Verify userId exists
+            if (!userInfo.userId) {
+                console.error('❌ No userId found in userInfo object');
+                console.error('UserInfo object:', userInfo);
+                clearAuthAndRedirect();
+                return;
+            }
+            
+            console.log('✅ Authentication passed - User ID:', userInfo.userId);
+            console.log('✓ Loading addresses from API...');
+            
+            // Wait for city dropdown to be fully loaded
             await citiesLoadedPromise;
+            console.log('✓ City dropdown loaded');
             
+            // Load user addresses from API
             const addresses = await fetchUserAddresses(userInfo.userId);
-            console.log('Loaded addresses:', addresses);
+            console.log('✓ API Response - Addresses:', addresses);
             
             // Auto-fill form if addresses exist
             if (addresses && addresses.length > 0) {
-                console.log('Auto-filling form with', addresses.length, 'addresses');
+                console.log('✓ Auto-filling form with', addresses.length, 'addresses');
                 await autoFillForm(addresses);
+                console.log('✓ Form auto-fill completed');
             } else {
-                console.log('No addresses found - form will be empty');
+                console.log('ℹ No saved addresses found - form will be empty');
             }
         }
 
@@ -1656,12 +1748,12 @@
             }
         }
 
-        // DOMContentLoaded: Initialize page without forcing authentication
+        // DOMContentLoaded: Force authentication check
         document.addEventListener("DOMContentLoaded", async () => {
             updateHeaderCartCount();
             
-            // Try to load addresses if user is logged in (but don't force login)
-            await loadUserAddresses();
+            // FORCE authentication - user MUST be logged in to access this page
+            await initializePageWithAuth();
         });
     </script>
 

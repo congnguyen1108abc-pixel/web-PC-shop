@@ -35,10 +35,21 @@ function getCartToken() {
  * Đồng bộ giỏ hàng từ Database về LocalStorage
  */
 async function syncCartFromDb() {
-    if (!isUserLoggedIn()) return;
+    console.log('=== SYNC CART FROM DB ===');
+    if (!isUserLoggedIn()) {
+        console.log('User not logged in - skipping sync');
+        return;
+    }
+    
     const user = getCartUser();
     const token = getCartToken();
-    if (!user || !user.userId || !token) return;
+    
+    if (!user || !user.userId || !token) {
+        console.error('Missing user info or token for sync');
+        return;
+    }
+    
+    console.log('Syncing cart for user:', user.userId);
 
     try {
         const response = await fetch(`${CART_API_BASE}/Cart/user/${user.userId}`, {
@@ -49,8 +60,11 @@ async function syncCartFromDb() {
             }
         });
 
+        console.log('Sync API response status:', response.status);
+
         if (response.ok) {
             const dbItems = await response.json();
+            console.log('Received', dbItems.length, 'items from database');
             
             // Map dữ liệu DB -> Cấu trúc cart cục bộ (hyper_core_cart)
             const localCart = dbItems.map(item => ({
@@ -65,6 +79,7 @@ async function syncCartFromDb() {
             }));
 
             localStorage.setItem('hyper_core_cart', JSON.stringify(localCart));
+            localStorage.setItem('pc_store_cart_owner', user.userId.toString());
 
             // Đồng bộ sang hypercore_cart_items (các trang khác dùng song song)
             const cartItems = localCart.map(item => ({
@@ -82,11 +97,14 @@ async function syncCartFromDb() {
 
             // Kích hoạt event thông báo giỏ hàng đã đồng bộ xong
             window.dispatchEvent(new CustomEvent('cartSynced', { detail: localCart }));
+            console.log('✓ Cart synced successfully to localStorage');
         } else if (response.status === 401) {
-            console.warn("Phiên đăng nhập hết hạn khi đồng bộ giỏ hàng.");
+            console.warn("⚠ Unauthorized - Token may have expired");
+        } else {
+            console.error('❌ Sync failed with status:', response.status);
         }
     } catch (error) {
-        console.error("Lỗi khi đồng bộ giỏ hàng từ DB:", error);
+        console.error("❌ Error syncing cart from DB:", error);
     }
 }
 
@@ -94,7 +112,12 @@ async function syncCartFromDb() {
  * Thêm sản phẩm vào giỏ hàng (DB + Local)
  */
 async function addToCartHelper(productId, quantity = 1) {
+    console.log('=== ADD TO CART ===');
+    console.log('Product ID:', productId, 'Quantity:', quantity);
+    console.log('User logged in:', isUserLoggedIn());
+    
     if (!isUserLoggedIn()) {
+        console.log('Guest mode - Adding to localStorage only');
         // Chưa đăng nhập: thêm vào LocalStorage như bình thường
         let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
         // Lọc bỏ sản phẩm pre-seed nếu có
@@ -103,6 +126,7 @@ async function addToCartHelper(productId, quantity = 1) {
         const existing = cart.find(item => item.id === productId);
         if (existing) {
             existing.qty += quantity;
+            console.log('Updated existing item quantity:', existing.qty);
         } else {
             // Tìm thông tin sản phẩm từ danh sách PRODUCTS (nếu có ở trang hiện tại)
             let prodName = "Sản phẩm";
@@ -117,6 +141,7 @@ async function addToCartHelper(productId, quantity = 1) {
                     prodSpecs = p.specs || "";
                     prodPrice = p.price;
                     prodImg = p.img;
+                    console.log('Found product in PRODUCTS:', prodName);
                 }
             } else if (typeof RECOMMEND_PRODUCTS !== 'undefined') {
                 const p = RECOMMEND_PRODUCTS.find(x => x.id === productId);
@@ -125,6 +150,7 @@ async function addToCartHelper(productId, quantity = 1) {
                     prodSpecs = p.specs || "";
                     prodPrice = p.price;
                     prodImg = p.img;
+                    console.log('Found product in RECOMMEND_PRODUCTS:', prodName);
                 }
             }
 
@@ -137,8 +163,10 @@ async function addToCartHelper(productId, quantity = 1) {
                 qty: quantity,
                 img: prodImg
             });
+            console.log('Added new item to cart:', prodName);
         }
         localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+        localStorage.setItem('pc_store_cart_owner', 'guest');
         
         // Cập nhật hypercore_cart_items
         const cartItems = cart.map(item => ({
@@ -153,12 +181,28 @@ async function addToCartHelper(productId, quantity = 1) {
 
         updateHeaderCartCount();
         window.dispatchEvent(new CustomEvent('cartSynced', { detail: cart }));
+        console.log('✓ Cart updated successfully (guest mode)');
         return true;
     }
 
     // Đã đăng nhập: Gọi API để lưu vào Database
     const user = getCartUser();
     const token = getCartToken();
+    
+    console.log('Logged-in mode - Adding to database');
+    console.log('User ID:', user?.userId);
+    
+    if (!user || !user.userId) {
+        console.error('❌ User info invalid - cannot add to cart');
+        return false;
+    }
+    
+    const requestData = {
+        userId: parseInt(user.userId),
+        productId: parseInt(productId),
+        quantity: parseInt(quantity)
+    };
+    console.log('API Request:', requestData);
     
     try {
         const response = await fetch(`${CART_API_BASE}/Cart/add`, {
@@ -167,22 +211,24 @@ async function addToCartHelper(productId, quantity = 1) {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                userId: parseInt(user.userId),
-                productId: parseInt(productId),
-                quantity: parseInt(quantity)
-            })
+            body: JSON.stringify(requestData)
         });
 
+        console.log('API Response status:', response.status);
+        
         if (response.ok) {
+            const responseData = await response.json();
+            console.log('✓ API Response data:', responseData);
             await syncCartFromDb();
+            console.log('✓ Cart synced from database - Thêm vào giỏ hàng thành công!');
             return true;
         } else {
-            console.error("Lỗi API thêm vào giỏ hàng:", response.status);
+            const errorText = await response.text();
+            console.error('❌ API Error:', response.status, errorText);
             return false;
         }
     } catch (error) {
-        console.error("Lỗi mạng thêm vào giỏ hàng:", error);
+        console.error('❌ Network error adding to cart:', error);
         return false;
     }
 }
@@ -200,6 +246,7 @@ async function updateCartItemHelper(productId, newQty, cartId = null) {
             if (item) item.qty = newQty;
         }
         localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+        localStorage.setItem('pc_store_cart_owner', 'guest');
 
         const cartItems = cart.map(item => ({
             id: item.id,
@@ -267,6 +314,7 @@ async function deleteCartItemHelper(productId, cartId = null) {
         let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
         cart = cart.filter(item => item.id !== productId);
         localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
+        localStorage.setItem('pc_store_cart_owner', 'guest');
 
         const cartItems = cart.map(item => ({
             id: item.id,
@@ -325,12 +373,18 @@ async function deleteCartItemHelper(productId, cartId = null) {
  * Đồng bộ giỏ hàng của Khách (guest) lên Database khi Đăng nhập thành công
  */
 async function syncGuestCartToDbHelper(userId, token) {
+    const owner = localStorage.getItem('pc_store_cart_owner') || 'guest';
     const guestCart = JSON.parse(localStorage.getItem('hyper_core_cart') || '[]');
     // Bỏ qua sản phẩm pre-seed mặc định
     const realGuestItems = guestCart.filter(item => item.id !== 999);
     
-    if (realGuestItems.length === 0) {
-        // Nếu không có sản phẩm khách nào, chỉ cần đồng bộ từ DB xuống Local
+    // Nếu chủ sở hữu hiện tại không phải là "guest" (tức là của một user khác đăng nhập trước đó chưa xóa sạch)
+    // Hoặc nếu không có sản phẩm nào
+    if (owner !== 'guest' || realGuestItems.length === 0) {
+        console.log("Giỏ hàng hiện tại không phải của khách hoặc trống. Chỉ đồng bộ từ DB xuống local.");
+        localStorage.setItem('hyper_core_cart', '[]');
+        localStorage.setItem('hypercore_cart_items', '[]');
+        localStorage.setItem('pc_store_cart_owner', userId.toString());
         await syncCartFromDb();
         return;
     }
@@ -358,6 +412,7 @@ async function syncGuestCartToDbHelper(userId, token) {
     // Xóa giỏ hàng khách tạm thời
     localStorage.setItem('hyper_core_cart', '[]');
     localStorage.setItem('hypercore_cart_items', '[]');
+    localStorage.setItem('pc_store_cart_owner', userId.toString());
 
     // Đồng bộ lại toàn bộ từ Database xuống Local
     await syncCartFromDb();
@@ -392,6 +447,7 @@ function clearLocalCart() {
     localStorage.removeItem('hypercore_cart_items');
     localStorage.removeItem('hypercore_cart');
     localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('pc_store_cart_owner');
     sessionStorage.removeItem('checkout_addressId');
     sessionStorage.removeItem('checkout_address');
     sessionStorage.removeItem('current_orderId');

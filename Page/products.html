@@ -1533,6 +1533,7 @@
     }
   </style>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
 
 <body>
@@ -1607,13 +1608,51 @@
                 </button>
             </div>
 
-            <!-- ACCOUNT -->
-            <a href="/Login" style="text-decoration: none; color: inherit;" class="header-icon-btn" title="Tài khoản" aria-label="Tài khoản">
+            <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
+            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
                 </svg>
             </a>
+
+            <!-- USER GREETING (hiện khi đã đăng nhập) -->
+            <div class="user-greeting-wrap" id="userGreetingWrap">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-greeting-name">
+                        <em>Xin chào,</em>
+                        <span id="userDisplayName">Người dùng</span>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <span id="dropdownFullName">Người dùng</span>
+                        <small id="dropdownEmail">email@example.com</small>
+                    </div>
+                    <a href="#" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Hồ sơ của tôi
+                    </a>
+                    <a href="/shoppingcart" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Giỏ hàng
+                    </a>
+                    <a href="/payments" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Đơn hàng
+                    </a>
+                    <button class="dropdown-item logout" onclick="handleLogout()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
 
             <!-- CART -->
             <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
@@ -1875,21 +1914,81 @@
   </div>
 
   <script src="/assets/js/cart-helper.js"></script>
+  <script src="/assets/js/auth-ui.js"></script>
   <script>
-    const PRODUCTS = [
-      { id: 1, cat: 'vga', brand: 'ASUS', name: 'ASUS ROG RTX 4090 24GB OC', specs: 'Ada Lovelace · 24GB GDDR6X · 384-bit', price: 45900000, oldPrice: 52000000, rating: 4.9, reviews: 128, stock: 'in', badge: 'hot', img: 'https://placehold.co/300x200/081120/7dd3fc?text=RTX+4090' },
-      { id: 2, cat: 'cpu', brand: 'AMD', name: 'AMD Ryzen 9 7950X', specs: 'Socket AM5 · 16 Nhân 32 Luồng · 5.7GHz', price: 18500000, oldPrice: 22000000, rating: 4.8, reviews: 94, stock: 'in', badge: 'sale', img: 'https://placehold.co/300x200/081120/7dd3fc?text=Ryzen+9+7950X' },
-      { id: 3, cat: 'main', brand: 'ASUS', name: 'ASUS ROG Maximus Z790 Hero', specs: 'LGA1700 · DDR5 · PCIe 5.0', price: 14200000, oldPrice: 16500000, rating: 4.7, reviews: 61, stock: 'low', badge: null, img: 'https://placehold.co/300x200/081120/7dd3fc?text=ROG+Z790' },
-      { id: 4, cat: 'ram', brand: 'Corsair', name: 'Corsair Dominator DDR5 32GB', specs: 'DDR5 · 32GB (2x16) · 6400MHz', price: 4800000, oldPrice: 5500000, rating: 4.6, reviews: 210, stock: 'in', badge: 'new', img: 'https://placehold.co/300x200/081120/7dd3fc?text=DDR5+32GB' },
-      { id: 5, cat: 'ssd', brand: 'Samsung', name: 'Samsung 990 Pro NVMe 2TB', specs: 'PCIe 4.0 · 7450 MB/s · M.2 2280', price: 3200000, oldPrice: 3800000, rating: 4.9, reviews: 445, stock: 'in', badge: null, img: 'https://placehold.co/300x200/081120/7dd3fc?text=Samsung+990+Pro' },
-      { id: 6, cat: 'vga', brand: 'MSI', name: 'MSI Gaming X Trio RTX 4070 Ti', specs: 'Ada Lovelace · 12GB GDDR6X · 192-bit', price: 19500000, oldPrice: 23000000, rating: 4.7, reviews: 77, stock: 'in', badge: 'sale', img: 'https://placehold.co/300x200/081120/7dd3fc?text=RTX+4070+Ti' },
-      { id: 7, cat: 'cpu', brand: 'Intel', name: 'Intel Core i9-14900K', specs: 'LGA1700 · 24 Nhân · 6.0GHz Boost', price: 15900000, oldPrice: 19000000, rating: 4.8, reviews: 132, stock: 'low', badge: null, img: 'https://placehold.co/300x200/081120/7dd3fc?text=i9-14900K' },
-      { id: 8, cat: 'psu', brand: 'Corsair', name: 'Corsair HX1200 Platinum', specs: '1200W · 80+ Platinum · Full Modular', price: 5600000, oldPrice: 6200000, rating: 4.8, reviews: 89, stock: 'in', badge: null, img: 'https://placehold.co/300x200/081120/7dd3fc?text=HX1200+PSU' },
-      { id: 9, cat: 'vga', brand: 'Gigabyte', name: 'Gigabyte RX 7900 XTX Gaming OC', specs: 'RDNA 3 · 24GB GDDR6 · 384-bit', price: 22500000, oldPrice: 26000000, rating: 4.6, reviews: 55, stock: 'out', badge: null, img: 'https://placehold.co/300x200/081120/7dd3fc?text=RX+7900+XTX' },
-      { id: 10, cat: 'main', brand: 'MSI', name: 'MSI MEG X670E ACE', specs: 'Socket AM5 · DDR5 · PCIe 5.0', price: 11900000, oldPrice: 13500000, rating: 4.5, reviews: 43, stock: 'in', badge: 'new', img: 'https://placehold.co/300x200/081120/7dd3fc?text=MSI+X670E' },
-      { id: 11, cat: 'ssd', brand: 'Samsung', name: 'Samsung 870 EVO SATA 1TB', specs: 'SATA III · 560 MB/s · 2.5"', price: 1800000, oldPrice: 2200000, rating: 4.7, reviews: 630, stock: 'in', badge: null, img: 'https://placehold.co/300x200/081120/7dd3fc?text=870+EVO' },
-      { id: 12, cat: 'ram', brand: 'Corsair', name: 'Corsair Vengeance DDR5 64GB', specs: 'DDR5 · 64GB (2x32) · 5600MHz', price: 7200000, oldPrice: 8500000, rating: 4.5, reviews: 38, stock: 'low', badge: 'new', img: 'https://placehold.co/300x200/081120/7dd3fc?text=Vengeance+64GB' },
-    ];
+    // API-loaded products will be stored here
+    let PRODUCTS = [];
+
+    // Category mapping: UI categories to database CategoryIds
+    const CATEGORY_MAP = {
+      'vga': 1,      // Card Đồ Họa
+      'cpu': 2,      // Bộ Vi Xử Lý  
+      'main': 3,     // Mainboard
+      'ram': 4,      // RAM
+      'ssd': 5,      // SSD / Ổ Cứng
+      'psu': 6       // Nguồn / PSU
+    };
+
+    // Reverse mapping: CategoryId to category code
+    const CATEGORY_ID_TO_CODE = Object.fromEntries(
+      Object.entries(CATEGORY_MAP).map(([key, value]) => [value, key])
+    );
+
+    // Function to load products from API
+    async function loadProductsFromAPI() {
+      console.log('[Products] Loading products from API...');
+      
+      try {
+        const response = await fetch('/api/Products?PageSize=100&OnlyActive=true');
+        
+        if (!response.ok) {
+          console.error('[Products] API error:', response.status, response.statusText);
+          return;
+        }
+
+        const data = await response.json();
+        console.log('[Products] API response:', data);
+
+        // Map API response to UI format
+        PRODUCTS = data.items.map(p => {
+          // Determine stock status based on StockQuantity
+          let stock = 'out';
+          if (p.stockQuantity > 10) stock = 'in';
+          else if (p.stockQuantity > 0) stock = 'low';
+
+          // Determine badge (this is simplified - can be enhanced)
+          let badge = null;
+          if (p.discountPrice > 0 && p.discountPrice < p.price) badge = 'sale';
+          
+          // Use default image or placeholder
+          const img = p.defaultImageUrl || `https://placehold.co/300x200/081120/7dd3fc?text=${encodeURIComponent(p.productName.substring(0, 20))}`;
+
+          return {
+            id: p.productId,  // This is the REAL ProductId from database
+            cat: CATEGORY_ID_TO_CODE[p.categoryId] || 'other',
+            brand: p.brandName || 'Unknown',
+            name: p.productName,
+            specs: p.description ? p.description.substring(0, 80) : 'Xem chi tiết để biết thêm',
+            price: p.effectivePrice,
+            oldPrice: (p.discountPrice > 0 && p.discountPrice < p.price) ? p.price : null,
+            rating: p.avgRating || 0,
+            reviews: p.reviewCount || 0,
+            stock: stock,
+            badge: badge,
+            img: img
+          };
+        });
+
+        console.log('[Products] Loaded', PRODUCTS.length, 'products from database');
+        
+        // Update UI with loaded products
+        updateCategoryCounts();
+        applyFiltersAndRender();
+        
+      } catch (error) {
+        console.error('[Products] Error loading products from API:', error);
+      }
+    }
 
     let cartCount = 0;
     let filters = { cat: 'all', brands: [], priceMin: null, priceMax: null, search: '', sort: 'default' };
@@ -2389,14 +2488,22 @@
     });
 
     // Initial startup execution
-    updateCategoryCounts();
-    applyFiltersAndRender();
-    renderCartDrawer();
+    (async function init() {
+      console.log('[Products] Initializing page...');
+      
+      // Load products from API first
+      await loadProductsFromAPI();
+      
+      // Then render cart drawer
+      renderCartDrawer();
 
-    // Sync from DB if user logged in
-    if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
-      syncCartFromDb();
-    }
+      // Sync cart from DB if user logged in
+      if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
+        await syncCartFromDb();
+      }
+      
+      console.log('[Products] Page initialization complete');
+    })();
   </script>
 </body>
 

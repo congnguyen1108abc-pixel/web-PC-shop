@@ -1,0 +1,141 @@
+/* ============================================================ */
+/* AUTH-UI.CSS - STYLES CHO USER GREETING & LOGIN DISPLAY      */
+/* ============================================================ */
+
+/* ----- USER GREETING & DROPDOWN ----- */
+.user-greeting-wrap {
+    position: relative;
+    display: none; /* hiện bằng JS khi đã login */
+    align-items: center;
+}
+
+.user-greeting-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 20px;
+    transition: background 0.2s ease;
+    color: #111111;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.user-greeting-btn:hover {
+    background: rgba(0,0,0,0.06);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #111111;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.user-greeting-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111111;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-greeting-name em {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    color: #555555;
+    display: block;
+    line-height: 1.2;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 16px;
+    padding: 8px;
+    min-width: 200px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 2000;
+}
+
+.user-greeting-wrap.open .user-dropdown {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.dropdown-header {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    margin-bottom: 6px;
+}
+
+.dropdown-header span {
+    font-size: 13px;
+    color: #111111;
+    font-weight: 600;
+    display: block;
+}
+
+.dropdown-header small {
+    font-size: 12px;
+    color: #888888;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #111111;
+    text-decoration: none;
+    transition: background 0.15s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    text-align: left;
+}
+
+.dropdown-item:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.dropdown-item.logout {
+    color: #ef4444;
+    margin-top: 4px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    border-radius: 0 0 10px 10px;
+    padding-top: 12px;
+}
+
+.dropdown-item.logout:hover {
+    background: rgba(239,68,68,0.08);
+}
+
+/* icon link không đăng nhập */
+.account-login-link {
+    display: flex; /* mặc định hiện, ẩn bằng JS khi login */
+}
