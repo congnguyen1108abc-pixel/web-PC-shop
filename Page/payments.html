@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Thanh Toán - HYPER CORE</title>
+    
+    <!-- Auth UI Styles -->
+    <link rel="stylesheet" href="/assets/css/auth-ui.css" />
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -1204,6 +1207,29 @@
     <script src="/assets/js/auth-ui.js"></script>
     <script>
         // ==========================================
+        // 0. AUTHENTICATION CHECK ON PAGE LOAD
+        // ==========================================
+        console.log('[Payments] Checking authentication...');
+        const authToken = localStorage.getItem('pc_store_token');
+        const authUser = localStorage.getItem('pc_store_user');
+        
+        if (!authToken || !authUser) {
+            console.error('[Payments] ❌ Not authenticated - redirecting to login');
+            window.location.href = '/Login?redirect=' + encodeURIComponent(window.location.pathname);
+        } else {
+            console.log('[Payments] ✅ User authenticated');
+            try {
+                const user = JSON.parse(authUser);
+                console.log('[Payments] User ID:', user.userId, '| Email:', user.email);
+            } catch(e) {
+                console.error('[Payments] Invalid user data - redirecting');
+                localStorage.removeItem('pc_store_token');
+                localStorage.removeItem('pc_store_user');
+                window.location.href = '/Login?redirect=' + encodeURIComponent(window.location.pathname);
+            }
+        }
+        
+        // ==========================================
         // 1. CẤU HÌNH DỮ LIỆU ĐỘNG TỪ DATABASE / LOCAL STORAGE
         // ==========================================
         const formatCurrency = (amount) => {
@@ -1221,11 +1247,13 @@
                 try {
                     const user = JSON.parse(userRaw);
                     if (user && user.userId) {
-                        const res = await fetch(`http://localhost:5187/api/Cart/user/${user.userId}`, {
+                        console.log('[Payments] Syncing cart from API for user:', user.userId);
+                        const res = await fetch(`/api/Cart/user/${user.userId}`, {
                             headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                         });
                         if (res.ok) {
                             const dbItems = await res.json();
+                            console.log('[Payments] Cart items from API:', dbItems.length);
                             const localCart = dbItems.map(item => ({
                                 id: item.productId,
                                 cartId: item.cartId,
@@ -1236,10 +1264,12 @@
                                 img: item.defaultImageUrl || ''
                             }));
                             localStorage.setItem('hyper_core_cart', JSON.stringify(localCart));
+                        } else {
+                            console.warn('[Payments] Failed to fetch cart from API:', res.status);
                         }
                     }
                 } catch (e) {
-                    console.warn('Không thể sync giỏ hàng từ DB:', e);
+                    console.warn('[Payments] Không thể sync giỏ hàng từ DB:', e);
                 }
             }
 
@@ -1496,7 +1526,8 @@
                     voucherCode: null
                 };
 
-                const orderResponse = await fetch('http://localhost:5187/api/orders/place', {
+                console.log('[Payments] Placing order with method:', paymentMethod);
+                const orderResponse = await fetch('/api/orders/place', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1507,11 +1538,12 @@
 
                 if (!orderResponse.ok) {
                     const errorData = await orderResponse.json();
+                    console.error('[Payments] Order creation failed:', errorData);
                     alert('Lỗi tạo đơn hàng: ' + (errorData.message || 'Không xác định'));
                     confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
                     confirmPayBtn.disabled = false;
                     return;
-                }
+                }                }
 
                 const orderData = await orderResponse.json();
                 const orderId = orderData.newOrderId;
@@ -1562,7 +1594,8 @@
                     voucherCode: null // Có thể thêm voucher sau
                 };
 
-                const orderResponse = await fetch('http://localhost:5187/api/orders/place', {
+                console.log('[Payments] Creating VNPay order...');
+                const orderResponse = await fetch('/api/orders/place', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1573,6 +1606,7 @@
 
                 if (!orderResponse.ok) {
                     const errorData = await orderResponse.json();
+                    console.error('[Payments] VNPay order creation failed:', errorData);
                     alert('Lỗi tạo đơn hàng: ' + (errorData.message || 'Không xác định'));
                     confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
                     confirmPayBtn.disabled = false;
@@ -1581,6 +1615,7 @@
 
                 const orderData = await orderResponse.json();
                 const orderId = orderData.newOrderId;
+                console.log('[Payments] Order created successfully, ID:', orderId);
 
                 // 4. Tạo payment URL với VNPay
                 confirmPayBtn.innerText = "ĐANG KẾT NỐI VNPAY...";
@@ -1589,11 +1624,12 @@
                     orderID: orderId,
                     amount: totalAmount,
                     orderInfo: `Thanh toan don hang #${orderId} - HYPER CORE`,
-                    returnUrl: 'http://localhost:5187/api/vnpay/return',
+                    returnUrl: window.location.origin + '/api/vnpay/return',
                     locale: 'vn'
                 };
 
-                const vnpayResponse = await fetch('http://localhost:5187/api/vnpay/create-payment', {
+                console.log('[Payments] Creating VNPay payment URL...');
+                const vnpayResponse = await fetch('/api/vnpay/create-payment', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1604,6 +1640,7 @@
 
                 if (!vnpayResponse.ok) {
                     const errorData = await vnpayResponse.json();
+                    console.error('[Payments] VNPay connection failed:', errorData);
                     alert('Lỗi kết nối VNPay: ' + (errorData.message || 'Không xác định'));
                     confirmPayBtn.innerText = "XÁC NHẬN THANH TOÁN";
                     confirmPayBtn.disabled = false;
@@ -1611,6 +1648,7 @@
                 }
 
                 const vnpayData = await vnpayResponse.json();
+                console.log('[Payments] VNPay payment URL received');
 
                 // 5. Redirect sang VNPay để quét QR
                 if (vnpayData.paymentUrl) {

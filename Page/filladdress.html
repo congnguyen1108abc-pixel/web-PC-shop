@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Địa Chỉ Giao Hàng - HYPER CORE</title>
+    
+    <!-- Auth UI Styles -->
+    <link rel="stylesheet" href="/assets/css/auth-ui.css" />
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
@@ -972,7 +975,8 @@
     <script src="/assets/js/cart-helper.js"></script>
     <script src="/assets/js/auth-ui.js"></script>
     <script>
-        const API_BASE = 'http://localhost:5187';
+        // API Base URL - uses relative path for production compatibility
+        const API_BASE = '';
 
         // =========================
         // LOAD ALL PROVINCES (API)
@@ -1612,7 +1616,14 @@
                 console.error('❌ NOT AUTHENTICATED - Redirecting to login');
                 console.error('Token missing:', !token);
                 console.error('UserInfo missing:', !userInfoStr);
-                alert('Vui lòng đăng nhập để tiếp tục thanh toán!');
+                
+                // Check if we're already being redirected to avoid alert spam
+                const urlParams = new URLSearchParams(window.location.search);
+                if (!urlParams.has('redirect')) {
+                    console.log('Showing alert and redirecting...');
+                    alert('Vui lòng đăng nhập để tiếp tục thanh toán!');
+                }
+                
                 const currentPath = window.location.pathname;
                 window.location.href = `/Login?redirect=${encodeURIComponent(currentPath)}`;
                 return;
