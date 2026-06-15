@@ -395,7 +395,7 @@
 
         <!-- SECTION 2: CUSTOM PC BUILDER -->
         <div class="section-header" id="custom-builder-section">
-            <h2>Tự Build cấu hình (Custom Builder)</h2>
+            <h2>TỰ BUILD CẤU HÌNH</h2>
             <div class="line"></div>
         </div>
 
@@ -491,6 +491,135 @@
                         <button class="row-btn" onclick="openDrawer('case')">+</button>
                     </div>
                 </div>
+
+                <!-- BUILD PERFORMANCE SECTION -->
+                <div class="build-performance-section">
+                    <div class="section-header" style="margin-bottom: 24px;">
+                        <h2>HIỆU SUẤT TỐI ĐA</h2>
+                        <div class="line"></div>
+                    </div>
+
+                    <div class="performance-flex-container">
+                        <!-- Left Panel: 3DMark Benchmark Card -->
+                        <div class="benchmark-left-panel">
+                            <div class="timespy-card">
+                                <div class="timespy-image" style="background-image: url('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80');">
+                                    <div class="timespy-badge">3DMARK TIME SPY</div>
+                                </div>
+                                <div class="gauge-container">
+                                    <svg viewBox="0 0 100 50" class="gauge-svg">
+                                        <defs>
+                                            <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="#4facfe" />
+                                                <stop offset="100%" stop-color="#00f2fe" />
+                                            </linearGradient>
+                                        </defs>
+                                        <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8" stroke-linecap="round" />
+                                        <path id="gauge-fill" d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="url(#gaugeGradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="126" stroke-dashoffset="126" />
+                                    </svg>
+                                    <div class="gauge-text">
+                                        <div class="gauge-value" id="timespy-score">-</div>
+                                        <div class="gauge-label">Điểm TimeSpy</div>
+                                    </div>
+                                </div>
+                                <div class="scores-list">
+                                    <div class="score-row">
+                                        <div class="score-info">
+                                            <span>Điểm CPU</span>
+                                            <span id="cpu-score-text">- / 25.000</span>
+                                        </div>
+                                        <div class="score-bar-bg">
+                                            <div class="score-bar-fill cpu-fill" id="cpu-score-fill" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="score-row">
+                                        <div class="score-info">
+                                            <span>Điểm GPU</span>
+                                            <span id="gpu-score-text">- / 50.000</span>
+                                        </div>
+                                        <div class="score-bar-bg">
+                                            <div class="score-bar-fill gpu-fill" id="gpu-score-fill" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="benchmark-desc">
+                                    Điểm số benchmark được ước tính dựa trên hiệu năng phần cứng. Hiệu suất thực tế có thể thay đổi tùy thuộc vào cấu hình hệ thống, trình điều khiển và nhiệt độ.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Panel: Vertical Game Cards Grid -->
+                        <div class="benchmark-right-panel">
+                            <div class="game-fps-grid">
+                                <!-- Game 1: Valorant -->
+                                <div class="game-fps-card" title="Valorant FPS Estimation">
+                                    <div class="game-poster-wrap">
+                                        <div class="game-poster" style="background-image: url('/images/VLRbanner.png');"></div>
+                                    </div>
+                                    <div class="game-info-wrap">
+                                        <div class="game-title">Valorant</div>
+                                        <div class="game-fps"><span id="fps-valorant">--</span> FPS</div>
+                                    </div>
+                                </div>
+
+                                <!-- Game 2: Counter-Strike 2 -->
+                                <div class="game-fps-card" title="Counter-Strike 2 FPS Estimation">
+                                    <div class="game-poster-wrap">
+                                        <div class="game-poster" style="background-image: url('/images/CS2banner.png');"></div>
+                                    </div>
+                                    <div class="game-info-wrap">
+                                        <div class="game-title">Counter-Strike 2</div>
+                                        <div class="game-fps"><span id="fps-cs2">--</span> FPS</div>
+                                    </div>
+                                </div>
+
+                                <!-- Game 3: PUBG -->
+                                <div class="game-fps-card" title="PUBG FPS Estimation">
+                                    <div class="game-poster-wrap">
+                                        <div class="game-poster" style="background-image: url('/images/PUBGbanner.png');"></div>
+                                    </div>
+                                    <div class="game-info-wrap">
+                                        <div class="game-title">PUBG</div>
+                                        <div class="game-fps"><span id="fps-pubg">--</span> FPS</div>
+                                    </div>
+                                </div>
+
+                                <!-- Game 4: Black Myth: Wukong -->
+                                <div class="game-fps-card" title="Black Myth: Wukong FPS Estimation">
+                                    <div class="game-poster-wrap">
+                                        <div class="game-poster" style="background-image: url('/images/BMWKbanner.png');"></div>
+                                    </div>
+                                    <div class="game-info-wrap">
+                                        <div class="game-title">Black Myth: Wukong</div>
+                                        <div class="game-fps"><span id="fps-bmwk">--</span> FPS</div>
+                                    </div>
+                                </div>
+
+                                <!-- Game 5: GTA 5 -->
+                                <div class="game-fps-card" title="GTA 5 FPS Estimation">
+                                    <div class="game-poster-wrap">
+                                        <div class="game-poster" style="background-image: url('/images/GTA5banner.png');"></div>
+                                    </div>
+                                    <div class="game-info-wrap">
+                                        <div class="game-title">GTA 5</div>
+                                        <div class="game-fps"><span id="fps-gta5">--</span> FPS</div>
+                                    </div>
+                                </div>
+
+                                <!-- Game 6: League of Legends -->
+                                <div class="game-fps-card" title="League of Legends FPS Estimation">
+                                    <div class="game-poster-wrap">
+                                        <div class="game-poster" style="background-image: url('/images/LOLbanner.png');"></div>
+                                    </div>
+                                    <div class="game-info-wrap">
+                                        <div class="game-title">League of Legends</div>
+                                        <div class="game-fps"><span id="fps-lol">--</span> FPS</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- RIGHT COLUMN: STICKY CHECKOUT -->
@@ -540,6 +669,66 @@
     </main>
     </div>
 
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <!-- Left Info Column -->
+            <div class="footer-info-col">
+                <div class="footer-logo">
+                    <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                        style="height: 55px; display: block; object-fit: contain; filter: invert(1);">
+                </div>
+            </div>
+
+            <!-- Links Columns -->
+            <div class="footer-links-col">
+                <h4>Linh Kiện</h4>
+                <ul>
+                    <li><a href="/Products?cat=vga">Card Màn Hình (VGA)</a></li>
+                    <li><a href="/Products?cat=cpu">Bộ Vi Xử Lý (CPU)</a></li>
+                    <li><a href="/Products?cat=main">Bo Mạch Chủ (Main)</a></li>
+                    <li><a href="/Products?cat=ram">Bộ Nhớ Trong (RAM)</a></li>
+                    <li><a href="/Products?cat=ssd">SSD / Ổ Cứng</a></li>
+                    <li><a href="/Products?cat=psu">Nguồn / PSU</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Hỗ Trợ</h4>
+                <ul>
+                    <li><a href="#">Liên Hệ</a></li>
+                    <li><a href="#">Câu Hỏi FAQs</a></li>
+                    <li><a href="#">Tải Driver & Software</a></li>
+                    <li><a href="#">Trung Tâm Bảo Hành</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Khám Phá</h4>
+                <ul>
+                    <li><a href="#">Về Chúng Tôi</a></li>
+                    <li><a href="#">Cộng Đồng Discord</a></li>
+                    <li><a href="#">Tin Tức Công Nghệ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Chính Sách</h4>
+                <ul>
+                    <li><a href="#">Chính Sách Giao Hàng</a></li>
+                    <li><a href="#">Chính Sách Giao Hàng</a></li>
+                    <li><a href="#">Chính Sách Đổi Trả</a></li>
+                    <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+                    <li><a href="#">Chính Sách Bảo Mật</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
+        </div>
+    </footer>
+
     <!-- RIGHT COMPONENT DRAWER -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
     <div class="drawer-container" id="drawerContainer">
@@ -576,7 +765,8 @@
             vga: [
                 { id: "vga1", name: "ASUS ROG Strix RTX 4070 Ti Super 16GB", spec: "AURA Sync | DLSS 3 | 3 Fan", price: 26900000 },
                 { id: "vga2", name: "MSI Gaming X Slim RTX 4060 Ti 8GB", spec: "Aesthetic Slim | DLSS 3 | 3 Fan", price: 11500000 },
-                { id: "vga3", name: "Gigabyte GeForce RTX 4080 Super Windforce 16GB", spec: "Heavy Duty | DLSS 3 | 3 Fan", price: 32500000 }
+                { id: "vga3", name: "Gigabyte GeForce RTX 4080 Super Windforce 16GB", spec: "Heavy Duty | DLSS 3 | 3 Fan", price: 32500000 },
+                { id: "vga4", name: "NVIDIA GeForce RTX 4090 Founders Edition 24GB", spec: "Ultimate Power | Ray Tracing | 3 Fan", price: 48900000 }
             ],
             psu: [
                 { id: "psu1", name: "Corsair RM850x 850W", spec: "80 Plus Gold | Full Modular", price: 3600000 },
@@ -616,6 +806,7 @@
         // Initialize Cart badge on load
         document.addEventListener("DOMContentLoaded", () => {
             updateHeaderCartCount();
+            updateBenchmark(0);
         });
 
         // 1. Pre-built add to cart function
@@ -791,6 +982,9 @@
             // Toggle placeholder
             const placeholder = document.getElementById("no-item-placeholder");
             placeholder.style.display = hasItems ? "none" : "block";
+
+            // Update FPS estimation in real-time
+            updateBenchmark(sum);
         }
 
         function resetConfiguration() {
@@ -890,6 +1084,221 @@
             updateHeaderCartCount();
             alert("Đã thêm toàn bộ cấu hình build của bạn vào giỏ hàng thành công!");
             resetConfiguration();
+        }
+
+        // Store current FPS values and benchmark scores to animate from
+        let currentFPS = { valorant: 0, cs2: 0, pubg: 0, bmwk: 0, gta5: 0, lol: 0 };
+        let currentScores = { timespy: 0, cpu: 0, gpu: 0 };
+        let activeResolutionFactor = 1.0;
+
+        function changeResolution(preset, factor, btn) {
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.res-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            // Set factor
+            activeResolutionFactor = factor;
+            
+            // Re-run benchmark update with current sum
+            let sum = 0;
+            Object.keys(selectedComponents).forEach(cat => {
+                const item = selectedComponents[cat];
+                if (item) {
+                    sum += item.price;
+                }
+            });
+            updateBenchmark(sum);
+        }
+
+        function updateBenchmark(totalPrice) {
+            let targetFPS = {
+                valorant: 0,
+                cs2: 0,
+                pubg: 0,
+                bmwk: 0,
+                gta5: 0,
+                lol: 0
+            };
+
+            let targetScores = {
+                timespy: 0,
+                cpu: 0,
+                gpu: 0
+            };
+
+            if (totalPrice > 0) {
+                // Calculate FPS targets based on base price tier
+                if (totalPrice < 15000000) {
+                    targetFPS = {
+                        valorant: 300,
+                        cs2: 150,
+                        pubg: 90,
+                        bmwk: 45,
+                        gta5: 80,
+                        lol: 240
+                    };
+                } else if (totalPrice <= 30000000) {
+                    targetFPS = {
+                        valorant: 500,
+                        cs2: 250,
+                        pubg: 160,
+                        bmwk: 80,
+                        gta5: 144,
+                        lol: 400
+                    };
+                } else {
+                    targetFPS = {
+                        valorant: 700,
+                        cs2: 350,
+                        pubg: 240,
+                        bmwk: 120,
+                        gta5: 200,
+                        lol: 600
+                    };
+                }
+
+                // Apply active resolution factor
+                Object.keys(targetFPS).forEach(game => {
+                    targetFPS[game] = Math.round(targetFPS[game] * activeResolutionFactor);
+                });
+
+                // Calculate estimated TimeSpy, CPU and GPU Scores
+                const maxCpu = 25000;
+                const maxGpu = 50000;
+                
+                targetScores.cpu = Math.min(Math.round(totalPrice / 2500), maxCpu);
+                targetScores.gpu = Math.min(Math.round(totalPrice / 1200), maxGpu);
+                targetScores.timespy = Math.round(targetScores.cpu * 0.4 + targetScores.gpu * 0.6);
+            }
+
+            // Animate each game FPS
+            animateValue("fps-valorant", currentFPS.valorant, targetFPS.valorant, 500);
+            animateValue("fps-cs2", currentFPS.cs2, targetFPS.cs2, 500);
+            animateValue("fps-pubg", currentFPS.pubg, targetFPS.pubg, 500);
+            animateValue("fps-bmwk", currentFPS.bmwk, targetFPS.bmwk, 500);
+            animateValue("fps-gta5", currentFPS.gta5, targetFPS.gta5, 500);
+            animateValue("fps-lol", currentFPS.lol, targetFPS.lol, 500);
+
+            // Animate 3DMark TimeSpy Score (with gauge fill)
+            animateScore("timespy-score", currentScores.timespy, targetScores.timespy, 500, "gauge-fill", 30000);
+
+            // Animate CPU & GPU progress bars
+            animateProgressBar("cpu-score-text", "cpu-score-fill", currentScores.cpu, targetScores.cpu, 25000, 500);
+            animateProgressBar("gpu-score-text", "gpu-score-fill", currentScores.gpu, targetScores.gpu, 50000, 500);
+
+            // Update current stores
+            currentFPS = targetFPS;
+            currentScores = targetScores;
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            
+            if (end === 0) {
+                obj.innerText = "--";
+                return;
+            }
+
+            const startVal = start || 0;
+            const range = end - startVal;
+            if (range === 0) {
+                obj.innerText = end;
+                return;
+            }
+            
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = progress * (2 - progress);
+                const value = Math.floor(startVal + range * easeProgress);
+                obj.innerText = value;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    obj.innerText = end;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        function animateScore(id, start, end, duration, gaugeId, maxVal) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            
+            const startVal = start || 0;
+            const range = end - startVal;
+            const startTime = performance.now();
+            const gaugeEl = document.getElementById(gaugeId);
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = progress * (2 - progress);
+                const value = Math.floor(startVal + range * easeProgress);
+                
+                if (end === 0) {
+                    obj.innerText = "-";
+                    if (gaugeEl) gaugeEl.style.strokeDashoffset = 126;
+                    return;
+                }
+                
+                obj.innerText = value.toLocaleString("vi-VN");
+                if (gaugeEl && maxVal) {
+                    const percent = Math.min(value / maxVal, 1);
+                    gaugeEl.style.strokeDashoffset = 126 * (1 - percent);
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    obj.innerText = end.toLocaleString("vi-VN");
+                    if (gaugeEl && maxVal) {
+                        gaugeEl.style.strokeDashoffset = 126 * (1 - Math.min(end / maxVal, 1));
+                    }
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        function animateProgressBar(textId, fillId, start, end, maxVal, duration) {
+            const txtObj = document.getElementById(textId);
+            const fillObj = document.getElementById(fillId);
+            if (!txtObj || !fillObj) return;
+
+            const startVal = start || 0;
+            const range = end - startVal;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeProgress = progress * (2 - progress);
+                const value = Math.floor(startVal + range * easeProgress);
+
+                if (end === 0) {
+                    txtObj.innerText = `- / ${maxVal.toLocaleString("vi-VN")}`;
+                    fillObj.style.width = "0%";
+                    return;
+                }
+
+                txtObj.innerText = `${value.toLocaleString("vi-VN")} / ${maxVal.toLocaleString("vi-VN")}`;
+                fillObj.style.width = `${(value / maxVal) * 100}%`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    txtObj.innerText = `${end.toLocaleString("vi-VN")} / ${maxVal.toLocaleString("vi-VN")}`;
+                    fillObj.style.width = `${(end / maxVal) * 100}%`;
+                }
+            }
+            requestAnimationFrame(update);
         }
 
         // Header search Expand/Collapse

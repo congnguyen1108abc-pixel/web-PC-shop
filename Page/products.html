@@ -12,9 +12,11 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: var(--font-primary) !important;
     }
 
     :root {
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       --blue-light: #111111;
       --blue: #111111;
       --blue-dark: #111111;
@@ -236,9 +238,9 @@
 
     /* LAYOUT */
     .page-wrapper {
-      padding: 120px 60px 60px;
+      padding: 140px 80px 80px;
       display: flex;
-      gap: 28px;
+      gap: 60px;
       max-width: 1600px;
       margin: 0 auto;
     }
@@ -257,19 +259,19 @@
       border: none;
       border-radius: 0;
       padding: 0;
-      margin-bottom: 24px;
+      margin-bottom: 30px;
     }
 
     .sidebar-box.has-divider {
-      border-bottom: 2px solid #E5E7EB;
-      margin-bottom: 24px;
-      padding-bottom: 24px;
+      border-bottom: none;
+      margin-bottom: 30px;
+      padding-bottom: 0;
     }
 
     .sidebar-box h3 {
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: #111111;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: #000000;
       text-transform: uppercase;
       margin-bottom: 16px;
       font-weight: 700;
@@ -281,7 +283,7 @@
 
     .search-wrap input {
       width: 100%;
-      padding: 10px 0 10px 28px;
+      padding: 10px 0;
       background: transparent;
       border: none;
       border-bottom: 1px solid #E5E7EB;
@@ -303,7 +305,7 @@
 
     .search-icon {
       position: absolute;
-      left: 0;
+      right: 0;
       top: 50%;
       transform: translateY(-50%);
       color: #999999;
@@ -321,69 +323,41 @@
     .filter-group {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 0;
     }
 
     .filter-item {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
       cursor: pointer;
       font-size: 14px;
-      color: var(--text);
+      color: rgba(0, 0, 0, 0.35);
+      line-height: 2.5;
       user-select: none;
       transition: color 0.2s ease;
+      font-weight: 400;
     }
 
     .filter-item:hover {
-      color: #111111;
+      color: #000000;
     }
 
-    .filter-item input {
-      display: none;
+    .filter-item input,
+    .filter-item .custom-check {
+      display: none !important;
     }
 
-    .custom-check {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      border: 1.5px solid #cccccc;
-      background: #ffffff;
-      flex-shrink: 0;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .custom-radio {
-      border-radius: 50%;
-    }
-
-    .filter-item input:checked+.custom-check {
-      border-color: #111111;
-      background: #111111;
-    }
-
-    .filter-item input:checked+.custom-check::after {
-      content: "✓";
-      color: #ffffff;
-      font-size: 11px;
+    .filter-item:has(input:checked) {
+      color: #000000;
       font-weight: 700;
-    }
-
-    .filter-item input[type=radio]:checked+.custom-check::after {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ffffff;
     }
 
     .cat-count {
       margin-left: auto;
       font-size: 11px;
       color: #999999;
+      font-weight: 400;
     }
 
     .price-inputs {
@@ -397,7 +371,7 @@
       padding: 8px 10px;
       background: #ffffff;
       border: 1px solid #eaeaea;
-      border-radius: 8px;
+      border-radius: 4px;
       color: #111111;
       font-size: 13px;
       outline: none;
@@ -419,10 +393,10 @@
     .filter-btn {
       width: 100%;
       padding: 11px;
-      background: #111111;
-      border: none;
-      border-radius: 8px;
-      color: #ffffff;
+      background: transparent;
+      border: 1px solid #111111;
+      border-radius: 4px;
+      color: #111111;
       font-weight: 600;
       cursor: pointer;
       font-size: 14px;
@@ -431,8 +405,9 @@
     }
 
     .filter-btn:hover {
-      background: #333333;
-      transform: translateY(-2px);
+      background: #111111;
+      color: #ffffff;
+      transform: none;
       box-shadow: none;
     }
 
@@ -440,8 +415,8 @@
       width: 100%;
       padding: 9px;
       background: transparent;
-      border: 1px solid #eaeaea;
-      border-radius: 8px;
+      border: 1px solid transparent;
+      border-radius: 4px;
       color: var(--text);
       font-size: 12px;
       cursor: pointer;
@@ -450,7 +425,6 @@
     }
 
     .filter-reset:hover {
-      border-color: #111111;
       color: #111111;
     }
 
@@ -481,14 +455,13 @@
 
     .sort-select {
       padding: 10px 18px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
+      background: transparent;
+      border: 1px solid #eaeaea;
+      border-radius: 4px;
       color: #000000;
       font-size: 13px;
       outline: none;
       cursor: pointer;
-      backdrop-filter: blur(12px);
     }
 
     .sort-select option {
@@ -499,24 +472,25 @@
     .product-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      gap: 40px;
     }
 
     /* PRODUCT CARD */
     .product-card {
-      background: #ffffff;
-      border: 1px solid #eaeaea;
+      background-color: transparent;
+      border: none;
       border-radius: 12px;
       overflow: hidden;
-      transition: all 0.2s ease;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
       position: relative;
       cursor: pointer;
+      box-shadow: none;
     }
 
     .product-card:hover {
-      transform: translateY(-2px);
-      background: #fdfdfd;
-      box-shadow: none;
+      background-color: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      transform: translateY(-5px);
     }
 
     .card-img-wrap {
@@ -541,34 +515,7 @@
     }
 
     .badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .5px;
-      text-transform: uppercase;
-      z-index: 2;
-    }
-
-    .badge-new {
-      background: #eaeaea;
-      border: 1px solid #cccccc;
-      color: #111111;
-    }
-
-    .badge-sale {
-      background: #111111;
-      border: 1px solid #111111;
-      color: #ffffff;
-    }
-
-    .badge-hot {
-      background: #111111;
-      border: 1px solid #111111;
-      color: #ffffff;
+      display: none; /* Xóa bỏ hoàn toàn các chấm màu/badge cũ thô kệch */
     }
 
     .card-body {
@@ -579,17 +526,20 @@
 
     .card-name {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 500; /* Tên sản phẩm dùng font-weight: 500 */
       margin-bottom: 6px;
       line-height: 1.3;
       color: #111111;
     }
 
     .card-specs {
-      font-size: 12px;
-      color: #666666;
+      font-size: 11px; /* Font nhỏ hơn hẳn tên sản phẩm */
+      color: #999999; /* Xám nhẹ */
       margin-bottom: 12px;
       letter-spacing: .4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; /* Tránh bị vỡ hàng, đặt trong một dòng duy nhất */
     }
 
     .card-rating {
@@ -614,15 +564,17 @@
       display: flex;
       align-items: baseline;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 4px; /* Giảm margin để nhường chỗ cho dòng chữ trạng thái ngay dưới giá */
       flex-wrap: wrap;
     }
 
     .price-new {
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 300;
+      font-family: 'Inter', sans-serif;
       color: #111111;
       text-shadow: none;
+      letter-spacing: -0.5px;
     }
 
     .price-old {
@@ -641,51 +593,41 @@
       font-weight: 700;
     }
 
-    .stock-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .stock-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .stock-dot.in {
-      background: var(--green);
-      box-shadow: none;
-    }
-
-    .stock-dot.low {
-      background: var(--gold);
-      box-shadow: none;
-    }
-
-    .stock-dot.out {
-      background: var(--red);
-    }
-
-    .stock-text {
+    .card-status-text {
       font-size: 11px;
-      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      color: #999999; /* màu xám dòng chữ nhỏ ngay dưới giá tiền */
+      margin-bottom: 16px;
+      letter-spacing: 0.2px;
     }
 
     .card-actions {
       display: flex;
       gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-add,
+    .btn-detail {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .product-card:hover .btn-add,
+    .product-card:hover .btn-detail {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .btn-add {
       flex: 1;
-      padding: 11px;
-      background: #111111;
+      padding: 10px 20px;
+      background-color: rgba(31, 41, 55, 0.9); /* Nhám nhẹ */
+      color: #ffffff;
       border: none;
-      color: #FFFFFF;
-      font-weight: 700;
+      font-weight: 500;
       border-radius: 8px;
       cursor: pointer;
       font-size: 13px;
@@ -696,8 +638,9 @@
     }
 
     .btn-add:hover:not([disabled]) {
-      background: #333333;
-      transform: translateY(-2px);
+      background-color: #111827;
+      color: #FFFFFF;
+      transform: none;
       box-shadow: none;
     }
 
@@ -707,6 +650,8 @@
 
     .btn-add.added {
       background: #111111;
+      color: #ffffff;
+      border-color: #111111;
     }
 
     .btn-add[disabled] {
@@ -742,11 +687,11 @@
     .btn-detail {
       flex: 1;
       padding: 11px;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      color: #111111;
-      font-weight: 600;
-      border-radius: 8px;
+      background: transparent;
+      border: 1px solid rgba(0, 0, 0, 0.15); /* Ghost Button */
+      color: rgba(0, 0, 0, 0.6);
+      font-weight: 500;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 13px;
       transition: all 0.2s ease;
@@ -757,8 +702,10 @@
     }
 
     .btn-detail:hover {
-      background: #e5e7eb;
-      transform: translateY(-2px);
+      background: rgba(0, 0, 0, 0.05);
+      color: #000000;
+      border-color: #111111;
+      transform: none;
     }
 
     /* EMPTY STATE */
@@ -874,151 +821,6 @@
       }
     }
 
-    @media(max-width: 560px) {
-      .product-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* ================================================= */
-    /* WLMOUSE STYLE PREMIUM MULTI-COLUMN FOOTER */
-    /* ================================================= */
-
-    .site-footer {
-      background: rgba(255, 255, 255, 0.98);
-      border-top: 1px solid rgba(0, 0, 0, 0.05);
-      padding: 80px 60px 40px;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      position: relative;
-      z-index: 10;
-      margin-top: 80px;
-      /* spacing from the grid wrapper */
-    }
-
-    .footer-container {
-      max-width: 1600px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 2fr repeat(4, 1fr);
-      gap: 40px;
-      margin-bottom: 60px;
-    }
-
-    .footer-info-col {
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-    }
-
-    .footer-logo {
-      font-size: 32px;
-      font-weight: 900;
-      letter-spacing: 4px;
-      background: linear-gradient(90deg, #ffffff, #000000);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      position: relative;
-      padding-left: 15px;
-    }
-
-    .footer-logo::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 15%;
-      height: 70%;
-      width: 4px;
-      background: #000000;
-      border-radius: 2px;
-    }
-
-    .footer-socials {
-      display: flex;
-      gap: 20px;
-    }
-
-    .social-icon {
-      font-size: 20px;
-      color: rgba(0, 0, 0, 0.45);
-      text-decoration: none;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.03);
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
-
-    .social-icon:hover {
-      color: #000000;
-      background: rgba(0, 0, 0, 0.08);
-      border-color: rgba(0, 0, 0, 0.2);
-      transform: translateY(-2px);
-      box-shadow: none;
-    }
-
-    .footer-links-col h4 {
-      font-size: 17px;
-      font-weight: 700;
-      color: #000000;
-      margin-bottom: 22px;
-      text-transform: capitalize;
-      letter-spacing: 0.5px;
-    }
-
-    .footer-links-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 0;
-    }
-
-    .footer-links-col ul li a {
-      font-size: 14px;
-      color: rgba(0, 0, 0, 0.45);
-      text-decoration: none;
-      transition: all 0.2s ease;
-      display: inline-block;
-    }
-
-    .footer-links-col ul li a:hover {
-      color: #000000;
-      transform: translateX(2px);
-      text-shadow: none;
-    }
-
-    .footer-bottom {
-      max-width: 1600px;
-      margin: 0 auto;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
-      padding-top: 30px;
-      text-align: center;
-      font-size: 13px;
-      color: rgba(0, 0, 0, 0.3);
-      letter-spacing: 1px;
-    }
-
-    @media(max-width: 1024px) {
-      .footer-container {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 30px;
-      }
-    }
-
-    @media(max-width: 600px) {
-      .footer-container {
-        grid-template-columns: 1fr;
-        gap: 30px;
-      }
-
-      .site-footer {
-        padding: 50px 24px 30px;
-      }
-    }
 
     /* ========================================== */
     /* PREMIUM CART DRAWER (WLMOUSE STYLE) CSS */
@@ -1573,40 +1375,34 @@
   </div>
 
   <header id="header">
-        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
-            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
-                style="height: 38px; display: block; object-fit: contain;">
-        </div>
+    <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+      <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+        style="height: 38px; display: block; object-fit: contain;">
+    </div>
 
-        <nav>
-            <a href="/Homepage">Trang Chủ</a>
-            <a href="/Products" id="nav-products" class="active">Sản Phẩm</a>
-            <a href="/gaminggear">Gaming Gear</a>
-            <a href="/pcbuild">PC Build</a>
-            <a href="#">Trạng thái đơn hàng</a>
-            <a href="#">Liên Hệ</a>
-        </nav>
+    <nav>
+      <a href="/Homepage">Trang Chủ</a>
+      <a href="/Products" id="nav-products" class="active">Sản Phẩm</a>
+      <a href="/gaminggear">Gaming Gear</a>
+      <a href="/pcbuild">PC Build</a>
+      <a href="#">Trạng thái đơn hàng</a>
+      <a href="#">Liên Hệ</a>
+    </nav>
 
-        <div class="nav-actions">
-            <!-- SEARCH -->
-            <div class="header-search-container" id="headerSearchWrap">
-                <input
-                    type="text"
-                    id="headerSearchInput"
-                    class="header-search-input"
-                    placeholder="Tìm kiếm sản phẩm..."
-                    onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
-                <button
-                    class="header-icon-btn search-toggle-btn"
-                    onclick="toggleHeaderSearch(this)"
-                    title="Tìm kiếm"
-                    aria-label="Tìm kiếm">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                </button>
-            </div>
+    <div class="nav-actions">
+      <!-- SEARCH -->
+      <div class="header-search-container" id="headerSearchWrap">
+        <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Tìm kiếm sản phẩm..."
+          onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+        <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)" title="Tìm kiếm"
+          aria-label="Tìm kiếm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+      </div>
 
             <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
             <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
@@ -1671,9 +1467,10 @@
       <div class="sidebar-box">
         <div class="search-wrap">
           <span class="search-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </span>
           <input type="text" id="searchInput" placeholder="Tìm sản phẩm..." />
@@ -2036,8 +1833,14 @@
       empty.classList.remove('show');
 
       list.forEach((p, i) => {
-        const sInfo = getStockInfo(p.stock);
         const isOut = p.stock === 'out';
+
+        // Xây dựng dòng trạng thái chữ nhỏ dưới giá
+        let statusText = '';
+        if (p.stock === 'low') statusText = 'Số lượng có hạn (Sắp hết)';
+        else if (p.stock === 'out') statusText = 'Tạm hết hàng';
+        else if (p.badge === 'sale') statusText = 'Khuyến mãi đặc biệt';
+        else if (p.badge === 'hot') statusText = 'Bán chạy nhất';
 
         const card = document.createElement('div');
         card.className = 'product-card reveal';
@@ -2046,7 +1849,6 @@
         card.innerHTML = `
           <div class="card-img-wrap">
             <img src="${p.img}" alt="${p.name}" loading="lazy"/>
-            ${getBadgeHTML(p.badge)}
           </div>
           <div class="card-body">
             <div class="card-name">${p.name}</div>
@@ -2059,10 +1861,7 @@
               <span class="price-new">${formatPrice(p.price)}</span>
               ${p.oldPrice ? `<span class="price-old">${formatPrice(p.oldPrice)}</span><span class="discount-tag">-${calcDiscount(p.price, p.oldPrice)}%</span>` : ''}
             </div>
-            <div class="stock-row">
-              <span class="stock-dot ${sInfo.dot}"></span>
-              <span class="stock-text">${sInfo.txt}</span>
-            </div>
+            <div class="card-status-text">${statusText || '&nbsp;'}</div>
             <div class="card-actions">
               <button class="btn-add" data-name="${p.name}" ${isOut ? 'disabled' : ''}>
                 <span class="btn-text">${isOut ? 'Hết hàng' : 'Thêm vào giỏ'}</span>
@@ -2496,6 +2295,8 @@
       
       // Then render cart drawer
       renderCartDrawer();
+      updateCategoryCounts();
+      applyFiltersAndRender();
 
       // Sync cart from DB if user logged in
       if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
@@ -2503,6 +2304,34 @@
       }
       
       console.log('[Products] Page initialization complete');
+
+      // Local file protocol adjustments
+      if (window.location.protocol === 'file:') {
+        document.querySelectorAll("a").forEach(a => {
+          const href = a.getAttribute("href");
+          if (href && href.startsWith("/")) {
+            const path = href.toLowerCase();
+            if (path === '/homepage') a.href = 'homepage.html';
+            else if (path.startsWith('/products')) a.href = 'products.html';
+            else if (path === '/gaminggear') a.href = 'gaminggear.html';
+            else if (path === '/pcbuild') a.href = 'pcbuild.html';
+            else if (path === '/login') a.href = 'login.html';
+            else if (path === '/shoppingcart') a.href = 'shoppingcart.html';
+          }
+        });
+        document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
+          const href = link.getAttribute("href");
+          if (href && href.startsWith("/")) {
+            link.href = "../wwwroot" + href;
+          }
+        });
+        document.querySelectorAll("img").forEach(img => {
+          const src = img.getAttribute("src");
+          if (src && src.startsWith("/")) {
+            img.src = "../wwwroot" + src;
+          }
+        });
+      }
     })();
   </script>
 </body>
