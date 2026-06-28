@@ -2,7 +2,7 @@
 // CART-HELPER.JS - QUẢN LÝ GIỎ HÀNG ĐỒNG BỘ VỚI DATABASE REST API
 // ============================================================
 
-const CART_API_BASE = 'http://localhost:5187/api';
+const CART_API_BASE = window.location.origin + '/api';
 
 /**
  * Kiểm tra người dùng đã đăng nhập chưa
@@ -112,12 +112,20 @@ async function syncCartFromDb() {
  * Thêm sản phẩm vào giỏ hàng (DB + Local)
  */
 async function addToCartHelper(productId, quantity = 1) {
-    console.log('=== ADD TO CART ===');
-    console.log('Product ID:', productId, 'Quantity:', quantity);
-    console.log('User logged in:', isUserLoggedIn());
+    console.log('===========================================');
+    console.log('🛒 ADD TO CART - START');
+    console.log('===========================================');
+    console.log('📦 Product ID:', productId);
+    console.log('📊 Quantity:', quantity);
+    console.log('🔐 User logged in:', isUserLoggedIn());
+    console.log('🌐 Current URL:', window.location.href);
+    console.log('🔗 API Base:', CART_API_BASE);
     
     if (!isUserLoggedIn()) {
-        console.log('Guest mode - Adding to localStorage only');
+        console.log('👤 GUEST MODE - Adding to localStorage only');
+        console.warn('⚠️  NOTE: Changes will NOT be saved to database');
+        console.log('-------------------------------------------');
+        
         // Chưa đăng nhập: thêm vào LocalStorage như bình thường
         let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
         // Lọc bỏ sản phẩm pre-seed nếu có
@@ -126,7 +134,7 @@ async function addToCartHelper(productId, quantity = 1) {
         const existing = cart.find(item => item.id === productId);
         if (existing) {
             existing.qty += quantity;
-            console.log('Updated existing item quantity:', existing.qty);
+            console.log('✅ Updated existing item quantity:', existing.qty);
         } else {
             // Tìm thông tin sản phẩm từ danh sách PRODUCTS (nếu có ở trang hiện tại)
             let prodName = "Sản phẩm";
@@ -141,7 +149,7 @@ async function addToCartHelper(productId, quantity = 1) {
                     prodSpecs = p.specs || "";
                     prodPrice = p.price;
                     prodImg = p.img;
-                    console.log('Found product in PRODUCTS:', prodName);
+                    console.log('✅ Found product in PRODUCTS:', prodName);
                 }
             } else if (typeof RECOMMEND_PRODUCTS !== 'undefined') {
                 const p = RECOMMEND_PRODUCTS.find(x => x.id === productId);
@@ -150,7 +158,7 @@ async function addToCartHelper(productId, quantity = 1) {
                     prodSpecs = p.specs || "";
                     prodPrice = p.price;
                     prodImg = p.img;
-                    console.log('Found product in RECOMMEND_PRODUCTS:', prodName);
+                    console.log('✅ Found product in RECOMMEND_PRODUCTS:', prodName);
                 }
             }
 
@@ -163,7 +171,7 @@ async function addToCartHelper(productId, quantity = 1) {
                 qty: quantity,
                 img: prodImg
             });
-            console.log('Added new item to cart:', prodName);
+            console.log('✅ Added new item to cart:', prodName);
         }
         localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
         localStorage.setItem('pc_store_cart_owner', 'guest');
@@ -181,7 +189,9 @@ async function addToCartHelper(productId, quantity = 1) {
 
         updateHeaderCartCount();
         window.dispatchEvent(new CustomEvent('cartSynced', { detail: cart }));
-        console.log('✓ Cart updated successfully (guest mode)');
+        console.log('✅ Cart updated successfully (guest mode)');
+        console.log('💾 Total items in cart:', cart.length);
+        console.log('===========================================');
         return true;
     }
 
@@ -189,11 +199,18 @@ async function addToCartHelper(productId, quantity = 1) {
     const user = getCartUser();
     const token = getCartToken();
     
-    console.log('Logged-in mode - Adding to database');
-    console.log('User ID:', user?.userId);
+    console.log('🔐 LOGGED-IN MODE - Adding to database');
+    console.log('-------------------------------------------');
+    console.log('👤 User ID:', user?.userId);
+    console.log('👤 User Name:', user?.fullName);
+    console.log('📧 User Email:', user?.email);
+    console.log('🎫 Token present:', !!token);
+    console.log('🎫 Token length:', token ? token.length : 0);
     
     if (!user || !user.userId) {
-        console.error('❌ User info invalid - cannot add to cart');
+        console.error('❌ ERROR: User info invalid - cannot add to cart');
+        console.error('❌ User object:', user);
+        console.log('===========================================');
         return false;
     }
     
@@ -202,10 +219,22 @@ async function addToCartHelper(productId, quantity = 1) {
         productId: parseInt(productId),
         quantity: parseInt(quantity)
     };
-    console.log('API Request:', requestData);
+    
+    const apiUrl = `${CART_API_BASE}/Cart/add`;
+    
+    console.log('📡 API Request Details:');
+    console.log('   URL:', apiUrl);
+    console.log('   Method: POST');
+    console.log('   Headers:', {
+        'Authorization': `Bearer ${token.substring(0, 20)}...`,
+        'Content-Type': 'application/json'
+    });
+    console.log('   Body:', requestData);
+    console.log('-------------------------------------------');
     
     try {
-        const response = await fetch(`${CART_API_BASE}/Cart/add`, {
+        console.log('⏳ Sending request to API...');
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -214,21 +243,50 @@ async function addToCartHelper(productId, quantity = 1) {
             body: JSON.stringify(requestData)
         });
 
-        console.log('API Response status:', response.status);
+        console.log('📬 API Response received');
+        console.log('   Status:', response.status, response.statusText);
+        console.log('   OK:', response.ok);
+        console.log('-------------------------------------------');
         
         if (response.ok) {
             const responseData = await response.json();
-            console.log('✓ API Response data:', responseData);
+            console.log('✅ SUCCESS - API Response data:', responseData);
+            console.log('🔄 Syncing cart from database...');
             await syncCartFromDb();
-            console.log('✓ Cart synced from database - Thêm vào giỏ hàng thành công!');
+            console.log('✅ Cart synced from database successfully!');
+            console.log('🎉 Product added to cart and saved to database!');
+            console.log('===========================================');
             return true;
         } else {
             const errorText = await response.text();
-            console.error('❌ API Error:', response.status, errorText);
+            console.error('❌ API ERROR');
+            console.error('   Status:', response.status);
+            console.error('   Status Text:', response.statusText);
+            console.error('   Response Body:', errorText);
+            console.error('-------------------------------------------');
+            
+            // Parse error message if possible
+            try {
+                const errorJson = JSON.parse(errorText);
+                console.error('   Error Message:', errorJson.message || errorJson);
+            } catch (e) {
+                console.error('   Raw Error:', errorText);
+            }
+            
+            console.log('===========================================');
             return false;
         }
     } catch (error) {
-        console.error('❌ Network error adding to cart:', error);
+        console.error('❌ NETWORK ERROR');
+        console.error('   Error:', error.message);
+        console.error('   Stack:', error.stack);
+        console.error('-------------------------------------------');
+        console.error('💡 TROUBLESHOOTING:');
+        console.error('   1. Check if server is running');
+        console.error('   2. Check if API endpoint is correct');
+        console.error('   3. Check network connection');
+        console.error('   4. Check CORS settings');
+        console.log('===========================================');
         return false;
     }
 }

@@ -1,10 +1,12 @@
 using Google.GenAI;
+using PC_Store.DTOs.Chat;
 
 namespace PC_Store.Services
 {
     public interface IChatbotService
     {
-        Task<string> GetChatbotResponse(string userMessage);
+        Task<string> GetChatbotResponse(string userMessage, IEnumerable<ChatHistoryItem> history);
+        Task<string> GetContextualGreetingAsync(ContextualGreetingRequest request);
     }
 
     public class ChatbotService : IChatbotService
@@ -18,15 +20,28 @@ namespace PC_Store.Services
             _systemPrompt = GetSystemPrompt();
         }
 
-        public async Task<string> GetChatbotResponse(string userMessage)
+        public async Task<string> GetChatbotResponse(string userMessage, IEnumerable<ChatHistoryItem> history)
         {
             try
             {
+                // Format history
+                string historyText = "";
+                if (history != null && history.Any())
+                {
+                    historyText = "--- LỊCH SỬ HỘI THOẠI (Hãy dựa vào lịch sử này để duy trì mạch hội thoại và đại từ xưng hô) ---\n";
+                    foreach (var h in history.OrderBy(x => x.CreatedAt))
+                    {
+                        historyText += $"[Khách hàng]: {h.UserMessage}\n";
+                        historyText += $"[Trợ lý AI]: {h.BotResponse}\n\n";
+                    }
+                }
+
                 var fullPrompt = $@"{_systemPrompt}
 
 {GetKnowledgeBase()}
 
---- CÂU HỎI CỦA KHÁCH HÀNG ---
+{historyText}
+--- CÂU HỎI MỚI CỦA KHÁCH HÀNG ---
 {userMessage}";
 
                 var response = await _client.Models.GenerateContentAsync(
@@ -46,6 +61,59 @@ namespace PC_Store.Services
             catch (Exception ex)
             {
                 return $"Lỗi kết nối: {ex.Message}";
+            }
+        }
+
+        public async Task<string> GetContextualGreetingAsync(ContextualGreetingRequest request)
+        {
+            try
+            {
+                string contextPrompt = "";
+                if (!string.IsNullOrEmpty(request.ProductName))
+                {
+                    if (request.PageType == "ProductDetail")
+                    {
+                        contextPrompt = $"Khách hàng đang xem chi tiết sản phẩm: {request.ProductName}. Hãy chào họ thân thiện và hỏi xem có cần tư vấn chi tiết về sản phẩm này (hiệu năng, thông số, nguồn đi kèm, bo mạch tương thích) không.";
+                    }
+                    else
+                    {
+                        contextPrompt = $"Khách hàng vừa xem sản phẩm: {request.ProductName} và hiện đang di chuyển qua trang khác ({request.PageType}). Hãy chào họ, chủ động nhắc lại rằng bạn thấy họ vừa xem sản phẩm này (ví dụ: 'Tôi thấy bạn vừa xem sản phẩm {request.ProductName}...') và hỏi xem họ có cần hỗ trợ tư vấn linh kiện hoặc giải đáp thắc mắc gì thêm không.";
+                    }
+                }
+                else if (request.PageType == "ShoppingCart")
+                {
+                    contextPrompt = "Khách hàng đang ở trang Giỏ hàng. Hãy tạo một câu chào thân thiện, nhắc nhở họ về chương trình khuyến mãi hiện có (mua 2 giảm 5%, mua 3 giảm 10%) và chủ động hỏi xem có cần tư vấn thêm linh kiện khác để tối ưu cấu hình và nhận ưu đãi không.";
+                }
+                else if (request.PageType == "PCBuild")
+                {
+                    contextPrompt = "Khách hàng đang ở trang tự xây dựng cấu hình PC Build. Hãy tạo một câu chào chủ động, đề xuất kiểm tra tính tương thích giữa các linh kiện (CPU, Mainboard, RAM, Nguồn) và hỏi xem họ có cần tư vấn cấu hình tối ưu trong tầm giá không.";
+                }
+                else
+                {
+                    contextPrompt = "Khách hàng đang xem trang web của chúng tôi. Hãy gửi lời chào nhiệt tình từ PC Store và hỏi xem họ đang tìm kiếm dòng PC, Laptop hay linh kiện công nghệ nào hôm nay.";
+                }
+
+                var fullPrompt = $@"{_systemPrompt}
+
+{GetKnowledgeBase()}
+
+--- YÊU CẦU NGỮ CẢNH ---
+{contextPrompt}
+
+LƯU Ý: Tạo câu chào ngắn gọn (khoảng 2-3 câu), tự nhiên, hướng đến đúng ngữ cảnh sản phẩm/trang họ đang xem.";
+
+                var response = await _client.Models.GenerateContentAsync(
+                    model: "gemini-2.5-flash",
+                    contents: fullPrompt
+                );
+
+                return response?.Text ?? $"Chào bạn! Tôi thấy bạn đang quan tâm đến sản phẩm {request.ProductName}. Bạn có cần tôi tư vấn gì thêm không?";
+            }
+            catch (Exception)
+            {
+                return !string.IsNullOrEmpty(request.ProductName)
+                    ? $"Chào bạn! Tôi thấy bạn đang quan tâm đến sản phẩm {request.ProductName}. Bạn có cần tôi tư vấn về hiệu năng chơi game hoặc linh kiện đi kèm phù hợp không?"
+                    : "Chào bạn! Tôi có thể hỗ trợ gì cho bạn về sản phẩm và cấu hình PC hôm nay?";
             }
         }
 

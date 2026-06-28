@@ -784,7 +784,7 @@
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                         Giỏ hàng
                     </a>
-                    <a href="/payments" class="dropdown-item">
+                    <a href="/checkout" class="dropdown-item">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                         Đơn hàng
                     </a>
@@ -947,140 +947,152 @@
 
   <script>
     // ============================================================
-    // PRODUCTS DATA (đồng bộ với products.html)
-    // ============================================================
-    const PRODUCTS = [
-      { id: 1, cat: 'vga', brand: 'ASUS', name: 'ASUS ROG RTX 4090 24GB OC', specs: 'Ada Lovelace · 24GB GDDR6X · 384-bit', price: 45900000, oldPrice: 52000000, rating: 4.9, reviews: 128, stock: 'in', badge: 'hot', img: 'https://placehold.co/800x560/ffffff/000000?text=RTX+4090' },
-      { id: 2, cat: 'cpu', brand: 'AMD', name: 'AMD Ryzen 9 7950X', specs: 'Socket AM5 · 16 Nhân 32 Luồng · 5.7GHz', price: 18500000, oldPrice: 22000000, rating: 4.8, reviews: 94, stock: 'in', badge: 'sale', img: 'https://placehold.co/800x560/ffffff/000000?text=Ryzen+9+7950X' },
-      { id: 3, cat: 'main', brand: 'ASUS', name: 'ASUS ROG Maximus Z790 Hero', specs: 'LGA1700 · DDR5 · PCIe 5.0', price: 14200000, oldPrice: 16500000, rating: 4.7, reviews: 61, stock: 'low', badge: null, img: 'https://placehold.co/800x560/ffffff/000000?text=ROG+Z790' },
-      { id: 4, cat: 'ram', brand: 'Corsair', name: 'Corsair Dominator DDR5 32GB', specs: 'DDR5 · 32GB (2x16) · 6400MHz', price: 4800000, oldPrice: 5500000, rating: 4.6, reviews: 210, stock: 'in', badge: 'new', img: 'https://placehold.co/800x560/ffffff/000000?text=DDR5+32GB' },
-      { id: 5, cat: 'ssd', brand: 'Samsung', name: 'Samsung 990 Pro NVMe 2TB', specs: 'PCIe 4.0 · 7450 MB/s · M.2 2280', price: 3200000, oldPrice: 3800000, rating: 4.9, reviews: 445, stock: 'in', badge: null, img: 'https://placehold.co/800x560/ffffff/000000?text=Samsung+990+Pro' },
-      { id: 6, cat: 'vga', brand: 'MSI', name: 'MSI Gaming X Trio RTX 4070 Ti', specs: 'Ada Lovelace · 12GB GDDR6X · 192-bit', price: 19500000, oldPrice: 23000000, rating: 4.7, reviews: 77, stock: 'in', badge: 'sale', img: 'https://placehold.co/800x560/ffffff/000000?text=RTX+4070+Ti' },
-      { id: 7, cat: 'cpu', brand: 'Intel', name: 'Intel Core i9-14900K', specs: 'LGA1700 · 24 Nhân · 6.0GHz Boost', price: 15900000, oldPrice: 19000000, rating: 4.8, reviews: 132, stock: 'low', badge: null, img: 'https://placehold.co/800x560/ffffff/000000?text=i9-14900K' },
-      { id: 8, cat: 'psu', brand: 'Corsair', name: 'Corsair HX1200 Platinum', specs: '1200W · 80+ Platinum · Full Modular', price: 5600000, oldPrice: 6200000, rating: 4.8, reviews: 89, stock: 'in', badge: null, img: 'https://placehold.co/800x560/ffffff/000000?text=HX1200+PSU' },
-      { id: 9, cat: 'vga', brand: 'Gigabyte', name: 'Gigabyte RX 7900 XTX Gaming OC', specs: 'RDNA 3 · 24GB GDDR6 · 384-bit', price: 22500000, oldPrice: 26000000, rating: 4.6, reviews: 55, stock: 'out', badge: null, img: 'https://placehold.co/800x560/ffffff/000000?text=RX+7900+XTX' },
-      { id: 10, cat: 'main', brand: 'MSI', name: 'MSI MEG X670E ACE', specs: 'Socket AM5 · DDR5 · PCIe 5.0', price: 11900000, oldPrice: 13500000, rating: 4.5, reviews: 43, stock: 'in', badge: 'new', img: 'https://placehold.co/800x560/ffffff/000000?text=MSI+X670E' },
-      { id: 11, cat: 'ssd', brand: 'Samsung', name: 'Samsung 870 EVO SATA 1TB', specs: 'SATA III · 560 MB/s · 2.5"', price: 1800000, oldPrice: 2200000, rating: 4.7, reviews: 630, stock: 'in', badge: null, img: 'https://placehold.co/800x560/ffffff/000000?text=870+EVO' },
-      { id: 12, cat: 'ram', brand: 'Corsair', name: 'Corsair Vengeance DDR5 64GB', specs: 'DDR5 · 64GB (2x32) · 5600MHz', price: 7200000, oldPrice: 8500000, rating: 4.5, reviews: 38, stock: 'low', badge: 'new', img: 'https://placehold.co/800x560/ffffff/000000?text=Vengeance+64GB' },
-    ];
-
-    // ============================================================
     // HELPERS
     // ============================================================
     const fmt = n => n.toLocaleString('vi-VN') + ' ₫';
-    const calcDiscount = (p, o) => Math.round((1 - p / o) * 100);
     const getStars = r => '★'.repeat(Math.floor(r)) + (r % 1 >= 0.5 ? '½' : '') + '☆'.repeat(5 - Math.floor(r) - (r % 1 >= 0.5 ? 1 : 0));
 
-    // Category label map
-    const CAT_LABEL = { vga: 'VGA / Card Đồ Họa', cpu: 'CPU / Bộ Vi Xử Lý', main: 'Mainboard', ram: 'RAM', ssd: 'SSD / Ổ Cứng', psu: 'Nguồn / PSU' };
-
-    // Quick-spec icons & labels per category
-    const SPEC_MAP = {
-      vga: [{ icon: '🎮', label: 'Loại GPU', key: 'brand' }, { icon: '📡', label: 'Bus', key: 'bus' }, { icon: '⚡', label: 'TDP', key: 'tdp' }, { icon: '🔌', label: 'Giao Tiếp', key: 'pcie' }],
-      cpu: [{ icon: '🧠', label: 'Socket', key: 'socket' }, { icon: '⚡', label: 'Tốc Độ', key: 'speed' }, { icon: '📡', label: 'Nhân', key: 'cores' }, { icon: '🔋', label: 'TDP', key: 'tdp' }],
-      main: [{ icon: '🗂️', label: 'Chipset', key: 'chip' }, { icon: '📡', label: 'Socket', key: 'socket' }, { icon: '💾', label: 'RAM', key: 'ram' }, { icon: '⚡', label: 'PCIe', key: 'pcie' }],
-      ram: [{ icon: '💾', label: 'Loại RAM', key: 'type' }, { icon: '⚡', label: 'Tốc Độ', key: 'speed' }, { icon: '📦', label: 'Dung Lượng', key: 'cap' }, { icon: '🔌', label: 'Số Thanh', key: 'sticks' }],
-      ssd: [{ icon: '💽', label: 'Giao Tiếp', key: 'pcie' }, { icon: '⚡', label: 'Đọc/Ghi', key: 'speed' }, { icon: '📦', label: 'Form Factor', key: 'form' }, { icon: '🏭', label: 'Hãng', key: 'brand' }],
-      psu: [{ icon: '🔋', label: 'Công Suất', key: 'watt' }, { icon: '🏅', label: 'Chuẩn', key: 'cert' }, { icon: '🔌', label: 'Modular', key: 'modular' }, { icon: '🌡️', label: 'Hãng', key: 'brand' }],
-    };
-
-    // Parse specs string into key-value from pattern "key · key · ..."
-    function parseSpecs(specsStr, cat) {
-      const parts = specsStr.split('·').map(s => s.trim());
-      const map = SPEC_MAP[cat] || SPEC_MAP['vga'];
-      return map.map((def, i) => ({ icon: def.icon, label: def.label, value: parts[i] || '—' }));
-    }
-
-    // Stock display
-    function stockInfo(s) {
-      if (s === 'in') return { icon: '✓', text: 'Còn hàng', cls: '#22d3a0' };
-      if (s === 'low') return { icon: '⚠', text: 'Sắp hết', cls: '#fbbf24' };
-      return { icon: '✕', text: 'Hết hàng', cls: '#f87171' };
-    }
-
     // ============================================================
-    // POPULATE PAGE
+    // LOAD PRODUCT DETAILS DYNAMICALLY FROM API
     // ============================================================
-    function populatePage(p) {
-      // Page title
-      document.title = `HYPER CORE - ${p.name}`;
-
-      // Breadcrumb
-      document.getElementById('bc-cat').textContent = CAT_LABEL[p.cat] || p.cat;
-      document.getElementById('bc-cat').href = `/Products`;
-      document.getElementById('bc-name').textContent = p.name;
-
-      // Product name
-      document.getElementById('pd-name').textContent = p.name;
-
-      // Rating & stock
-      const st = stockInfo(p.stock);
-      document.getElementById('pd-stars').textContent = getStars(p.rating);
-      document.getElementById('pd-rating').textContent = `${p.rating} (${p.reviews} đánh giá)`;
-      document.getElementById('pd-stock').textContent = `${st.icon} ${st.text}`;
-      document.getElementById('pd-stock').style.color = st.cls;
-
-      // Price
-      document.getElementById('pd-price').textContent = fmt(p.price);
-      if (p.oldPrice) {
-        document.getElementById('pd-old').textContent = fmt(p.oldPrice);
-        document.getElementById('pd-disc').textContent = `-${calcDiscount(p.price, p.oldPrice)}%`;
-        document.getElementById('pd-old').style.display = '';
-        document.getElementById('pd-disc').style.display = '';
-      } else {
-        document.getElementById('pd-old').style.display = 'none';
-        document.getElementById('pd-disc').style.display = 'none';
+    async function loadProductDetails() {
+      // 1. Get slug from path or id from query parameter
+      const pathParts = window.location.pathname.split('/');
+      let slug = '';
+      if (pathParts.length >= 3 && pathParts[pathParts.length - 2] === 'product') {
+        slug = pathParts[pathParts.length - 1];
       }
 
-      // Quick specs
-      const specBoxes = document.querySelectorAll('.spec-box');
-      const specs = parseSpecs(p.specs, p.cat);
-      specs.forEach((s, i) => {
-        if (!specBoxes[i]) return;
-        specBoxes[i].querySelector('.spec-icon').textContent = s.icon;
-        specBoxes[i].querySelector('.spec-label').textContent = s.label;
-        specBoxes[i].querySelector('.spec-value').textContent = s.value;
-      });
+      const params = new URLSearchParams(window.location.search);
+      const idParam = params.get('id');
 
-      // Main image (gallery) — populate vào media-frame
-      const mainImg = document.getElementById('mainImg');
-      mainImg.src = p.img;
-      mainImg.alt = p.name;
+      let apiUrl = '';
+      if (slug) {
+        apiUrl = `/api/Products/slug/${slug}`;
+      } else if (idParam) {
+        apiUrl = `/api/Products/${idParam}`;
+      } else {
+        window.location.href = '/Products';
+        return;
+      }
 
-      // Thumbnails — generate 4 angle views
-      const thumbContainer = document.getElementById('thumbnails');
-      thumbContainer.innerHTML = '';
-      const angles = ['Front', 'Side', 'Top', 'Detail'];
-      angles.forEach((angle, i) => {
-        const bigSrc = `https://placehold.co/800x560/ffffff/000000?text=${encodeURIComponent(p.name + ' - ' + angle)}`;
-        const thumbSrc = `https://placehold.co/160x160/f3f4f6/111827?text=${encodeURIComponent(angle)}`;
-        const div = document.createElement('div');
-        div.className = 'thumb' + (i === 0 ? ' active' : '');
-        div.onclick = function () { changeImg(this, bigSrc); };
-        div.innerHTML = `<img src="${thumbSrc}" alt="${angle}"/>`;
-        thumbContainer.appendChild(div);
-      });
-      // Reset main to product image
-      mainImg.src = p.img;
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          console.error('Failed to fetch product details:', response.statusText);
+          window.location.href = '/Products';
+          return;
+        }
 
-      // Store product for cart
-      window._productName = p.name;
-      window._productPrice = p.price;
+        const data = await response.json();
+        console.log('Loaded product details:', data);
+
+        const p = data.header;
+        const images = data.images;
+        const attributes = data.attributes;
+
+        // Store globally for cart
+        window.product = {
+          id: p.productId,
+          name: p.productName,
+          price: p.effectivePrice
+        };
+
+        // Render main info
+        document.title = `HYPER CORE - ${p.productName}`;
+        document.getElementById('bc-cat').textContent = p.categoryName || 'Sản phẩm';
+        document.getElementById('bc-cat').href = `/Products`;
+        document.getElementById('bc-name').textContent = p.productName;
+        document.getElementById('pd-name').textContent = p.productName;
+
+        // Rating & Stock
+        let stockCls = '#22d3a0';
+        let stockTxt = 'Còn hàng';
+        let stockIcon = '✓';
+        if (p.stockQuantity <= 0) {
+          stockCls = '#f87171';
+          stockTxt = 'Hết hàng';
+          stockIcon = '✕';
+        } else if (p.stockQuantity <= 10) {
+          stockCls = '#fbbf24';
+          stockTxt = 'Sắp hết';
+          stockIcon = '⚠';
+        }
+
+        document.getElementById('pd-stars').textContent = getStars(p.avgRating || 5);
+        document.getElementById('pd-rating').textContent = `${p.avgRating || 5} (${p.reviewCount || 0} đánh giá)`;
+        document.getElementById('pd-stock').textContent = `${stockIcon} ${stockTxt}`;
+        document.getElementById('pd-stock').style.color = stockCls;
+
+        // Price
+        document.getElementById('pd-price').textContent = fmt(p.effectivePrice);
+        if (p.discountPrice > 0 && p.discountPrice < p.price) {
+          document.getElementById('pd-old').textContent = fmt(p.price);
+          document.getElementById('pd-disc').textContent = `-${Math.round((1 - p.discountPrice / p.price) * 100)}%`;
+          document.getElementById('pd-old').style.display = '';
+          document.getElementById('pd-disc').style.display = '';
+        } else {
+          document.getElementById('pd-old').style.display = 'none';
+          document.getElementById('pd-disc').style.display = 'none';
+        }
+
+        // Specs Grid
+        const specBoxes = document.querySelectorAll('.spec-box');
+        specBoxes.forEach(box => box.style.display = 'none'); // Hide all first
+
+        // Set icons map
+        const iconMap = {
+          'gpu': '🎮', 'vga': '🎮', 'cpu': '🧠', 'vi xử lý': '🧠',
+          'socket': '⚡', 'mainboard': '🗂️', 'ram': '💾', 'ssd': '💽',
+          'ổ cứng': '💽', 'nguồn': '🔋', 'psu': '🔋', 'công suất': '🔋'
+        };
+
+        attributes.forEach((attr, i) => {
+          if (i < specBoxes.length) {
+            const box = specBoxes[i];
+            box.style.display = 'flex';
+            
+            // Match icon based on attribute name
+            const lowerName = attr.attributeName.toLowerCase();
+            let icon = '⚡';
+            for (const key in iconMap) {
+              if (lowerName.includes(key)) {
+                icon = iconMap[key];
+                break;
+              }
+            }
+
+            box.querySelector('.spec-icon').textContent = icon;
+            box.querySelector('.spec-label').textContent = attr.attributeName;
+            box.querySelector('.spec-value').textContent = attr.attributeValue;
+          }
+        });
+
+        // Main image
+        const mainImg = document.getElementById('mainImg');
+        const defaultImg = images.find(img => img.isDefault)?.imageUrl || (images[0]?.imageUrl || `https://placehold.co/800x560/ffffff/000000?text=${encodeURIComponent(p.productName)}`);
+        mainImg.src = defaultImg;
+        mainImg.alt = p.productName;
+
+        // Thumbnails
+        const thumbContainer = document.getElementById('thumbnails');
+        thumbContainer.innerHTML = '';
+        images.forEach((img, i) => {
+          const div = document.createElement('div');
+          div.className = 'thumb' + (img.isDefault || (i === 0 && !images.some(im => im.isDefault)) ? ' active' : '');
+          div.onclick = function () { changeImg(this, img.imageUrl); };
+          div.innerHTML = `<img src="${img.imageUrl}" alt="${img.altText || p.productName}"/>`;
+          thumbContainer.appendChild(div);
+        });
+
+      } catch (error) {
+        console.error('Error loading product details:', error);
+        window.location.href = '/Products';
+      }
     }
 
-    // ============================================================
-    // READ ID FROM URL & INIT
-    // ============================================================
-    const params = new URLSearchParams(window.location.search);
-    const idParam = parseInt(params.get('id'), 10);
-    const product = PRODUCTS.find(p => p.id === idParam);
-
-    if (!product) {
-      // Không tìm thấy → redirect về trang sản phẩm
-      window.location.href = '/Products';
-    } else {
-      populatePage(product);
-    }
+    // Initialize page
+    loadProductDetails();
 
     // ============================================================
     // HEADER SCROLL
@@ -1116,13 +1128,14 @@
     // ADD TO CART - Tích hợp với DB qua cart-helper.js
     // ============================================================
     async function addToCart() {
+      if (!window.product) return;
       const btn = document.getElementById('addCartBtn');
       const orig = btn.innerHTML;
       btn.innerHTML = '⏳ Đang thêm...';
       btn.disabled = true;
 
-      // Gọi addToCartHelper từ cart-helper.js (xử lý cả DB lẫn local)
-      const success = await addToCartHelper(product.id, 1);
+      // Gọi addToCartHelper từ cart-helper.js
+      const success = await addToCartHelper(window.product.id, 1);
 
       if (success) {
         btn.innerHTML = '✓ Đã thêm vào giỏ!';
@@ -1144,7 +1157,7 @@
       }, 2200);
     }
 
-    // DOMContentLoaded: cập nhật badge + đồng bộ DB nếu đã đăng nhập
+    // DOMContentLoaded
     document.addEventListener("DOMContentLoaded", async () => {
       updateHeaderCartCount();
       if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
@@ -1159,7 +1172,8 @@
       window.location.href = '/shoppingcart';
     }
   </script>
-
+  <!-- Chatbot Global -->
+  <script src="/assets/js/chatbot-global.js"></script>
 </body>
 
 </html>

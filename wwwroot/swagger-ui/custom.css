@@ -1,0 +1,598 @@
+/* ============================================================
+   SWAGGER UI - DARK MODE TOGGLE
+   ============================================================ */
+
+/* Theme Toggle Button - Nằm kế bên PC_Store API v1 trong header */
+.theme-toggle {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    z-index: 9999;
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+    padding: 0;
+}
+
+.theme-toggle:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+/* Đặt nút trong topbar */
+.swagger-ui .topbar-wrapper {
+    position: relative;
+}
+
+/* Adjust cho mobile */
+@media (max-width: 768px) {
+    .theme-toggle {
+        right: 15px;
+        top: 12px;
+        font-size: 20px;
+    }
+}
+
+/* Light Mode Header - Xóa đen, giữ xanh lá với chữ trắng */
+.swagger-ui .topbar {
+    background-color: #1abc9c !important;
+    border-bottom: none !important;
+}
+
+.swagger-ui .topbar h1 {
+    color: white !important;
+}
+
+.swagger-ui .topbar a {
+    color: white !important;
+}
+
+.swagger-ui .topbar-wrapper {
+    color: white !important;
+}
+
+/* Xóa background đen từ version labels (v1, OAS 3.0) */
+.swagger-ui .topbar .download-url-wrapper label {
+    color: white !important;
+    background-color: transparent !important;
+}
+
+.swagger-ui .topbar .download-url-wrapper label > span {
+    background-color: transparent !important;
+    color: white !important;
+}
+
+/* Dark Mode Styles - Nền đen hoàn toàn, chữ trắng */
+body.dark-mode {
+    background-color: #1e1e1e !important;
+}
+
+body.dark-mode .swagger-ui {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+/* Topbar - Nền đen */
+body.dark-mode .swagger-ui .topbar {
+    background-color: #2d2d2d !important;
+    border-bottom: 1px solid #404040;
+}
+
+body.dark-mode .swagger-ui .topbar .download-url-wrapper input[type=text] {
+    background-color: #3d3d3d;
+    color: #ffffff;
+    border-color: #555;
+}
+
+body.dark-mode .swagger-ui .topbar .download-url-wrapper .select-label select {
+    background-color: #3d3d3d;
+    color: #ffffff;
+    border-color: #555;
+}
+
+/* Info section */
+body.dark-mode .swagger-ui .info {
+    background-color: #1e1e1e !important;
+}
+
+body.dark-mode .swagger-ui .info .title {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .info .title small {
+    background-color: #89bf04 !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .swagger-ui .info p,
+body.dark-mode .swagger-ui .info li,
+body.dark-mode .swagger-ui .info a {
+    color: #cccccc !important;
+}
+
+/* Scheme container */
+body.dark-mode .swagger-ui .scheme-container {
+    background-color: #2d2d2d !important;
+    border: 1px solid #404040;
+}
+
+body.dark-mode .swagger-ui .scheme-container .schemes > label {
+    color: #ffffff !important;
+}
+
+/* Opblock tags */
+body.dark-mode .swagger-ui .opblock-tag {
+    border-bottom: 1px solid #404040 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .opblock-tag:hover {
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+body.dark-mode .swagger-ui .opblock-tag small {
+    color: #cccccc !important;
+}
+
+/* Opblock - Giữ màu HTTP methods đậm */
+body.dark-mode .swagger-ui .opblock {
+    border: 1px solid #404040 !important;
+    background-color: #2d2d2d !important;
+    margin-bottom: 10px;
+}
+
+/* Xóa viền đen khi click/focus */
+body.dark-mode .swagger-ui .opblock:focus,
+body.dark-mode .swagger-ui .opblock:focus-visible {
+    outline: none !important;
+    border-color: #404040 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.is-open {
+    border-color: #404040 !important;
+}
+
+/* GET - Xanh dương đậm */
+body.dark-mode .swagger-ui .opblock.opblock-get {
+    border-color: #61affe !important;
+    background-color: rgba(97, 175, 254, 0.1) !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-get.is-open {
+    border-color: #61affe !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-get .opblock-summary-method {
+    background-color: #61affe !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-get .opblock-summary {
+    border-color: #61affe !important;
+}
+
+/* POST - Xanh lá đậm */
+body.dark-mode .swagger-ui .opblock.opblock-post {
+    border-color: #49cc90 !important;
+    background-color: rgba(73, 204, 144, 0.1) !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-post.is-open {
+    border-color: #49cc90 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-post .opblock-summary-method {
+    background-color: #49cc90 !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-post .opblock-summary {
+    border-color: #49cc90 !important;
+}
+
+/* PUT - Cam đậm */
+body.dark-mode .swagger-ui .opblock.opblock-put {
+    border-color: #fca130 !important;
+    background-color: rgba(252, 161, 48, 0.1) !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-put.is-open {
+    border-color: #fca130 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-put .opblock-summary-method {
+    background-color: #fca130 !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-put .opblock-summary {
+    border-color: #fca130 !important;
+}
+
+/* DELETE - Đỏ đậm */
+body.dark-mode .swagger-ui .opblock.opblock-delete {
+    border-color: #f93e3e !important;
+    background-color: rgba(249, 62, 62, 0.1) !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-delete.is-open {
+    border-color: #f93e3e !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    background-color: #f93e3e !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-delete .opblock-summary {
+    border-color: #f93e3e !important;
+}
+
+/* PATCH - Tím đậm */
+body.dark-mode .swagger-ui .opblock.opblock-patch {
+    border-color: #50e3c2 !important;
+    background-color: rgba(80, 227, 194, 0.1) !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-patch.is-open {
+    border-color: #50e3c2 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-patch .opblock-summary-method {
+    background-color: #50e3c2 !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .swagger-ui .opblock.opblock-patch .opblock-summary {
+    border-color: #50e3c2 !important;
+}
+
+/* Opblock summary */
+body.dark-mode .swagger-ui .opblock .opblock-summary {
+    background-color: transparent !important;
+}
+
+body.dark-mode .swagger-ui .opblock .opblock-summary-path {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .opblock .opblock-summary-description {
+    color: #cccccc !important;
+}
+
+/* Opblock body */
+body.dark-mode .swagger-ui .opblock .opblock-body {
+    background-color: #2d2d2d !important;
+}
+
+body.dark-mode .swagger-ui .opblock .opblock-section-header {
+    background-color: rgba(255,255,255,0.05) !important;
+    border-bottom: 1px solid #404040;
+}
+
+body.dark-mode .swagger-ui .opblock .opblock-section-header h4 {
+    color: #ffffff !important;
+}
+
+/* Parameters */
+body.dark-mode .swagger-ui .parameters-col_description {
+    color: #cccccc !important;
+}
+
+body.dark-mode .swagger-ui .parameter__name {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .parameter__type {
+    color: #61affe !important;
+}
+
+body.dark-mode .swagger-ui .parameter__in {
+    color: #999999 !important;
+}
+
+/* Tables */
+body.dark-mode .swagger-ui table {
+    background-color: transparent !important;
+}
+
+body.dark-mode .swagger-ui table thead tr th,
+body.dark-mode .swagger-ui table thead tr td {
+    color: #ffffff !important;
+    border-bottom: 1px solid #404040 !important;
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+body.dark-mode .swagger-ui table tbody tr td {
+    color: #cccccc !important;
+    border-bottom: 1px solid #404040 !important;
+}
+
+/* Buttons */
+body.dark-mode .swagger-ui .btn {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+body.dark-mode .swagger-ui .btn:hover {
+    background-color: #4d4d4d !important;
+}
+
+body.dark-mode .swagger-ui .btn.execute {
+    background-color: #4990e2 !important;
+    border-color: #4990e2 !important;
+}
+
+body.dark-mode .swagger-ui .btn.execute:hover {
+    background-color: #5a9fe5 !important;
+}
+
+body.dark-mode .swagger-ui .btn.cancel {
+    background-color: #555555 !important;
+    border-color: #555555 !important;
+}
+
+body.dark-mode .swagger-ui .btn.authorize {
+    background-color: #49cc90 !important;
+    border-color: #49cc90 !important;
+    color: #000000 !important;
+}
+
+body.dark-mode .swagger-ui .btn.authorize svg {
+    fill: #000000 !important;
+}
+
+/* Inputs */
+body.dark-mode .swagger-ui input[type=text],
+body.dark-mode .swagger-ui input[type=password],
+body.dark-mode .swagger-ui input[type=search],
+body.dark-mode .swagger-ui input[type=email],
+body.dark-mode .swagger-ui input[type=file],
+body.dark-mode .swagger-ui textarea,
+body.dark-mode .swagger-ui select {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border: 1px solid #555555 !important;
+}
+
+body.dark-mode .swagger-ui input[type=text]:focus,
+body.dark-mode .swagger-ui textarea:focus,
+body.dark-mode .swagger-ui select:focus {
+    border-color: #61affe !important;
+}
+
+/* Responses */
+body.dark-mode .swagger-ui .responses-inner {
+    background-color: #2d2d2d !important;
+}
+
+body.dark-mode .swagger-ui .response-col_status {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .response-col_description {
+    color: #cccccc !important;
+}
+
+body.dark-mode .swagger-ui .response-col_links {
+    color: #61affe !important;
+}
+
+/* Models */
+body.dark-mode .swagger-ui .model-box {
+    background-color: #2d2d2d !important;
+    border: 1px solid #404040 !important;
+}
+
+body.dark-mode .swagger-ui .model {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .model-title {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .model-toggle {
+    color: #cccccc !important;
+}
+
+body.dark-mode .swagger-ui .prop-type {
+    color: #61affe !important;
+}
+
+body.dark-mode .swagger-ui .prop-format {
+    color: #999999 !important;
+}
+
+body.dark-mode .swagger-ui .prop-name {
+    color: #ffffff !important;
+}
+
+/* Code blocks */
+body.dark-mode .swagger-ui code {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+    border: 1px solid #555555 !important;
+}
+
+body.dark-mode .swagger-ui pre {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 1px solid #404040 !important;
+}
+
+body.dark-mode .swagger-ui pre.microlight {
+    background-color: #2d2d2d !important;
+}
+
+/* Highlight.js syntax highlighting */
+body.dark-mode .swagger-ui .highlight-code {
+    background-color: #2d2d2d !important;
+}
+
+body.dark-mode .swagger-ui .highlight-code .hljs {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+}
+
+/* Markdown */
+body.dark-mode .swagger-ui .markdown p,
+body.dark-mode .swagger-ui .markdown h1,
+body.dark-mode .swagger-ui .markdown h2,
+body.dark-mode .swagger-ui .markdown h3,
+body.dark-mode .swagger-ui .markdown h4,
+body.dark-mode .swagger-ui .markdown h5 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .markdown code {
+    background-color: #3d3d3d !important;
+    color: #ffffff !important;
+}
+
+/* Authorization modal - Nền chung màu với trang (đen) */
+body.dark-mode .swagger-ui .dialog-ux {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+body.dark-mode .swagger-ui .dialog-ux .modal-ux {
+    background-color: #1e1e1e !important;
+    border: 1px solid #1e1e1e !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8) !important;
+}
+
+body.dark-mode .swagger-ui .dialog-ux .modal-ux-header {
+    background-color: #1e1e1e !important;
+    border-bottom: 1px solid #1e1e1e !important;
+}
+
+body.dark-mode .swagger-ui .dialog-ux .modal-ux-header h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .dialog-ux .modal-ux-content {
+    background-color: #1e1e1e !important;
+}
+
+body.dark-mode .swagger-ui .dialog-ux .modal-ux-content p,
+body.dark-mode .swagger-ui .dialog-ux .modal-ux-content h4 {
+    color: #ffffff !important;
+}
+
+body.dark-mode .swagger-ui .dialog-ux .modal-ux-content input,
+body.dark-mode .swagger-ui .dialog-ux .modal-ux-content textarea {
+    border-color: #1e1e1e !important;
+}
+
+/* Xóa khung xám - chỉ giữ modal đen */
+body.dark-mode .swagger-ui .dialog-ux::before {
+    display: none !important;
+}
+
+/* Light mode - Authorize modal */
+.swagger-ui .dialog-ux {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.swagger-ui .dialog-ux .modal-ux {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swagger-ui .dialog-ux .modal-ux-header {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.swagger-ui .dialog-ux .modal-ux-header h3 {
+    color: #333333 !important;
+}
+
+.swagger-ui .dialog-ux .modal-ux-content {
+    background-color: #ffffff !important;
+}
+
+.swagger-ui .dialog-ux .modal-ux-content p,
+.swagger-ui .dialog-ux .modal-ux-content h4 {
+    color: #333333 !important;
+}
+
+/* Loading */
+body.dark-mode .swagger-ui .loading-container {
+    background-color: #2d2d2d !important;
+}
+
+body.dark-mode .swagger-ui .loading-container .loading {
+    border-color: #61affe !important;
+}
+
+/* Scrollbar */
+body.dark-mode ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+    background-color: #1e1e1e;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background-color: #2d2d2d;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background-color: #555555;
+    border-radius: 6px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background-color: #666666;
+}
+
+/* Fix for theme toggle button in dark mode */
+body.dark-mode .theme-toggle {
+    opacity: 0.8;
+}
+
+body.dark-mode .theme-toggle:hover {
+    opacity: 1;
+}
+
+/* Smooth transition - Nhanh và mượt hơn (0.15s) */
+body,
+.swagger-ui,
+.swagger-ui .opblock,
+.swagger-ui .btn,
+.swagger-ui input,
+.swagger-ui textarea,
+.swagger-ui select,
+.swagger-ui .topbar,
+.swagger-ui .info,
+.swagger-ui .opblock-tag,
+.swagger-ui .model-box,
+.swagger-ui code,
+.swagger-ui pre,
+.swagger-ui .dialog-ux,
+.swagger-ui .dialog-ux .modal-ux {
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+}
+
+.theme-toggle {
+    transition: opacity 0.15s ease, transform 0.15s ease !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .theme-toggle {
+        right: 10px;
+        font-size: 18px;
+    }
+}

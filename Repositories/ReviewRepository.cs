@@ -1,0 +1,88 @@
+using PC_Store.DTOs.Admin;
+using PC_Store.DTOs.Common;
+using PC_Store.DTOs.Reviews;
+using PC_Store.Repositories.Base;
+using PC_Store.Repositories.Interfaces;
+
+namespace PC_Store.Repositories;
+
+public sealed class ReviewRepository : IReviewRepository
+{
+    private readonly IDbRepository _db;
+    public ReviewRepository(IDbRepository db) => _db = db;
+
+    public async Task<PagedResult<AdminReviewItem>> GetAdminReviewsAsync(AdminReviewQueryRequest request)
+    {
+        var normalized = request.Normalize();
+        
+        var items = await _db.QueryAsync<AdminReviewItemWithTotal>("sp_Reviews_GetAdminReviewsPaged", new
+        {
+            normalized.ProductId, normalized.IsApproved, normalized.Keyword,
+            normalized.PageNumber, normalized.PageSize
+        });
+
+        var itemsList = items.ToList();
+        var totalRecords = itemsList.FirstOrDefault()?.TotalRecords ?? 0;
+
+        return new PagedResult<AdminReviewItem>(
+            items: itemsList.Select(x => new AdminReviewItem(
+                x.ReviewId, x.ProductId, x.ProductName, x.SKU, x.UserId,
+                x.FullName, x.Rating, x.Comment, x.ImageURL, x.IsApproved, x.CreatedAt
+            )),
+            totalRecords: totalRecords,
+            pageNumber: normalized.PageNumber,
+            pageSize: normalized.PageSize
+        );
+    }
+
+    public Task DeleteAsync(int reviewId)
+        => _db.ExecuteAsync("sp_Admin_DeleteReview", new { ReviewId = reviewId });
+
+    public Task ApproveAsync(ApproveReviewRequest request)
+        => _db.ExecuteAsync("sp_Admin_ApproveReview", new { request.ReviewId, request.IsApproved });
+
+    public Task AddAsync(AddReviewRequest request)
+        => _db.ExecuteAsync("sp_Customer_AddReview", new
+        {
+            request.UserId,
+            request.ProductId,
+            request.Rating,
+            request.Comment,
+            ImageUrl = request.ImageUrl
+        });
+
+    public async Task<PagedResult<CustomerReviewItem>> GetByProductAsync(int productId, int pageNumber = 1, int pageSize = 10)
+    {
+        // Normalize pagination
+        pageNumber = pageNumber < 1 ? 1 : pageNumber;
+        pageSize = pageSize < 1 ? 10 : (pageSize > 100 ? 100 : pageSize);
+
+        var items = await _db.QueryAsync<CustomerReviewItemWithTotal>("sp_Reviews_GetByProductPaged", new
+        {
+            ProductId = productId, PageNumber = pageNumber, PageSize = pageSize
+        });
+
+        var itemsList = items.ToList();
+        var totalRecords = itemsList.FirstOrDefault()?.TotalRecords ?? 0;
+
+        return new PagedResult<CustomerReviewItem>(
+            items: itemsList.Select(x => new CustomerReviewItem(
+                x.ReviewId, x.ProductId, x.UserId, x.FullName, x.AvatarURL,
+                x.Rating, x.Comment, x.ImageURL, x.CreatedAt
+            )),
+            totalRecords: totalRecords,
+            pageNumber: pageNumber,
+            pageSize: pageSize
+        );
+    }
+
+    private sealed record AdminReviewItemWithTotal(
+        int ReviewId, int ProductId, string ProductName, string SKU, int UserId,
+        string FullName, int Rating, string? Comment, string? ImageURL, bool IsApproved,
+        DateTime CreatedAt, int TotalRecords);
+
+    private sealed record CustomerReviewItemWithTotal(
+        int ReviewId, int ProductId, int UserId, string? FullName, string? AvatarURL,
+        int Rating, string? Comment, string? ImageURL, DateTime CreatedAt, int TotalRecords);
+}
+

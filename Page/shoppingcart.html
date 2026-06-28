@@ -285,6 +285,7 @@
 
         .cart-container {
             width: 100%;
+            margin-top: 80px;
             padding: 20px 70px 70px;
             display: grid;
             grid-template-columns: 1.6fr .8fr;
@@ -739,7 +740,7 @@
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                         Giỏ hàng
                     </a>
-                    <a href="/payments" class="dropdown-item">
+                    <a href="/checkout" class="dropdown-item">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                         Đơn hàng
                     </a>
@@ -764,26 +765,7 @@
         </div>
     </header>
 
-    <div class="checkout-progress-wrapper">
-        <div class="progress">
-            <div class="step active">
-                <div class="step-circle">1</div>
-                <span>Giỏ hàng</span>
-            </div>
-            <div class="step">
-                <div class="step-circle">2</div>
-                <span>Địa chỉ</span>
-            </div>
-            <div class="step">
-                <div class="step-circle">3</div>
-                <span>Thanh toán</span>
-            </div>
-            <div class="step">
-                <div class="step-circle">4</div>
-                <span>Hoàn tất</span>
-            </div>
-        </div>
-    </div>
+
 
     <!-- MAIN -->
 
@@ -837,12 +819,12 @@
 
                 <div class="summary-row">
                     <span>Phí vận chuyển</span>
-                    <span>40.000đ</span>
+                    <span id="shipping-fee">0đ</span>
                 </div>
 
                 <div class="summary-row">
                     <span>Giảm giá</span>
-                    <span>-1.000.000đ</span>
+                    <span id="discount-amount">-0đ</span>
                 </div>
 
                 <div class="summary-total" id="total">
@@ -892,10 +874,21 @@
     <script src="/assets/js/cart-helper.js"></script>
     <script src="/assets/js/auth-ui.js"></script>
     <script>
-        let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
-        let cartItems = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
+        // Khởi tạo cart: ưu tiên DB nếu đã login
+        let cart = [];
+        let cartItems = [];
         let deletedItemData = null;
 
+        // Đọc từ localStorage (sẽ được ghi đè sau khi sync DB xong nếu user đã login)
+        try {
+            cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+            cartItems = JSON.parse(localStorage.getItem('hypercore_cart_items') || '[]');
+        } catch(e) {
+            cart = [];
+            cartItems = [];
+        }
+
+        // Nếu hyper_core_cart rỗng nhưng hypercore_cart_items có dữ liệu → map sang
         if (cart.length === 0 && cartItems.length > 0) {
             cart = cartItems.map(item => ({
                 id: item.id ?? Date.now(),
@@ -908,17 +901,13 @@
             }));
         }
 
-        if (localStorage.getItem('hyper_core_cart') === null && cart.length === 0) {
-            cart = [{
-                id: 999,
-                name: "Beast X Pro Magnesium Gaming Mouse",
-                specs: "Black · OMRON Opticals · Side Slits",
-                price: 145.00,
-                currency: "USD",
-                qty: 1,
-                img: "https://placehold.co/100x100/ffffff/111827?text=Beast+X"
-            }];
+        // Bỏ placeholder nếu user đã đăng nhập (sẽ sync từ DB)
+        // Chỉ hiển thị placeholder cho khách chưa đăng nhập và chưa thêm gì
+        if (!isUserLoggedIn() && localStorage.getItem('hyper_core_cart') === null && cart.length === 0) {
+            // Không dùng placeholder nữa - hiển thị giỏ hàng trống
+            cart = [];
         }
+
 
         const subtotal = document.getElementById("subtotal");
         const total = document.getElementById("total");
@@ -994,11 +983,18 @@
 
             subtotal.innerText = sum.toLocaleString('vi-VN') + ' đ';
 
-            let discount = sum > 1000000 ? 1000000 : 0;
-            let shipping = 40000;
-            let finalTotal = Math.max(0, sum - discount + shipping);
+            // Phí vận chuyển và giảm giá = 0đ
+            const discount = 0;
+            const shipping = 0;
+            const finalTotal = sum - discount + shipping;
 
             total.innerText = finalTotal.toLocaleString('vi-VN') + ' đ';
+
+            // Cập nhật hiển thị shipping và discount
+            const shippingEl = document.getElementById('shipping-fee');
+            const discountEl = document.getElementById('discount-amount');
+            if (shippingEl) shippingEl.innerText = shipping.toLocaleString('vi-VN') + 'đ';
+            if (discountEl) discountEl.innerText = '-' + discount.toLocaleString('vi-VN') + 'đ';
 
             const savingsEl = document.querySelector('.save-money');
             if (savingsEl) {
@@ -1121,22 +1117,6 @@
             renderCartPage();
         }
 
-        function updateTotal() {
-            let sum = 0;
-            cartItems.forEach(item => {
-                sum += item.qty * item.price;
-            });
-
-            subtotal.innerText = sum.toLocaleString("vi-VN") + "đ";
-            let discountAmount = sum > 0 ? 1000000 : 0;
-            let shippingFee = sum > 0 ? 40000 : 0;
-
-            let finalTotal = sum - discountAmount + shippingFee;
-            if (finalTotal < 0) finalTotal = 0;
-
-            total.innerText = finalTotal.toLocaleString("vi-VN") + "đ";
-        }
-
         const undoBtn = document.getElementById("undoBtn");
         if (undoBtn) {
             undoBtn.addEventListener("click", async () => {
@@ -1150,7 +1130,7 @@
             });
         }
 
-        // Redirect to filladdress page on clicking Checkout
+        // Redirect to checkout page on clicking Checkout
         const checkoutBtn = document.querySelector(".checkout-btn");
         if (checkoutBtn) {
             checkoutBtn.addEventListener("click", () => {
@@ -1164,9 +1144,11 @@
                     let itemPriceVnd = item.currency === 'USD' ? item.price * 25000 : item.price;
                     sum += itemPriceVnd * item.qty;
                 });
-                let discount = sum > 1000000 ? 1000000 : 0;
-                let shipping = 40000;
-                let finalTotal = Math.max(0, sum - discount + shipping);
+                
+                // Phí vận chuyển và giảm giá đều = 0đ
+                const discount = 0;
+                const shipping = 0;
+                const finalTotal = sum - discount + shipping;
 
                 let cartData = {
                     items: [],
@@ -1187,7 +1169,7 @@
                     });
                 });
                 localStorage.setItem("hypercore_cart", JSON.stringify(cartData));
-                window.location.href = "/filladdress";
+                window.location.href = "/checkout";
             });
         }
 
@@ -1404,7 +1386,8 @@
             }
         })();
     </script>
-
+    <!-- Chatbot Global -->
+    <script src="/assets/js/chatbot-global.js"></script>
 </body>
 
 </html>

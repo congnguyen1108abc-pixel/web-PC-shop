@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thanh Toán - HYPER CORE</title>
+    
+    <!-- External Styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css" />
+    <link rel="stylesheet" href="/assets/css/checkout.css" />
+</head>
+
+<body>
+
+    <!-- Background Orbs -->
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+
+    <!-- HEADER (from auth-ui.css) -->
+    <header id="header">
+        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                style="height: 38px; display: block; object-fit: contain;">
+        </div>
+
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <a href="/Products" id="nav-products">Sản Phẩm</a>
+            <a href="/gaminggear">Gaming Gear</a>
+            <a href="/pcbuild">PC Build</a>
+            <a href="#">Trạng thái đơn hàng</a>
+            <a href="#">Liên Hệ</a>
+        </nav>
+
+        <div class="nav-actions">
+            <!-- SEARCH -->
+            <div class="header-search-container" id="headerSearchWrap">
+                <input
+                    type="text"
+                    id="headerSearchInput"
+                    class="header-search-input"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+                <button
+                    class="header-icon-btn search-toggle-btn"
+                    onclick="toggleHeaderSearch(this)"
+                    title="Tìm kiếm"
+                    aria-label="Tìm kiếm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ACCOUNT -->
+            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+
+            <!-- USER GREETING (hiện khi đã đăng nhập) -->
+            <div class="user-greeting-wrap" id="userGreetingWrap">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-greeting-name">
+                        <em>Xin chào,</em>
+                        <span id="userDisplayName">Người dùng</span>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <span id="dropdownFullName">Người dùng</span>
+                        <small id="dropdownEmail">email@example.com</small>
+                    </div>
+                    <a href="#" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Hồ sơ của tôi
+                    </a>
+                    <a href="/shoppingcart" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Giỏ hàng
+                    </a>
+                    <a href="/checkout" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Đơn hàng
+                    </a>
+                    <button class="dropdown-item logout" onclick="handleLogout()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
+
+            <!-- CART -->
+            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+
+    <!-- MAIN CHECKOUT CONTAINER -->
+    <div class="checkout-wrapper">
+        <div class="checkout-container">
+
+            <!-- LEFT COLUMN: FORM + PAYMENT METHODS -->
+            <div class="glass-card checkout-left">
+                
+                <h1 class="checkout-title">Thanh Toán Đơn Hàng</h1>
+                <p class="checkout-subtitle">Hoàn tất thông tin giao hàng và thanh toán để nhận hàng tại HYPER CORE.</p>
+
+                <!-- SECTION 1: THÔNG TIN LIÊN HỆ -->
+                <div class="form-section">
+                    <h2 class="section-title">Thông Tin Liên Hệ</h2>
+                    <div class="form-grid">
+                        <div class="input-group full">
+                            <label>Họ và tên <span class="required">*</span></label>
+                            <input type="text" id="fullName" class="input-field" placeholder="Nhập đầy đủ họ và tên của bạn" required />
+                        </div>
+                        <div class="input-group">
+                            <label>Số điện thoại <span class="required">*</span></label>
+                            <input type="tel" id="phoneNumber" class="input-field" placeholder="Ví dụ: 0912345678" pattern="0[0-9]{9}" required />
+                        </div>
+                        <div class="input-group">
+                            <label>Địa chỉ Email</label>
+                            <input type="email" id="emailAddress" class="input-field" placeholder="name@example.com (để nhận hóa đơn)" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: ĐỊA CHỈ GIAO HÀNG -->
+                <div class="form-section">
+                    <h2 class="section-title">Địa Chỉ Giao Hàng</h2>
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Tỉnh / Thành phố <span class="required">*</span></label>
+                            <select id="citySelect" class="select-field" required>
+                                <option value="">Đang tải danh sách tỉnh thành...</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Quận / Huyện <span class="required">*</span></label>
+                            <select id="districtSelect" class="select-field" required disabled>
+                                <option value="">--- Chọn Quận / Huyện ---</option>
+                            </select>
+                        </div>
+                        <div class="input-group full">
+                            <label>Phường / Xã <span class="required">*</span></label>
+                            <select id="wardSelect" class="select-field" required disabled>
+                                <option value="">--- Chọn Phường / Xã ---</option>
+                            </select>
+                        </div>
+                        <div class="input-group full">
+                            <label>Số nhà, tên đường <span class="required">*</span></label>
+                            <input type="text" id="streetAddress" class="input-field" placeholder="Ví dụ: Số 123, ngõ 45, đường Lê Lợi" required />
+                        </div>
+                    </div>
+                    <!-- SHIPPING DISPLAY CARD -->
+                    <div class="shipping-display-card">
+                        <div class="shipping-display-main">
+                            <div class="shipping-display-left">
+                                <span class="shipping-option-label">Phương thức vận chuyển:</span>
+                                <strong class="shipping-option-value" id="shippingNameDisplay">Nhanh (Tiêu chuẩn)</strong>
+                                <div class="shipping-estimate-time" id="shippingTimeDisplay">Dự kiến giao: 29 Th06 - 01 Th07</div>
+                            </div>
+                            <div class="shipping-display-right">
+                                <button type="button" class="shipping-change-btn" onclick="openShippingModal()">THAY ĐỔI</button>
+                                <span class="shipping-display-price" id="shippingPriceDisplay">16.500đ</span>
+                            </div>
+                        </div>
+                        <div class="shipping-display-sub" id="shippingSubDisplay" onclick="openShippingModal()">
+                            <span class="sub-tag">HỎA TỐC</span>
+                            <span class="sub-text">Đặt trước 14:00, nhận hàng ngay trong ngày</span>
+                            <span class="sub-chevron">›</span>
+                        </div>
+                        <div class="shipping-display-note">
+                            <span>Đơn hàng không áp dụng đồng kiểm</span>
+                            <span class="info-icon" title="Theo chính sách bảo mật vận chuyển của HYPER CORE">?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: TÙY CHỌN BỔ SUNG -->
+                <div class="form-section">
+                    <h2 class="section-title">Tùy Chọn Bổ Sung</h2>
+                    
+                    <div class="address-type">
+                        <div class="type-card">
+                            <input type="radio" name="addressType" id="home" checked />
+                            <label class="type-label" for="home">
+                                <div class="type-icon">🏠</div>
+                                <div class="type-text">
+                                    <h4>Nhà riêng</h4>
+                                    <p>Giao tất cả các ngày</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="type-card">
+                            <input type="radio" name="addressType" id="office" />
+                            <label class="type-label" for="office">
+                                <div class="type-icon">🏢</div>
+                                <div class="type-text">
+                                    <h4>Văn phòng</h4>
+                                    <p>Giao giờ hành chính</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top:24px;">
+                        <label>Ghi chú giao hàng</label>
+                        <textarea id="deliveryNote" class="textarea-field" placeholder="Ví dụ: Gọi trước khi giao 15 phút, giao cho bảo vệ nếu tôi vắng mặt..."></textarea>
+                    </div>
+
+                    <div class="checkbox-box">
+                        <input type="checkbox" id="defaultAddress" />
+                        <label for="defaultAddress">Đặt làm địa chỉ mặc định cho lần mua sau</label>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: PHƯƠNG THỨC THANH TOÁN -->
+                <div class="payment-methods-section">
+                    <h2 class="section-title">Phương Thức Thanh Toán</h2>
+                    
+                    <div class="method-grid">
+                        <!-- CREDIT CARD -->
+                        <div class="method-card">
+                            <input type="radio" name="payment" id="creditCard" />
+                            <label for="creditCard" class="method-label">
+                                <div class="method-left">
+                                    <div class="method-icon">💳</div>
+                                    <div class="method-info">
+                                        <h3>Thẻ tín dụng</h3>
+                                        <p>Visa, MasterCard, JCB</p>
+                                    </div>
+                                </div>
+                                <div class="radio-circle"></div>
+                            </label>
+                        </div>
+
+                        <!-- PAYPAL -->
+                        <div class="method-card">
+                            <input type="radio" name="payment" id="paypal" />
+                            <label for="paypal" class="method-label">
+                                <div class="method-left">
+                                    <div class="method-icon">🅿️</div>
+                                    <div class="method-info">
+                                        <h3>PayPal</h3>
+                                        <p>Thanh toán qua tài khoản PayPal</p>
+                                    </div>
+                                </div>
+                                <div class="radio-circle"></div>
+                            </label>
+                        </div>
+
+                        <!-- SEPAY -->
+                        <div class="method-card">
+                            <input type="radio" name="payment" id="sepay" checked />
+                            <label for="sepay" class="method-label">
+                                <div class="method-left">
+                                    <div class="method-icon">🏦</div>
+                                    <div class="method-info">
+                                        <h3>SePay (chuyển khoản ngân hàng)</h3>
+                                        <p>Quét mã QR VietQR - Nhanh chóng, an toàn</p>
+                                    </div>
+                                </div>
+                                <div class="radio-circle"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- PAYMENT DETAIL (QR CODE - Hiển thị sau khi bấm nút thanh toán) -->
+                    <div class="payment-detail" id="sePayDetail">
+                        <h3 class="detail-title">💳 SePay - Quét Mã QR</h3>
+                        <div style="text-align: center; padding: 20px;">
+                            <h4 style="margin-bottom: 15px; color: #4b5563;">Quét mã QR để thanh toán</h4>
+                            <div class="qr-box">
+                                <img id="sepay-qr-img" src="" class="qr-image" alt="SePay QR Code" />
+                            </div>
+                            <div class="payment-info" style="margin-top: 20px;">
+                                <div class="info-row">
+                                    <span>Ngân hàng:</span>
+                                    <strong id="sepay-bank-name">MBBank</strong>
+                                </div>
+                                <div class="info-row">
+                                    <span>Số tài khoản:</span>
+                                    <strong id="sepay-account-number">0364885351</strong>
+                                </div>
+                                <div class="info-row">
+                                    <span>Chủ tài khoản:</span>
+                                    <strong id="sepay-account-name">NGUYEN VAN CHI</strong>
+                                </div>
+                                <div class="info-row">
+                                    <span>Số tiền:</span>
+                                    <strong id="sepay-amount">0đ</strong>
+                                </div>
+                                <div class="info-row">
+                                    <span>Nội dung:</span>
+                                    <strong id="sepay-description">Đang tạo...</strong>
+                                </div>
+                            </div>
+                            <!-- Polling status display -->
+                            <div id="sepay-polling-status"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: ORDER SUMMARY -->
+            <div class="glass-card checkout-right">
+                
+                <h2 class="summary-title">Đơn Hàng Của Bạn</h2>
+
+                <div id="dynamic-product-list">
+                    <!-- Products will be injected here by checkout.js -->
+                </div>
+
+                <div class="summary-row">
+                    <span>Tạm tính</span>
+                    <span id="summary-subtotal">0đ</span>
+                </div>
+                <div class="summary-row">
+                    <span>Phí vận chuyển</span>
+                    <span id="summary-shipping">0đ</span>
+                </div>
+                <div class="summary-row">
+                    <span>Giảm giá</span>
+                    <span style="color:#000000; font-weight:bold;" id="summary-discount">-0đ</span>
+                </div>
+
+                <div class="summary-total">
+                    <h2>Tổng thanh toán</h2>
+                    <span id="display-total">0đ</span>
+                </div>
+
+                <button class="pay-btn" id="confirmPayBtn">
+                    THANH TOÁN
+                </button>
+
+                <div class="secure-box">
+                    🔒 Thanh toán được mã hóa và bảo mật tuyệt đối
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Đang xử lý...</div>
+            <div class="loading-subtext">Vui lòng đợi trong giây lát</div>
+        </div>
+    </div>
+
+    <!-- SHIPPING OPTION SELECT MODAL -->
+    <div class="shipping-modal-overlay" id="shippingModalOverlay">
+        <div class="shipping-modal">
+            <div class="shipping-modal-header">
+                <h3>Select Shipping Option</h3>
+                <button type="button" class="shipping-modal-close" onclick="closeShippingModal()">✕</button>
+            </div>
+            <div class="shipping-modal-body">
+                <div class="modal-section-title">
+                    SHOPEE SUPPORTED LOGISTICS <span class="shield-icon">🛡️</span>
+                </div>
+                
+                <!-- Option 1: Trong Ngày -->
+                <div class="shipping-option-card" id="opt-express" onclick="selectShippingOption('express')">
+                    <div class="option-card-main">
+                        <div class="option-card-left">
+                            <span class="option-name">Trong Ngày</span>
+                            <span class="option-price-tag">25.000đ</span>
+                        </div>
+                        <div class="option-card-right">
+                            <div class="option-checkmark">✓</div>
+                        </div>
+                    </div>
+                    <div class="option-card-sub">
+                        <div class="option-time-alert">
+                            Order by 14:00, Get by <span class="highlight-time">Tomorrow 21:00</span> <span class="help-circle">?</span>
+                        </div>
+                        <p class="option-detail-text">(Orders placed after 9:00 AM are expected to be delivered after 6:00 PM)</p>
+                    </div>
+                </div>
+
+                <!-- Option 2: Nhanh -->
+                <div class="shipping-option-card" id="opt-standard" onclick="selectShippingOption('standard')">
+                    <div class="option-card-main">
+                        <div class="option-card-left">
+                            <span class="option-name">Nhanh - Shopee Xử Lý</span>
+                            <span class="option-price-tag">16.500đ</span>
+                        </div>
+                        <div class="option-card-right">
+                            <div class="option-checkmark">✓</div>
+                        </div>
+                    </div>
+                    <div class="option-card-sub">
+                        <div class="option-time-alert" id="standardTimeEstimateText">
+                            Get by 29 Th06 - 1 Th07 <span class="help-circle">?</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="shipping-modal-footer">
+                <button type="button" class="shipping-modal-btn btn-cancel" onclick="closeShippingModal()">Cancel</button>
+                <button type="button" class="shipping-modal-btn btn-confirm" onclick="confirmShippingOption()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/assets/js/auth-ui.js"></script>
+    <script src="/assets/js/cart-helper.js"></script>
+    <script src="/assets/js/checkout.js"></script>
+
+</body>
+</html>

@@ -105,17 +105,22 @@ async function handleLogout() {
         }
     }
 
-    // Xóa local storage
+    // Xóa local storage auth
     localStorage.removeItem('pc_store_token');
     localStorage.removeItem('pc_store_refresh_token');
     localStorage.removeItem('pc_store_user');
-    console.log('✓ Auth data cleared from localStorage');
-
-    // Xóa giỏ hàng
-    if (typeof clearLocalCart === 'function') {
-        clearLocalCart();
-        console.log('✓ Cart data cleared');
-    }
+    
+    // Xóa local/session storage giỏ hàng và địa chỉ giao hàng trực tiếp để bảo mật phiên đăng nhập
+    localStorage.removeItem('hyper_core_cart');
+    localStorage.removeItem('hypercore_cart_items');
+    localStorage.removeItem('hypercore_cart');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('pc_store_cart_owner');
+    
+    sessionStorage.removeItem('checkout_addressId');
+    sessionStorage.removeItem('checkout_address');
+    sessionStorage.removeItem('current_orderId');
+    console.log('✓ Auth, cart, and address data cleared from storage');
 
     // Reload để cập nhật UI
     console.log('Reloading page...');
