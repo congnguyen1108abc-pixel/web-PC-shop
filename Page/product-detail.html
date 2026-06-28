@@ -95,6 +95,9 @@
     }
 
     nav {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       gap: 35px;
       align-items: center;
@@ -685,7 +688,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css?v=1.0.3">
   <link rel="stylesheet" href="/assets/css/auth-ui.css">
   <script src="/assets/js/cart-helper.js"></script>
   <script src="/assets/js/auth-ui.js"></script>
@@ -721,11 +724,58 @@
 
         <nav>
             <a href="/Homepage">Trang Chủ</a>
-            <a href="/Products" id="nav-products">Sản Phẩm</a>
-            <a href="/gaminggear">Gaming Gear</a>
-            <a href="/pcbuild">PC Build</a>
+            <div class="nav-item-dropdown">
+                <a href="/Products" id="nav-products">Sản Phẩm</a>
+                <div class="mega-menu">
+                    <div class="mega-col">
+                        <h3>Linh Kiện PC</h3>
+                        <a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+                        <a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+                        <a href="/Products?category=vga">VGA - Card màn hình</a>
+                        <a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+                        <a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+                        <a href="/Products?category=psu">Nguồn máy tính</a>
+                        <a href="/Products?category=case">Case - Vỏ máy tính</a>
+                        <a href="/Products?category=cooling">Tản nhiệt PC</a>
+                    </div>
+                    <div class="mega-col">
+                        <h3>Thương Hiệu</h3>
+                        <a href="/Products?brand=asus">Asus</a>
+                        <a href="/Products?brand=msi">MSI</a>
+                        <a href="/Products?brand=gigabyte">Gigabyte</a>
+                        <a href="/Products?brand=intel">Intel</a>
+                        <a href="/Products?brand=amd">AMD</a>
+                        <a href="/Products?brand=corsair">Corsair</a>
+                        <a href="/Products?brand=kingston">Kingston</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Gaming Gear</h3>
+                        <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+                        <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+                        <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+                        <a href="/gaminggear?category=mic-studio">Mic Studio</a>
+                        <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+                        <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+                        <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>PC Build</h3>
+                        <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+                        <a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+                    </div>
+                </div>
+            </div>
             <a href="#">Trạng thái đơn hàng</a>
-            <a href="#">Liên Hệ</a>
         </nav>
 
         <div class="nav-actions">

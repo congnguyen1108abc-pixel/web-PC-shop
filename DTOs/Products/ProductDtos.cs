@@ -101,27 +101,29 @@ public sealed record ProductListItem(
     decimal AvgRating,
     int ReviewCount);
 
-public sealed record ProductDetailHeader(
-    int ProductId,
-    int CategoryId,
-    string? CategoryName,
-    int BrandId,
-    string? BrandName,
-    string SKU,
-    string ProductName,
-    decimal Price,
-    decimal DiscountPrice,
-    decimal EffectivePrice,
-    int StockQuantity,
-    int SoldCount,
-    string? Description,
-    bool IsActive,
-    int WarrantyMonths,
-    string? Slug,
-    DateTime CreatedAt,
-    DateTime? UpdatedAt,
-    decimal AvgRating,
-    int ReviewCount);
+public sealed record ProductDetailHeader
+{
+    public int ProductId { get; init; }
+    public int CategoryId { get; init; }
+    public string? CategoryName { get; init; }
+    public int BrandId { get; init; }
+    public string? BrandName { get; init; }
+    public string SKU { get; init; } = null!;
+    public string ProductName { get; init; } = null!;
+    public decimal Price { get; init; }
+    public decimal DiscountPrice { get; init; }
+    public decimal EffectivePrice { get; init; }
+    public int StockQuantity { get; init; }
+    public int SoldCount { get; init; }
+    public string? Description { get; init; }
+    public bool IsActive { get; init; }
+    public int WarrantyMonths { get; init; }
+    public string? Slug { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public DateTime? UpdatedAt { get; init; }
+    public decimal AvgRating { get; init; }
+    public int ReviewCount { get; init; }
+}
 
 public sealed record ProductImageItem(
     int ImageId,

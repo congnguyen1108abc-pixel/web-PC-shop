@@ -109,6 +109,9 @@
     }
 
     nav {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       gap: 35px;
       align-items: center;
@@ -188,8 +191,9 @@
     .header-search-container {
       display: flex;
       align-items: center;
-      flex-direction: row-reverse;
-      overflow: hidden;
+      flex-direction: row;
+      overflow: visible;
+      position: relative;
     }
 
     .header-search-input {
@@ -332,7 +336,7 @@
       justify-content: space-between;
       cursor: pointer;
       font-size: 14px;
-      color: rgba(0, 0, 0, 0.35);
+      color: rgba(0, 0, 0, 0.55);
       line-height: 2.5;
       user-select: none;
       transition: color 0.2s ease;
@@ -473,6 +477,8 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 40px;
+      min-height: 700px;
+      align-content: start;
     }
 
     /* PRODUCT CARD */
@@ -1334,7 +1340,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/style.css?v=1.0.3">
   <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
 
@@ -1382,11 +1388,58 @@
 
     <nav>
       <a href="/Homepage">Trang Chủ</a>
-      <a href="/Products" id="nav-products" class="active">Sản Phẩm</a>
-      <a href="/gaminggear">Gaming Gear</a>
-      <a href="/pcbuild">PC Build</a>
+      <div class="nav-item-dropdown">
+        <a href="/Products" id="nav-products" class="active">Sản Phẩm</a>
+        <div class="mega-menu">
+          <div class="mega-col">
+            <h3>Linh Kiện PC</h3>
+            <a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+            <a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+            <a href="/Products?category=vga">VGA - Card màn hình</a>
+            <a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+            <a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+            <a href="/Products?category=psu">Nguồn máy tính</a>
+            <a href="/Products?category=case">Case - Vỏ máy tính</a>
+            <a href="/Products?category=cooling">Tản nhiệt PC</a>
+          </div>
+          <div class="mega-col">
+            <h3>Thương Hiệu</h3>
+            <a href="/Products?brand=asus">Asus</a>
+            <a href="/Products?brand=msi">MSI</a>
+            <a href="/Products?brand=gigabyte">Gigabyte</a>
+            <a href="/Products?brand=intel">Intel</a>
+            <a href="/Products?brand=amd">AMD</a>
+            <a href="/Products?brand=corsair">Corsair</a>
+            <a href="/Products?brand=kingston">Kingston</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item-dropdown">
+        <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
+        <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+          <div class="mega-col">
+            <h3>Gaming Gear</h3>
+            <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+            <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+            <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+            <a href="/gaminggear?category=mic-studio">Mic Studio</a>
+            <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+            <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+            <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-item-dropdown">
+        <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
+        <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+          <div class="mega-col">
+            <h3>PC Build</h3>
+            <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+            <a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+          </div>
+        </div>
+      </div>
       <a href="#">Trạng thái đơn hàng</a>
-      <a href="#">Liên Hệ</a>
     </nav>
 
     <div class="nav-actions">
@@ -1478,7 +1531,7 @@
       </div>
 
       <div class="sidebar-box has-divider">
-        <h3>Danh Mục</h3>
+        <h3>LINH KIỆN PC</h3>
         <div class="filter-group">
           <label class="filter-item">
             <input type="radio" name="cat" value="all" checked />
@@ -1487,40 +1540,52 @@
             <span class="cat-count" id="count-all"></span>
           </label>
           <label class="filter-item">
-            <input type="radio" name="cat" value="vga" />
+            <input type="radio" name="cat" value="main" />
             <span class="custom-check custom-radio"></span>
-            VGA / Card Đồ Họa
-            <span class="cat-count" id="count-vga"></span>
+            Mainboard - Bo mạch chủ
+            <span class="cat-count" id="count-main"></span>
           </label>
           <label class="filter-item">
             <input type="radio" name="cat" value="cpu" />
             <span class="custom-check custom-radio"></span>
-            CPU / Bộ Vi Xử Lý
+            CPU - Bộ vi xử lý
             <span class="cat-count" id="count-cpu"></span>
           </label>
           <label class="filter-item">
-            <input type="radio" name="cat" value="main" />
+            <input type="radio" name="cat" value="vga" />
             <span class="custom-check custom-radio"></span>
-            Mainboard
-            <span class="cat-count" id="count-main"></span>
+            VGA - Card màn hình
+            <span class="cat-count" id="count-vga"></span>
           </label>
           <label class="filter-item">
             <input type="radio" name="cat" value="ram" />
             <span class="custom-check custom-radio"></span>
-            RAM
+            RAM - Bộ nhớ trong
             <span class="cat-count" id="count-ram"></span>
           </label>
           <label class="filter-item">
             <input type="radio" name="cat" value="ssd" />
             <span class="custom-check custom-radio"></span>
-            SSD / Ổ Cứng
+            Ổ cứng SSD/HDD
             <span class="cat-count" id="count-ssd"></span>
           </label>
           <label class="filter-item">
             <input type="radio" name="cat" value="psu" />
             <span class="custom-check custom-radio"></span>
-            Nguồn / PSU
+            Nguồn máy tính
             <span class="cat-count" id="count-psu"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="case" />
+            <span class="custom-check custom-radio"></span>
+            Case - Vỏ máy tính
+            <span class="cat-count" id="count-case"></span>
+          </label>
+          <label class="filter-item">
+            <input type="radio" name="cat" value="cooling" />
+            <span class="custom-check custom-radio"></span>
+            Tản nhiệt PC
+            <span class="cat-count" id="count-cooling"></span>
           </label>
         </div>
       </div>
@@ -1533,11 +1598,13 @@
           <label class="filter-item"><input type="checkbox" value="MSI" /><span class="custom-check"></span>MSI</label>
           <label class="filter-item"><input type="checkbox" value="Gigabyte" /><span
               class="custom-check"></span>Gigabyte</label>
-          <label class="filter-item"><input type="checkbox" value="Corsair" /><span
-              class="custom-check"></span>Corsair</label>
-          <label class="filter-item"><input type="checkbox" value="AMD" /><span class="custom-check"></span>AMD</label>
           <label class="filter-item"><input type="checkbox" value="Intel" /><span
               class="custom-check"></span>Intel</label>
+          <label class="filter-item"><input type="checkbox" value="AMD" /><span class="custom-check"></span>AMD</label>
+          <label class="filter-item"><input type="checkbox" value="Corsair" /><span
+              class="custom-check"></span>Corsair</label>
+          <label class="filter-item"><input type="checkbox" value="Kingston" /><span
+              class="custom-check"></span>Kingston</label>
           <label class="filter-item"><input type="checkbox" value="Samsung" /><span
               class="custom-check"></span>Samsung</label>
         </div>
@@ -1711,7 +1778,7 @@
   </div>
 
   <script src="/assets/js/cart-helper.js"></script>
-  <script src="/assets/js/auth-ui.js"></script>
+  <script src="/assets/js/auth-ui.js?v=1.0.2"></script>
   <script>
     // API-loaded products will be stored here
     let PRODUCTS = [];
@@ -1844,7 +1911,7 @@
         else if (p.badge === 'hot') statusText = 'Bán chạy nhất';
 
         const card = document.createElement('div');
-        card.className = 'product-card reveal';
+        card.className = 'product-card';
         card.dataset.id = p.id;
 
         card.innerHTML = `
@@ -1875,16 +1942,6 @@
 
         grid.appendChild(card);
 
-        // Intersection Observer for reveal animations
-        const obs = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('active');
-          });
-        }, { threshold: 0.1 });
-        obs.observe(card);
-
-        // Add delay effect to reveal dynamically
-        setTimeout(() => card.classList.add('active'), i * 50);
       });
 
 
@@ -1911,7 +1968,8 @@
 
       // Brand Filter
       if (filters.brands.length > 0) {
-        list = list.filter(p => filters.brands.includes(p.brand));
+        const lowerBrands = filters.brands.map(b => b.toLowerCase());
+        list = list.filter(p => p.brand && lowerBrands.includes(p.brand.toLowerCase()));
       }
 
       // Price Range Filter
@@ -1943,7 +2001,7 @@
     }
 
     function updateCategoryCounts() {
-      const categories = ['all', 'vga', 'cpu', 'main', 'ram', 'ssd', 'psu'];
+      const categories = ['all', 'main', 'cpu', 'vga', 'ram', 'ssd', 'psu', 'case', 'cooling'];
       categories.forEach(cat => {
         const el = document.getElementById('count-' + cat);
         if (el) {
@@ -2217,6 +2275,14 @@
       });
     });
 
+    // Brand checkboxes
+    document.querySelectorAll('#brandFilter input').forEach(checkbox => {
+      checkbox.addEventListener('change', function () {
+        filters.brands = Array.from(document.querySelectorAll('#brandFilter input:checked')).map(input => input.value);
+        applyFiltersAndRender();
+      });
+    });
+
     // Sort selector
     document.getElementById('sortSelect').addEventListener('change', function () {
       filters.sort = this.value;
@@ -2242,12 +2308,24 @@
 
     // Read query parameter and apply initial category filter (linking from Homepage Mega Menu)
     const urlParams = new URLSearchParams(window.location.search);
-    const catParam = urlParams.get('cat');
+    const catParam = urlParams.get('category') || urlParams.get('cat');
+    const brandParam = urlParams.get('brand');
     if (catParam) {
-      const targetRadio = document.querySelector(`input[name="cat"][value="${catParam}"]`);
+      const cleanCat = catParam.toLowerCase();
+      const targetRadio = document.querySelector(`input[name="cat"][value="${cleanCat}"]`);
       if (targetRadio) {
         targetRadio.checked = true;
-        filters.cat = catParam;
+        filters.cat = cleanCat;
+      }
+    }
+    if (brandParam) {
+      const cleanBrand = brandParam.toLowerCase();
+      const targetCheck = Array.from(document.querySelectorAll('#brandFilter input')).find(
+        input => input.value.toLowerCase() === cleanBrand
+      );
+      if (targetCheck) {
+        targetCheck.checked = true;
+        filters.brands = [targetCheck.value];
       }
     }
 
@@ -2293,6 +2371,31 @@
       
       // Load products from API first
       await loadProductsFromAPI();
+
+      // Parse query params
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category') || params.get('cat');
+      const brandParam = params.get('brand');
+      const searchParam = params.get('search');
+      if (catParam) {
+        filters.cat = catParam.toLowerCase();
+        const catRadio = document.querySelector(`input[name="cat"][value="${filters.cat}"]`);
+        if (catRadio) catRadio.checked = true;
+      }
+      if (brandParam) {
+        const brandClean = brandParam.toLowerCase();
+        const brandCheckbox = Array.from(document.querySelectorAll('#brandFilter input')).find(
+          input => input.value.toLowerCase() === brandClean
+        );
+        if (brandCheckbox) {
+          brandCheckbox.checked = true;
+          filters.brands = [brandCheckbox.value];
+        }
+      }
+      if (searchParam) {
+        filters.search = searchParam;
+        document.getElementById('searchInput').value = searchParam;
+      }
       
       // Then render cart drawer
       renderCartDrawer();
@@ -2312,12 +2415,13 @@
           const href = a.getAttribute("href");
           if (href && href.startsWith("/")) {
             const path = href.toLowerCase();
-            if (path === '/homepage') a.href = 'homepage.html';
-            else if (path.startsWith('/products')) a.href = 'products.html';
-            else if (path === '/gaminggear') a.href = 'gaminggear.html';
-            else if (path === '/pcbuild') a.href = 'pcbuild.html';
-            else if (path === '/login') a.href = 'login.html';
-            else if (path === '/shoppingcart') a.href = 'shoppingcart.html';
+            const search = href.includes('?') ? href.substring(href.indexOf('?')) : '';
+            if (path === '/homepage' || path.startsWith('/homepage?')) a.href = 'homepage.html' + search;
+            else if (path.startsWith('/products')) a.href = 'products.html' + search;
+            else if (path.startsWith('/gaminggear')) a.href = 'gaminggear.html' + search;
+            else if (path.startsWith('/pcbuild')) a.href = 'pcbuild.html' + search;
+            else if (path.startsWith('/login')) a.href = 'login.html' + search;
+            else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
           }
         });
         document.querySelectorAll("link[rel='stylesheet']").forEach(link => {

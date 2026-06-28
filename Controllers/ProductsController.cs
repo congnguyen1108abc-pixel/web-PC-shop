@@ -62,6 +62,11 @@ public sealed class ProductsController : ControllerBase
     {
         var (header, images, attributes) = await _products.GetBySlugAsync(slug);
 
+        if (header is null && int.TryParse(slug, out int id))
+        {
+            (header, images, attributes) = await _products.GetByIdAsync(id);
+        }
+
         if (header is null)
             return NotFound(new { message = "Không tìm thấy sản phẩm" });
 

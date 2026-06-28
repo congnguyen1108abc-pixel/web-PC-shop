@@ -7,7 +7,7 @@
     <title>Xây Dựng Cấu Hình PC - HYPER CORE</title>
 
     <!-- Style Link -->
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css?v=1.0.3">
     <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
 
@@ -22,11 +22,58 @@
 
         <nav>
             <a href="/Homepage">Trang Chủ</a>
-            <a href="/Products" id="nav-products">Sản Phẩm</a>
-            <a href="/gaminggear">Gaming Gear</a>
-            <a href="/pcbuild" class="active">PC Build</a>
+            <div class="nav-item-dropdown">
+                <a href="/Products" id="nav-products">Sản Phẩm</a>
+                <div class="mega-menu">
+                    <div class="mega-col">
+                        <h3>Linh Kiện PC</h3>
+                        <a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+                        <a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+                        <a href="/Products?category=vga">VGA - Card màn hình</a>
+                        <a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+                        <a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+                        <a href="/Products?category=psu">Nguồn máy tính</a>
+                        <a href="/Products?category=case">Case - Vỏ máy tính</a>
+                        <a href="/Products?category=cooling">Tản nhiệt PC</a>
+                    </div>
+                    <div class="mega-col">
+                        <h3>Thương Hiệu</h3>
+                        <a href="/Products?brand=asus">Asus</a>
+                        <a href="/Products?brand=msi">MSI</a>
+                        <a href="/Products?brand=gigabyte">Gigabyte</a>
+                        <a href="/Products?brand=intel">Intel</a>
+                        <a href="/Products?brand=amd">AMD</a>
+                        <a href="/Products?brand=corsair">Corsair</a>
+                        <a href="/Products?brand=kingston">Kingston</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Gaming Gear</h3>
+                        <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+                        <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+                        <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+                        <a href="/gaminggear?category=mic-studio">Mic Studio</a>
+                        <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+                        <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+                        <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/pcbuild" id="nav-pcbuild" class="active">PC Build</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>PC Build</h3>
+                        <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+                        <a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+                    </div>
+                </div>
+            </div>
             <a href="#">Trạng thái đơn hàng</a>
-            <a href="#">Liên Hệ</a>
         </nav>
 
         <div class="nav-actions">
@@ -119,7 +166,7 @@
     <div class="pc-build-content">
         <main class="main-container">
             <!-- SECTION 1: RECOMMENDED CONFIGURATIONS -->
-            <div class="section-header">
+            <div class="section-header" id="pc-streamer-section">
                 <h2>PC Streamer / Cấu hình đề xuất</h2>
             <div class="line"></div>
         </div>
@@ -743,10 +790,10 @@
 
     <!-- DATA & LOGIC JAVASCRIPT -->
     <script src="/assets/js/cart-helper.js"></script>
-    <script src="/assets/js/auth-ui.js"></script>
+    <script src="/assets/js/auth-ui.js?v=1.0.2"></script>
     <script>
-        // Static component database
-        const database = {
+        // Static component database fallback
+        const staticDatabase = {
             cpu: [
                 { id: "cpu1", name: "Intel Core i5-13600K", spec: "14 Nhân 20 Luồng | 3.5GHz up to 5.1GHz", price: 7800000 },
                 { id: "cpu2", name: "AMD Ryzen 5 7600X", spec: "6 Nhân 12 Luồng | 4.7GHz up to 5.3GHz", price: 6200000 },
@@ -780,6 +827,86 @@
             ]
         };
 
+        // Live database copy that will be updated from SQL
+        let database = JSON.parse(JSON.stringify(staticDatabase));
+
+        // Function to fetch products from SQL API and update configurator options
+        async function loadComponentsFromAPI() {
+            console.log('[PC Build] Fetching components from SQL database...');
+            try {
+                const response = await fetch('/api/Products?PageSize=250&OnlyActive=true');
+                if (!response.ok) {
+                    console.warn('[PC Build] Failed to fetch products from SQL API, keeping fallback list.');
+                    return;
+                }
+                const data = await response.json();
+                const items = data.items || [];
+                if (items.length === 0) {
+                    console.warn('[PC Build] SQL database returned 0 products, keeping fallback list.');
+                    return;
+                }
+
+                // Temp storage to group active SQL products
+                const tempDb = {
+                    cpu: [],
+                    mainboard: [],
+                    ram: [],
+                    vga: [],
+                    psu: [],
+                    case: []
+                };
+
+                items.forEach(p => {
+                    const catName = (p.categoryName || "").toLowerCase();
+                    const catId = p.categoryId;
+
+                    let targetCat = null;
+                    if (catId === 2 || catName.includes("cpu") || catName.includes("vi xử lý") || catName.includes("bộ xử lý")) {
+                        targetCat = "cpu";
+                    } else if (catId === 3 || catName.includes("mainboard") || catName.includes("bo mạch") || catName.includes("motherboard")) {
+                        targetCat = "mainboard";
+                    } else if (catId === 4 || catName.includes("ram") || catName.includes("bộ nhớ ram")) {
+                        targetCat = "ram";
+                    } else if (catId === 1 || catName.includes("vga") || catName.includes("card đồ họa") || catName.includes("card màn hình")) {
+                        targetCat = "vga";
+                    } else if (catId === 6 || catName.includes("psu") || catName.includes("nguồn") || catName.includes("power")) {
+                        targetCat = "psu";
+                    } else if (catName.includes("case") || catName.includes("vỏ máy") || catName.includes("thùng máy")) {
+                        targetCat = "case";
+                    }
+
+                    if (targetCat) {
+                        tempDb[targetCat].push({
+                            id: p.productId,
+                            name: p.productName,
+                            spec: p.description || (p.brandName ? `Hãng: ${p.brandName}` : "Linh kiện PC chất lượng cao"),
+                            price: p.price,
+                            img: p.defaultImageUrl || ""
+                        });
+                    }
+                });
+
+                // Overwrite live database completely with SQL data
+                database = tempDb;
+                console.log('[PC Build] Successfully loaded products from SQL:', database);
+
+                // Update UI placeholders for empty categories
+                const categoriesList = ['cpu', 'mainboard', 'ram', 'vga', 'psu', 'case'];
+                categoriesList.forEach(cat => {
+                    if (database[cat].length === 0) {
+                        const titleEl = document.getElementById(`selected-${cat}`);
+                        if (titleEl) {
+                            titleEl.innerText = "Hiện tại cửa hàng không có hàng";
+                            titleEl.style.color = "#ef4444";
+                            titleEl.style.fontWeight = "500";
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error('[PC Build] Error loading components from SQL API:', err);
+            }
+        }
+
         // User selected components state
         let selectedComponents = {
             cpu: null,
@@ -803,48 +930,71 @@
             }
         }
 
-        // Initialize Cart badge on load
-        document.addEventListener("DOMContentLoaded", () => {
+        // Initialize Cart badge and load SQL components on load
+        document.addEventListener("DOMContentLoaded", async () => {
             updateHeaderCartCount();
             updateBenchmark(0);
+            await loadComponentsFromAPI();
         });
 
         // 1. Pre-built add to cart function
-        function addPrebuiltToCart(name, specs, price, img) {
-            let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+        async function addPrebuiltToCart(name, specs, price, img) {
+            console.log('[PC Build] Adding prebuilt configuration components to cart:', name);
             
-            // Check if already in cart
-            const existingIndex = cart.findIndex(item => item.name === name);
-            if (existingIndex > -1) {
-                cart[existingIndex].qty += 1;
-            } else {
-                cart.push({
-                    id: Date.now() + Math.floor(Math.random() * 1000),
-                    name: name,
-                    specs: specs,
-                    price: price,
-                    currency: "VND",
-                    qty: 1,
-                    img: img
-                });
+            // Find the card containing this prebuilt name to extract component names
+            let customizeBtn = null;
+            const cards = document.querySelectorAll('.bento-card');
+            for (const card of cards) {
+                const titleEl = card.querySelector('.card-title');
+                if (titleEl && titleEl.textContent.trim() === name) {
+                    customizeBtn = card.querySelector('.btn-customize');
+                    break;
+                }
             }
-            
-            // Update local storage and UI
-            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
-            
-            // Sync with secondary storage
-            let cartItems = cart.map(item => ({
-                id: item.id,
-                title: item.name,
-                variant: item.specs,
-                price: item.price,
-                qty: item.qty,
-                img: item.img
-            }));
-            localStorage.setItem('hypercore_cart_items', JSON.stringify(cartItems));
 
-            updateHeaderCartCount();
-            alert(`Đã thêm ${name} vào giỏ hàng!`);
+            if (!customizeBtn) {
+                console.warn('[PC Build] Could not find prebuilt customization details for:', name);
+                alert("Không tìm thấy thông tin cấu hình sản phẩm!");
+                return;
+            }
+
+            const categories = ['cpu', 'mainboard', 'ram', 'vga', 'psu', 'case'];
+            let addedAny = false;
+
+            for (const cat of categories) {
+                const searchName = (customizeBtn.dataset[cat] || "").toLowerCase().trim();
+                if (!searchName) continue;
+
+                const list = database[cat] || [];
+                // Find matching product in our loaded database
+                let bestMatch = list.find(p => 
+                    p.name.toLowerCase().includes(searchName) || 
+                    searchName.includes(p.name.toLowerCase())
+                );
+                
+                if (!bestMatch && list.length > 0) {
+                    // Fallback to first product in category
+                    bestMatch = list[0];
+                }
+
+                if (bestMatch) {
+                    // Add this real SQL product to the cart
+                    const success = await addToCartHelper(bestMatch.id, 1);
+                    if (success) addedAny = true;
+                }
+            }
+
+            if (!addedAny) {
+                alert("Không thể thêm linh kiện vào giỏ hàng!");
+                return;
+            }
+
+            // Redirect to shoppingcart page
+            if (window.location.protocol === 'file:') {
+                window.location.href = "shoppingcart.html";
+            } else {
+                window.location.href = "/shoppingcart";
+            }
         }
 
         // 2. Custom configurator drawer controls
@@ -870,20 +1020,29 @@
             container.innerHTML = "";
             const items = database[category] || [];
             
-            items.forEach(item => {
-                const card = document.createElement("div");
-                card.className = "item-option-card";
-                card.onclick = () => selectComponent(item);
-                
-                card.innerHTML = `
-                    <div class="option-details">
-                        <div class="option-title">${item.name}</div>
-                        <div class="option-spec">${item.spec}</div>
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div style="padding: 40px 20px; text-align: center; color: #ef4444; font-size: 14px; font-weight: 500;">
+                        <span style="font-size: 32px; display: block; margin-bottom: 12px;">📦</span>
+                        Hiện tại cửa hàng không có hàng
                     </div>
-                    <div class="option-price">${item.price.toLocaleString("vi-VN")} đ</div>
                 `;
-                container.appendChild(card);
-            });
+            } else {
+                items.forEach(item => {
+                    const card = document.createElement("div");
+                    card.className = "item-option-card";
+                    card.onclick = () => selectComponent(item);
+                    
+                    card.innerHTML = `
+                        <div class="option-details">
+                            <div class="option-title">${item.name}</div>
+                            <div class="option-spec">${item.spec}</div>
+                        </div>
+                        <div class="option-price">${item.price.toLocaleString("vi-VN")} đ</div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
 
             // Slide in drawer
             overlay.classList.add("active");
@@ -1044,7 +1203,7 @@
         }
 
         // Custom config add all to cart
-        function addCustomToCart() {
+        async function addCustomToCart() {
             // Check if any component is selected
             const activeCats = Object.keys(selectedComponents).filter(cat => selectedComponents[cat] !== null);
             if (activeCats.length === 0) {
@@ -1052,38 +1211,20 @@
                 return;
             }
 
-            let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
-            
-            // Build custom bundle item
-            const specs = activeCats.map(cat => `${cat.toUpperCase()}: ${selectedComponents[cat].name}`).join(" | ");
-            let sum = activeCats.reduce((acc, cat) => acc + selectedComponents[cat].price, 0);
+            // Add each selected component to the cart using the helper
+            for (const cat of activeCats) {
+                const item = selectedComponents[cat];
+                await addToCartHelper(item.id, 1);
+            }
 
-            cart.push({
-                id: Date.now(),
-                name: "Custom PC Build Configuration",
-                specs: specs,
-                price: sum,
-                currency: "VND",
-                qty: 1,
-                img: "/images/pc_valorant_setup.png"
-            });
-
-            // Save and sync
-            localStorage.setItem('hyper_core_cart', JSON.stringify(cart));
-            
-            let cartItems = cart.map(item => ({
-                id: item.id,
-                title: item.name,
-                variant: item.specs,
-                price: item.price,
-                qty: item.qty,
-                img: item.img
-            }));
-            localStorage.setItem('hypercore_cart_items', JSON.stringify(cartItems));
-
-            updateHeaderCartCount();
-            alert("Đã thêm toàn bộ cấu hình build của bạn vào giỏ hàng thành công!");
             resetConfiguration();
+
+            // Redirect to shoppingcart page
+            if (window.location.protocol === 'file:') {
+                window.location.href = "shoppingcart.html";
+            } else {
+                window.location.href = "/shoppingcart";
+            }
         }
 
         // Store current FPS values and benchmark scores to animate from
@@ -1300,29 +1441,6 @@
             }
             requestAnimationFrame(update);
         }
-
-        // Header search Expand/Collapse
-        function toggleHeaderSearch(btn) {
-            const container = btn.closest('.header-search-container');
-            const input = container.querySelector('.header-search-input');
-            if (container.classList.contains('active')) {
-                if (input.value.trim() !== "") {
-                    window.location.href = 'products.html?search=' + encodeURIComponent(input.value.trim());
-                } else {
-                    container.classList.remove('active');
-                    input.blur();
-                }
-            } else {
-                container.classList.add('active');
-                input.focus();
-            }
-        }
-
-        function handleHeaderSearch(input) {
-            if (input.value.trim() !== "") {
-                window.location.href = 'products.html?search=' + encodeURIComponent(input.value.trim());
-            }
-        }
     </script>
 
     <!-- AUTODETECT PROTOCOL FOR LOCAL MEDIA/STYLE FILES -->
@@ -1334,12 +1452,13 @@
                     const href = a.getAttribute("href");
                     if (href && href.startsWith("/")) {
                         const path = href.toLowerCase();
-                        if (path === '/homepage') a.href = 'homepage.html';
-                        else if (path === '/products') a.href = 'products.html';
-                        else if (path === '/gaminggear') a.href = 'gaminggear.html';
-                        else if (path === '/pcbuild') a.href = 'pcbuild.html';
-                        else if (path === '/login') a.href = 'login.html';
-                        else if (path === '/shoppingcart') a.href = 'shoppingcart.html';
+                        const search = href.includes('?') ? href.substring(href.indexOf('?')) : '';
+                        if (path === '/homepage' || path.startsWith('/homepage?')) a.href = 'homepage.html' + search;
+                        else if (path.startsWith('/products')) a.href = 'products.html' + search;
+                        else if (path.startsWith('/gaminggear')) a.href = 'gaminggear.html' + search;
+                        else if (path.startsWith('/pcbuild')) a.href = 'pcbuild.html' + search;
+                        else if (path.startsWith('/login')) a.href = 'login.html' + search;
+                        else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
                     }
                 });
                 // Adjust logo onclick for local navigation
@@ -1371,6 +1490,21 @@
                         v.src = "../wwwroot" + src;
                     }
                 });
+            }
+
+            // URL Parameter scroll detection
+            const urlParams = new URLSearchParams(window.location.search);
+            const buildType = urlParams.get('type');
+            if (buildType === 'streamer') {
+                const sec = document.getElementById('pc-streamer-section');
+                if (sec) {
+                    setTimeout(() => sec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+                }
+            } else if (buildType === 'custom') {
+                const sec = document.getElementById('custom-builder-section');
+                if (sec) {
+                    setTimeout(() => sec.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+                }
             }
         });
         // Carousel scroll navigation

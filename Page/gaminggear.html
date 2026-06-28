@@ -77,6 +77,9 @@
         }
 
         nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             gap: 35px;
             align-items: center;
@@ -156,8 +159,9 @@
         .header-search-container {
             display: flex;
             align-items: center;
-            flex-direction: row-reverse;
-            overflow: hidden;
+            flex-direction: row;
+            overflow: visible;
+            position: relative;
         }
 
         .header-search-input {
@@ -704,7 +708,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style.css?v=1.0.3">
     <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
 
@@ -754,11 +758,58 @@
 
         <nav>
             <a href="/Homepage">Trang Chủ</a>
-            <a href="/Products" id="nav-products">Sản Phẩm</a>
-            <a href="/gaminggear" class="active">Gaming Gear</a>
-            <a href="/pcbuild">PC Build</a>
+            <div class="nav-item-dropdown">
+                <a href="/Products" id="nav-products">Sản Phẩm</a>
+                <div class="mega-menu">
+                    <div class="mega-col">
+                        <h3>Linh Kiện PC</h3>
+                        <a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+                        <a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+                        <a href="/Products?category=vga">VGA - Card màn hình</a>
+                        <a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+                        <a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+                        <a href="/Products?category=psu">Nguồn máy tính</a>
+                        <a href="/Products?category=case">Case - Vỏ máy tính</a>
+                        <a href="/Products?category=cooling">Tản nhiệt PC</a>
+                    </div>
+                    <div class="mega-col">
+                        <h3>Thương Hiệu</h3>
+                        <a href="/Products?brand=asus">Asus</a>
+                        <a href="/Products?brand=msi">MSI</a>
+                        <a href="/Products?brand=gigabyte">Gigabyte</a>
+                        <a href="/Products?brand=intel">Intel</a>
+                        <a href="/Products?brand=amd">AMD</a>
+                        <a href="/Products?brand=corsair">Corsair</a>
+                        <a href="/Products?brand=kingston">Kingston</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/gaminggear" id="nav-gaminggear" class="active">Gaming Gear</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Gaming Gear</h3>
+                        <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+                        <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+                        <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+                        <a href="/gaminggear?category=mic-studio">Mic Studio</a>
+                        <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+                        <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+                        <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>PC Build</h3>
+                        <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+                        <a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+                    </div>
+                </div>
+            </div>
             <a href="#">Trạng thái đơn hàng</a>
-            <a href="#">Liên Hệ</a>
         </nav>
 
         <div class="nav-actions">
@@ -1067,7 +1118,7 @@
     </footer>
 
     <script src="/assets/js/cart-helper.js"></script>
-    <script src="/assets/js/auth-ui.js"></script>
+    <script src="/assets/js/auth-ui.js?v=1.0.2"></script>
     <script>
 
 
@@ -1138,6 +1189,39 @@
 
         priceSelect.addEventListener('change', filterProducts);
 
+        // Parse query params to set category filter on load
+        const urlParams = new URLSearchParams(window.location.search);
+        let catParam = urlParams.get('category') || urlParams.get('cat');
+        if (catParam) {
+            catParam = catParam.toLowerCase();
+            const catMapping = {
+                'chuot-gaming': 'mouse',
+                'mouse': 'mouse',
+                'ban-phim': 'keyboard',
+                'keyboard': 'keyboard',
+                'tai-nghe': 'headset',
+                'headset': 'headset',
+                'mic-studio': 'mic',
+                'mic': 'mic',
+                'tay-cam': 'gamepad',
+                'gamepad': 'gamepad',
+                'lot-chuot': 'pad',
+                'pad': 'pad',
+                'phu-kien': 'acc',
+                'acc': 'acc'
+            };
+            const mappedCat = catMapping[catParam];
+            if (mappedCat) {
+                const targetBtn = Array.from(catButtons).find(btn => btn.getAttribute('data-filter') === mappedCat);
+                if (targetBtn) {
+                    catButtons.forEach(b => b.classList.remove('active'));
+                    targetBtn.classList.add('active');
+                    currentCategory = mappedCat;
+                    filterProducts();
+                }
+            }
+        }
+
         // 7. GIỎ HÀNG
         function updateCartBadge() {
             const cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
@@ -1198,28 +1282,7 @@
             });
         });
 
-        // Header search expand/collapse
-        function toggleHeaderSearch(btn) {
-            const container = btn.closest('.header-search-container');
-            const input = container.querySelector('.header-search-input');
-            if (container.classList.contains('active')) {
-                if (input.value.trim() !== '') {
-                    window.location.href = '/Products?search=' + encodeURIComponent(input.value.trim());
-                } else {
-                    container.classList.remove('active');
-                    input.blur();
-                }
-            } else {
-                container.classList.add('active');
-                input.focus();
-            }
-        }
 
-        function handleHeaderSearch(input) {
-            if (input.value.trim() !== '') {
-                window.location.href = '/Products?search=' + encodeURIComponent(input.value.trim());
-            }
-        }
 
         // Local file protocol adjustments
         if (window.location.protocol === 'file:') {
@@ -1227,12 +1290,13 @@
                 const href = a.getAttribute("href");
                 if (href && href.startsWith("/")) {
                     const path = href.toLowerCase();
-                    if (path === '/homepage') a.href = 'homepage.html';
-                    else if (path.startsWith('/products')) a.href = 'products.html';
-                    else if (path === '/gaminggear') a.href = 'gaminggear.html';
-                    else if (path === '/pcbuild') a.href = 'pcbuild.html';
-                    else if (path === '/login') a.href = 'login.html';
-                    else if (path === '/shoppingcart') a.href = 'shoppingcart.html';
+                    const search = href.includes('?') ? href.substring(href.indexOf('?')) : '';
+                    if (path === '/homepage' || path.startsWith('/homepage?')) a.href = 'homepage.html' + search;
+                    else if (path.startsWith('/products')) a.href = 'products.html' + search;
+                    else if (path.startsWith('/gaminggear')) a.href = 'gaminggear.html' + search;
+                    else if (path.startsWith('/pcbuild')) a.href = 'pcbuild.html' + search;
+                    else if (path.startsWith('/login')) a.href = 'login.html' + search;
+                    else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
                 }
             });
             document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
