@@ -35,8 +35,8 @@ public sealed class ReviewRepository : IReviewRepository
         );
     }
 
-    public Task DeleteAsync(int reviewId)
-        => _db.ExecuteAsync("sp_Admin_DeleteReview", new { ReviewId = reviewId });
+    public Task DeleteAsync(int reviewId, int? userId = null)
+        => _db.ExecuteAsync("sp_Admin_DeleteReview", new { ReviewId = reviewId, UserID = userId });
 
     public Task ApproveAsync(ApproveReviewRequest request)
         => _db.ExecuteAsync("sp_Admin_ApproveReview", new { request.ReviewId, request.IsApproved });

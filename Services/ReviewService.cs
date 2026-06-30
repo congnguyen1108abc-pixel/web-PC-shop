@@ -12,7 +12,7 @@ public sealed class ReviewService : IReviewService
     public ReviewService(IReviewRepository repo) => _repo = repo;
 
     public Task<PagedResult<AdminReviewItem>> GetAdminReviewsAsync(AdminReviewQueryRequest request) => _repo.GetAdminReviewsAsync(request);
-    public Task DeleteAsync(int reviewId) => _repo.DeleteAsync(reviewId);
+    public Task DeleteAsync(int reviewId, int? userId = null) => _repo.DeleteAsync(reviewId, userId);
     public Task ApproveAsync(ApproveReviewRequest request) => _repo.ApproveAsync(request);
     public Task AddAsync(AddReviewRequest request) => _repo.AddAsync(request);
     public Task<PagedResult<CustomerReviewItem>> GetByProductAsync(int productId, int pageNumber = 1, int pageSize = 10) 

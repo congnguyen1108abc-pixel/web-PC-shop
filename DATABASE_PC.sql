@@ -219,8 +219,7 @@ CREATE TABLE Reviews (
     Comment    NVARCHAR(MAX),
     ImageURL   NVARCHAR(500) NULL,   --  Ảnh kèm theo đánh giá
     IsApproved BIT           DEFAULT 0,   --  Admin duyệt trước khi hiển thị
-    CreatedAt  DATETIME      DEFAULT GETDATE(),
-    CONSTRAINT UQ_Review_User_Product UNIQUE (UserID, ProductID)  -- Mỗi user chỉ review 1 lần/SP
+    CreatedAt  DATETIME      DEFAULT GETDATE()
 );
 GO
 
@@ -1587,24 +1586,20 @@ CREATE PROCEDURE sp_Customer_AddReview
 AS
 BEGIN
     SET NOCOUNT ON;
-    -- Kiểm tra đã mua và nhận hàng thành công chưa
-    IF NOT EXISTS (
-        SELECT 1 FROM Orders o
-        JOIN OrderDetails od ON o.OrderID = od.OrderID
-        WHERE o.UserID = @UserID AND od.ProductID = @ProductID AND o.Status = N'Hoàn tất'
-    )
+
+    DECLARE @ReviewCount INT;
+    SELECT @ReviewCount = COUNT(*) 
+    FROM Reviews 
+    WHERE UserID = @UserID AND ProductID = @ProductID;
+
+    IF @ReviewCount >= 3
     BEGIN
-        RAISERROR(N'Chỉ khách hàng đã nhận hàng thành công mới được đánh giá!', 16, 1);
+        RAISERROR(N'Bạn đã đạt giới hạn số lần đánh giá của sản phẩm này!', 16, 1);
         RETURN;
     END
-    -- Kiểm tra đã review chưa
-    IF EXISTS (SELECT 1 FROM Reviews WHERE UserID = @UserID AND ProductID = @ProductID)
-    BEGIN
-        RAISERROR(N'Bạn đã đánh giá sản phẩm này rồi!', 16, 1);
-        RETURN;
-    END
+
     INSERT INTO Reviews (ProductID, UserID, Rating, Comment, ImageURL, IsApproved)
-    VALUES (@ProductID, @UserID, @Rating, @Comment, @ImageURL, 0);
+    VALUES (@ProductID, @UserID, @Rating, @Comment, @ImageURL, 1);
 END;
 GO
 
@@ -3151,14 +3146,21 @@ GO
 -- ========================
 
 CREATE OR ALTER PROCEDURE sp_Admin_DeleteReview
-    @ReviewID INT
+    @ReviewID INT,
+    @UserID   INT = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
 
     IF NOT EXISTS (SELECT 1 FROM Reviews WHERE ReviewID = @ReviewID)
     BEGIN
-        RAISERROR(N'Danh gia khong ton tai!', 16, 1);
+        RAISERROR(N'Đánh giá không tồn tại!', 16, 1);
+        RETURN;
+    END
+
+    IF @UserID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Reviews WHERE ReviewID = @ReviewID AND UserID = @UserID)
+    BEGIN
+        RAISERROR(N'Bạn không có quyền xóa đánh giá này!', 16, 1);
         RETURN;
     END
 

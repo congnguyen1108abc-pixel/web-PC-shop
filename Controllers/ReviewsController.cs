@@ -38,27 +38,50 @@ public sealed class ReviewsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Add([FromBody] AddReviewRequest request)
     {
-        await _reviews.AddAsync(request);
-
-        return Ok(new
+        try
         {
-            message = "Đánh giá của bạn đã được gửi và đang chờ duyệt."
-        });
+            await _reviews.AddAsync(request);
+
+            return Ok(new
+            {
+                message = "Đánh giá của bạn đã được đăng thành công!"
+            });
+        }
+        catch (Microsoft.Data.SqlClient.SqlException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     /// <summary>
-    /// Admin xóa đánh giá.
-    /// Chỉ Admin được phép xóa.
+    /// Xóa đánh giá (chấp nhận Admin hoặc người dùng tự xóa).
     /// </summary>
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [HttpDelete("{reviewId:int}")]
     public async Task<ActionResult> Delete(int reviewId)
     {
-        await _reviews.DeleteAsync(reviewId);
-
-        return Ok(new
+        try
         {
-            message = "Xóa đánh giá thành công"
-        });
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = User.IsInRole("Admin");
+
+            if (!isAdmin && string.IsNullOrEmpty(userIdClaim))
+            {
+                return Unauthorized(new { message = "Vui lòng đăng nhập!" });
+            }
+
+            int? userIdFilter = isAdmin ? null : int.Parse(userIdClaim!);
+
+            await _reviews.DeleteAsync(reviewId, userIdFilter);
+
+            return Ok(new
+            {
+                message = "Xóa đánh giá thành công"
+            });
+        }
+        catch (Microsoft.Data.SqlClient.SqlException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }
