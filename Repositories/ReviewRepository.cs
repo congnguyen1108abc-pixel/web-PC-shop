@@ -51,6 +51,14 @@ public sealed class ReviewRepository : IReviewRepository
             ImageUrl = request.ImageUrl
         });
 
+    public Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl)
+    {
+        return _db.ExecuteRawAsync(
+            "UPDATE Reviews SET Rating = @Rating, Comment = @Comment, ImageURL = @ImageUrl WHERE ReviewID = @ReviewId AND UserID = @UserId",
+            new { ReviewId = reviewId, UserId = userId, Rating = rating, Comment = comment, ImageUrl = imageUrl }
+        );
+    }
+
     public async Task<PagedResult<CustomerReviewItem>> GetByProductAsync(int productId, int pageNumber = 1, int pageSize = 10)
     {
         // Normalize pagination

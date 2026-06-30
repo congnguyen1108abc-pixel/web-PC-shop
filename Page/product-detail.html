@@ -1226,6 +1226,12 @@
       background-color: #111827 !important;
       color: #ffffff !important;
     }
+    .delete-review-btn:hover {
+      color: #ef4444 !important;
+    }
+    .edit-review-btn:hover {
+      color: #3b82f6 !important;
+    }
   </style>
   <link rel="stylesheet" href="/css/style.css?v=1.0.3">
   <link rel="stylesheet" href="/assets/css/auth-ui.css">
@@ -1492,17 +1498,7 @@
 
       <div class="divider"></div>
 
-      <!-- COLOR VARIANT -->
-      <div class="variant-group">
-        <span class="variant-label">Màu Sắc: <span id="colorName"
-            style="color:#000000;font-weight:700;">Black</span></span>
-        <div class="color-options">
-          <div class="color-swatch black active" title="Black" onclick="pickColor(this,'Black')"></div>
-          <div class="color-swatch white" title="White" onclick="pickColor(this,'White')"></div>
-          <div class="color-swatch blue" title="Cyan Blue" onclick="pickColor(this,'Cyan Blue')"></div>
-          <div class="color-swatch red" title="Red Panda" onclick="pickColor(this,'Red Panda')"></div>
-        </div>
-      </div>
+
 
       <!-- SWITCH VARIANT -->
       <div class="variant-group">
@@ -1606,7 +1602,6 @@
         <button class="filter-pill" data-filter="3">3 Sao (0)</button>
         <button class="filter-pill" data-filter="2">2 Sao (0)</button>
         <button class="filter-pill" data-filter="1">1 Sao (0)</button>
-        <button class="filter-pill" data-filter="comment">Có Bình Luận (0)</button>
         <button class="filter-pill" data-filter="image">Có Hình Ảnh / Video (0)</button>
       </div>
       <div class="filter-sort">
@@ -1872,8 +1867,9 @@
     // ============================================================
     function pickColor(el, name) {
       document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-      el.classList.add('active');
-      document.getElementById('colorName').textContent = name;
+      if (el) el.classList.add('active');
+      const cn = document.getElementById('colorName');
+      if (cn) cn.textContent = name;
     }
     function pickVariant(btn) {
       btn.closest('.variant-options').querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
@@ -2061,7 +2057,6 @@
         3: allReviews.filter(r => r.rating === 3).length,
         2: allReviews.filter(r => r.rating === 2).length,
         1: allReviews.filter(r => r.rating === 1).length,
-        comment: allReviews.filter(r => r.comment && r.comment.trim().length > 0).length,
         image: allReviews.filter(r => r.imageUrl && r.imageUrl.trim().length > 0).length
       };
 
@@ -2071,8 +2066,6 @@
         let text = '';
         if (filterVal === 'all') {
           text = `Tất cả (${count})`;
-        } else if (filterVal === 'comment') {
-          text = `Có Bình Luận (${count})`;
         } else if (filterVal === 'image') {
           text = `Có Hình Ảnh / Video (${count})`;
         } else {
@@ -2123,9 +2116,7 @@
       const activePill = document.querySelector('.filter-pill.active');
       const filterVal = activePill ? activePill.getAttribute('data-filter') : 'all';
       let filtered = allReviews;
-      if (filterVal === 'comment') {
-        filtered = allReviews.filter(r => r.comment && r.comment.trim().length > 0);
-      } else if (filterVal === 'image') {
+      if (filterVal === 'image') {
         filtered = allReviews.filter(r => r.imageUrl && r.imageUrl.trim().length > 0);
       } else if (filterVal !== 'all') {
         filtered = allReviews.filter(r => r.rating.toString() === filterVal);
@@ -2201,6 +2192,15 @@
              </button>`
           : '';
 
+        const editBtnHtml = isOwner
+          ? `<button onclick="startEditReview(${r.reviewId})" class="edit-review-btn" title="Chỉnh sửa đánh giá" style="background: none; border: none; padding: 6px; color: #9ca3af; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; margin-top: 2px;">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                 <path d="M12 20h9"></path>
+                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+               </svg>
+             </button>`
+          : '';
+
         const card = document.createElement('div');
         card.className = 'review-card';
         card.setAttribute('data-rating', r.rating.toString());
@@ -2216,6 +2216,7 @@
               <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
                 <span class="review-date">${dateFormatted}</span>
                 ${deleteBtnHtml}
+                ${editBtnHtml}
               </div>
             </div>
             <div class="review-comment">${r.comment || 'Không có bình luận.'}</div>
@@ -2355,6 +2356,73 @@
       }
     }
 
+    let editingReviewId = null;
+
+    function startEditReview(reviewId) {
+      const review = allReviews.find(r => r.reviewId === reviewId);
+      if (!review) return;
+
+      editingReviewId = reviewId;
+      selectedRating = review.rating;
+      updateFormStars();
+
+      document.getElementById('reviewComment').value = review.comment || '';
+      document.getElementById('reviewImageUrl').value = review.imageUrl || '';
+
+      const submitBtn = document.getElementById('btnSubmitReview');
+      if (submitBtn) {
+        submitBtn.textContent = 'Cập nhật Đánh Giá';
+      }
+
+      let cancelBtn = document.getElementById('btnCancelEditReview');
+      if (!cancelBtn) {
+        cancelBtn = document.createElement('button');
+        cancelBtn.id = 'btnCancelEditReview';
+        cancelBtn.className = 'btn-submit-review';
+        cancelBtn.style.background = '#f3f4f6';
+        cancelBtn.style.color = '#374151';
+        cancelBtn.style.marginTop = '10px';
+        cancelBtn.textContent = 'Hủy Chỉnh Sửa';
+        cancelBtn.onclick = cancelEditReview;
+        submitBtn.parentNode.insertBefore(cancelBtn, submitBtn.nextSibling);
+      }
+
+      document.getElementById('reviewFormBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function cancelEditReview() {
+      editingReviewId = null;
+      selectedRating = 0;
+      updateFormStars();
+
+      document.getElementById('reviewComment').value = '';
+      document.getElementById('reviewImageUrl').value = '';
+
+      const submitBtn = document.getElementById('btnSubmitReview');
+      if (submitBtn) {
+        submitBtn.textContent = 'Gửi Đánh Giá';
+      }
+
+      const cancelBtn = document.getElementById('btnCancelEditReview');
+      if (cancelBtn) {
+        cancelBtn.remove();
+      }
+    }
+
+    function updateFormStars() {
+      const stars = document.querySelectorAll('#starRatingSelect span');
+      stars.forEach(s => {
+        const sVal = parseInt(s.getAttribute('data-val'));
+        if (sVal <= selectedRating) {
+          s.textContent = '★';
+          s.classList.add('selected');
+        } else {
+          s.textContent = '☆';
+          s.classList.remove('selected');
+        }
+      });
+    }
+
     async function submitUserReview() {
       const token = localStorage.getItem('pc_store_token');
       const userRaw = localStorage.getItem('pc_store_user');
@@ -2379,9 +2447,11 @@
       }
 
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Đang gửi...';
+      submitBtn.textContent = editingReviewId ? 'Đang cập nhật...' : 'Đang gửi...';
 
-      const requestBody = {
+      let url = '/api/Reviews';
+      let method = 'POST';
+      let requestBody = {
         userId: user.userId,
         productId: window.product.id,
         rating: selectedRating,
@@ -2389,9 +2459,19 @@
         imageUrl: imageUrl || null
       };
 
+      if (editingReviewId) {
+        url = `/api/Reviews/${editingReviewId}`;
+        method = 'PUT';
+        requestBody = {
+          rating: selectedRating,
+          comment: comment,
+          imageUrl: imageUrl || null
+        };
+      }
+
       try {
-        const res = await fetch('/api/Reviews', {
-          method: 'POST',
+        const res = await fetch(url, {
+          method: method,
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -2402,10 +2482,11 @@
         const data = await res.json().catch(() => null);
 
         if (!res.ok) {
-          const errMsg = data?.message || data?.title || 'Có lỗi xảy ra khi gửi đánh giá!';
+          const errMsg = data?.message || data?.title || 'Có lỗi xảy ra!';
           showReviewMsg(errMsg, 'error');
         } else {
-          showReviewMsg('Đánh giá của bạn đã được đăng thành công!', 'success');
+          showReviewMsg(editingReviewId ? 'Đánh giá của bạn đã được cập nhật thành công!' : 'Đánh giá của bạn đã được đăng thành công!', 'success');
+          
           document.getElementById('reviewComment').value = '';
           document.getElementById('reviewImageUrl').value = '';
           selectedRating = 0;
@@ -2415,7 +2496,14 @@
             s.classList.remove('selected', 'hovered');
           });
 
-          // Reload review stats and list immediately to reflect in SQL and UI on the left
+          if (editingReviewId) {
+            editingReviewId = null;
+            submitBtn.textContent = 'Gửi Đánh Giá';
+            const cancelBtn = document.getElementById('btnCancelEditReview');
+            if (cancelBtn) cancelBtn.remove();
+          }
+
+          // Reload review stats and list immediately to reflect in SQL and UI
           loadReviewStats(window.product.id);
           loadReviewList(window.product.id, true);
         }
@@ -2424,7 +2512,9 @@
         showReviewMsg('Không thể kết nối với máy chủ. Vui lòng thử lại sau!', 'error');
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Gửi Đánh Giá';
+        if (!editingReviewId) {
+          submitBtn.textContent = 'Gửi Đánh Giá';
+        }
       }
     }
 

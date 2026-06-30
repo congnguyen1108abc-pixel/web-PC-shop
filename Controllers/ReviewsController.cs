@@ -84,4 +84,33 @@ public sealed class ReviewsController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Chỉnh sửa đánh giá (chỉ người dùng tự sửa).
+    /// </summary>
+    [Authorize]
+    [HttpPut("{reviewId:int}")]
+    public async Task<ActionResult> Update(int reviewId, [FromBody] UpdateReviewRequest request)
+    {
+        try
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                return Unauthorized(new { message = "Vui lòng đăng nhập!" });
+            }
+
+            int userId = int.Parse(userIdClaim);
+            await _reviews.UpdateAsync(reviewId, userId, request.Rating, request.Comment, request.ImageUrl);
+
+            return Ok(new
+            {
+                message = "Chỉnh sửa đánh giá thành công!"
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }

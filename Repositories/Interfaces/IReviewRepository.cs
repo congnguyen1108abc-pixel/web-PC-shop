@@ -11,4 +11,5 @@ public interface IReviewRepository
     Task ApproveAsync(ApproveReviewRequest request);
     Task AddAsync(AddReviewRequest request);
     Task<PagedResult<CustomerReviewItem>> GetByProductAsync(int productId, int pageNumber = 1, int pageSize = 10);
+    Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl);
 }

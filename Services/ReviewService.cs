@@ -17,5 +17,8 @@ public sealed class ReviewService : IReviewService
     public Task AddAsync(AddReviewRequest request) => _repo.AddAsync(request);
     public Task<PagedResult<CustomerReviewItem>> GetByProductAsync(int productId, int pageNumber = 1, int pageSize = 10) 
         => _repo.GetByProductAsync(productId, pageNumber, pageSize);
+
+    public Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl)
+        => _repo.UpdateAsync(reviewId, userId, rating, comment, imageUrl);
 }
 

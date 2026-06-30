@@ -40,6 +40,11 @@ public sealed record AddReviewRequest(
     string? Comment,
     string? ImageUrl);
 
+public sealed record UpdateReviewRequest(
+    int Rating,
+    string? Comment,
+    string? ImageUrl);
+
 // Item trả về khi khách xem reviews của 1 sản phẩm
 public sealed record CustomerReviewItem(
     int ReviewId,
