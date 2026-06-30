@@ -1202,6 +1202,30 @@
       align-items: center;
       justify-content: center;
     }
+
+    /* FILTER PILLS styling */
+    .filter-pill {
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background-color: #f3f4f6;
+      color: #374151;
+      outline: none;
+    }
+
+    .filter-pill:hover:not(.active) {
+      background-color: #e5e7eb;
+      color: #111827;
+    }
+
+    .filter-pill.active {
+      background-color: #111827 !important;
+      color: #ffffff !important;
+    }
   </style>
   <link rel="stylesheet" href="/css/style.css?v=1.0.3">
   <link rel="stylesheet" href="/assets/css/auth-ui.css">
@@ -1575,13 +1599,15 @@
 
     <!-- Review Filter & Sort Bar -->
     <div class="reviews-filter-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #eeeeee; padding-bottom: 15px; flex-wrap: wrap; gap: 15px;">
-      <div class="filter-pills" style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <button class="filter-pill active" data-filter="all" style="padding: 8px 18px; border-radius: 999px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; background: #111111; color: #ffffff;">Tất cả</button>
-        <button class="filter-pill" data-filter="5" style="padding: 8px 18px; border-radius: 999px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; background: #f3f4f6; color: #374151;">5 Sao</button>
-        <button class="filter-pill" data-filter="4" style="padding: 8px 18px; border-radius: 999px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; background: #f3f4f6; color: #374151;">4 Sao</button>
-        <button class="filter-pill" data-filter="3" style="padding: 8px 18px; border-radius: 999px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; background: #f3f4f6; color: #374151;">3 Sao</button>
-        <button class="filter-pill" data-filter="2" style="padding: 8px 18px; border-radius: 999px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; background: #f3f4f6; color: #374151;">2 Sao</button>
-        <button class="filter-pill" data-filter="1" style="padding: 8px 18px; border-radius: 999px; border: none; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; background: #f3f4f6; color: #374151;">1 Sao</button>
+      <div class="filter-pills" id="reviewFilterPills" style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button class="filter-pill active" data-filter="all">Tất cả (0)</button>
+        <button class="filter-pill" data-filter="5">5 Sao (0)</button>
+        <button class="filter-pill" data-filter="4">4 Sao (0)</button>
+        <button class="filter-pill" data-filter="3">3 Sao (0)</button>
+        <button class="filter-pill" data-filter="2">2 Sao (0)</button>
+        <button class="filter-pill" data-filter="1">1 Sao (0)</button>
+        <button class="filter-pill" data-filter="comment">Có Bình Luận (0)</button>
+        <button class="filter-pill" data-filter="image">Có Hình Ảnh / Video (0)</button>
       </div>
       <div class="filter-sort">
         <select id="reviewSortSelect" style="padding: 8px 16px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 13.5px; font-weight: 600; cursor: pointer; background: #ffffff; color: #1f2937; outline: none; transition: border-color 0.2s ease;">
@@ -2027,6 +2053,35 @@
       }
     }
 
+    function updateFilterPillsCount() {
+      const counts = {
+        all: allReviews.length,
+        5: allReviews.filter(r => r.rating === 5).length,
+        4: allReviews.filter(r => r.rating === 4).length,
+        3: allReviews.filter(r => r.rating === 3).length,
+        2: allReviews.filter(r => r.rating === 2).length,
+        1: allReviews.filter(r => r.rating === 1).length,
+        comment: allReviews.filter(r => r.comment && r.comment.trim().length > 0).length,
+        image: allReviews.filter(r => r.imageUrl && r.imageUrl.trim().length > 0).length
+      };
+
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        const filterVal = pill.getAttribute('data-filter');
+        const count = counts[filterVal] || 0;
+        let text = '';
+        if (filterVal === 'all') {
+          text = `Tất cả (${count})`;
+        } else if (filterVal === 'comment') {
+          text = `Có Bình Luận (${count})`;
+        } else if (filterVal === 'image') {
+          text = `Có Hình Ảnh / Video (${count})`;
+        } else {
+          text = `${filterVal} Sao (${count})`;
+        }
+        pill.textContent = text;
+      });
+    }
+
     async function loadReviewList(productId, isFirstPage) {
       if (isFirstPage) {
         document.getElementById('reviewsList').innerHTML = '<div style="text-align:center; padding: 20px; color:#777;">Đang tải đánh giá...</div>';
@@ -2038,6 +2093,8 @@
         const data = await res.json();
 
         allReviews = data.items || [];
+        updateFilterPillsCount();
+
         if (isFirstPage) {
           currentPaginationPage = 1;
         }
@@ -2066,7 +2123,11 @@
       const activePill = document.querySelector('.filter-pill.active');
       const filterVal = activePill ? activePill.getAttribute('data-filter') : 'all';
       let filtered = allReviews;
-      if (filterVal !== 'all') {
+      if (filterVal === 'comment') {
+        filtered = allReviews.filter(r => r.comment && r.comment.trim().length > 0);
+      } else if (filterVal === 'image') {
+        filtered = allReviews.filter(r => r.imageUrl && r.imageUrl.trim().length > 0);
+      } else if (filterVal !== 'all') {
         filtered = allReviews.filter(r => r.rating.toString() === filterVal);
       }
 
@@ -2278,12 +2339,8 @@
         pill.addEventListener('click', function() {
           document.querySelectorAll('.filter-pill').forEach(p => {
             p.classList.remove('active');
-            p.style.background = '#f3f4f6';
-            p.style.color = '#374151';
           });
           this.classList.add('active');
-          this.style.background = '#111111';
-          this.style.color = '#ffffff';
           currentPaginationPage = 1;
           renderReviewsPage();
         });
