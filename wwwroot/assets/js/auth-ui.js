@@ -50,6 +50,34 @@ function initAuthUI() {
         if (dropName) dropName.textContent = fullName;
         if (dropEmail) dropEmail.textContent = email;
 
+        // Inject admin dashboard link if user is Admin
+        if (user.role === 'Admin') {
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown && !document.getElementById('adminDashboardLink')) {
+                const adminLink = document.createElement('a');
+                adminLink.href = '/admin';
+                adminLink.id = 'adminDashboardLink';
+                adminLink.className = 'dropdown-item';
+                adminLink.style.color = '#0284c7';
+                adminLink.style.fontWeight = '700';
+                adminLink.innerHTML = '⚙️ Trang Quản Trị';
+                
+                const header = dropdown.querySelector('.dropdown-header');
+                if (header) {
+                    header.after(adminLink);
+                } else {
+                    dropdown.prepend(adminLink);
+                }
+            }
+        }
+
+        // Update all profile links to point to /profile
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            if (item.textContent.includes('Hồ sơ của tôi')) {
+                item.setAttribute('href', '/profile');
+            }
+        });
+
         // Ẩn icon login, hiện greeting
         if (loginLink) loginLink.style.display = 'none';
         if (greetWrap) greetWrap.style.display = 'flex';

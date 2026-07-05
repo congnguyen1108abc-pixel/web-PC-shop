@@ -314,8 +314,7 @@ public sealed class AdminController : ControllerBase
     [HttpDelete("reviews/{reviewId:int}")]
     public async Task<ActionResult> DeleteReview(int reviewId)
     {
-        await _reviews.DeleteAsync(reviewId);
-        return Ok(new { message = "Xóa đánh giá thành công" });
+        return BadRequest(new { message = "Admin không có quyền xóa đánh giá, chỉ được ẩn đi!" });
     }
 
     [HttpPut("review")]

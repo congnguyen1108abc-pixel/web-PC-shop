@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Địa Chỉ Nhận Hàng - HYPER CORE</title>
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=1.0.5">
+  <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5">
+  <link rel="stylesheet" href="/assets/css/profile-common.css?v=1.0.5">
+</head>
+<body class="profile-body">
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+      <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" style="height: 38px; display: block; object-fit: contain;">
+    </div>
+    <nav>
+      <a href="/Homepage">Trang Chủ</a>
+      <a href="/Products">Sản Phẩm</a>
+      <a href="/gaminggear">Gaming Gear</a>
+      <a href="/order-status">Trạng thái đơn hàng</a>
+    </nav>
+    <div class="nav-actions">
+      <!-- SEARCH -->
+      <div class="header-search-container" id="headerSearchWrap">
+        <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Tìm kiếm sản phẩm..."
+          onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+        <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)" title="Tìm kiếm"
+          aria-label="Tìm kiếm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
+      <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+
+      <!-- USER GREETING (hiện khi đã đăng nhập) -->
+      <div class="user-greeting-wrap" id="userGreetingWrap">
+        <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div class="user-greeting-name">
+            <em>Xin chào,</em>
+            <span id="userDisplayName">Người dùng</span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        <!-- DROPDOWN -->
+        <div class="user-dropdown" id="userDropdown">
+          <div class="dropdown-header">
+            <span id="dropdownFullName">Người dùng</span>
+            <small id="dropdownEmail">email@example.com</small>
+          </div>
+          <a href="#" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Hồ sơ của tôi
+          </a>
+          <a href="/shoppingcart" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Giỏ hàng
+          </a>
+          <a href="/checkout" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Thanh toán
+          </a>
+          <a href="/order-status" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Đơn hàng
+          </a>
+          <button class="dropdown-item logout" onclick="handleLogout()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Đăng xuất
+          </button>
+        </div>
+      </div>
+
+      <!-- CART -->
+      <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge" id="cartCount">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="profile-container">
+    <!-- Dynamic Sidebar -->
+    <div id="profile-sidebar-container"></div>
+
+    <!-- Main Panel -->
+    <div class="profile-main glass-card">
+      <div class="address-header">
+        <div class="tab-header" style="margin: 0; border: none; padding: 0;">
+          <h2>Địa Chỉ Của Tôi</h2>
+          <p>Quản lý các địa chỉ giao hàng và nhận hàng của bạn</p>
+        </div>
+        <button class="btn-outline" onclick="openAddressModal()">➕ Thêm Địa Chỉ Mới</button>
+      </div>
+
+      <div class="msg-banner" id="statusMsg"></div>
+
+      <div class="address-list" id="addressContainer">
+        <!-- Dynamic Addresses -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ADDRESS POPUP MODAL -->
+  <div class="modal-overlay" id="addressModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">Thêm Địa Chỉ Mới</h3>
+        <button class="btn-close-modal" onclick="closeAddressModal()">✕</button>
+      </div>
+      <form id="addressForm" onsubmit="handleSaveAddress(event)">
+        <input type="hidden" id="addressIdInput">
+        <div class="form-fields">
+          <div class="form-group">
+            <label for="addrReceiverName">Tên Người Nhận</label>
+            <input type="text" id="addrReceiverName" class="form-control" required placeholder="Nhập tên người nhận">
+          </div>
+          <div class="form-group">
+            <label for="addrPhoneNumber">Số Điện Thoại</label>
+            <input type="text" id="addrPhoneNumber" class="form-control" required placeholder="Nhập số điện thoại liên lạc">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label for="addrProvince">Tỉnh / Thành Phố</label>
+              <input type="text" id="addrProvince" class="form-control" required placeholder="Tỉnh / Thành phố">
+            </div>
+            <div class="form-group">
+              <label for="addrDistrict">Quận / Huyện</label>
+              <input type="text" id="addrDistrict" class="form-control" required placeholder="Quận / Huyện">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="addrWard">Phường / Xã</label>
+            <input type="text" id="addrWard" class="form-control" required placeholder="Phường / Xã">
+          </div>
+          <div class="form-group">
+            <label for="addrDetailAddress">Địa Chỉ Chi Tiết (Số nhà, tên đường...)</label>
+            <input type="text" id="addrDetailAddress" class="form-control" required placeholder="Ví dụ: 123 Đường Nguyễn Trãi">
+          </div>
+          <div class="form-group" style="flex-direction: row; gap: 10px; align-items: center; margin-top: 5px;">
+            <input type="checkbox" id="addrIsDefault" style="width: 18px; height: 18px; cursor: pointer;">
+            <label for="addrIsDefault" style="cursor: pointer; margin: 0; user-select: none;">Đặt làm địa chỉ mặc định</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" onclick="closeAddressModal()">Hủy</button>
+          <button type="submit" class="btn-primary">Xác Nhận</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <!-- Left Info Column -->
+      <div class="footer-info-col">
+        <div class="footer-logo">
+          <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+            style="height: 55px; display: block; object-fit: contain; filter: invert(1);">
+        </div>
+      </div>
+
+      <!-- Links Columns -->
+      <div class="footer-links-col">
+        <h4>Linh Kiện</h4>
+        <ul>
+          <li><a href="/Products?cat=vga">Card Màn Hình (VGA)</a></li>
+          <li><a href="/Products?cat=cpu">Bộ Vi Xử Lý (CPU)</a></li>
+          <li><a href="/Products?cat=main">Bo Mạch Chủ (Main)</a></li>
+          <li><a href="/Products?cat=ram">Bộ Nhớ Trong (RAM)</a></li>
+          <li><a href="/Products?cat=ssd">SSD / Ổ Cứng</a></li>
+          <li><a href="/Products?cat=psu">Nguồn / PSU</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Hỗ Trợ</h4>
+        <ul>
+          <li><a href="#">Liên Hệ</a></li>
+          <li><a href="#">Câu Hỏi FAQs</a></li>
+          <li><a href="#">Tải Driver & Software</a></li>
+          <li><a href="#">Trung Tâm Bảo Hành</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Khám Phá</h4>
+        <ul>
+          <li><a href="#">Về Chúng Tôi</a></li>
+          <li><a href="https://discord.gg/QBbHeKc2Sy" target="_blank">Cộng Đồng Discord</a></li>
+          <li><a href="#">Tin Tức Công Nghệ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Chính Sách</h4>
+        <ul>
+          <li><a href="#">Chính Sách Giao Hàng</a></li>
+          <li><a href="#">Chính Sách Đổi Trả</a></li>
+          <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+          <li><a href="#">Chính Sách Bảo Mật</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
+    </div>
+  </footer>
+
+  <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+  <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
+  <script src="/assets/js/profile-common.js?v=1.0.5"></script>
+
+  <script>
+    let userAddresses = [];
+    let pageUserId = null;
+    let pageAuthToken = null;
+
+    function showStatus(text, type = 'success') {
+      const banner = document.getElementById('statusMsg');
+      banner.textContent = text;
+      banner.className = `msg-banner ${type}`;
+      setTimeout(() => {
+        banner.className = 'msg-banner';
+      }, 5000);
+    }
+
+    // Called automatically by profile-common.js?v=1.0.5
+    function initPage(userId, authToken, profile) {
+      pageUserId = userId;
+      pageAuthToken = authToken;
+      loadAddresses();
+    }
+
+    async function loadAddresses() {
+      const container = document.getElementById('addressContainer');
+      try {
+        const res = await fetch(`${API_BASE}/api/Users/addresses/${pageUserId}`, {
+          headers: { 'Authorization': `Bearer ${pageAuthToken}` }
+        });
+        if (!res.ok) return;
+        userAddresses = await res.json();
+        
+        if (userAddresses.length === 0) {
+          container.innerHTML = `<p style="color:var(--text-muted);text-align:center;padding:40px;font-size:14.5px;">Bạn chưa lưu địa chỉ nào.</p>`;
+          return;
+        }
+
+        // Sort: default on top
+        userAddresses.sort((a,b) => b.isDefault - a.isDefault);
+
+        container.innerHTML = userAddresses.map(addr => `
+          <div class="address-card ${addr.isDefault ? 'default' : ''}">
+            <div class="address-info">
+              <div class="address-info-header">
+                <span class="address-name">${addr.receiverName}</span>
+                <span class="address-phone">${addr.phoneNumber}</span>
+                ${addr.isDefault ? `<span class="default-tag">Mặc định</span>` : ''}
+              </div>
+              <div class="address-text">
+                ${addr.detailAddress}, Phường ${addr.ward}, Quận ${addr.district}, ${addr.province}
+              </div>
+            </div>
+            <div class="address-actions">
+              <div class="action-links">
+                <button class="action-link" onclick="openAddressModal(${addr.addressId})">Sửa</button>
+                <button class="action-link delete" onclick="handleDeleteAddress(${addr.addressId})">Xóa</button>
+              </div>
+              ${!addr.isDefault ? `<button class="btn-set-default" onclick="handleSetDefaultAddress(${addr.addressId})">Thiết lập mặc định</button>` : ''}
+            </div>
+          </div>
+        `).join('');
+
+      } catch (e) {
+        container.innerHTML = `<p style="color:var(--error);text-align:center;">Lỗi tải dữ liệu địa chỉ.</p>`;
+      }
+    }
+
+    function openAddressModal(addressId = null) {
+      document.getElementById('addressForm').reset();
+      document.getElementById('addressIdInput').value = addressId || '';
+      document.getElementById('modalTitle').textContent = addressId ? 'Chỉnh Sửa Địa Chỉ' : 'Thêm Địa Chỉ Mới';
+      
+      if (addressId) {
+        const addr = userAddresses.find(a => a.addressId === addressId);
+        if (addr) {
+          document.getElementById('addrReceiverName').value = addr.receiverName;
+          document.getElementById('addrPhoneNumber').value = addr.phoneNumber;
+          document.getElementById('addrProvince').value = addr.province;
+          document.getElementById('addrDistrict').value = addr.district;
+          document.getElementById('addrWard').value = addr.ward;
+          document.getElementById('addrDetailAddress').value = addr.detailAddress;
+          document.getElementById('addrIsDefault').checked = addr.isDefault;
+        }
+      }
+      
+      document.getElementById('addressModal').classList.add('active');
+    }
+
+    function closeAddressModal() {
+      document.getElementById('addressModal').classList.remove('active');
+    }
+
+    async function handleSaveAddress(e) {
+      e.preventDefault();
+      const addressId = document.getElementById('addressIdInput').value;
+      const isDefault = document.getElementById('addrIsDefault').checked;
+
+      const payload = {
+        userId: pageUserId,
+        receiverName: document.getElementById('addrReceiverName').value.trim(),
+        phoneNumber: document.getElementById('addrPhoneNumber').value.trim(),
+        province: document.getElementById('addrProvince').value.trim(),
+        district: document.getElementById('addrDistrict').value.trim(),
+        ward: document.getElementById('addrWard').value.trim(),
+        detailAddress: document.getElementById('addrDetailAddress').value.trim(),
+        isDefault: isDefault
+      };
+
+      let url = `${API_BASE}/api/Users/addresses`;
+      let method = 'POST';
+
+      if (addressId) {
+        method = 'PUT';
+        payload.addressId = parseInt(addressId);
+      }
+
+      try {
+        const res = await fetch(url, {
+          method: method,
+          headers: {
+            'Authorization': `Bearer ${pageAuthToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          showStatus(addressId ? 'Cập nhật địa chỉ thành công!' : 'Thêm địa chỉ mới thành công!');
+          closeAddressModal();
+          loadAddresses();
+        } else {
+          showStatus('Lưu địa chỉ thất bại!', 'error');
+        }
+      } catch (err) {
+        showStatus('Lỗi kết nối máy chủ!', 'error');
+      }
+    }
+
+    async function handleDeleteAddress(addressId) {
+      if(!confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) return;
+      try {
+        const res = await fetch(`${API_BASE}/api/Users/addresses`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${pageAuthToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId: pageUserId, addressId: addressId })
+        });
+        if(res.ok) {
+          showStatus('Xóa địa chỉ thành công!');
+          loadAddresses();
+        } else {
+          showStatus('Xóa địa chỉ thất bại!', 'error');
+        }
+      } catch (e) {
+        showStatus('Lỗi kết nối máy chủ!', 'error');
+      }
+    }
+
+    async function handleSetDefaultAddress(addressId) {
+      const addr = userAddresses.find(a => a.addressId === addressId);
+      if(!addr) return;
+      
+      const payload = {
+        addressId: addr.addressId,
+        userId: pageUserId,
+        receiverName: addr.receiverName,
+        phoneNumber: addr.phoneNumber,
+        province: addr.province,
+        district: addr.district,
+        ward: addr.ward,
+        detailAddress: addr.detailAddress,
+        isDefault: true
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/Users/addresses`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${pageAuthToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+        if(res.ok) {
+          showStatus('Thiết lập địa chỉ mặc định thành công!');
+          loadAddresses();
+        } else {
+          showStatus('Thiết lập mặc định thất bại!', 'error');
+        }
+      } catch (e) {
+        showStatus('Lỗi kết nối máy chủ!', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

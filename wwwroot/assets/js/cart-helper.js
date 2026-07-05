@@ -510,3 +510,38 @@ function clearLocalCart() {
     sessionStorage.removeItem('checkout_address');
     sessionStorage.removeItem('current_orderId');
 }
+
+/**
+ * Lưu sản phẩm vào danh sách đã xem gần đây (tối đa 5 sản phẩm)
+ */
+function saveProductToRecentlyViewed(product) {
+    if (!product || !product.id) return;
+    
+    let list = [];
+    try {
+        list = JSON.parse(localStorage.getItem('hyper_core_recently_viewed')) || [];
+    } catch (e) {}
+    
+    // Lọc bỏ sản phẩm trùng lặp
+    list = list.filter(item => item.id !== product.id && item.name !== product.name);
+    
+    // Thêm vào đầu danh sách
+    list.unshift({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        specs: product.specs || ''
+    });
+    
+    // Giới hạn tối đa 5 sản phẩm
+    if (list.length > 5) {
+        list = list.slice(0, 5);
+    }
+    
+    localStorage.setItem('hyper_core_recently_viewed', JSON.stringify(list));
+    
+    // Kích hoạt event thông báo
+    window.dispatchEvent(new CustomEvent('recentlyViewedUpdated', { detail: list }));
+}
+

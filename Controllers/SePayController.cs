@@ -176,8 +176,6 @@ public class SePayController : ControllerBase
                 return BadRequest(new { success = false, error = "Invalid webhook data" });
             }
 
-            _logger.LogInformation($"[SePay] Webhook Data Parsed:");
-            
             // Xác định format: SePay API hoặc SePay Transfer Monitoring
             bool isTransferMonitoring = !string.IsNullOrEmpty(webhookData.TransferAmount?.ToString()) || 
                                        !string.IsNullOrEmpty(webhookData.Content);
@@ -198,69 +196,7 @@ public class SePayController : ControllerBase
                 
                 amount = webhookData.TransferAmount ?? 0;
                 description = webhookData.Content ?? "";
-                
-                // Parse Order ID từ content
-                // Các format SePay có thể gửi:
-                // "HYPERCORE 33", "HYPERCORE ORD 33", "HYPERCORE ORDER 33", "HYPERCORE#33"
-                // "DH 33", "DON HANG 33", "HD33"
-                var contentUpper = description.ToUpper().Trim();
-                _logger.LogInformation($"[SePay] Parsing order ID from content: '{contentUpper}'");
-
-                // Thử nhiều pattern để extract Order ID
-                var patterns = new[]
-                {
-                    @"HYPERCORE\s*#?\s*(\d+)",           // HYPERCORE 33, HYPERCORE#33
-                    @"(?:ORDER|ORD)\s*#?\s*(\d+)",        // ORDER 33, ORD33, ORDER#33
-                    @"(?:DH|HD|DONHANG|DON\s*HANG)\s*#?\s*(\d+)", // DH33, DON HANG 33
-                    @"(?:^|\s)(\d{1,6})(?:\s|$)"          // Số cuối cùng trong chuỗi (fallback)
-                };
-
-                Match match = Match.Empty;
-                foreach (var pattern in patterns)
-                {
-                    match = Regex.Match(contentUpper, pattern);
-                    if (match.Success)
-                    {
-                        _logger.LogInformation($"[SePay] Matched pattern '{pattern}'");
-                        break;
-                    }
-                }
-
-                if (match.Success && int.TryParse(match.Groups[1].Value, out int orderId))
-                {
-                    transactionRef = $"ORD{orderId}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
-                    _logger.LogInformation($"[SePay] Extracted Order ID: {orderId}");
-
-                    // Dùng SP để update - đúng chuẩn kiến trúc của project
-                    try
-                    {
-                        var updateResult = await _db.QuerySingleAsync<RowsAffectedResult>(
-                            "sp_SePay_UpdatePaymentStatus",
-                            new
-                            {
-                                OrderID = orderId,
-                                PaymentStatus = "Đã thanh toán",
-                                NewStatus = "Chờ xác nhận"
-                            }
-                        );
-
-                        int rowsAffected = updateResult?.RowsAffected ?? 0;
-
-                        if (rowsAffected > 0)
-                            _logger.LogInformation($"[SePay] ✅ Order {orderId} updated to 'Đã thanh toán' ({rowsAffected} row affected)");
-                        else
-                            _logger.LogWarning($"[SePay] ⚠️ Order {orderId} - no rows updated (already paid or not found)");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError($"[SePay] ❌ Failed to update Order {orderId}: {ex.Message}");
-                    }
-                }
-                else
-                {
-                    _logger.LogWarning($"[SePay] ⚠️ Could not extract Order ID from content: '{description}'");
-                    transactionRef = $"UNKNOWN_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
-                }
+                transactionRef = webhookData.ReferenceNumber ?? $"TM{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
             }
             else
             {
@@ -275,6 +211,72 @@ public class SePayController : ControllerBase
                 status = webhookData.Status ?? "success";
                 amount = webhookData.Amount;
                 description = webhookData.Description ?? "";
+            }
+
+            // --- HÀNH ĐỘNG CHUNG: TRÍCH XUẤT MÃ ĐƠN HÀNG VÀ CẬP NHẬT TRẠNG THÁI ---
+            var contentUpper = description.ToUpper().Trim();
+            _logger.LogInformation($"[SePay] Parsing order ID from description: '{contentUpper}'");
+
+            // Thử nhiều pattern để extract Order ID
+            var patterns = new[]
+            {
+                @"HYPERCORE\s*#?\s*(\d+)",           // HYPERCORE 33, HYPERCORE#33
+                @"(?:ORDER|ORD)\s*#?\s*(\d+)",        // ORDER 33, ORD33, ORDER#33
+                @"(?:DH|HD|DONHANG|DON\s*HANG)\s*#?\s*(\d+)", // DH33, DON HANG 33
+                @"(?:^|\s)(\d{1,6})(?:\s|$)"          // Số cuối cùng trong chuỗi (fallback)
+            };
+
+            Match match = Match.Empty;
+            foreach (var pattern in patterns)
+            {
+                match = Regex.Match(contentUpper, pattern);
+                if (match.Success)
+                {
+                    _logger.LogInformation($"[SePay] Matched pattern '{pattern}'");
+                    break;
+                }
+            }
+
+            if (match.Success && int.TryParse(match.Groups[1].Value, out int orderId))
+            {
+                if (string.IsNullOrEmpty(transactionRef))
+                {
+                    transactionRef = $"ORD{orderId}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+                }
+                _logger.LogInformation($"[SePay] Extracted Order ID: {orderId}");
+
+                // Dùng SP để update - đúng chuẩn kiến trúc của project
+                try
+                {
+                    var updateResult = await _db.QuerySingleAsync<RowsAffectedResult>(
+                        "sp_SePay_UpdatePaymentStatus",
+                        new
+                        {
+                            OrderID = orderId,
+                            PaymentStatus = "Đã thanh toán",
+                            NewStatus = "Chờ xác nhận"
+                        }
+                    );
+
+                    int rowsAffected = updateResult?.RowsAffected ?? 0;
+
+                    if (rowsAffected > 0)
+                        _logger.LogInformation($"[SePay] ✅ Order {orderId} updated to 'Đã thanh toán' ({rowsAffected} row affected)");
+                    else
+                        _logger.LogWarning($"[SePay] ⚠️ Order {orderId} - no rows updated (already paid or not found)");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"[SePay] ❌ Failed to update Order {orderId}: {ex.Message}");
+                }
+            }
+            else
+            {
+                _logger.LogWarning($"[SePay] ⚠️ Could not extract Order ID from content: '{description}'");
+                if (string.IsNullOrEmpty(transactionRef))
+                {
+                    transactionRef = $"UNKNOWN_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+                }
             }
 
             // Update transaction status in database
@@ -368,6 +370,90 @@ public class SePayController : ControllerBase
             }
 
             bool isPaid = result.PaymentStatus == "Đã thanh toán";
+
+            if (!isPaid)
+            {
+                // Fallback check: Direct real-time check against SePay API (in case webhook is blocked or ngrok is down)
+                try
+                {
+                    var sePayApiKey = _configuration["SePay:ApiKey"];
+                    if (!string.IsNullOrEmpty(sePayApiKey))
+                    {
+                        using (var httpClient = new HttpClient())
+                        {
+                            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {sePayApiKey}");
+                            
+                            var apiResponse = await httpClient.GetAsync("https://api.sepay.vn/api/transactions/list?limit=25");
+                            if (apiResponse.IsSuccessStatusCode)
+                            {
+                                var apiBody = await apiResponse.Content.ReadAsStringAsync();
+                                using (var doc = JsonDocument.Parse(apiBody))
+                                {
+                                    var root = doc.RootElement;
+                                    if (root.TryGetProperty("transactions", out var transactionsArr) && transactionsArr.ValueKind == JsonValueKind.Array)
+                                    {
+                                        foreach (var tx in transactionsArr.EnumerateArray())
+                                        {
+                                            string content = "";
+                                            if (tx.TryGetProperty("transactionContent", out var contentProp1))
+                                                content = contentProp1.GetString() ?? "";
+                                            else if (tx.TryGetProperty("content", out var contentProp2))
+                                                content = contentProp2.GetString() ?? "";
+
+                                            string refNo = "";
+                                            if (tx.TryGetProperty("referenceNumber", out var refProp1))
+                                                refNo = refProp1.GetString() ?? "";
+                                            else if (tx.TryGetProperty("transactionRef", out var refProp2))
+                                                refNo = refProp2.GetString() ?? "";
+                                            else if (tx.TryGetProperty("id", out var refProp3))
+                                                refNo = refProp3.ValueKind == JsonValueKind.Number ? refProp3.GetInt64().ToString() : refProp3.GetString() ?? "";
+
+                                            var targetPattern = $"HYPERCORE {orderId}";
+                                            if (content.ToUpper().Contains(targetPattern))
+                                            {
+                                                _logger.LogInformation($"[SePay API Fallback] Match found! Order {orderId} paid via transaction ref {refNo}. Updating status...");
+
+                                                // Update Order Payment Status
+                                                await _db.QuerySingleAsync<RowsAffectedResult>(
+                                                    "sp_SePay_UpdatePaymentStatus",
+                                                    new
+                                                    {
+                                                        OrderID = orderId,
+                                                        PaymentStatus = "Đã thanh toán",
+                                                        NewStatus = "Chờ xác nhận"
+                                                    }
+                                                );
+
+                                                // Log the transaction update
+                                                try
+                                                {
+                                                    await _db.ExecuteAsync("sp_UpdateSePayTransactionStatus", new
+                                                    {
+                                                        TransactionRef = refNo,
+                                                        Status = "success",
+                                                        ResponseData = tx.ToString(),
+                                                        ErrorMessage = (string?)null
+                                                    });
+                                                }
+                                                catch { }
+
+                                                isPaid = true;
+                                                result.PaymentStatus = "Đã thanh toán";
+                                                result.Status = "Chờ xác nhận";
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception apiEx)
+                {
+                    _logger.LogWarning($"[SePay API Fallback] Failed to check SePay transactions API: {apiEx.Message}");
+                }
+            }
 
             _logger.LogInformation($"[SePay] Order {orderId}: PaymentStatus={result.PaymentStatus}, IsPaid={isPaid}");
 

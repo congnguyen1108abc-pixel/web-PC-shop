@@ -12,6 +12,7 @@ public sealed class UserService : IUserService
 
     public Task<UserProfileItem?> GetProfileAsync(int userId) => _repo.GetProfileAsync(userId);
     public Task<int?> UpdateProfileAsync(UpdateProfileRequest request) => _repo.UpdateProfileAsync(request);
+    public Task<int?> UpdateBankAsync(UpdateBankRequest request) => _repo.UpdateBankAsync(request);
     public Task<IEnumerable<UserAddressItem>> GetAddressesAsync(int userId) => _repo.GetAddressesAsync(userId);
     public Task<int?> CreateAddressAsync(UserAddressCreateRequest request) => _repo.CreateAddressAsync(request);
     public Task<int?> UpdateAddressAsync(UserAddressUpdateRequest request) => _repo.UpdateAddressAsync(request);

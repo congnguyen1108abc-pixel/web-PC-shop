@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hạng Thành Viên - HYPER CORE</title>
+  <!-- Google Fonts Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/style.css?v=1.0.5">
+  <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5">
+  <link rel="stylesheet" href="/assets/css/profile-common.css?v=1.0.5">
+</head>
+<body class="profile-body">
+
+  <!-- HEADER -->
+  <header id="header">
+    <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+      <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" style="height: 38px; display: block; object-fit: contain;">
+    </div>
+    <nav>
+      <a href="/Homepage">Trang Chủ</a>
+      <a href="/Products">Sản Phẩm</a>
+      <a href="/gaminggear">Gaming Gear</a>
+      <a href="/order-status">Trạng thái đơn hàng</a>
+    </nav>
+    <div class="nav-actions">
+      <!-- SEARCH -->
+      <div class="header-search-container" id="headerSearchWrap">
+        <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Tìm kiếm sản phẩm..."
+          onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+        <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)" title="Tìm kiếm"
+          aria-label="Tìm kiếm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
+      <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </a>
+
+      <!-- USER GREETING (hiện khi đã đăng nhập) -->
+      <div class="user-greeting-wrap" id="userGreetingWrap">
+        <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div class="user-greeting-name">
+            <em>Xin chào,</em>
+            <span id="userDisplayName">Người dùng</span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+
+        <!-- DROPDOWN -->
+        <div class="user-dropdown" id="userDropdown">
+          <div class="dropdown-header">
+            <span id="dropdownFullName">Người dùng</span>
+            <small id="dropdownEmail">email@example.com</small>
+          </div>
+          <a href="#" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Hồ sơ của tôi
+          </a>
+          <a href="/shoppingcart" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            Giỏ hàng
+          </a>
+          <a href="/checkout" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Thanh toán
+          </a>
+          <a href="/order-status" class="dropdown-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Đơn hàng
+          </a>
+          <button class="dropdown-item logout" onclick="handleLogout()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Đăng xuất
+          </button>
+        </div>
+      </div>
+
+      <!-- CART -->
+      <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="21" r="1"/>
+          <circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="cart-badge" id="cartCount">0</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="profile-container">
+    <!-- Dynamic Sidebar -->
+    <div id="profile-sidebar-container"></div>
+
+    <!-- Main Panel -->
+    <div class="profile-main glass-card">
+      <div class="tab-header">
+        <h2>Hạng Thành Viên & Đặc Quyền</h2>
+        <p>Tích lũy chi tiêu từ các đơn mua hoàn tất để thăng hạng thành viên và mở khóa thêm nhiều đặc quyền ưu đãi</p>
+      </div>
+
+      <!-- Current Tier summary -->
+      <div class="tier-card">
+        <div class="tier-header">
+          <div class="tier-title-wrap">
+            <h3>Hạng Hiện Tại</h3>
+            <div style="font-size: 24px; font-weight: 800; margin-top: 8px; color: #ffffff;" id="loyaltyTierName">CHƯA PHÂN HẠNG</div>
+          </div>
+          <div id="loyaltyTierBadge" class="tier-badge">Mới</div>
+        </div>
+        
+        <div class="progress-section">
+          <div class="progress-label">
+            <span>Tiến trình thăng hạng tiếp theo</span>
+            <span id="loyaltyProgressLabel">0đ / 10.000.000đ</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="loyaltyProgressBar" class="progress-bar-fill"></div>
+          </div>
+          <p id="loyaltyRankUpDesc" style="margin: 8px 0 0; font-size: 13.5px; color: rgba(255, 255, 255, 0.85); line-height: 1.5;"></p>
+        </div>
+      </div>
+
+      <h3 style="font-size: 16px; margin: 30px 0 16px; font-weight: 700;">Đặc Quyền Từng Hạng Thẻ</h3>
+      <div class="perks-grid">
+        <div class="perk-card" style="border-color: rgba(192, 132, 252, 0.3);">
+          <div class="tier-badge badge-dong" style="align-self: flex-start; font-size: 11px; padding: 2px 8px;">Đồng</div>
+          <h4 style="margin-top: 10px;">Thành Viên Đồng</h4>
+          <p>Yêu cầu: Tổng chi tiêu tích lũy từ 10.000.000đ trở lên.</p>
+          <p style="font-weight:700; color:var(--primary); margin-top: 5px;">Ưu đãi: Giảm 15% cho đơn hàng tiếp theo từ 2.000.000đ (Tối đa 3 lần sử dụng)</p>
+        </div>
+        <div class="perk-card" style="border-color: rgba(203, 213, 225, 0.3);">
+          <div class="tier-badge badge-bac" style="align-self: flex-start; font-size: 11px; padding: 2px 8px;">Bạc</div>
+          <h4 style="margin-top: 10px;">Thành Viên Bạc</h4>
+          <p>Yêu cầu: Tổng chi tiêu tích luỹ từ 30.000.000đ trở lên.</p>
+          <p style="font-weight:700; color:var(--success); margin-top: 5px;">Ưu đãi: Giảm 22% cho đơn hàng tiếp theo từ 2.000.000đ (Tối đa 3 lần sử dụng)</p>
+        </div>
+        <div class="perk-card" style="border-color: rgba(252, 211, 77, 0.3);">
+          <div class="tier-badge badge-vang" style="align-self: flex-start; font-size: 11px; padding: 2px 8px;">Vàng</div>
+          <h4 style="margin-top: 10px;">Thành Viên Vàng</h4>
+          <p>Yêu cầu: Tổng chi tiêu tích luỹ từ 50.000.000đ trở lên.</p>
+          <p style="font-weight:700; color:var(--warning); margin-top: 5px;">Ưu đãi: Giảm 25% cho đơn hàng tiếp theo từ 2.000.000đ (Tối đa 3 lần sử dụng)</p>
+        </div>
+        <div class="perk-card" style="border-color: rgba(56, 189, 248, 0.3);">
+          <div class="tier-badge badge-kimcuong" style="align-self: flex-start; font-size: 11px; padding: 2px 8px;">Kim Cương</div>
+          <h4 style="margin-top: 10px;">Thành Viên Kim Cương</h4>
+          <p>Yêu cầu: Tổng chi tiêu tích luỹ từ 100.000.000đ trở lên.</p>
+          <p style="font-weight:700; color:var(--primary); margin-top: 5px;">Ưu đãi: Giảm 30% cho đơn hàng tiếp theo từ 2.000.000đ (Tối đa 3 lần sử dụng)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <!-- Left Info Column -->
+      <div class="footer-info-col">
+        <div class="footer-logo">
+          <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+            style="height: 55px; display: block; object-fit: contain; filter: invert(1);">
+        </div>
+      </div>
+
+      <!-- Links Columns -->
+      <div class="footer-links-col">
+        <h4>Linh Kiện</h4>
+        <ul>
+          <li><a href="/Products?cat=vga">Card Màn Hình (VGA)</a></li>
+          <li><a href="/Products?cat=cpu">Bộ Vi Xử Lý (CPU)</a></li>
+          <li><a href="/Products?cat=main">Bo Mạch Chủ (Main)</a></li>
+          <li><a href="/Products?cat=ram">Bộ Nhớ Trong (RAM)</a></li>
+          <li><a href="/Products?cat=ssd">SSD / Ổ Cứng</a></li>
+          <li><a href="/Products?cat=psu">Nguồn / PSU</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Hỗ Trợ</h4>
+        <ul>
+          <li><a href="#">Liên Hệ</a></li>
+          <li><a href="#">Câu Hỏi FAQs</a></li>
+          <li><a href="#">Tải Driver & Software</a></li>
+          <li><a href="#">Trung Tâm Bảo Hành</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Khám Phá</h4>
+        <ul>
+          <li><a href="#">Về Chúng Tôi</a></li>
+          <li><a href="https://discord.gg/QBbHeKc2Sy" target="_blank">Cộng Đồng Discord</a></li>
+          <li><a href="#">Tin Tức Công Nghệ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-col">
+        <h4>Chính Sách</h4>
+        <ul>
+          <li><a href="#">Chính Sách Giao Hàng</a></li>
+          <li><a href="#">Chính Sách Đổi Trả</a></li>
+          <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+          <li><a href="#">Chính Sách Bảo Mật</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
+    </div>
+  </footer>
+
+  <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+  <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
+  <script src="/assets/js/profile-common.js?v=1.0.5"></script>
+
+  <script>
+    // Called automatically by profile-common.js?v=1.0.5
+    function initPage(userId, authToken, profile) {
+      if (!profile) return;
+      renderLoyaltyUI(profile.totalSpent, profile.membershipTier, profile.loyaltyDiscountUses);
+    }
+
+    function renderLoyaltyUI(totalSpent, tier, loyaltyDiscountUses) {
+      const tierNameEl = document.getElementById('loyaltyTierName');
+      const tierBadgeEl = document.getElementById('loyaltyTierBadge');
+      const progressLabelEl = document.getElementById('loyaltyProgressLabel');
+      const progressBarEl = document.getElementById('loyaltyProgressBar');
+      const rankUpDescEl = document.getElementById('loyaltyRankUpDesc');
+
+      const total = totalSpent || 0;
+      const uses = loyaltyDiscountUses || 0;
+      const usesRemaining = Math.max(0, 3 - uses);
+      
+      tierNameEl.textContent = (tier || 'Chưa phân hạng').toUpperCase();
+      
+      // Update badge class
+      tierBadgeEl.className = 'tier-badge';
+      let cleanTier = (tier || 'Chưa phân hạng').toLowerCase();
+      if(cleanTier === 'đồng') {
+        tierBadgeEl.classList.add('badge-dong');
+        tierBadgeEl.textContent = 'Đồng';
+      } else if(cleanTier === 'bạc') {
+        tierBadgeEl.classList.add('badge-bac');
+        tierBadgeEl.textContent = 'Bạc';
+      } else if(cleanTier === 'vàng') {
+        tierBadgeEl.classList.add('badge-vang');
+        tierBadgeEl.textContent = 'Vàng';
+      } else if(cleanTier === 'kim cương') {
+        tierBadgeEl.classList.add('badge-kimcuong');
+        tierBadgeEl.textContent = 'Kim Cương';
+      } else {
+        tierBadgeEl.style.background = 'rgba(255, 255, 255, 0.1)';
+        tierBadgeEl.style.color = '#ffffff';
+        tierBadgeEl.textContent = 'Mới';
+      }
+
+      // Progress bar calculations:
+      // Đồng: 10M, Bạc: 30M, Vàng: 50M, Kim Cương: 100M
+      let nextTier = 'Đồng';
+      let nextTierMin = 10000000;
+      let prevTierMin = 0;
+      
+      if (total >= 100000000) {
+        nextTier = 'Kim Cương';
+        nextTierMin = 100000000;
+        prevTierMin = 100000000;
+      } else if (total >= 50000000) {
+        nextTier = 'Kim Cương';
+        nextTierMin = 100000000;
+        prevTierMin = 50000000;
+      } else if (total >= 30000000) {
+        nextTier = 'Vàng';
+        nextTierMin = 50000000;
+        prevTierMin = 30000000;
+      } else if (total >= 10000000) {
+        nextTier = 'Bạc';
+        nextTierMin = 30000000;
+        prevTierMin = 10000000;
+      }
+
+      const diffTotal = nextTierMin - prevTierMin;
+      const progressSpent = total - prevTierMin;
+      let percent = diffTotal > 0 ? (progressSpent / diffTotal) * 100 : 100;
+      if (percent < 0) percent = 0;
+      if (percent > 100 || total >= 100000000) percent = 100;
+
+      progressLabelEl.textContent = `${formatVND(total)} / ${formatVND(nextTierMin)}`;
+      progressBarEl.style.width = `${percent}%`;
+
+      let perkText = '';
+      if (cleanTier === 'chưa phân hạng') {
+        perkText = '<br>⚡ Ưu đãi hiện tại: Chưa có chiết khấu thành viên.';
+      } else {
+        let discPct = cleanTier === 'đồng' ? '15%' : cleanTier === 'bạc' ? '22%' : cleanTier === 'vàng' ? '25%' : '30%';
+        perkText = `<br>⚡ Ưu đãi hạng thẻ: Giảm <strong>${discPct}</strong> cho đơn từ 2.000.000đ (còn <strong>${usesRemaining}/3</strong> lượt sử dụng ở hạng hiện tại).`;
+      }
+
+      if (total >= 100000000) {
+        rankUpDescEl.innerHTML = `🎉 Bạn đang sở hữu thứ hạng đặc quyền tối cao <strong>KIM CƯƠNG</strong>.${perkText}`;
+      } else {
+        const needed = nextTierMin - total;
+        rankUpDescEl.innerHTML = `💡 Bạn cần chi tiêu thêm <strong>${formatVND(needed)}</strong> nữa để thăng hạng <strong>${nextTier.toUpperCase()}</strong>.${perkText}`;
+      }
+    }
+  </script>
+</body>
+</html>

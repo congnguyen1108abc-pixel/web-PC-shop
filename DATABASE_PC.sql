@@ -2,7 +2,7 @@
 --   PC STORE - FILE DATABASE ĐÃ SẮP XẾP GỌN
 --   Thứ tự: TABLES -> INDEXES -> TRIGGERS -> STORED PROCEDURES
 --   Lưu ý: Chỉ sắp xếp lại vị trí và thêm comment mô tả SP, không sửa logic code gốc.
---   Tổng hợp theo file: 24 Tables, 27 Indexes thủ công, 10 Triggers, 107 Stored Procedures.
+--   Tổng hợp theo file: 24 Tables, 23 Indexes thủ công, 8 Triggers, 108 Stored Procedures (+ 2 Functions).
 -- ============================================================
 
 -- ============================================================================
@@ -187,7 +187,7 @@ CREATE TABLE Orders (
     VoucherCode     NVARCHAR(20)   NULL FOREIGN KEY REFERENCES Vouchers(VoucherCode),
     Status          NVARCHAR(50)   DEFAULT N'Chờ xác nhận'
                     CHECK (Status IN (N'Chờ xác nhận', N'Đã xác nhận', N'Đang giao', N'Hoàn tất', N'Đã hủy')),
-    PaymentMethod   NVARCHAR(50)   NOT NULL,    -- 'COD', 'Banking', 'Momo', 'VNPay'
+    PaymentMethod   NVARCHAR(50)   NOT NULL,    -- 'COD', 'Banking', 'Momo', 'SePay'
     PaymentStatus   NVARCHAR(50)   DEFAULT N'Chưa thanh toán'   -- 
                     CHECK (PaymentStatus IN (N'Chưa thanh toán', N'Đã thanh toán', N'Hoàn tiền')),
     ShippingAddress NVARCHAR(500)  NOT NULL,    -- Snapshot địa chỉ tại thời điểm đặt hàng
@@ -219,7 +219,8 @@ CREATE TABLE Reviews (
     Comment    NVARCHAR(MAX),
     ImageURL   NVARCHAR(500) NULL,   --  Ảnh kèm theo đánh giá
     IsApproved BIT           DEFAULT 0,   --  Admin duyệt trước khi hiển thị
-    CreatedAt  DATETIME      DEFAULT GETDATE()
+    CreatedAt  DATETIME      DEFAULT GETDATE(),
+    CONSTRAINT UQ_Review_User_Product UNIQUE (UserID, ProductID)  -- Mỗi user chỉ review 1 lần/SP
 );
 GO
 
@@ -421,78 +422,35 @@ CREATE TABLE RefreshTokens (
 );
 GO
 
--- [TABLE 24] Dòng gốc: 4990-5034
 
 
 
--- Bổ sung thêm phần thanh toán VNPAY
-
+-- [TABLE 24] SePayTransactions
 
 /* -------------------------------------------------------
-   1. TABLE: VNPayTransactions
-------------------------------------------------------- */
-IF OBJECT_ID('dbo.VNPayTransactions', 'U') IS NULL
-BEGIN
-    CREATE TABLE dbo.VNPayTransactions
-    (
-        TransactionID        INT IDENTITY(1,1) PRIMARY KEY,
-        OrderID              INT NOT NULL FOREIGN KEY REFERENCES dbo.Orders(OrderID),
-        vnp_TxnRef           NVARCHAR(100) NOT NULL,
-        vnp_Amount           BIGINT NOT NULL,
-        vnp_OrderInfo        NVARCHAR(500) NOT NULL,
-        vnp_OrderType        NVARCHAR(50) NOT NULL CONSTRAINT DF_VNPay_OrderType DEFAULT('other'),
-        RequestedBankCode    NVARCHAR(50) NULL,
-        vnp_IpAddr           NVARCHAR(50) NOT NULL,
-        RequestUrl           NVARCHAR(MAX) NULL,
-        RequestData          NVARCHAR(MAX) NULL,
-        vnp_TransactionNo    NVARCHAR(100) NULL,
-        vnp_BankCode         NVARCHAR(50) NULL,
-        vnp_BankTranNo       NVARCHAR(100) NULL,
-        vnp_CardType         NVARCHAR(50) NULL,
-        vnp_PayDate          NVARCHAR(14) NULL,
-        vnp_ResponseCode     NVARCHAR(10) NULL,
-        vnp_TransactionStatus NVARCHAR(10) NULL,
-        vnp_SecureHash       NVARCHAR(500) NULL,
-        Status               NVARCHAR(50) NOT NULL
-            CONSTRAINT DF_VNPay_Status DEFAULT(N'Pending')
-            CHECK (Status IN (N'Pending', N'Success', N'Failed', N'Cancelled', N'Expired')),
-        CreatedAt            DATETIME NOT NULL CONSTRAINT DF_VNPay_CreatedAt DEFAULT(GETDATE()),
-        UpdatedAt            DATETIME NULL,
-        CallbackReceivedAt   DATETIME NULL,
-        VerifiedAt           DATETIME NULL,
-        IsIpnProcessed       BIT NOT NULL CONSTRAINT DF_VNPay_IsIpnProcessed DEFAULT(0),
-        IsStockReverted      BIT NOT NULL CONSTRAINT DF_VNPay_IsStockReverted DEFAULT(0),
-        ResponseData         NVARCHAR(MAX) NULL,
-        ErrorMessage         NVARCHAR(500) NULL,
-        CONSTRAINT UQ_VNPayTransactions_TxnRef UNIQUE (vnp_TxnRef)
-    );
-END
-GO
-
-/* -------------------------------------------------------
-   1B. TABLE: SePayTransactions
+   TABLE: SePayTransactions
+   Lưu lịch sử giao dịch thanh toán qua SePay
 ------------------------------------------------------- */
 IF OBJECT_ID('dbo.SePayTransactions', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.SePayTransactions
     (
-        TransactionID INT IDENTITY(1,1) PRIMARY KEY,
-        OrderID INT NOT NULL FOREIGN KEY REFERENCES dbo.Orders(OrderID),
-        UserID INT NOT NULL FOREIGN KEY REFERENCES dbo.Users(UserID),
-        MerchantID NVARCHAR(50) NOT NULL,
-        TransactionRef NVARCHAR(100) NOT NULL,
-        Amount DECIMAL(15, 2) NOT NULL,
-        Status NVARCHAR(50) NOT NULL CONSTRAINT DF_SePay_Status DEFAULT('pending'),
-        PaymentMethod NVARCHAR(50) NULL,
-        CreatedAt DATETIME NOT NULL CONSTRAINT DF_SePay_CreatedAt DEFAULT(GETUTCDATE()),
-        UpdatedAt DATETIME NULL,
-        ResponseData NVARCHAR(MAX) NULL,
-        ErrorMessage NVARCHAR(500) NULL,
+        TransactionID   INT IDENTITY(1,1) PRIMARY KEY,
+        OrderID         INT NOT NULL FOREIGN KEY REFERENCES dbo.Orders(OrderID),
+        UserID          INT NOT NULL FOREIGN KEY REFERENCES dbo.Users(UserID),
+        MerchantID      NVARCHAR(50) NOT NULL,
+        TransactionRef  NVARCHAR(100) NOT NULL,
+        Amount          DECIMAL(15, 2) NOT NULL,
+        Status          NVARCHAR(50) NOT NULL CONSTRAINT DF_SePay_Status DEFAULT('pending'),
+        PaymentMethod   NVARCHAR(50) NULL,
+        CreatedAt       DATETIME NOT NULL CONSTRAINT DF_SePay_CreatedAt DEFAULT(GETUTCDATE()),
+        UpdatedAt       DATETIME NULL,
+        ResponseData    NVARCHAR(MAX) NULL,
+        ErrorMessage    NVARCHAR(500) NULL,
         CONSTRAINT UQ_SePayTransactions_Ref UNIQUE (TransactionRef)
     );
 END
 GO
-
 
 -- ============================================================================
 -- PHẦN 1B: RÀNG BUỘC / DỮ LIỆU PHỤ TRỢ CHO TABLES
@@ -624,37 +582,6 @@ BEGIN
 END
 GO
 
--- [TABLE-HELPER] Dòng gốc: 5036-5038
-
-IF COL_LENGTH('dbo.VNPayTransactions', 'RequestedBankCode') IS NULL
-    ALTER TABLE dbo.VNPayTransactions ADD RequestedBankCode NVARCHAR(50) NULL;
-GO
-
--- [TABLE-HELPER] Dòng gốc: 5040-5041
-IF COL_LENGTH('dbo.VNPayTransactions', 'RequestData') IS NULL
-    ALTER TABLE dbo.VNPayTransactions ADD RequestData NVARCHAR(MAX) NULL;
-GO
-
--- [TABLE-HELPER] Dòng gốc: 5043-5044
-IF COL_LENGTH('dbo.VNPayTransactions', 'vnp_BankTranNo') IS NULL
-    ALTER TABLE dbo.VNPayTransactions ADD vnp_BankTranNo NVARCHAR(100) NULL;
-GO
-
--- [TABLE-HELPER] Dòng gốc: 5046-5047
-IF COL_LENGTH('dbo.VNPayTransactions', 'VerifiedAt') IS NULL
-    ALTER TABLE dbo.VNPayTransactions ADD VerifiedAt DATETIME NULL;
-GO
-
--- [TABLE-HELPER] Dòng gốc: 5049-5050
-IF COL_LENGTH('dbo.VNPayTransactions', 'IsIpnProcessed') IS NULL
-    ALTER TABLE dbo.VNPayTransactions ADD IsIpnProcessed BIT NOT NULL CONSTRAINT DF_VNPay_IsIpnProcessed_2 DEFAULT(0);
-GO
-
--- [TABLE-HELPER] Dòng gốc: 5052-5053
-IF COL_LENGTH('dbo.VNPayTransactions', 'IsStockReverted') IS NULL
-    ALTER TABLE dbo.VNPayTransactions ADD IsStockReverted BIT NOT NULL CONSTRAINT DF_VNPay_IsStockReverted_2 DEFAULT(0);
-GO
-
 
 -- ============================================================================
 -- PHẦN 2: INDEXES
@@ -735,66 +662,10 @@ GO
 CREATE INDEX IX_RefreshTokens_Cleanup ON RefreshTokens(ExpiresAt) WHERE IsRevoked = 0;
 GO
 
--- [INDEX-BATCH 04] Dòng gốc: 5055-5065
-
-/* -------------------------------------------------------
-   2. INDEXES
-------------------------------------------------------- */
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_VNPayTransactions_OrderID'
-      AND object_id = OBJECT_ID('dbo.VNPayTransactions')
-)
-    CREATE INDEX IX_VNPayTransactions_OrderID
-    ON dbo.VNPayTransactions(OrderID);
-GO
-
--- [INDEX-BATCH 05] Dòng gốc: 5067-5074
-
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_VNPayTransactions_Status_CreatedAt'
-      AND object_id = OBJECT_ID('dbo.VNPayTransactions')
-)
-    CREATE INDEX IX_VNPayTransactions_Status_CreatedAt
-    ON dbo.VNPayTransactions(Status, CreatedAt DESC);
-GO
-
--- [INDEX-BATCH 06] Dòng gốc: 5076-5083
-
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_VNPayTransactions_TransactionNo'
-      AND object_id = OBJECT_ID('dbo.VNPayTransactions')
-)
-    CREATE INDEX IX_VNPayTransactions_TransactionNo
-    ON dbo.VNPayTransactions(vnp_TransactionNo);
-GO
-
--- [INDEX-BATCH 07] Dòng gốc: 5085-5092
-
-IF NOT EXISTS (
-    SELECT 1 FROM sys.indexes
-    WHERE name = 'IX_VNPayTransactions_Order_Status'
-      AND object_id = OBJECT_ID('dbo.VNPayTransactions')
-)
-    CREATE INDEX IX_VNPayTransactions_Order_Status
-    ON dbo.VNPayTransactions(OrderID, Status, CreatedAt DESC);
-GO
-
 
 -- ============================================================================
 -- PHẦN 3: TRIGGERS
 -- ============================================================================
-
--- [TRIGGER-HELPER] Dòng gốc: 5094-5099
-
-/* -------------------------------------------------------
-   3. CLEAN OLD BAD OBJECTS
-------------------------------------------------------- */
-IF OBJECT_ID('dbo.trg_VNPayTransaction_AfterUpdate', 'TR') IS NOT NULL
-    DROP TRIGGER dbo.trg_VNPayTransaction_AfterUpdate;
-GO
 
 -- [TRIGGER 01] trg_AfterOrderDetails_Insert | Dòng gốc: 346-401
 
@@ -1062,41 +933,6 @@ BEGIN
 END;
 GO
 
--- [TRIGGER 09] dbo.trg_VNPayTransactions_UpdatedAt | Dòng gốc: 5101-5119
-
-/* -------------------------------------------------------
-   4. TRIGGERS
-------------------------------------------------------- */
-CREATE OR ALTER TRIGGER dbo.trg_VNPayTransactions_UpdatedAt
-ON dbo.VNPayTransactions
-AFTER UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    IF TRIGGER_NESTLEVEL() > 1
-        RETURN;
-
-    UPDATE t
-    SET UpdatedAt = GETDATE()
-    FROM dbo.VNPayTransactions t
-    JOIN inserted i ON i.TransactionID = t.TransactionID;
-END;
-GO
-
--- [TRIGGER 10] dbo.trg_PreventDeleteVNPayTransactions | Dòng gốc: 5121-5129
-
-CREATE OR ALTER TRIGGER dbo.trg_PreventDeleteVNPayTransactions
-ON dbo.VNPayTransactions
-INSTEAD OF DELETE
-AS
-BEGIN
-    RAISERROR(N'Khong duoc xoa lich su giao dich VNPay. Hay cap nhat trang thai!', 16, 1);
-    ROLLBACK TRANSACTION;
-END;
-GO
-
-
 -- ============================================================================
 -- PHẦN 4: STORED PROCEDURES - ĐÁNH SỐ 1 ĐẾN 107
 -- ============================================================================
@@ -1203,20 +1039,6 @@ GO
 -- SP 099/107 | Nhóm: Auth           | sp_Auth_RevokeAllUserTokens | Tác dụng: Revoke All User Tokens (Logout khỏi tất cả thiết bị)
 -- SP 100/107 | Nhóm: Auth           | sp_Auth_CleanupExpiredRefreshTokens | Tác dụng: cleanupexpiredrefreshtokens auth thuộc nhóm auth.
 -- SP 101/107 | Nhóm: Auth           | sp_Auth_GetUserActiveTokens | Tác dụng: Get User Active Tokens (Xem các thiết bị đang đăng nhập)
--- SP 102/107 | Nhóm: Createvnpaytransaction | dbo.sp_CreateVNPayTransaction | Tác dụng: createvnpaytransaction createvnpaytransaction thuộc nhóm createvnpaytransaction.
--- SP 103/107 | Nhóm: Updatevnpaytransaction | dbo.sp_UpdateVNPayTransaction | Tác dụng: updatevnpaytransaction updatevnpaytransaction thuộc nhóm updatevnpaytransaction.
--- SP 104/107 | Nhóm: Getvnpaytransactionbyorderid | dbo.sp_GetVNPayTransactionByOrderID | Tác dụng: getvnpaytransactionbyorderid getvnpaytransactionbyorderid thuộc nhóm getvnpaytransactionbyorderid.
--- SP 105/113 | Nhóm: Getvnpaytransactionbytxnref | dbo.sp_GetVNPayTransactionByTxnRef | Tác dụng: getvnpaytransactionbytxnref getvnpaytransactionbytxnref thuộc nhóm getvnpaytransactionbytxnref.
--- SP 106/113 | Nhóm: Getvnpaytransactionhistory | dbo.sp_GetVNPayTransactionHistory | Tác dụng: getvnpaytransactionhistory getvnpaytransactionhistory thuộc nhóm getvnpaytransactionhistory.
--- SP 107/113 | Nhóm: Cancelvnpaytransaction | dbo.sp_CancelVNPayTransaction | Tác dụng: cancelvnpaytransaction cancelvnpaytransaction thuộc nhóm cancelvnpaytransaction.
--- SP 108/113 | Nhóm: SePay            | dbo.sp_InsertSePayTransaction | Tác dụng: Thêm giao dịch SePay mới
--- SP 109/113 | Nhóm: SePay            | dbo.sp_UpdateSePayTransactionStatus | Tác dụng: Cập nhật trạng thái giao dịch và đơn hàng
--- SP 110/113 | Nhóm: SePay            | dbo.sp_SePay_UpdatePaymentStatus | Tác dụng: Cập nhật trạng thái thanh toán đơn hàng
--- SP 111/113 | Nhóm: SePay            | dbo.sp_SePay_GetPaymentStatus | Tác dụng: Lấy trạng thái thanh toán của đơn hàng
--- SP 112/113 | Nhóm: SePay            | dbo.sp_GetSePayTransaction | Tác dụng: Lấy thông tin giao dịch SePay theo TransactionRef
--- SP 113/113 | Nhóm: SePay            | dbo.sp_GetSePayTransactionsByOrder | Tác dụng: Lấy danh sách giao dịch SePay của đơn hàng
-
-
 
 -- ----------------------------------------------------------------------------
 -- SP 001/107
@@ -1586,20 +1408,24 @@ CREATE PROCEDURE sp_Customer_AddReview
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    DECLARE @ReviewCount INT;
-    SELECT @ReviewCount = COUNT(*) 
-    FROM Reviews 
-    WHERE UserID = @UserID AND ProductID = @ProductID;
-
-    IF @ReviewCount >= 3
+    -- Kiểm tra đã mua và nhận hàng thành công chưa
+    IF NOT EXISTS (
+        SELECT 1 FROM Orders o
+        JOIN OrderDetails od ON o.OrderID = od.OrderID
+        WHERE o.UserID = @UserID AND od.ProductID = @ProductID AND o.Status = N'Hoàn tất'
+    )
     BEGIN
-        RAISERROR(N'Bạn đã đạt giới hạn số lần đánh giá của sản phẩm này!', 16, 1);
+        RAISERROR(N'Chỉ khách hàng đã nhận hàng thành công mới được đánh giá!', 16, 1);
         RETURN;
     END
-
+    -- Kiểm tra đã review chưa
+    IF EXISTS (SELECT 1 FROM Reviews WHERE UserID = @UserID AND ProductID = @ProductID)
+    BEGIN
+        RAISERROR(N'Bạn đã đánh giá sản phẩm này rồi!', 16, 1);
+        RETURN;
+    END
     INSERT INTO Reviews (ProductID, UserID, Rating, Comment, ImageURL, IsApproved)
-    VALUES (@ProductID, @UserID, @Rating, @Comment, @ImageURL, 1);
+    VALUES (@ProductID, @UserID, @Rating, @Comment, @ImageURL, 0);
 END;
 GO
 
@@ -2267,7 +2093,6 @@ BEGIN
         p.Description,
         p.IsActive,
         p.WarrantyMonths,
-        p.Slug,
         p.CreatedAt,
         p.UpdatedAt,
         CAST(ISNULL(rv.AvgRating, 0) AS DECIMAL(3,2)) AS AvgRating,
@@ -3146,21 +2971,14 @@ GO
 -- ========================
 
 CREATE OR ALTER PROCEDURE sp_Admin_DeleteReview
-    @ReviewID INT,
-    @UserID   INT = NULL
+    @ReviewID INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
     IF NOT EXISTS (SELECT 1 FROM Reviews WHERE ReviewID = @ReviewID)
     BEGIN
-        RAISERROR(N'Đánh giá không tồn tại!', 16, 1);
-        RETURN;
-    END
-
-    IF @UserID IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Reviews WHERE ReviewID = @ReviewID AND UserID = @UserID)
-    BEGIN
-        RAISERROR(N'Bạn không có quyền xóa đánh giá này!', 16, 1);
+        RAISERROR(N'Danh gia khong ton tai!', 16, 1);
         RETURN;
     END
 
@@ -5382,7 +5200,6 @@ BEGIN
             p.Description,
             p.IsActive,
             p.WarrantyMonths,
-            p.Slug,
             p.CreatedAt,
             p.UpdatedAt,
             (SELECT TOP 1 ImageURL FROM ProductImages WHERE ProductID = p.ProductID AND IsDefault = 1) AS DefaultImageUrl,
@@ -5416,7 +5233,6 @@ BEGIN
         Description,
         IsActive,
         WarrantyMonths,
-        Slug,
         CreatedAt,
         UpdatedAt,
         DefaultImageUrl,
@@ -5839,13 +5655,13 @@ BEGIN
     -- Nếu không tìm thấy hoặc không active → trả về NULL (không tiết lộ email có tồn tại hay không)
     IF @UserID IS NULL OR @IsActive = 0
     BEGIN
-        -- FIXED: CAST NULL thành đúng kiểu dữ liệu để Dapper map đúng
-        SELECT 
+        -- Trả về NULL (CAST đúng kiểu để Dapper map chính xác)
+        SELECT
             CAST(NULL AS NVARCHAR(100)) AS ResetToken,
-            CAST(NULL AS INT) AS UserID,
+            CAST(NULL AS INT)           AS UserID,
             CAST(NULL AS NVARCHAR(100)) AS FullName,
             CAST(NULL AS NVARCHAR(100)) AS Email,
-            CAST(NULL AS DATETIME) AS ExpiresAt;
+            CAST(NULL AS DATETIME)      AS ExpiresAt;
         RETURN;
     END
 
@@ -5996,13 +5812,13 @@ BEGIN
         u.FullName,
         t.ExpiresAt,
         t.IsUsed,
-        -- FIXED: CAST thành BIT để Dapper map thành bool
+        -- CAST AS BIT để Dapper map thành bool đúng cách
         CAST(
-            CASE 
+            CASE
                 WHEN t.IsUsed = 1 THEN 0
                 WHEN t.ExpiresAt < GETDATE() THEN 0
                 ELSE 1
-            END 
+            END
         AS BIT) AS IsValid
     FROM PasswordResetTokens t
     JOIN Users u ON t.UserID = u.UserID
@@ -6269,594 +6085,41 @@ END;
 GO
 
 
--- ----------------------------------------------------------------------------
--- SP 102/107
--- Tên: dbo.sp_CreateVNPayTransaction
--- Nhóm chức năng: Createvnpaytransaction
--- Tác dụng: createvnpaytransaction createvnpaytransaction thuộc nhóm createvnpaytransaction.
--- Dòng gốc: 5131-5266
--- ----------------------------------------------------------------------------
 
-/* -------------------------------------------------------
-   5. STORED PROCEDURES
-------------------------------------------------------- */
-CREATE OR ALTER PROCEDURE dbo.sp_CreateVNPayTransaction
-    @OrderID             INT,
-    @UserID              INT = NULL,
-    @vnp_TxnRef          NVARCHAR(100),
-    @RequestedBankCode   NVARCHAR(50) = NULL,
-    @vnp_Amount          BIGINT = NULL,
-    @vnp_OrderInfo       NVARCHAR(500) = NULL,
-    @vnp_IpAddr          NVARCHAR(50),
-    @RequestUrl          NVARCHAR(MAX),
-    @RequestData         NVARCHAR(MAX) = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SET XACT_ABORT ON;
 
-    DECLARE @FinalAmount DECIMAL(18,2);
-    DECLARE @PaymentStatus NVARCHAR(50);
-    DECLARE @OrderStatus NVARCHAR(50);
-    DECLARE @OrderUserID INT;
-    DECLARE @ExpectedAmount BIGINT;
-    DECLARE @ResolvedOrderInfo NVARCHAR(500);
+-- ============================================================================
+-- PHẦN 4B: STORED PROCEDURES - SEPAY (SP 102/108 → 107/108)
+-- ============================================================================
 
-    BEGIN TRAN;
-    BEGIN TRY
-        SELECT
-            @OrderUserID = UserID,
-            @FinalAmount = FinalAmount,
-            @PaymentStatus = PaymentStatus,
-            @OrderStatus = Status
-        FROM dbo.Orders WITH (UPDLOCK, HOLDLOCK)
-        WHERE OrderID = @OrderID;
-
-        IF @OrderUserID IS NULL
-        BEGIN
-            RAISERROR(N'Don hang khong ton tai!', 16, 1);
-            ROLLBACK;
-            RETURN;
-        END
-
-        IF @UserID IS NOT NULL AND @OrderUserID <> @UserID
-        BEGIN
-            RAISERROR(N'Ban khong co quyen thanh toan don hang nay!', 16, 1);
-            ROLLBACK;
-            RETURN;
-        END
-
-        IF @PaymentStatus = N'Đã thanh toán'
-        BEGIN
-            RAISERROR(N'Don hang nay da duoc thanh toan!', 16, 1);
-            ROLLBACK;
-            RETURN;
-        END
-
-        IF @OrderStatus IN (N'Đã hủy', N'Hoàn tất')
-        BEGIN
-            RAISERROR(N'Khong the tao giao dich VNPay cho don hang da huy hoac da hoan tat!', 16, 1);
-            ROLLBACK;
-            RETURN;
-        END
-
-        IF EXISTS (
-            SELECT 1
-            FROM dbo.VNPayTransactions
-            WHERE OrderID = @OrderID
-              AND Status IN (N'Pending', N'Success')
-        )
-        BEGIN
-            RAISERROR(N'Don hang da co giao dich VNPay Pending/Success!', 16, 1);
-            ROLLBACK;
-            RETURN;
-        END
-
-        SET @ExpectedAmount = CAST(ROUND(@FinalAmount * 100, 0) AS BIGINT);
-        SET @ResolvedOrderInfo = ISNULL(@vnp_OrderInfo, N'Thanh toán đơn hàng #' + CAST(@OrderID AS NVARCHAR(20)));
-
-        IF @vnp_Amount IS NOT NULL AND @vnp_Amount <> @ExpectedAmount
-        BEGIN
-            RAISERROR(N'So tien giao dich khong khop voi gia tri don hang!', 16, 1);
-            ROLLBACK;
-            RETURN;
-        END
-
-        INSERT INTO dbo.VNPayTransactions
-        (
-            OrderID,
-            vnp_TxnRef,
-            vnp_Amount,
-            vnp_OrderInfo,
-            vnp_OrderType,
-            RequestedBankCode,
-            vnp_IpAddr,
-            RequestUrl,
-            RequestData,
-            Status
-        )
-        VALUES
-        (
-            @OrderID,
-            @vnp_TxnRef,
-            @ExpectedAmount,
-            @ResolvedOrderInfo,
-            N'other',
-            @RequestedBankCode,
-            @vnp_IpAddr,
-            @RequestUrl,
-            @RequestData,
-            N'Pending'
-        );
-
-        UPDATE dbo.Orders
-        SET PaymentMethod = N'VNPay',
-            UpdatedAt = GETDATE()
-        WHERE OrderID = @OrderID;
-
-        COMMIT;
-
-        SELECT
-            TransactionID,
-            OrderID,
-            vnp_TxnRef,
-            vnp_Amount,
-            RequestUrl,
-            Status
-        FROM dbo.VNPayTransactions
-        WHERE vnp_TxnRef = @vnp_TxnRef;
-    END TRY
-    BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK;
-        THROW;
-    END CATCH
-END;
-GO
+-- DANH SÁCH TÓM TẮT SP SEPAY
+-- SP 102/108 | dbo.sp_InsertSePayTransaction        | Thêm giao dịch SePay mới
+-- SP 103/108 | dbo.sp_UpdateSePayTransactionStatus  | Cập nhật trạng thái giao dịch & đơn hàng
+-- SP 104/108 | dbo.sp_SePay_UpdatePaymentStatus     | Cập nhật payment status (idempotent)
+-- SP 105/108 | dbo.sp_SePay_GetPaymentStatus        | Lấy trạng thái thanh toán đơn hàng
+-- SP 106/108 | dbo.sp_GetSePayTransaction           | Lấy giao dịch theo TransactionRef
+-- SP 107/108 | dbo.sp_GetSePayTransactionsByOrder   | Lấy danh sách giao dịch của 1 đơn
 
 
 -- ----------------------------------------------------------------------------
--- SP 103/107
--- Tên: dbo.sp_UpdateVNPayTransaction
--- Nhóm chức năng: Updatevnpaytransaction
--- Tác dụng: updatevnpaytransaction updatevnpaytransaction thuộc nhóm updatevnpaytransaction.
--- Dòng gốc: 5268-5494
--- ----------------------------------------------------------------------------
-
-CREATE OR ALTER PROCEDURE dbo.sp_UpdateVNPayTransaction
-    @vnp_TxnRef             NVARCHAR(100),
-    @vnp_TransactionNo      NVARCHAR(100) = NULL,
-    @vnp_BankCode           NVARCHAR(50) = NULL,
-    @vnp_BankTranNo         NVARCHAR(100) = NULL,
-    @vnp_CardType           NVARCHAR(50) = NULL,
-    @vnp_PayDate            NVARCHAR(14) = NULL,
-    @vnp_ResponseCode       NVARCHAR(10) = NULL,
-    @vnp_TransactionStatus  NVARCHAR(10) = NULL,
-    @vnp_SecureHash         NVARCHAR(500) = NULL,
-    @ResponseData           NVARCHAR(MAX) = NULL,
-    @Status                 NVARCHAR(50) = NULL,
-    @IsValidSignature       BIT = 1
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SET XACT_ABORT ON;
-
-    DECLARE @TransactionID INT;
-    DECLARE @OrderID INT;
-    DECLARE @CurrentTxnStatus NVARCHAR(50);
-    DECLARE @CurrentOrderStatus NVARCHAR(50);
-    DECLARE @CurrentPaymentStatus NVARCHAR(50);
-    DECLARE @CurrentIsStockReverted BIT;
-    DECLARE @UserID INT;
-    DECLARE @ResolvedStatus NVARCHAR(50);
-
-    BEGIN TRAN;
-    BEGIN TRY
-        SELECT
-            @TransactionID = t.TransactionID,
-            @OrderID = t.OrderID,
-            @CurrentTxnStatus = t.Status,
-            @CurrentIsStockReverted = t.IsStockReverted,
-            @UserID = o.UserID,
-            @CurrentOrderStatus = o.Status,
-            @CurrentPaymentStatus = o.PaymentStatus
-        FROM dbo.VNPayTransactions t WITH (UPDLOCK, HOLDLOCK)
-        JOIN dbo.Orders o WITH (UPDLOCK, HOLDLOCK) ON o.OrderID = t.OrderID
-        WHERE t.vnp_TxnRef = @vnp_TxnRef;
-
-        IF @TransactionID IS NULL
-        BEGIN
-            RAISERROR(N'Khong tim thay giao dich VNPay!', 16, 1);
-            ROLLBACK;
-            RETURN;
-        END
-
-        IF @IsValidSignature = 0
-        BEGIN
-            UPDATE dbo.VNPayTransactions
-            SET ErrorMessage = N'Chu ky SecureHash khong hop le.',
-                ResponseData = @ResponseData,
-                CallbackReceivedAt = GETDATE(),
-                vnp_SecureHash = @vnp_SecureHash
-            WHERE TransactionID = @TransactionID;
-
-            COMMIT;
-            SELECT N'InvalidSignature' AS Result, @OrderID AS OrderID, @TransactionID AS TransactionID;
-            RETURN;
-        END
-
-        IF @CurrentTxnStatus = N'Success' AND @CurrentPaymentStatus = N'Đã thanh toán'
-        BEGIN
-            UPDATE dbo.VNPayTransactions
-            SET ResponseData = COALESCE(@ResponseData, ResponseData),
-                CallbackReceivedAt = GETDATE(),
-                VerifiedAt = GETDATE(),
-                vnp_SecureHash = COALESCE(@vnp_SecureHash, vnp_SecureHash)
-            WHERE TransactionID = @TransactionID;
-
-            COMMIT;
-            SELECT N'AlreadyProcessed' AS Result, @OrderID AS OrderID, @TransactionID AS TransactionID;
-            RETURN;
-        END
-
-        SET @ResolvedStatus = CASE
-            WHEN @Status IS NOT NULL THEN @Status
-            WHEN @vnp_ResponseCode = '00' AND @vnp_TransactionStatus = '00' THEN N'Success'
-            WHEN @vnp_ResponseCode = '24' THEN N'Cancelled'
-            WHEN @vnp_ResponseCode = '11' THEN N'Expired'
-            ELSE N'Failed'
-        END;
-
-        UPDATE dbo.VNPayTransactions
-        SET vnp_TransactionNo = COALESCE(@vnp_TransactionNo, vnp_TransactionNo),
-            vnp_BankCode = COALESCE(@vnp_BankCode, vnp_BankCode),
-            vnp_BankTranNo = COALESCE(@vnp_BankTranNo, vnp_BankTranNo),
-            vnp_CardType = COALESCE(@vnp_CardType, vnp_CardType),
-            vnp_PayDate = COALESCE(@vnp_PayDate, vnp_PayDate),
-            vnp_ResponseCode = COALESCE(@vnp_ResponseCode, vnp_ResponseCode),
-            vnp_TransactionStatus = COALESCE(@vnp_TransactionStatus, vnp_TransactionStatus),
-            vnp_SecureHash = COALESCE(@vnp_SecureHash, vnp_SecureHash),
-            ResponseData = COALESCE(@ResponseData, ResponseData),
-            Status = @ResolvedStatus,
-            CallbackReceivedAt = GETDATE(),
-            VerifiedAt = GETDATE()
-        WHERE TransactionID = @TransactionID;
-
-        IF @ResolvedStatus = N'Success'
-        BEGIN
-            UPDATE dbo.Orders
-            SET PaymentMethod = N'VNPay',
-                PaymentStatus = N'Đã thanh toán',
-                UpdatedAt = GETDATE()
-            WHERE OrderID = @OrderID
-              AND PaymentStatus <> N'Đã thanh toán';
-
-            UPDATE dbo.VNPayTransactions
-            SET IsIpnProcessed = 1
-            WHERE TransactionID = @TransactionID;
-
-            IF NOT EXISTS (
-                SELECT 1
-                FROM dbo.Notifications
-                WHERE UserID = @UserID
-                  AND Type = 'Order'
-                  AND RelatedID = @OrderID
-                  AND Title = N'Thanh toán VNPay thành công'
-            )
-            BEGIN
-                INSERT INTO dbo.Notifications (UserID, Title, Message, Type, RelatedID)
-                VALUES
-                (
-                    @UserID,
-                    N'Thanh toán VNPay thành công',
-                    N'Đơn hàng #' + CAST(@OrderID AS NVARCHAR(20)) + N' đã được thanh toán thành công qua VNPay.',
-                    'Order',
-                    @OrderID
-                );
-            END
-        END
-        ELSE
-        BEGIN
-            IF @CurrentOrderStatus <> N'Đã hủy'
-               AND @CurrentPaymentStatus <> N'Đã thanh toán'
-               AND ISNULL(@CurrentIsStockReverted, 0) = 0
-            BEGIN
-                UPDATE p
-                SET p.StockQuantity = p.StockQuantity + od.Quantity,
-                    p.SoldCount = p.SoldCount - od.Quantity,
-                    p.UpdatedAt = GETDATE()
-                FROM dbo.Products p
-                JOIN dbo.OrderDetails od ON od.ProductID = p.ProductID
-                WHERE od.OrderID = @OrderID;
-
-                INSERT INTO dbo.InventoryLog
-                (
-                    ProductID,
-                    ChangeQuantity,
-                    QuantityAfter,
-                    LogType,
-                    RelatedOrderID,
-                    Note
-                )
-                SELECT
-                    od.ProductID,
-                    od.Quantity,
-                    p.StockQuantity,
-                    N'Hoàn trả',
-                    @OrderID,
-                    N'Hoàn kho do thanh toán VNPay thất bại/hủy cho đơn #' + CAST(@OrderID AS NVARCHAR(20))
-                FROM dbo.OrderDetails od
-                JOIN dbo.Products p ON p.ProductID = od.ProductID
-                WHERE od.OrderID = @OrderID;
-
-                UPDATE dbo.Orders
-                SET Status = N'Đã hủy',
-                    PaymentMethod = N'VNPay',
-                    PaymentStatus = N'Chưa thanh toán',
-                    AdminNote = ISNULL(AdminNote + N' | ', N'')
-                                + N'VNPay '
-                                + LOWER(@ResolvedStatus)
-                                + N' - hệ thống tự hủy đơn.',
-                    UpdatedAt = GETDATE()
-                WHERE OrderID = @OrderID;
-
-                UPDATE dbo.ProductWarranties
-                SET Status = N'Vô hiệu'
-                WHERE OrderDetailID IN (
-                    SELECT DetailID
-                    FROM dbo.OrderDetails
-                    WHERE OrderID = @OrderID
-                );
-
-                UPDATE dbo.VNPayTransactions
-                SET IsIpnProcessed = 1,
-                    IsStockReverted = 1
-                WHERE TransactionID = @TransactionID;
-
-                IF NOT EXISTS (
-                    SELECT 1
-                    FROM dbo.Notifications
-                    WHERE UserID = @UserID
-                      AND Type = 'Order'
-                      AND RelatedID = @OrderID
-                      AND Title = N'Thanh toán VNPay không thành công'
-                )
-                BEGIN
-                    INSERT INTO dbo.Notifications (UserID, Title, Message, Type, RelatedID)
-                    VALUES
-                    (
-                        @UserID,
-                        N'Thanh toán VNPay không thành công',
-                        N'Đơn hàng #' + CAST(@OrderID AS NVARCHAR(20)) + N' đã bị hủy do giao dịch VNPay không thành công.',
-                        'Order',
-                        @OrderID
-                    );
-                END
-            END
-        END
-
-        COMMIT;
-        SELECT @ResolvedStatus AS Result, @OrderID AS OrderID, @TransactionID AS TransactionID;
-    END TRY
-    BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK;
-
-        UPDATE dbo.VNPayTransactions
-        SET ErrorMessage = ERROR_MESSAGE()
-        WHERE vnp_TxnRef = @vnp_TxnRef;
-
-        THROW;
-    END CATCH
-END;
-GO
-
-
--- ----------------------------------------------------------------------------
--- SP 104/107
--- Tên: dbo.sp_GetVNPayTransactionByOrderID
--- Nhóm chức năng: Getvnpaytransactionbyorderid
--- Tác dụng: getvnpaytransactionbyorderid getvnpaytransactionbyorderid thuộc nhóm getvnpaytransactionbyorderid.
--- Dòng gốc: 5496-5531
--- ----------------------------------------------------------------------------
-
-CREATE OR ALTER PROCEDURE dbo.sp_GetVNPayTransactionByOrderID
-    @OrderID INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        t.TransactionID,
-        t.OrderID,
-        t.vnp_TxnRef,
-        t.vnp_Amount,
-        t.vnp_OrderInfo,
-        t.RequestedBankCode,
-        t.vnp_TransactionNo,
-        t.vnp_BankCode,
-        t.vnp_BankTranNo,
-        t.vnp_CardType,
-        t.vnp_PayDate,
-        t.vnp_ResponseCode,
-        t.vnp_TransactionStatus,
-        t.Status,
-        t.CreatedAt,
-        t.UpdatedAt,
-        t.CallbackReceivedAt,
-        t.VerifiedAt,
-        t.ErrorMessage,
-        o.PaymentMethod,
-        o.PaymentStatus,
-        o.Status AS OrderStatus,
-        o.FinalAmount
-    FROM dbo.VNPayTransactions t
-    JOIN dbo.Orders o ON o.OrderID = t.OrderID
-    WHERE t.OrderID = @OrderID
-    ORDER BY t.CreatedAt DESC;
-END;
-GO
-
-
--- ----------------------------------------------------------------------------
--- SP 105/107
--- Tên: dbo.sp_GetVNPayTransactionByTxnRef
--- Nhóm chức năng: Getvnpaytransactionbytxnref
--- Tác dụng: getvnpaytransactionbytxnref getvnpaytransactionbytxnref thuộc nhóm getvnpaytransactionbytxnref.
--- Dòng gốc: 5533-5550
--- ----------------------------------------------------------------------------
-
-CREATE OR ALTER PROCEDURE dbo.sp_GetVNPayTransactionByTxnRef
-    @vnp_TxnRef NVARCHAR(100)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    SELECT
-        t.*,
-        o.UserID,
-        o.PaymentMethod,
-        o.PaymentStatus,
-        o.Status AS OrderStatus,
-        o.FinalAmount
-    FROM dbo.VNPayTransactions t
-    JOIN dbo.Orders o ON o.OrderID = t.OrderID
-    WHERE t.vnp_TxnRef = @vnp_TxnRef;
-END;
-GO
-
-
--- ----------------------------------------------------------------------------
--- SP 106/107
--- Tên: dbo.sp_GetVNPayTransactionHistory
--- Nhóm chức năng: Getvnpaytransactionhistory
--- Tác dụng: getvnpaytransactionhistory getvnpaytransactionhistory thuộc nhóm getvnpaytransactionhistory.
--- Dòng gốc: 5552-5624
--- ----------------------------------------------------------------------------
-
-CREATE OR ALTER PROCEDURE dbo.sp_GetVNPayTransactionHistory
-    @PageNumber INT = 1,
-    @PageSize   INT = 20,
-    @Status     NVARCHAR(50) = NULL,
-    @FromDate   DATETIME = NULL,
-    @ToDate     DATETIME = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    -- Validate pagination (nhất quán với các SP phân trang khác)
-    IF @PageNumber < 1 SET @PageNumber = 1;
-    IF @PageSize   < 1 SET @PageSize   = 20;
-    IF @PageSize   > 100 SET @PageSize = 100;
-
-    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
-
-    -- [ĐÃ FIX] Dùng COUNT(*) OVER() → trả 1 result set duy nhất (nhất quán với toàn hệ thống)
-    ;WITH FilteredTxn AS
-    (
-        SELECT
-            t.TransactionID,
-            t.OrderID,
-            t.vnp_TxnRef,
-            t.vnp_Amount / 100.0        AS AmountVND,
-            t.RequestedBankCode,
-            t.vnp_TransactionNo,
-            t.vnp_BankCode,
-            t.vnp_ResponseCode,
-            t.vnp_TransactionStatus,
-            t.Status,
-            t.CreatedAt,
-            t.CallbackReceivedAt,
-            o.FinalAmount,
-            o.PaymentStatus,
-            o.Status                    AS OrderStatus,
-            o.UserID,
-            u.FullName,
-            u.Email,
-            COUNT(*) OVER()             AS TotalRecords  -- ← gộp luôn vào 1 result set
-        FROM dbo.VNPayTransactions t
-        JOIN dbo.Orders o ON o.OrderID  = t.OrderID
-        JOIN dbo.Users  u ON u.UserID   = o.UserID
-        WHERE (@Status   IS NULL OR t.Status    = @Status)
-          AND (@FromDate IS NULL OR t.CreatedAt >= @FromDate)
-          AND (@ToDate   IS NULL OR t.CreatedAt <= @ToDate)
-    )
-    SELECT
-        TransactionID,
-        OrderID,
-        vnp_TxnRef,
-        AmountVND,
-        RequestedBankCode,
-        vnp_TransactionNo,
-        vnp_BankCode,
-        vnp_ResponseCode,
-        vnp_TransactionStatus,
-        Status,
-        CreatedAt,
-        CallbackReceivedAt,
-        FinalAmount,
-        PaymentStatus,
-        OrderStatus,
-        UserID,
-        FullName,
-        Email,
-        TotalRecords
-    FROM FilteredTxn
-    ORDER BY CreatedAt DESC
-    OFFSET @Offset ROWS
-    FETCH NEXT @PageSize ROWS ONLY;
-END;
-GO
-
-
--- ----------------------------------------------------------------------------
--- SP 107/107
--- Tên: dbo.sp_CancelVNPayTransaction
--- Nhóm chức năng: Cancelvnpaytransaction
--- Tác dụng: cancelvnpaytransaction cancelvnpaytransaction thuộc nhóm cancelvnpaytransaction.
--- Dòng gốc: 5626-5643
--- ----------------------------------------------------------------------------
-
-
-CREATE OR ALTER PROCEDURE dbo.sp_CancelVNPayTransaction
-    @vnp_TxnRef NVARCHAR(100),
-    @Reason NVARCHAR(500) = NULL
-AS
-BEGIN
-    SET NOCOUNT ON;
-    SET XACT_ABORT ON;
-
-    EXEC dbo.sp_UpdateVNPayTransaction
-        @vnp_TxnRef = @vnp_TxnRef,
-        @vnp_ResponseCode = '24',
-        @vnp_TransactionStatus = '02',
-        @ResponseData = @Reason,
-        @Status = N'Cancelled',
-        @IsValidSignature = 1;
-END;
-GO
-
-
--- ----------------------------------------------------------------------------
--- SP 108/113
+-- SP 102/108
 -- Tên: dbo.sp_InsertSePayTransaction
 -- Nhóm chức năng: SePay
 -- Tác dụng: Thêm giao dịch SePay mới
 -- ----------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_InsertSePayTransaction
-    @OrderID INT,
-    @UserID INT,
-    @MerchantID NVARCHAR(50),
+    @OrderID        INT,
+    @UserID         INT,
+    @MerchantID     NVARCHAR(50),
     @TransactionRef NVARCHAR(100),
-    @Amount DECIMAL(15, 2),
-    @Status NVARCHAR(50) = 'pending'
+    @Amount         DECIMAL(15, 2),
+    @Status         NVARCHAR(50) = 'pending'
 AS
 BEGIN
     SET NOCOUNT ON;
     BEGIN TRY
         INSERT INTO dbo.SePayTransactions (OrderID, UserID, MerchantID, TransactionRef, Amount, Status)
         VALUES (@OrderID, @UserID, @MerchantID, @TransactionRef, @Amount, @Status);
-        
+
         SELECT CAST(SCOPE_IDENTITY() AS INT) AS TransactionID;
     END TRY
     BEGIN CATCH
@@ -6865,36 +6128,41 @@ BEGIN
 END;
 GO
 
+
 -- ----------------------------------------------------------------------------
--- SP 109/113
+-- SP 103/108
 -- Tên: dbo.sp_UpdateSePayTransactionStatus
 -- Nhóm chức năng: SePay
 -- Tác dụng: Cập nhật trạng thái giao dịch và đơn hàng
 -- ----------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_UpdateSePayTransactionStatus
     @TransactionRef NVARCHAR(100),
-    @Status NVARCHAR(50),
-    @ResponseData NVARCHAR(MAX) = NULL,
-    @ErrorMessage NVARCHAR(500) = NULL
+    @Status         NVARCHAR(50),
+    @ResponseData   NVARCHAR(MAX) = NULL,
+    @ErrorMessage   NVARCHAR(500) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
     BEGIN TRY
         UPDATE dbo.SePayTransactions
-        SET 
-            Status = @Status,
-            UpdatedAt = GETUTCDATE(),
-            ResponseData = ISNULL(@ResponseData, ResponseData),
-            ErrorMessage = ISNULL(@ErrorMessage, ErrorMessage)
+        SET Status        = @Status,
+            UpdatedAt     = GETUTCDATE(),
+            ResponseData  = ISNULL(@ResponseData, ResponseData),
+            ErrorMessage  = ISNULL(@ErrorMessage, ErrorMessage)
         WHERE TransactionRef = @TransactionRef;
-        
-        IF @Status = 'success' OR @Status = 'completed'
+
+        IF @Status IN ('success', 'completed')
         BEGIN
             UPDATE dbo.Orders
-            SET PaymentStatus = N'Đã thanh toán', Status = N'Chờ xác nhận'
-            WHERE OrderID = (SELECT OrderID FROM dbo.SePayTransactions WHERE TransactionRef = @TransactionRef);
+            SET PaymentStatus = N'Đã thanh toán',
+                Status        = N'Chờ xác nhận'
+            WHERE OrderID = (
+                SELECT OrderID
+                FROM dbo.SePayTransactions
+                WHERE TransactionRef = @TransactionRef
+            );
         END
-        
+
         SELECT @@ROWCOUNT AS RowsAffected;
     END TRY
     BEGIN CATCH
@@ -6903,23 +6171,23 @@ BEGIN
 END;
 GO
 
+
 -- ----------------------------------------------------------------------------
--- SP 110/113
+-- SP 104/108
 -- Tên: dbo.sp_SePay_UpdatePaymentStatus
 -- Nhóm chức năng: SePay
 -- Tác dụng: Cập nhật trạng thái thanh toán đơn hàng (idempotent)
 -- ----------------------------------------------------------------------------
 CREATE OR ALTER PROCEDURE dbo.sp_SePay_UpdatePaymentStatus
-    @OrderID INT,
-    @PaymentStatus NVARCHAR(100) = N'Đã thanh toán',
-    @NewStatus NVARCHAR(100) = N'Chờ xác nhận'
+    @OrderID        INT,
+    @PaymentStatus  NVARCHAR(100) = N'Đã thanh toán',
+    @NewStatus      NVARCHAR(100) = N'Chờ xác nhận'
 AS
 BEGIN
     SET NOCOUNT ON;
 
     UPDATE dbo.Orders
-    SET 
-        PaymentStatus = @PaymentStatus,
+    SET PaymentStatus = @PaymentStatus,
         Status        = @NewStatus,
         UpdatedAt     = GETUTCDATE()
     WHERE OrderID = @OrderID
@@ -6929,8 +6197,9 @@ BEGIN
 END;
 GO
 
+
 -- ----------------------------------------------------------------------------
--- SP 111/113
+-- SP 105/108
 -- Tên: dbo.sp_SePay_GetPaymentStatus
 -- Nhóm chức năng: SePay
 -- Tác dụng: Lấy trạng thái thanh toán của đơn hàng
@@ -6940,7 +6209,8 @@ CREATE OR ALTER PROCEDURE dbo.sp_SePay_GetPaymentStatus
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT 
+
+    SELECT
         OrderID,
         PaymentStatus,
         Status,
@@ -6950,8 +6220,9 @@ BEGIN
 END;
 GO
 
+
 -- ----------------------------------------------------------------------------
--- SP 112/113
+-- SP 106/108
 -- Tên: dbo.sp_GetSePayTransaction
 -- Nhóm chức năng: SePay
 -- Tác dụng: Lấy thông tin giao dịch SePay theo TransactionRef
@@ -6961,7 +6232,8 @@ CREATE OR ALTER PROCEDURE dbo.sp_GetSePayTransaction
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT 
+
+    SELECT
         TransactionID,
         OrderID,
         UserID,
@@ -6979,8 +6251,9 @@ BEGIN
 END;
 GO
 
+
 -- ----------------------------------------------------------------------------
--- SP 113/113
+-- SP 107/108
 -- Tên: dbo.sp_GetSePayTransactionsByOrder
 -- Nhóm chức năng: SePay
 -- Tác dụng: Lấy danh sách giao dịch SePay của đơn hàng
@@ -6990,7 +6263,8 @@ CREATE OR ALTER PROCEDURE dbo.sp_GetSePayTransactionsByOrder
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT 
+
+    SELECT
         TransactionID,
         OrderID,
         UserID,
@@ -7011,14 +6285,156 @@ GO
 
 
 -- ============================================================================
--- PHẦN 5: VIEW / PRINT / GHI CHÚ PHỤ TRỢ GIỮ NGUYÊN TỪ FILE GỐC
+-- PHẦN 4C: SEO ON-PAGE
 -- ============================================================================
 
--- [KIỂM TRA / THÔNG BÁO] Dòng gốc: 3568-3582
+-- SP 108/108
+-- Thêm cột Slug vào bảng Products nếu chưa có
+IF NOT EXISTS (
+    SELECT * FROM sys.columns
+    WHERE object_id = OBJECT_ID('dbo.Products') AND name = 'Slug'
+)
+BEGIN
+    ALTER TABLE dbo.Products ADD Slug NVARCHAR(255) NULL;
+END
+GO
 
+-- ----------------------------------------------------------------------------
+-- FUNCTION 1: dbo.fn_RemoveAccents
+-- Loại bỏ dấu tiếng Việt (á→a, đ→d, ...)
+-- ----------------------------------------------------------------------------
+CREATE OR ALTER FUNCTION dbo.fn_RemoveAccents (@str NVARCHAR(MAX))
+RETURNS NVARCHAR(MAX)
+AS
+BEGIN
+    DECLARE @accents   NVARCHAR(200) = N'áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬÉÈẺẼẸÊẾỀỂỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸỴĐ';
+    DECLARE @noAccents NVARCHAR(200) = N'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyydAAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYD';
+
+    DECLARE @i INT = 1;
+    WHILE @i <= LEN(@str)
+    BEGIN
+        DECLARE @c   NVARCHAR(1) = SUBSTRING(@str, @i, 1);
+        DECLARE @idx INT         = CHARINDEX(@c, @accents COLLATE Latin1_General_CS_AS);
+        IF @idx > 0
+            SET @str = STUFF(@str, @i, 1, SUBSTRING(@noAccents, @idx, 1));
+        SET @i = @i + 1;
+    END
+    RETURN @str;
+END;
+GO
+
+
+-- ----------------------------------------------------------------------------
+-- FUNCTION 2: dbo.fn_GenerateSlug
+-- Tạo slug URL-friendly từ chuỗi (ví dụ: "CPU Intel i9" → "cpu-intel-i9")
+-- ----------------------------------------------------------------------------
+CREATE OR ALTER FUNCTION dbo.fn_GenerateSlug (@str NVARCHAR(MAX))
+RETURNS NVARCHAR(MAX)
+AS
+BEGIN
+    SET @str = LOWER(dbo.fn_RemoveAccents(@str));
+
+    -- Giữ lại a-z và 0-9, thay phần còn lại bằng dấu cách
+    DECLARE @i   INT          = 1;
+    DECLARE @res NVARCHAR(MAX) = '';
+    WHILE @i <= LEN(@str)
+    BEGIN
+        DECLARE @ch NCHAR(1) = SUBSTRING(@str, @i, 1);
+        IF (@ch >= 'a' AND @ch <= 'z') OR (@ch >= '0' AND @ch <= '9')
+            SET @res = @res + @ch;
+        ELSE
+            SET @res = @res + ' ';
+        SET @i = @i + 1;
+    END
+
+    -- Chuẩn hóa khoảng trắng và nối bằng dấu gạch ngang
+    SET @res = LTRIM(RTRIM(@res));
+    WHILE CHARINDEX('  ', @res) > 0
+        SET @res = REPLACE(@res, '  ', ' ');
+    SET @res = REPLACE(@res, ' ', '-');
+
+    RETURN @res;
+END;
+GO
+
+
+-- ----------------------------------------------------------------------------
+-- SP 108/108: sp_Product_GetBySlug
+-- Lấy sản phẩm theo Slug (gọi lại sp_Product_GetById)
+-- ----------------------------------------------------------------------------
+CREATE OR ALTER PROCEDURE dbo.sp_Product_GetBySlug
+    @Slug NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @ProductID INT;
+    SELECT @ProductID = ProductID
+    FROM dbo.Products
+    WHERE Slug = @Slug;
+
+    IF @ProductID IS NULL
+    BEGIN
+        -- Trả về result sets rỗng đúng schema để backend không bị lỗi
+        SELECT TOP 0
+            p.ProductID, p.CategoryID, c.CategoryName, p.BrandID, b.BrandName,
+            p.SKU, p.ProductName, p.Price, p.DiscountPrice,
+            p.Price AS EffectivePrice, p.StockQuantity, p.SoldCount,
+            p.Description, p.IsActive, p.WarrantyMonths,
+            p.CreatedAt, p.UpdatedAt,
+            CAST(0 AS DECIMAL(3,2)) AS AvgRating, 0 AS ReviewCount
+        FROM dbo.Products p
+        LEFT JOIN dbo.Categories c ON p.CategoryID = c.CategoryID
+        LEFT JOIN dbo.Brands     b ON p.BrandID    = b.BrandID;
+
+        SELECT TOP 0 ImageID, ProductID, ImageURL, AltText, SortOrder, IsDefault
+        FROM dbo.ProductImages;
+
+        SELECT TOP 0 AttrID, ProductID, AttributeName, AttributeValue, SortOrder
+        FROM dbo.ProductAttributes;
+        RETURN;
+    END
+
+    EXEC dbo.sp_Product_GetById @ProductID = @ProductID;
+END;
+GO
+
+
+-- ----------------------------------------------------------------------------
+-- TRIGGER: dbo.trg_Products_GenerateSlug
+-- Tự động sinh slug URL-friendly khi Thêm (INSERT) hoặc Sửa (UPDATE) ProductName
+-- ----------------------------------------------------------------------------
+CREATE OR ALTER TRIGGER dbo.trg_Products_GenerateSlug
+ON dbo.Products
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Chỉ cập nhật nếu ProductName có thay đổi (hoặc trong lệnh INSERT)
+    IF UPDATE(ProductName)
+    BEGIN
+        UPDATE p
+        SET p.Slug = dbo.fn_GenerateSlug(p.ProductName)
+        FROM dbo.Products p
+        INNER JOIN inserted i ON p.ProductID = i.ProductID;
+    END
+END;
+GO
+
+-- Đồng bộ cập nhật slug cho tất cả sản phẩm hiện có
+UPDATE dbo.Products
+SET Slug = dbo.fn_GenerateSlug(ProductName)
+WHERE Slug IS NULL OR Slug <> dbo.fn_GenerateSlug(ProductName);
+GO
+
+
+-- ============================================================================
+-- PHẦN 5: GHI CHÚ PHỤ TRỢ
+-- ============================================================================
 
 ------------------------------------------------------------
--- 5. KIỂM TRA LẠI DANH SÁCH QUYỀN
+-- KIỂM TRA LẠI DANH SÁCH QUYỀN
 ------------------------------------------------------------
 SELECT
     PermissionID,
@@ -7032,8 +6448,6 @@ FROM dbo.RolePermissions
 ORDER BY PermissionID;
 GO
 
--- [KIỂM TRA / THÔNG BÁO] Dòng gốc: 4480-4486
-
 -- ============================================================
 -- HOÀN TẤT: Tất cả stored procedures đã được tạo/cập nhật
 -- ============================================================
@@ -7042,17 +6456,12 @@ PRINT N'✓ Giới hạn PageSize tối đa: 100 items/page';
 PRINT N'✓ Sử dụng COUNT(*) OVER() để lấy TotalRecords hiệu quả';
 GO
 
--- [GHI CHÚ / HEADER CŨ] Dòng gốc: 4695-4701
-
 -- ============================================================
--- SP: Cleanup Expired Password Reset Tokens - Xóa token reset mật khẩu hết hạn
--- [ĐÃ ĐỔI TÊN từ sp_Auth_CleanupExpiredTokens để tránh trùng với RefreshTokens cleanup]
+-- SP: Cleanup Expired Password Reset Tokens
 -- ============================================================
 IF OBJECT_ID('sp_Auth_CleanupExpiredTokens', 'P') IS NOT NULL
     DROP PROCEDURE sp_Auth_CleanupExpiredTokens;
 GO
-
--- [KIỂM TRA / THÔNG BÁO] Dòng gốc: 4720-4732
 
 -- ============================================================
 -- HOÀN TẤT: Forgot Password / Reset Password
@@ -7068,208 +6477,12 @@ PRINT N'⏱ Token hết hạn sau 15 phút';
 PRINT N'🔒 Token chỉ dùng được 1 lần';
 GO
 
--- [KIỂM TRA / THÔNG BÁO] Dòng gốc: 4979-4988
-
 -----------------------------------------------------------
 -- COMPLETION
 -----------------------------------------------------------
-
 PRINT '✅ Refresh Token feature đã được thêm thành công!';
 PRINT '📊 Bảng: RefreshTokens';
 PRINT '📝 Stored Procedures: 6';
 PRINT '🔍 Indexes: 3';
 PRINT '⚡ Triggers: 1';
 GO
-
--- [VIEW / BỔ SUNG KHÁC] Dòng gốc: 5645-5673
-
-/* -------------------------------------------------------
-   6. OPTIONAL VIEW FOR ADMIN / REPORT
-------------------------------------------------------- */
-CREATE OR ALTER VIEW dbo.vw_VNPayTransactionSummary
-AS
-SELECT
-    t.TransactionID,
-    t.OrderID,
-    t.vnp_TxnRef,
-    t.vnp_Amount / 100.0 AS AmountVND,
-    t.RequestedBankCode,
-    t.vnp_BankCode,
-    t.vnp_TransactionNo,
-    t.vnp_ResponseCode,
-    t.vnp_TransactionStatus,
-    t.Status,
-    t.CreatedAt,
-    t.CallbackReceivedAt,
-    DATEDIFF(SECOND, t.CreatedAt, t.CallbackReceivedAt) AS ProcessingSeconds,
-    o.UserID,
-    u.FullName,
-    u.Email,
-    o.FinalAmount,
-    o.PaymentStatus,
-    o.Status AS OrderStatus
-FROM dbo.VNPayTransactions t
-JOIN dbo.Orders o ON o.OrderID = t.OrderID
-JOIN dbo.Users u ON u.UserID = o.UserID;
-GO
-
--- [GHI CHÚ / HEADER CŨ] Dòng gốc: 5675-5730
-
-/*
-========================================================================
-BACKEND API FLOW NEN IMPLEMENT
-========================================================================
-1. POST /api/vnpay/create-payment
-   Input:
-   - orderId
-   - requestedBankCode (null | 'VNPAYQR')
-
-   Server:
-   - lay order theo user dang dang nhap
-   - sinh vnp_TxnRef
-   - tinh amount = FinalAmount * 100
-   - build query VNPay:
-       vnp_Version=2.1.0
-       vnp_Command=pay
-       vnp_TmnCode=...
-       vnp_Amount=...
-       vnp_CreateDate=...
-       vnp_CurrCode=VND
-       vnp_IpAddr=...
-       vnp_Locale=vn
-       vnp_OrderInfo=Thanh toán đơn hàng #...
-       vnp_OrderType=other
-       vnp_ReturnUrl=https://your-domain/api/vnpay/return
-       vnp_TxnRef=...
-       vnp_BankCode=VNPAYQR neu muon QR
-   - ky hash
-   - goi sp_CreateVNPayTransaction
-   - tra paymentUrl
-
-2. GET /api/vnpay/ipn
-   - verify secure hash
-   - goi sp_UpdateVNPayTransaction
-   - return ma phan hoi dung format VNPay yeu cau
-
-3. GET /api/vnpay/return
-   - verify secure hash
-   - co the goi sp_UpdateVNPayTransaction neu IPN chua den
-   - redirect nguoi dung ve /paymentcomplete?orderId=...&status=...
-
-4. GET /api/vnpay/transaction/{orderId}
-   - goi sp_GetVNPayTransactionByOrderID
-
-5. GET /api/admin/vnpay/transactions
-   - goi sp_GetVNPayTransactionHistory
-
-LUU Y PRODUCTION
-- Khong dung localhost cho ReturnUrl/IPN khi go live.
-- Bat HTTPS va domain public.
-- ReturnUrl chi de hien thi; IPN moi la noi cap nhat chinh.
-- Khong tru kho trong callback thanh cong vi kho da bi tru luc tao OrderDetails.
-- Neu can QR de quet, uu tien VNPAYQR.
-========================================================================
-*/
-
-
--- ----------------------------------------------------------------------------
--- PHẦN BỔ SUNG: SEO ON-PAGE
--- ----------------------------------------------------------------------------
--- Thêm cột Slug vào bảng Products nếu chưa có
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('dbo.Products') AND name = 'Slug')
-BEGIN
-    ALTER TABLE dbo.Products ADD Slug NVARCHAR(255) NULL;
-END
-GO
-
--- Hàm loại bỏ dấu tiếng Việt
-CREATE OR ALTER FUNCTION dbo.fn_RemoveAccents (@str NVARCHAR(MAX))
-RETURNS NVARCHAR(MAX)
-AS
-BEGIN
-    DECLARE @accents NVARCHAR(150) = N'áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵđÁÀẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬÉÈẺẼẸÊẾỀỂỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤƯỨỪỬỮỰÝỲỶỸÝĐ';
-    DECLARE @noAccents NVARCHAR(150) = N'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyydAAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYD';
-    
-    DECLARE @i INT = 1;
-    WHILE @i <= LEN(@str)
-    BEGIN
-        DECLARE @c NVARCHAR(1) = SUBSTRING(@str, @i, 1);
-        DECLARE @idx INT = CHARINDEX(@c, @accents COLLATE Latin1_General_CS_AS);
-        IF @idx > 0
-        BEGIN
-            SET @str = STUFF(@str, @i, 1, SUBSTRING(@noAccents, @idx, 1));
-        END
-        SET @i = @i + 1;
-    END
-    RETURN @str;
-END;
-GO
-
--- Hàm tạo Slug từ tên sản phẩm
-CREATE OR ALTER FUNCTION dbo.fn_GenerateSlug (@str NVARCHAR(MAX))
-RETURNS NVARCHAR(MAX)
-AS
-BEGIN
-    SET @str = LOWER(dbo.fn_RemoveAccents(@str));
-    
-    -- Thay thế ký tự đặc biệt bằng dấu cách
-    DECLARE @i INT = 1;
-    DECLARE @res NVARCHAR(MAX) = '';
-    WHILE @i <= LEN(@str)
-    BEGIN
-        DECLARE @c NCHAR(1) = SUBSTRING(@str, @i, 1);
-        IF (@c >= 'a' AND @c <= 'z') OR (@c >= '0' AND @c <= '9')
-            SET @res = @res + @c;
-        ELSE
-            SET @res = @res + ' ';
-        SET @i = @i + 1;
-    END
-    
-    -- Xử lý khoảng trắng thừa và nối bằng dấu gạch ngang
-    SET @res = LTRIM(RTRIM(@res));
-    WHILE CHARINDEX('  ', @res) > 0
-        SET @res = REPLACE(@res, '  ', ' ');
-    SET @res = REPLACE(@res, ' ', '-');
-    
-    RETURN @res;
-END;
-GO
-
--- Stored Procedure lấy sản phẩm bằng Slug
-CREATE OR ALTER PROCEDURE sp_Product_GetBySlug
-    @Slug NVARCHAR(255)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DECLARE @ProductID INT;
-    SELECT @ProductID = ProductID FROM dbo.Products WHERE Slug = @Slug;
-
-    IF @ProductID IS NULL
-    BEGIN
-        SELECT TOP 0 
-            ProductID, CategoryID, CategoryName, BrandID, BrandName,
-            SKU, ProductName, Price, DiscountPrice, EffectivePrice,
-            StockQuantity, SoldCount, Description, IsActive, WarrantyMonths,
-            CreatedAt, UpdatedAt, AvgRating, ReviewCount
-        FROM (
-            SELECT 
-                p.ProductID, p.CategoryID, c.CategoryName, p.BrandID, b.BrandName,
-                p.SKU, p.ProductName, p.Price, p.DiscountPrice,
-                p.Price AS EffectivePrice, p.StockQuantity, p.SoldCount, p.Description,
-                p.IsActive, p.WarrantyMonths, p.CreatedAt, p.UpdatedAt,
-                CAST(0 AS DECIMAL(3,2)) AS AvgRating, 0 AS ReviewCount
-            FROM dbo.Products p
-            LEFT JOIN dbo.Categories c ON p.CategoryID = c.CategoryID
-            LEFT JOIN dbo.Brands b ON p.BrandID = b.BrandID
-        ) t;
-        
-        SELECT TOP 0 ImageID, ProductID, ImageURL, AltText, SortOrder, IsDefault FROM dbo.ProductImages;
-        SELECT TOP 0 AttrID, ProductID, AttributeName, AttributeValue, SortOrder FROM dbo.ProductAttributes;
-        RETURN;
-    END
-
-    EXEC dbo.sp_Product_GetById @ProductID = @ProductID;
-END;
-GO
-

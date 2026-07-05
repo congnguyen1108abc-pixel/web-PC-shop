@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trạng Thái Đơn Hàng - HYPER CORE</title>
+    <meta name="description" content="Theo dõi trạng thái đơn hàng của bạn tại HYPER CORE - Premium Electronics Store">
+    <style>
+        /* CSS VARIABLES */
+        :root {
+            --bg-color: #f4f4f5;
+            --text-color: #000000;
+            --ceramic-light: #ffffff;
+            --ceramic-shadow: #d1d5db;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        /* GLOBAL STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+            scroll-behavior: smooth;
+        }
+
+        /* ================================= */
+        /* HEADER */
+        /* ================================= */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 78px;
+            padding: 0 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            border-radius: 0 0 20px 20px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4), 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            transition: background 0.5s ease, backdrop-filter 0.5s ease, box-shadow 0.5s ease;
+        }
+
+        header,
+        header * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #000000;
+            cursor: pointer;
+        }
+
+        nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-size: 15px;
+            position: relative;
+            transition: .3s;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a:hover {
+            color: #000000;
+        }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            width: 0%;
+            height: 2px;
+            border-radius: 10px;
+            background: #555555;
+            transition: .3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a.active::after {
+            width: 100%;
+        }
+
+        /* ================================= */
+        /* HEADER ICONS */
+        /* ================================= */
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-icon-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #111111;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+            position: relative;
+            line-height: 0;
+        }
+
+        .header-icon-btn:hover {
+            opacity: 0.6;
+        }
+
+        .header-icon-btn svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        /* ----- SEARCH ----- */
+        .header-search-container {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            overflow: visible;
+            position: relative;
+        }
+
+        .header-search-input {
+            width: 0;
+            opacity: 0;
+            padding: 0;
+            border: none;
+            border-bottom: 1.5px solid transparent;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #111111;
+            transition:
+                width 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.25s ease,
+                border-color 0.25s ease;
+        }
+
+        .header-search-container.active .header-search-input {
+            width: 200px;
+            opacity: 1;
+            border-bottom-color: #111111;
+            padding: 2px 0 4px 4px;
+        }
+
+        /* ----- CART BADGE ----- */
+        .cart-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 3px;
+            border-radius: 50%;
+            background: #111111;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 600;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        /* ================================= */
+        /* MAIN CONTENT */
+        /* ================================= */
+
+        main {
+            position: relative;
+            z-index: 10;
+            padding: 120px 0 80px;
+            min-height: 100vh;
+        }
+
+        .orders-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* PAGE TITLE */
+        .page-title-section {
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #000;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        /* BREADCRUMB */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #9ca3af;
+            margin-bottom: 30px;
+        }
+
+        .breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: #000;
+        }
+
+        .breadcrumb .sep {
+            color: #d1d5db;
+        }
+
+        .breadcrumb .current {
+            color: #000;
+            font-weight: 600;
+        }
+
+        /* ================================= */
+        /* FILTER TABS */
+        /* ================================= */
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 10px 22px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #374151;
+            white-space: nowrap;
+        }
+
+        .filter-tab:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .filter-tab.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
+
+        .filter-tab .tab-count {
+            display: inline-block;
+            margin-left: 6px;
+            background: rgba(0, 0, 0, 0.08);
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .filter-tab.active .tab-count {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* ================================= */
+        /* ORDER CARDS */
+        /* ================================= */
+
+        .order-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 24px;
+            padding: 28px 32px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            animation: cardSlideIn 0.4s ease forwards;
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        @keyframes cardSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 18px;
+        }
+
+        .order-id-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .order-id {
+            font-size: 18px;
+            font-weight: 800;
+            color: #000;
+            letter-spacing: 0.5px;
+        }
+
+        .order-date {
+            font-size: 13px;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+        /* STATUS BADGES */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-confirmed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-shipping {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .badge-delivered {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-paid {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-unpaid {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* ORDER CARD BODY */
+        .order-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            padding-top: 18px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .order-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .info-value.price {
+            color: #000;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* ORDER CARD ACTIONS */
+        .order-card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .btn-detail {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 14px;
+            border: none;
+            background: #111;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-detail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-cancel {
+            padding: 12px 20px;
+            border-radius: 14px;
+            border: 1.5px solid #fecaca;
+            background: #fff5f5;
+            color: #dc2626;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #fee2e2;
+            border-color: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        /* ================================= */
+        /* EMPTY STATE */
+        /* ================================= */
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 30px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 28px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.4;
+        }
+
+        .empty-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 10px;
+        }
+
+        .empty-desc {
+            font-size: 15px;
+            color: #6b7280;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .btn-shop {
+            display: inline-block;
+            padding: 14px 36px;
+            border-radius: 16px;
+            background: #111;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-shop:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ================================= */
+        /* LOADING */
+        /* ================================= */
+
+        .loading-state {
+            text-align: center;
+            padding: 80px 30px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #000;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 15px;
+            color: #6b7280;
+        }
+
+        /* ================================= */
+        /* PAGINATION */
+        /* ================================= */
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.7);
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover:not(.active):not(:disabled) {
+            background: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .page-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ================================= */
+        /* DETAIL VIEW */
+        /* ================================= */
+
+        .detail-view {
+            display: none;
+        }
+
+        .detail-view.active {
+            display: block;
+        }
+
+        .list-view.hidden {
+            display: none;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.7);
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            background: #fff;
+            transform: translateX(-3px);
+        }
+
+        .back-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* TIMELINE STEPPER */
+        .timeline-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 24px;
+            padding: 36px 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 28px;
+        }
+
+        .timeline {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            z-index: 0;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            height: 3px;
+            background: #111;
+            border-radius: 3px;
+            z-index: 1;
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+            position: relative;
+            min-width: 100px;
+        }
+
+        .step-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 3px solid #e5e7eb;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #d1d5db;
+            transition: all 0.4s ease;
+        }
+
+        .timeline-step.completed .step-circle {
+            background: #111;
+            border-color: #111;
+            color: #fff;
+        }
+
+        .timeline-step.current .step-circle {
+            border-color: #111;
+            color: #111;
+            box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.08);
+            animation: pulse-ring 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% { box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.08); }
+            50% { box-shadow: 0 0 0 10px rgba(0, 0, 0, 0.04); }
+        }
+
+        .timeline-step.cancelled .step-circle {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #dc2626;
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        .timeline-step.completed .step-label,
+        .timeline-step.current .step-label {
+            color: #111;
+        }
+
+        .timeline-step.cancelled .step-label {
+            color: #dc2626;
+        }
+
+        .step-time {
+            font-size: 11px;
+            color: #d1d5db;
+        }
+
+        .timeline-step.completed .step-time,
+        .timeline-step.current .step-time {
+            color: #9ca3af;
+        }
+
+        /* DETAIL INFO CARDS */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 24px;
+            padding: 28px 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .detail-card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-card-title svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.5;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .detail-row .label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .detail-row .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111;
+        }
+
+        .detail-row .value.total {
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        /* PRODUCT LIST IN DETAIL */
+        .product-list-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            border-radius: 24px;
+            padding: 28px 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            margin-bottom: 20px;
+        }
+
+        .product-item {
+            display: flex;
+            gap: 18px;
+            padding: 18px 0;
+            border-bottom: 1px solid #f3f4f6;
+            align-items: center;
+            transition: background 0.2s;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-item:hover {
+            background: rgba(0, 0, 0, 0.015);
+        }
+
+        .product-item-img {
+            width: 72px;
+            height: 72px;
+            border-radius: 14px;
+            object-fit: contain;
+            background: #f9fafb;
+            border: 1px solid #f3f4f6;
+            flex-shrink: 0;
+            padding: 6px;
+        }
+
+        .product-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .product-item-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-item-sku {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-bottom: 6px;
+        }
+
+        .product-item-qty {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .product-item-price {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .unit-price {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 4px;
+        }
+
+        .line-total {
+            font-size: 16px;
+            font-weight: 800;
+            color: #000;
+        }
+
+        /* ================================= */
+        /* CONFIRM MODAL */
+        /* ================================= */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-box {
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            animation: modalSlideUp 0.3s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .modal-btn.cancel {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .modal-btn.confirm {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .modal-btn.confirm:hover {
+            background: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+        /* ================================= */
+        /* FOOTER */
+        /* ================================= */
+
+        footer {
+            background: #111;
+            color: #fff;
+            padding: 50px 50px 30px;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            max-width: 1400px;
+            margin: 0 auto 40px;
+        }
+
+        .footer-col h3 {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: #9ca3af;
+        }
+
+        .footer-col a {
+            display: block;
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* ================================= */
+        /* RESPONSIVE */
+        /* ================================= */
+
+        @media (max-width: 1000px) {
+            header {
+                padding: 0 20px;
+            }
+
+            nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 100px 0 60px;
+            }
+
+            .orders-container {
+                padding: 0 16px;
+            }
+
+            .page-title {
+                font-size: 26px;
+            }
+
+            .order-card {
+                padding: 20px;
+                border-radius: 18px;
+            }
+
+            .order-card-body {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline {
+                flex-direction: column;
+                gap: 20px;
+                padding: 0;
+            }
+
+            .timeline::before {
+                top: 20px;
+                left: 20px;
+                right: auto;
+                width: 3px;
+                height: calc(100% - 40px);
+            }
+
+            .timeline-progress {
+                left: 20px;
+                top: 20px;
+                width: 3px !important;
+            }
+
+            .timeline-step {
+                flex-direction: row;
+                gap: 16px;
+                min-width: auto;
+            }
+
+            .step-label {
+                text-align: left;
+            }
+
+            .timeline-card {
+                padding: 24px;
+            }
+
+            .filter-tabs {
+                gap: 6px;
+            }
+
+            .filter-tab {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .product-item-name {
+                white-space: normal;
+            }
+
+            .order-card-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .order-card-body {
+                grid-template-columns: 1fr;
+            }
+
+            .order-card-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/css/style.css?v=1.0.5">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header id="header">
+        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                style="height: 38px; display: block; object-fit: contain;">
+        </div>
+
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <div class="nav-item-dropdown">
+                <a href="/Products" id="nav-products">Sản Phẩm</a>
+                <div class="mega-menu">
+                    <div class="mega-col">
+                        <h3>Linh Kiện PC</h3>
+                        <a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+                        <a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+                        <a href="/Products?category=vga">VGA - Card màn hình</a>
+                        <a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+                        <a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+                        <a href="/Products?category=psu">Nguồn máy tính</a>
+                        <a href="/Products?category=case">Case - Vỏ máy tính</a>
+                        <a href="/Products?category=cooling">Tản nhiệt PC</a>
+                    </div>
+                    <div class="mega-col">
+                        <h3>Thương Hiệu</h3>
+                        <a href="/Products?brand=asus">Asus</a>
+                        <a href="/Products?brand=msi">MSI</a>
+                        <a href="/Products?brand=gigabyte">Gigabyte</a>
+                        <a href="/Products?brand=intel">Intel</a>
+                        <a href="/Products?brand=amd">AMD</a>
+                        <a href="/Products?brand=corsair">Corsair</a>
+                        <a href="/Products?brand=kingston">Kingston</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Gaming Gear</h3>
+                        <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+                        <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+                        <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+                        <a href="/gaminggear?category=mic-studio">Mic Studio</a>
+                        <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+                        <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+                        <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
+                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>PC Build</h3>
+                        <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+                        <a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/order-status" class="active">Trạng thái đơn hàng</a>
+        </nav>
+
+        <div class="nav-actions">
+            <!-- SEARCH -->
+            <div class="header-search-container" id="headerSearchWrap">
+                <input type="text" id="headerSearchInput" class="header-search-input"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+                <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)"
+                    title="Tìm kiếm" aria-label="Tìm kiếm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ACCOUNT -->
+            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+
+            <!-- USER GREETING -->
+            <div class="user-greeting-wrap" id="userGreetingWrap">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-greeting-name">
+                        <em>Xin chào,</em>
+                        <span id="userDisplayName">Người dùng</span>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <span id="dropdownFullName">Người dùng</span>
+                        <small id="dropdownEmail">email@example.com</small>
+                    </div>
+                    <a href="#" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Hồ sơ của tôi
+                    </a>
+                    <a href="/shoppingcart" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Giỏ hàng
+                    </a>
+                    <a href="/order-status" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Đơn hàng
+                    </a>
+                    <button class="dropdown-item logout" onclick="handleLogout()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
+
+            <!-- CART -->
+            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <div class="orders-container">
+
+            <!-- ==================== LIST VIEW ==================== -->
+            <div class="list-view" id="listView">
+                <div class="page-title-section">
+                    <h1 class="page-title">ĐƠN HÀNG CỦA TÔI</h1>
+                    <p class="page-subtitle">Theo dõi và quản lý đơn hàng của bạn tại HYPER CORE</p>
+                </div>
+
+                <!-- FILTER TABS -->
+                <div class="filter-tabs" id="filterTabs">
+                    <button class="filter-tab active" data-status="">Tất cả</button>
+                    <button class="filter-tab" data-status="Pending">⏳ Chờ xác nhận</button>
+                    <button class="filter-tab" data-status="Confirmed">✓ Đã xác nhận</button>
+                    <button class="filter-tab" data-status="Shipping">🚚 Đang giao</button>
+                    <button class="filter-tab" data-status="Delivered">✅ Đã giao</button>
+                    <button class="filter-tab" data-status="Cancelled">✕ Đã hủy</button>
+                </div>
+
+                <!-- ORDER LIST -->
+                <div id="orderListContent">
+                    <div class="loading-state" id="listLoading">
+                        <div class="loading-spinner"></div>
+                        <p class="loading-text">Đang tải đơn hàng...</p>
+                    </div>
+                </div>
+
+                <!-- PAGINATION -->
+                <div class="pagination" id="pagination" style="display: none;"></div>
+            </div>
+
+            <!-- ==================== DETAIL VIEW ==================== -->
+            <div class="detail-view" id="detailView">
+
+                <button class="back-btn" onclick="showListView()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                    Quay lại danh sách
+                </button>
+
+                <div class="breadcrumb">
+                    <a href="/order-status">Đơn hàng của tôi</a>
+                    <span class="sep">›</span>
+                    <span class="current" id="breadcrumbOrderId">Chi tiết đơn hàng</span>
+                </div>
+
+                <!-- TIMELINE -->
+                <div class="timeline-card" id="timelineCard">
+                    <div class="timeline-title">TIẾN TRÌNH ĐƠN HÀNG</div>
+                    <div class="timeline" id="timelineStepper">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- DETAIL GRID -->
+                <div class="detail-grid">
+                    <div class="detail-card" id="orderInfoCard">
+                        <div class="detail-card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            THÔNG TIN ĐƠN HÀNG
+                        </div>
+                        <div id="orderInfoContent"></div>
+                    </div>
+                    <div class="detail-card" id="shippingInfoCard">
+                        <div class="detail-card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                            THÔNG TIN GIAO HÀNG & THANH TOÁN
+                        </div>
+                        <div id="shippingInfoContent"></div>
+                    </div>
+                </div>
+
+                <!-- PRODUCT LIST -->
+                <div class="product-list-card">
+                    <div class="detail-card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                        SẢN PHẨM TRONG ĐƠN
+                    </div>
+                    <div id="detailProductList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- DETAIL ACTIONS -->
+                <div style="display: flex; gap: 12px; margin-top: 16px;" id="detailActions"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- CANCEL MODAL -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal-box">
+            <div class="modal-icon">⚠️</div>
+            <h3 class="modal-title">Xác nhận hủy đơn hàng</h3>
+            <p class="modal-desc">Bạn có chắc chắn muốn hủy đơn hàng <strong id="cancelOrderIdText">#</strong>? Hành động này không thể hoàn tác.</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeCancelModal()">Không, giữ lại</button>
+                <button class="modal-btn confirm" id="confirmCancelBtn" onclick="confirmCancelOrder()">Hủy đơn hàng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>HYPER CORE</h3>
+                <p style="color: #9ca3af; font-size: 14px; line-height: 1.8;">
+                    Premium Electronics Experience — Nơi hội tụ công nghệ đỉnh cao và trải nghiệm mua sắm tối thượng.
+                </p>
+            </div>
+            <div class="footer-col">
+                <h3>Sản Phẩm</h3>
+                <a href="/Products">Linh kiện PC</a>
+                <a href="/gaminggear">Gaming Gear</a>
+                <a href="/pcbuild">PC Build</a>
+            </div>
+            <div class="footer-col">
+                <h3>Hỗ Trợ</h3>
+                <a href="#">Liên hệ</a>
+                <a href="#">Chính sách đổi trả</a>
+                <a href="#">Bảo hành</a>
+            </div>
+            <div class="footer-col">
+                <h3>Tài Khoản</h3>
+                <a href="/Login">Đăng nhập</a>
+                <a href="/Register">Đăng ký</a>
+                <a href="/order-status">Đơn hàng</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+    <script src="/assets/js/cart-drawer-global.js"></script>
+    <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
+
+    <script>
+        // ==========================================
+        // ORDER STATUS PAGE - MAIN LOGIC
+        // ==========================================
+
+        const API_BASE = '';
+        let currentPage = 1;
+        let currentFilter = '';
+        let currentPageSize = 8;
+        let totalPages = 1;
+        let pendingCancelOrderId = null;
+
+        // ── Auth check ──
+        function getAuthData() {
+            const token = localStorage.getItem('pc_store_token');
+            const userRaw = localStorage.getItem('pc_store_user');
+            if (!token || !userRaw) return null;
+            try {
+                return { token, user: JSON.parse(userRaw) };
+            } catch { return null; }
+        }
+
+        // ── Format helpers ──
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            const pad = n => String(n).padStart(2, '0');
+            return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+
+        function formatDateShort(dateStr) {
+            const d = new Date(dateStr);
+            const pad = n => String(n).padStart(2, '0');
+            return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+        }
+
+        // ── Status helpers ──
+        function getStatusBadge(status) {
+            const map = {
+                'Pending':   { cls: 'badge-pending',   icon: '⏳', text: 'Chờ xác nhận' },
+                'Confirmed': { cls: 'badge-confirmed',  icon: '✓',  text: 'Đã xác nhận' },
+                'Shipping':  { cls: 'badge-shipping',  icon: '🚚', text: 'Đang giao' },
+                'Delivered': { cls: 'badge-delivered',  icon: '✅', text: 'Đã giao' },
+                'Cancelled': { cls: 'badge-cancelled',  icon: '✕',  text: 'Đã hủy' }
+            };
+            const s = map[status] || { cls: 'badge-pending', icon: '•', text: status };
+            return `<span class="status-badge ${s.cls}">${s.icon} ${s.text}</span>`;
+        }
+
+        function getPaymentBadge(paymentStatus) {
+            if (paymentStatus === 'Paid') {
+                return '<span class="status-badge badge-paid">✓ Đã thanh toán</span>';
+            }
+            return '<span class="status-badge badge-unpaid">⏳ Chờ thanh toán</span>';
+        }
+
+        // ==========================================
+        // 1. LOAD ORDER LIST
+        // ==========================================
+
+        async function loadOrders() {
+            const auth = getAuthData();
+            if (!auth) {
+                document.getElementById('orderListContent').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔒</div>
+                        <h3 class="empty-title">Chưa đăng nhập</h3>
+                        <p class="empty-desc">Vui lòng đăng nhập để xem đơn hàng của bạn.</p>
+                        <a href="/Login?redirect=/order-status" class="btn-shop">Đăng nhập ngay</a>
+                    </div>`;
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            // Show loading
+            document.getElementById('orderListContent').innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Đang tải đơn hàng...</p>
+                </div>`;
+
+            try {
+                const url = `${API_BASE}/api/orders/history/${auth.user.userId}?pageNumber=${currentPage}&pageSize=${currentPageSize}`;
+                const res = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${auth.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (res.status === 401) {
+                    localStorage.removeItem('pc_store_token');
+                    localStorage.removeItem('pc_store_user');
+                    window.location.href = '/Login?redirect=/order-status';
+                    return;
+                }
+
+                if (!res.ok) throw new Error('Failed to load orders');
+
+                const result = await res.json();
+                const orders = result.items || result.data || [];
+                totalPages = result.totalPages || 1;
+
+                // Filter client-side if needed
+                let filtered = orders;
+                if (currentFilter) {
+                    filtered = orders.filter(o => o.status === currentFilter);
+                }
+
+                renderOrderList(filtered);
+                renderPagination(result);
+
+            } catch (err) {
+                console.error('[Orders] Error:', err);
+                document.getElementById('orderListContent').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">😵</div>
+                        <h3 class="empty-title">Đã xảy ra lỗi</h3>
+                        <p class="empty-desc">Không thể tải danh sách đơn hàng. Vui lòng thử lại.</p>
+                        <button class="btn-shop" onclick="loadOrders()" style="border:none; cursor:pointer;">Tải lại</button>
+                    </div>`;
+                document.getElementById('pagination').style.display = 'none';
+            }
+        }
+
+        // ==========================================
+        // 2. RENDER ORDER LIST
+        // ==========================================
+
+        function renderOrderList(orders) {
+            const container = document.getElementById('orderListContent');
+
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <h3 class="empty-title">Chưa có đơn hàng${currentFilter ? ' trong trạng thái này' : ''}</h3>
+                        <p class="empty-desc">Hãy khám phá các sản phẩm công nghệ đỉnh cao tại HYPER CORE!</p>
+                        <a href="/Products" class="btn-shop">Mua sắm ngay</a>
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            orders.forEach((order, i) => {
+                const canCancel = order.status === 'Pending';
+                html += `
+                <div class="order-card" style="animation-delay: ${i * 0.06}s">
+                    <div class="order-card-header">
+                        <div class="order-id-group">
+                            <div class="order-id">Đơn hàng #${order.orderId}</div>
+                            <div class="order-date">${formatDate(order.orderDate)}</div>
+                        </div>
+                        ${getStatusBadge(order.status)}
+                    </div>
+                    <div class="order-card-body">
+                        <div class="order-info-item">
+                            <span class="info-label">Sản phẩm</span>
+                            <span class="info-value">${order.itemCount} sản phẩm</span>
+                        </div>
+                        <div class="order-info-item">
+                            <span class="info-label">Thanh toán</span>
+                            <span class="info-value">${order.paymentMethod}</span>
+                        </div>
+                        <div class="order-info-item">
+                            <span class="info-label">Tổng tiền</span>
+                            <span class="info-value price">${formatCurrency(order.finalAmount)}</span>
+                        </div>
+                    </div>
+                    <div class="order-card-actions">
+                        <button class="btn-detail" onclick="viewOrderDetail(${order.orderId})">
+                            Xem chi tiết →
+                        </button>
+                        ${canCancel ? `<button class="btn-cancel" onclick="openCancelModal(${order.orderId})">Hủy đơn</button>` : ''}
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // 3. PAGINATION
+        // ==========================================
+
+        function renderPagination(result) {
+            const paginationEl = document.getElementById('pagination');
+            const total = result.totalPages || 1;
+            const current = result.pageNumber || currentPage;
+
+            if (total <= 1) {
+                paginationEl.style.display = 'none';
+                return;
+            }
+
+            paginationEl.style.display = 'flex';
+            let html = '';
+
+            // Prev
+            html += `<button class="page-btn" ${current <= 1 ? 'disabled' : ''} onclick="goToPage(${current - 1})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>`;
+
+            // Page numbers
+            for (let i = 1; i <= total; i++) {
+                if (total > 7 && i > 3 && i < total - 2 && Math.abs(i - current) > 1) {
+                    if (i === 4) html += '<span style="padding: 0 6px; color: #9ca3af;">...</span>';
+                    continue;
+                }
+                html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+
+            // Next
+            html += `<button class="page-btn" ${current >= total ? 'disabled' : ''} onclick="goToPage(${current + 1})">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>`;
+
+            paginationEl.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadOrders();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // 4. FILTER TABS
+        // ==========================================
+
+        document.getElementById('filterTabs').addEventListener('click', (e) => {
+            const tab = e.target.closest('.filter-tab');
+            if (!tab) return;
+
+            document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            currentFilter = tab.dataset.status || '';
+            currentPage = 1;
+            loadOrders();
+        });
+
+        // ==========================================
+        // 5. VIEW ORDER DETAIL
+        // ==========================================
+
+        async function viewOrderDetail(orderId) {
+            const auth = getAuthData();
+            if (!auth) return;
+
+            // Switch views
+            document.getElementById('listView').classList.add('hidden');
+            const detailView = document.getElementById('detailView');
+            detailView.classList.add('active');
+
+            document.getElementById('breadcrumbOrderId').textContent = `Chi tiết đơn #${orderId}`;
+
+            // Show loading in detail
+            document.getElementById('timelineStepper').innerHTML = '<div class="loading-state"><div class="loading-spinner"></div></div>';
+            document.getElementById('orderInfoContent').innerHTML = '<div class="loading-state"><div class="loading-spinner" style="width:24px;height:24px;border-width:3px;"></div></div>';
+            document.getElementById('shippingInfoContent').innerHTML = '';
+            document.getElementById('detailProductList').innerHTML = '';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/detail/${orderId}/user/${auth.user.userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${auth.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!res.ok) throw new Error('Failed to load detail');
+                const data = await res.json();
+
+                renderOrderDetail(data.header, data.items);
+            } catch (err) {
+                console.error('[Orders] Detail error:', err);
+                document.getElementById('orderInfoContent').innerHTML = '<p style="color:#dc2626;">Không thể tải chi tiết đơn hàng.</p>';
+            }
+        }
+
+        // ==========================================
+        // 6. RENDER ORDER DETAIL
+        // ==========================================
+
+        function renderOrderDetail(header, items) {
+            // ── Timeline ──
+            renderTimeline(header.status, header.orderDate, header.updatedAt);
+
+            // ── Order Info ──
+            document.getElementById('orderInfoContent').innerHTML = `
+                <div class="detail-row">
+                    <span class="label">Mã đơn hàng</span>
+                    <span class="value">#${header.orderId}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Ngày đặt</span>
+                    <span class="value">${formatDate(header.orderDate)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Trạng thái</span>
+                    <span class="value">${getStatusBadge(header.status)}</span>
+                </div>
+                ${header.voucherCode ? `
+                <div class="detail-row">
+                    <span class="label">Mã giảm giá</span>
+                    <span class="value" style="color: #059669; font-weight:800;">${header.voucherCode}</span>
+                </div>` : ''}
+                <div class="detail-row">
+                    <span class="label">Tạm tính</span>
+                    <span class="value">${formatCurrency(header.totalAmount)}</span>
+                </div>
+                ${header.discountAmount > 0 ? `
+                <div class="detail-row">
+                    <span class="label">Giảm giá</span>
+                    <span class="value" style="color: #059669;">-${formatCurrency(header.discountAmount)}</span>
+                </div>` : ''}
+                <div class="detail-row" style="border-top: 2px solid #111; padding-top: 14px; margin-top: 6px;">
+                    <span class="label" style="font-weight:800; color:#111;">Tổng thanh toán</span>
+                    <span class="value total">${formatCurrency(header.finalAmount)}</span>
+                </div>`;
+
+            // ── Shipping & Payment Info ──
+            document.getElementById('shippingInfoContent').innerHTML = `
+                <div class="detail-row">
+                    <span class="label">Địa chỉ giao hàng</span>
+                    <span class="value" style="text-align:right; max-width:60%; line-height:1.5;">${header.shippingAddress}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Phương thức TT</span>
+                    <span class="value">${header.paymentMethod}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Trạng thái TT</span>
+                    <span class="value">${getPaymentBadge(header.paymentStatus)}</span>
+                </div>
+                ${header.updatedAt ? `
+                <div class="detail-row">
+                    <span class="label">Cập nhật lần cuối</span>
+                    <span class="value">${formatDate(header.updatedAt)}</span>
+                </div>` : ''}`;
+
+            // ── Product List ──
+            let productsHtml = '';
+            (items || []).forEach(item => {
+                productsHtml += `
+                <div class="product-item" onclick="window.location.href='/product/${item.productId}'">
+                    <img class="product-item-img" src="${item.defaultImageUrl || '/assets/img/placeholder-product.png'}"
+                         alt="${item.productName}"
+                         onerror="this.onerror=null; this.src='/assets/img/placeholder-product.png';">
+                    <div class="product-item-info">
+                        <div class="product-item-name">${item.productName}</div>
+                        <div class="product-item-sku">SKU: ${item.sku || '—'}</div>
+                        <div class="product-item-qty">Số lượng: <strong>${item.quantity}</strong></div>
+                    </div>
+                    <div class="product-item-price">
+                        <div class="unit-price">${formatCurrency(item.unitPrice)} / sp</div>
+                        <div class="line-total">${formatCurrency(item.lineTotal)}</div>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('detailProductList').innerHTML = productsHtml;
+
+            // ── Detail Actions ──
+            let actionsHtml = '';
+            if (header.status === 'Pending') {
+                actionsHtml += `<button class="btn-cancel" style="flex:1; padding:14px;" onclick="openCancelModal(${header.orderId})">Hủy đơn hàng</button>`;
+            }
+            actionsHtml += `<a href="/Products" class="btn-detail" style="flex:1; text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center;">Tiếp tục mua sắm</a>`;
+            document.getElementById('detailActions').innerHTML = actionsHtml;
+        }
+
+        // ==========================================
+        // 7. TIMELINE STEPPER
+        // ==========================================
+
+        function renderTimeline(status, orderDate, updatedAt) {
+            const steps = [
+                { key: 'Pending',   label: 'Đặt hàng',    icon: '📝' },
+                { key: 'Confirmed', label: 'Xác nhận',     icon: '✓' },
+                { key: 'Shipping',  label: 'Đang giao',    icon: '🚚' },
+                { key: 'Delivered', label: 'Đã giao',      icon: '✅' }
+            ];
+
+            const statusOrder = { 'Pending': 0, 'Confirmed': 1, 'Shipping': 2, 'Delivered': 3, 'Cancelled': -1 };
+            const currentIdx = statusOrder[status] ?? -1;
+            const isCancelled = status === 'Cancelled';
+
+            // Calculate progress bar width
+            let progressPercent = 0;
+            if (currentIdx >= 0) {
+                progressPercent = (currentIdx / (steps.length - 1)) * 100;
+            }
+
+            let html = `<div class="timeline-progress" style="width: ${progressPercent}%;"></div>`;
+
+            steps.forEach((step, i) => {
+                let cls = '';
+                if (isCancelled) {
+                    cls = 'cancelled';
+                } else if (i < currentIdx) {
+                    cls = 'completed';
+                } else if (i === currentIdx) {
+                    cls = 'current';
+                }
+
+                let timeText = '';
+                if (i === 0 && orderDate) {
+                    timeText = formatDateShort(orderDate);
+                } else if (i === currentIdx && updatedAt) {
+                    timeText = formatDateShort(updatedAt);
+                }
+
+                html += `
+                <div class="timeline-step ${cls}">
+                    <div class="step-circle">${isCancelled ? '✕' : (i < currentIdx ? '✓' : step.icon)}</div>
+                    <div>
+                        <div class="step-label">${isCancelled && i === 0 ? 'Đã hủy' : step.label}</div>
+                        ${timeText ? `<div class="step-time">${timeText}</div>` : ''}
+                    </div>
+                </div>`;
+            });
+
+            document.getElementById('timelineStepper').innerHTML = html;
+
+            // If cancelled, update timeline card appearance
+            if (isCancelled) {
+                document.getElementById('timelineCard').style.borderColor = 'rgba(220, 38, 38, 0.15)';
+                document.getElementById('timelineCard').style.background = 'rgba(255, 245, 245, 0.85)';
+            } else {
+                document.getElementById('timelineCard').style.borderColor = '';
+                document.getElementById('timelineCard').style.background = '';
+            }
+        }
+
+        // ==========================================
+        // 8. VIEW SWITCHING
+        // ==========================================
+
+        function showListView() {
+            document.getElementById('listView').classList.remove('hidden');
+            document.getElementById('detailView').classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // 9. CANCEL ORDER
+        // ==========================================
+
+        function openCancelModal(orderId) {
+            pendingCancelOrderId = orderId;
+            document.getElementById('cancelOrderIdText').textContent = `#${orderId}`;
+            document.getElementById('cancelModal').classList.add('active');
+        }
+
+        function closeCancelModal() {
+            pendingCancelOrderId = null;
+            document.getElementById('cancelModal').classList.remove('active');
+        }
+
+        async function confirmCancelOrder() {
+            if (!pendingCancelOrderId) return;
+            const auth = getAuthData();
+            if (!auth) return;
+
+            const btn = document.getElementById('confirmCancelBtn');
+            btn.textContent = 'Đang hủy...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/cancel`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${auth.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderId: pendingCancelOrderId,
+                        userId: auth.user.userId
+                    })
+                });
+
+                if (!res.ok) throw new Error('Cancel failed');
+
+                closeCancelModal();
+
+                // Refresh list or detail
+                if (document.getElementById('detailView').classList.contains('active')) {
+                    viewOrderDetail(pendingCancelOrderId);
+                }
+                loadOrders();
+
+            } catch (err) {
+                console.error('[Orders] Cancel error:', err);
+                alert('Không thể hủy đơn hàng. Vui lòng thử lại!');
+            } finally {
+                btn.textContent = 'Hủy đơn hàng';
+                btn.disabled = false;
+            }
+        }
+
+        // Close modal on overlay click
+        document.getElementById('cancelModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeCancelModal();
+        });
+
+        // ==========================================
+        // 10. HEADER SEARCH
+        // ==========================================
+        function toggleHeaderSearch(btn) {
+            const wrap = document.getElementById('headerSearchWrap');
+            wrap.classList.toggle('active');
+            if (wrap.classList.contains('active')) {
+                document.getElementById('headerSearchInput').focus();
+            }
+        }
+
+        function handleHeaderSearch(input) {
+            const q = input.value.trim();
+            if (q) window.location.href = '/Products?search=' + encodeURIComponent(q);
+        }
+
+        // ==========================================
+        // 11. INIT
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOrders();
+        });
+    </script>
+</body>
+
+</html>

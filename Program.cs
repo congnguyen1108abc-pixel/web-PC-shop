@@ -291,131 +291,65 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ── Page Routes ───────────────────────────────────────────────────────────────
-app.MapGet("/welcome", async context =>
+// ── Dynamic Page Routing ───────────────────────────────────────────────────────
+app.Use(async (context, next) =>
 {
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "welcome.html"));
-});
+    var path = context.Request.Path.Value ?? "";
+    
+    // Skip API, Hubs, Swagger
+    if (path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("/hubs", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase))
+    {
+        await next();
+        return;
+    }
 
-app.MapGet("/welcome.html", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "welcome.html"));
-});
+    // Special redirect for /profile to /profile/info
+    if (path.Equals("/profile", StringComparison.OrdinalIgnoreCase) ||
+        path.Equals("/profile/", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.Redirect("/profile/info");
+        return;
+    }
 
-app.MapGet("/Homepage", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "homepage.html"));
-});
+    // Resolve relative path
+    var relativePath = path.TrimStart('/');
+    if (relativePath.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+    {
+        relativePath = relativePath.Substring(0, relativePath.Length - 5);
+    }
 
-app.MapGet("/Login", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "login.html"));
-});
+    // Default to Homepage if path is empty
+    if (string.IsNullOrEmpty(relativePath))
+    {
+        relativePath = "Homepage";
+    }
 
-app.MapGet("/Products", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "products.html"));
-});
+    // Normalize path to prevent directory traversal
+    var sanitizedPath = relativePath.Replace("..", "").Replace("\\", "/");
+    var htmlFilePath = Path.Combine(builder.Environment.ContentRootPath, "Page", sanitizedPath + ".html");
 
-app.MapGet("/shoppingcart", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "shoppingcart.html"));
-});
+    if (File.Exists(htmlFilePath))
+    {
+        context.Response.ContentType = "text/html";
+        await context.Response.SendFileAsync(htmlFilePath);
+        return;
+    }
 
-app.MapGet("/checkout", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "checkout.html"));
-});
-
-app.MapGet("/paymentcomplete", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "paymentcomplete.html"));
-});
-
-app.MapGet("/paymentcomplete.html", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "paymentcomplete.html"));
-});
-
-app.MapGet("/qr-pay", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "qr-pay.html"));
-});
-
-app.MapGet("/qr-pay.html", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "qr-pay.html"));
+    await next();
 });
 
 app.MapPost("/Login", async context =>
 {
-    // Dummy login: redirect to Homepage
     context.Response.Redirect("/Homepage");
-});
-
-app.MapGet("/Register", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "register.html"));
-});
-
-app.MapGet("/forgot-password", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "forgot-password.html"));
-});
-
-app.MapGet("/reset-password", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "reset-password.html"));
-});
-
-app.MapGet("/product-detail", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "product-detail.html"));
+    await Task.CompletedTask;
 });
 
 app.MapGet("/product/{slug}", async context =>
 {
     context.Response.ContentType = "text/html";
     await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "product-detail.html"));
-});
-
-app.MapGet("/gaminggear", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "gaminggear.html"));
-});
-
-app.MapGet("/gaminggear.html", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "gaminggear.html"));
-});
-
-app.MapGet("/pcbuild", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "pcbuild.html"));
-});
-
-app.MapGet("/pcbuild.html", async context =>
-{
-    context.Response.ContentType = "text/html";
-    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "pcbuild.html"));
 });
 
 // ── API Controllers ───────────────────────────────────────────────────────────

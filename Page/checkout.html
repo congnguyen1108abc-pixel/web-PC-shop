@@ -7,8 +7,8 @@
     <title>Thanh Toán - HYPER CORE</title>
     
     <!-- External Styles -->
-    <link rel="stylesheet" href="/css/style.css?v=1.0.3">
-    <link rel="stylesheet" href="/assets/css/auth-ui.css" />
+    <link rel="stylesheet" href="/css/style.css?v=1.0.5">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5" />
     <link rel="stylesheet" href="/assets/css/checkout.css" />
 </head>
 
@@ -18,7 +18,7 @@
     <div class="bg-orb orb1"></div>
     <div class="bg-orb orb2"></div>
 
-    <!-- HEADER (from auth-ui.css) -->
+    <!-- HEADER (from auth-ui.css?v=1.0.5) -->
     <header id="header">
         <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
             <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <a href="#">Trạng thái đơn hàng</a>
+            <a href="/order-status">Trạng thái đơn hàng</a>
         </nav>
 
         <div class="nav-actions">
@@ -224,6 +224,7 @@
                                 <span class="shipping-option-label">Phương thức vận chuyển:</span>
                                 <strong class="shipping-option-value" id="shippingNameDisplay">Nhanh (Tiêu chuẩn)</strong>
                                 <div class="shipping-estimate-time" id="shippingTimeDisplay">Dự kiến giao: 29 Th06 - 01 Th07</div>
+                                <div class="shipping-physics-info" id="shippingPhysicsDisplay" style="font-size: 12.5px; color: #888; margin-top: 4px; font-weight: 500;"></div>
                             </div>
                             <div class="shipping-display-right">
                                 <button type="button" class="shipping-change-btn" onclick="openShippingModal()">THAY ĐỔI</button>
@@ -300,15 +301,15 @@
                             </label>
                         </div>
 
-                        <!-- PAYPAL -->
+                        <!-- COD -->
                         <div class="method-card">
-                            <input type="radio" name="payment" id="paypal" />
-                            <label for="paypal" class="method-label">
+                            <input type="radio" name="payment" id="cod" />
+                            <label for="cod" class="method-label">
                                 <div class="method-left">
-                                    <div class="method-icon">🅿️</div>
+                                    <div class="method-icon">💵</div>
                                     <div class="method-info">
-                                        <h3>PayPal</h3>
-                                        <p>Thanh toán qua tài khoản PayPal</p>
+                                        <h3>Thanh toán khi nhận hàng (COD)</h3>
+                                        <p>Thanh toán bằng tiền mặt khi nhận hàng</p>
                                     </div>
                                 </div>
                                 <div class="radio-circle"></div>
@@ -476,8 +477,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/assets/js/auth-ui.js?v=1.0.2"></script>
-    <script src="/assets/js/cart-helper.js"></script>
+    <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
+    <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
     <script src="/assets/js/checkout.js"></script>
 
 </body>

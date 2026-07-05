@@ -65,12 +65,17 @@ public sealed class ReviewsController : ControllerBase
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             var isAdmin = User.IsInRole("Admin");
 
-            if (!isAdmin && string.IsNullOrEmpty(userIdClaim))
+            if (isAdmin)
+            {
+                return BadRequest(new { message = "Admin không có quyền xóa đánh giá, chỉ được ẩn đi!" });
+            }
+
+            if (string.IsNullOrEmpty(userIdClaim))
             {
                 return Unauthorized(new { message = "Vui lòng đăng nhập!" });
             }
 
-            int? userIdFilter = isAdmin ? null : int.Parse(userIdClaim!);
+            int userIdFilter = int.Parse(userIdClaim);
 
             await _reviews.DeleteAsync(reviewId, userIdFilter);
 

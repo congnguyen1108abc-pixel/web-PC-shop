@@ -7,8 +7,8 @@
     <title>Xây Dựng Cấu Hình PC - HYPER CORE</title>
 
     <!-- Style Link -->
-    <link rel="stylesheet" href="/css/style.css?v=1.0.3">
-    <link rel="stylesheet" href="/assets/css/auth-ui.css">
+    <link rel="stylesheet" href="/css/style.css?v=1.0.5">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5">
 </head>
 
 <body>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
             </div>
-            <a href="#">Trạng thái đơn hàng</a>
+            <a href="/order-status">Trạng thái đơn hàng</a>
         </nav>
 
         <div class="nav-actions">
@@ -754,7 +754,7 @@
                 <h4>Khám Phá</h4>
                 <ul>
                     <li><a href="#">Về Chúng Tôi</a></li>
-                    <li><a href="#">Cộng Đồng Discord</a></li>
+                    <li><a href="https://discord.gg/QBbHeKc2Sy" target="_blank">Cộng Đồng Discord</a></li>
                     <li><a href="#">Tin Tức Công Nghệ</a></li>
                 </ul>
             </div>
@@ -789,8 +789,9 @@
     </div>
 
     <!-- DATA & LOGIC JAVASCRIPT -->
-    <script src="/assets/js/cart-helper.js"></script>
-    <script src="/assets/js/auth-ui.js?v=1.0.2"></script>
+    <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+    <script src="/assets/js/cart-drawer-global.js"></script>
+    <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
     <script>
         // Static component database fallback
         const staticDatabase = {
@@ -1160,34 +1161,46 @@
             
             categories.forEach(cat => {
                 const name = data[cat];
-                const price = parseInt(data[cat + 'Price']) || 0;
-                
                 if (name) {
-                    const item = { name: name, price: price };
-                    selectedComponents[cat] = item;
+                    const searchName = name.toLowerCase().trim();
+                    const list = database[cat] || [];
                     
-                    // Update UI list row
-                    const titleEl = document.getElementById(`selected-${cat}`);
-                    const priceEl = document.getElementById(`price-${cat}`);
-                    const rowEl = document.querySelector(`.builder-row[data-category="${cat}"]`);
-                    const btnEl = rowEl.querySelector(".row-btn");
+                    // Tìm sản phẩm trùng khớp nhất trong database SQL
+                    let bestMatch = list.find(p => 
+                        p.name.toLowerCase().includes(searchName) || 
+                        searchName.includes(p.name.toLowerCase())
+                    );
+                    
+                    if (!bestMatch && list.length > 0) {
+                        bestMatch = list[0]; // Fallback về sản phẩm đầu tiên của danh mục
+                    }
+                    
+                    if (bestMatch) {
+                        selectedComponents[cat] = bestMatch;
+                        
+                        // Update UI list row
+                        const titleEl = document.getElementById(`selected-${cat}`);
+                        const priceEl = document.getElementById(`price-${cat}`);
+                        const rowEl = document.querySelector(`.builder-row[data-category="${cat}"]`);
+                        const btnEl = rowEl.querySelector(".row-btn");
 
-                    titleEl.innerText = item.name;
-                    priceEl.innerText = item.price.toLocaleString("vi-VN") + " đ";
+                        titleEl.innerText = bestMatch.name;
+                        priceEl.innerText = bestMatch.price.toLocaleString("vi-VN") + " đ";
 
-                    // Transform button to red '✕' for removing
-                    btnEl.innerText = "✕";
-                    btnEl.className = "row-btn selected";
-                    btnEl.onclick = (e) => {
-                        e.stopPropagation();
-                        removeComponent(cat);
-                    };
+                        // Transform button to red '✕' for removing
+                        btnEl.innerText = "✕";
+                        btnEl.className = "row-btn selected";
+                        btnEl.onclick = (e) => {
+                            e.stopPropagation();
+                            removeComponent(cat);
+                        };
 
-                    // Update sticky summary
-                    const summaryRow = document.getElementById(`summary-${cat}`);
-                    const summaryTitle = document.getElementById(`summary-${cat}-title`);
-                    summaryRow.style.display = "flex";
-                    summaryTitle.innerText = item.name;
+                        // Update sticky summary
+                        const summaryRow = document.getElementById(`summary-${cat}`);
+                        const summaryTitle = document.getElementById(`summary-${cat}-title`);
+                        summaryRow.style.display = "flex";
+                        summaryTitle.innerText = bestMatch.name;
+                    }
                 } else {
                     removeComponent(cat);
                 }
@@ -1517,7 +1530,7 @@
         }
     </script>
     <!-- Chatbot Global -->
-    <script src="/assets/js/chatbot-global.js"></script>
+    <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>
 </body>
 
 </html>

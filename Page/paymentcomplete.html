@@ -307,6 +307,9 @@
             <button class="home-btn" onclick="window.location.href='/Homepage'">
                 🏠 QUAY VỀ TRANG CHỦ
             </button>
+            <button class="secondary-btn" id="orderStatusBtn" onclick="window.location.href='/order-status'" style="display:none;">
+                📦 XEM TRẠNG THÁI ĐƠN HÀNG
+            </button>
             <button class="secondary-btn" id="shopMoreBtn" onclick="window.location.href='/Products'">
                 Tiếp tục mua sắm
             </button>
@@ -430,6 +433,12 @@
             // Xử lý badge
             badgeEl.className   = `status-badge ${badgeClass}`;
             badgeEl.textContent = badgeText;
+
+            // Nếu thành công → hiển thị nút xem trạng thái đơn hàng
+            if (effectiveStatus.toLowerCase() === 'success') {
+                const orderStatusBtn = document.getElementById('orderStatusBtn');
+                if (orderStatusBtn) orderStatusBtn.style.display = 'block';
+            }
 
             // Nếu thất bại/hủy → đổi text nút
             if (['failed', 'error', 'invalid', 'cancelled', 'expired'].includes(effectiveStatus.toLowerCase())) {

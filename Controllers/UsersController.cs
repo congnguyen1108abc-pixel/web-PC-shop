@@ -44,6 +44,21 @@ public sealed class UsersController : ControllerBase
         });
     }
 
+    [HttpPut("bank")]
+    public async Task<ActionResult> UpdateBank(UpdateBankRequest request)
+    {
+        var id = await _users.UpdateBankAsync(request);
+
+        if (id is null)
+            return BadRequest(new { message = "Cập nhật tài khoản ngân hàng thất bại" });
+
+        return Ok(new
+        {
+            message = "Cập nhật tài khoản ngân hàng thành công",
+            updatedUserId = id
+        });
+    }
+
     [HttpGet("addresses/{userId:int}")]
     public async Task<ActionResult<IEnumerable<UserAddressItem>>> GetAddresses(int userId)
     {

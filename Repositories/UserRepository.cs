@@ -23,6 +23,15 @@ public sealed class UserRepository : IUserRepository
         return r?.UpdatedUserId;
     }
 
+    public async Task<int?> UpdateBankAsync(UpdateBankRequest request)
+    {
+        var r = await _db.QuerySingleAsync<UpdatedIdResult>("sp_User_UpdateBank", new
+        {
+            request.UserId, request.BankName, request.BankAccountNumber, request.BankAccountName
+        });
+        return r?.UpdatedUserId;
+    }
+
     public Task<IEnumerable<UserAddressItem>> GetAddressesAsync(int userId)
         => _db.QueryAsync<UserAddressItem>("sp_UserAddress_GetByUser", new { UserId = userId });
 
@@ -74,10 +83,26 @@ public sealed class UserRepository : IUserRepository
     }
 
     public Task ManageUserRoleAsync(ManageUserRoleRequest request)
-        => _db.ExecuteAsync("sp_Admin_ManageUserRole", new
+    {
+        if (request.Action == "SET_ROLES" || request.RoleCode == "Admin" || request.RoleCode == "Customer" || request.RoleCode == "Staff")
         {
-            request.AdminId, request.UserId, request.RoleCode, request.Action
-        });
+            return _db.ExecuteAsync("sp_Admin_SetUserRoleAndPermissions", new
+            {
+                AdminID = request.AdminId,
+                UserID = request.UserId,
+                MainRole = request.RoleCode,
+                RoleCodes = request.RoleCodes
+            });
+        }
+        else
+        {
+            return _db.ExecuteAsync("sp_Admin_ManageUserRole", new
+            {
+                request.AdminId, request.UserId, request.RoleCode, request.Action
+            });
+        }
+    }
+
 
     public Task<IEnumerable<UserRoleItem>> GetUserRolesAsync(UserRoleQueryRequest request)
         => _db.QueryAsync<UserRoleItem>("sp_Admin_GetUserRoles", new

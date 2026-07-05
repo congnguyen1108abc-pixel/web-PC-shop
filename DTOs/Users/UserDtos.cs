@@ -9,13 +9,25 @@ public sealed record UserProfileItem(
     string Role,
     bool IsActive,
     DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTime? UpdatedAt,
+    decimal TotalSpent,
+    string MembershipTier,
+    int LoyaltyDiscountUses,
+    string? BankName,
+    string? BankAccountNumber,
+    string? BankAccountName);
 
 public sealed record UpdateProfileRequest(
     int UserId,
     string FullName,
     string? PhoneNumber,
     string? AvatarUrl);
+
+public sealed record UpdateBankRequest(
+    int UserId,
+    string? BankName,
+    string? BankAccountNumber,
+    string? BankAccountName);
 
 public sealed record AdminUserQueryRequest(
     string? Role,
@@ -31,7 +43,10 @@ public sealed record AdminUserItem(
     string Role,
     bool IsActive,
     DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTime? UpdatedAt,
+    decimal TotalSpent,
+    string MembershipTier,
+    int LoyaltyDiscountUses);
 
 public sealed record AdminUserDetailHeader(
     int UserId,
@@ -42,7 +57,10 @@ public sealed record AdminUserDetailHeader(
     string Role,
     bool IsActive,
     DateTime CreatedAt,
-    DateTime? UpdatedAt);
+    DateTime? UpdatedAt,
+    decimal TotalSpent,
+    string MembershipTier,
+    int LoyaltyDiscountUses);
 
 public sealed record AdminUserRoleItem(
     int UserRoleId,

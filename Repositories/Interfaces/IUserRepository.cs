@@ -7,6 +7,7 @@ public interface IUserRepository
 {
     Task<UserProfileItem?> GetProfileAsync(int userId);
     Task<int?> UpdateProfileAsync(UpdateProfileRequest request);
+    Task<int?> UpdateBankAsync(UpdateBankRequest request);
     Task<IEnumerable<UserAddressItem>> GetAddressesAsync(int userId);
     Task<int?> CreateAddressAsync(UserAddressCreateRequest request);
     Task<int?> UpdateAddressAsync(UserAddressUpdateRequest request);

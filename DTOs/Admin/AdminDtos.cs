@@ -4,7 +4,9 @@ public sealed record ManageUserRoleRequest(
     int AdminId,
     int UserId,
     string RoleCode,
-    string Action);
+    string Action,
+    string? RoleCodes = null);
+
 
 public sealed record ImportStockRequest(int ProductId, int QuantityToAdd, string Note);
 

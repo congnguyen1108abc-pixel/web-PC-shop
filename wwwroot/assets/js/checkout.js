@@ -17,8 +17,121 @@ let pollingInterval = null;
 // Shipping selection states
 let selectedShipping = 'standard';
 let tempSelectedShipping = 'standard';
-const shippingRates = { standard: 16500, express: 25000 };
 const shippingNames = { standard: 'Nhanh - Shopee Xử Lý', express: 'Trong Ngày' };
+
+/**
+ * Calculate weight and bulkiness for a product based on its name
+ */
+function estimateProductPhysics(name) {
+    const lower = name.toLowerCase();
+    
+    // Default fallback
+    let weight = 0.5; // kg
+    let bulkiness = 1.0; // scale factor
+    
+    if (lower.includes('case') || lower.includes('vỏ máy') || lower.includes('thùng máy') || lower.includes('nyx') || lower.includes('h5 flow') || lower.includes('o11') || lower.includes('h9 flow') || lower.includes('4000d')) {
+        weight = 7.0;
+        bulkiness = 3.5;
+    } else if (lower.includes('wheel') || lower.includes('vô lăng') || lower.includes('g923')) {
+        weight = 8.0;
+        bulkiness = 4.0;
+    } else if (lower.includes('psu') || lower.includes('nguồn') || lower.includes('power') || lower.includes('pf650') || lower.includes('cv750') || lower.includes('rm1000') || lower.includes('rm850') || lower.includes('thor')) {
+        weight = 2.0;
+        bulkiness = 1.5;
+    } else if (lower.includes('mainboard') || lower.includes('bo mạch') || lower.includes('mb') || lower.includes('strix') || lower.includes('tomahawk') || lower.includes('aorus') || lower.includes('h610') || lower.includes('b550') || lower.includes('z790') || lower.includes('b650') || lower.includes('x670') || lower.includes('prime')) {
+        weight = 1.5;
+        bulkiness = 1.5;
+    } else if (lower.includes('vga') || lower.includes('card') || lower.includes('rtx') || lower.includes('geforce') || lower.includes('nvidia')) {
+        weight = 1.8;
+        bulkiness = 1.8;
+    } else if (lower.includes('cooling') || lower.includes('tản nhiệt') || lower.includes('liquid') || lower.includes('air') || lower.includes('fan')) {
+        weight = 1.5;
+        bulkiness = 1.5;
+    } else if (lower.includes('keyboard') || lower.includes('bàn phím') || lower.includes('k-elite')) {
+        weight = 1.2;
+        bulkiness = 1.2;
+    } else if (lower.includes('headset') || lower.includes('tai nghe') || lower.includes('sound')) {
+        weight = 0.4;
+        bulkiness = 1.0;
+    } else if (lower.includes('mic') || lower.includes('studio') || lower.includes('yeti')) {
+        weight = 0.8;
+        bulkiness = 1.0;
+    } else if (lower.includes('gamepad') || lower.includes('tay cầm') || lower.includes('cmd') || lower.includes('controller')) {
+        weight = 0.3;
+        bulkiness = 0.8;
+    } else if (lower.includes('mouse') || lower.includes('chuột') || lower.includes('m-pro') || lower.includes('superlight')) {
+        weight = 0.1;
+        bulkiness = 0.5;
+    } else if (lower.includes('mousepad') || lower.includes('lót chuột') || lower.includes('pad pro')) {
+        weight = 0.3;
+        bulkiness = 0.5;
+    } else if (lower.includes('ram') || lower.includes('ddr') || lower.includes('memory')) {
+        weight = 0.05;
+        bulkiness = 0.2;
+    } else if (lower.includes('ssd') || lower.includes('hdd') || lower.includes('ổ cứng') || lower.includes('nvme') || lower.includes('980') || lower.includes('990') || lower.includes('spatium')) {
+        weight = 0.08;
+        bulkiness = 0.2;
+    } else if (lower.includes('cpu') || lower.includes('core') || lower.includes('ryzen') || lower.includes('i5') || lower.includes('i7') || lower.includes('i9') || lower.includes('amd') || lower.includes('intel')) {
+        weight = 0.05;
+        bulkiness = 0.2;
+    }
+    
+    return { weight, bulkiness };
+}
+
+/**
+ * Compute shipping fee dynamically
+ */
+function calculateShippingFee(items, method, province) {
+    if (!items || items.length === 0) {
+        return { price: 0, weight: 0, bulkiness: 0 };
+    }
+    
+    let totalWeight = 0;
+    let totalBulkiness = 0;
+    
+    items.forEach(item => {
+        const name = item.name || item.title || 'Sản phẩm';
+        const qty = item.qty || item.quantity || 1;
+        const physics = estimateProductPhysics(name);
+        totalWeight += physics.weight * qty;
+        totalBulkiness += physics.bulkiness * qty;
+    });
+    
+    // Base Rates
+    let baseRate = method === 'express' ? 35000 : 15000;
+    
+    // Weight Charge (per kg)
+    let weightRate = method === 'express' ? 10000 : 4000;
+    let weightCharge = totalWeight * weightRate;
+    
+    // Bulkiness Charge
+    let bulkRate = method === 'express' ? 8000 : 3000;
+    let bulkCharge = totalBulkiness * bulkRate;
+    
+    let subtotalShipping = baseRate + weightCharge + bulkCharge;
+    
+    // Province Modifier
+    let modifier = 1.0;
+    if (province) {
+        const prov = province.toLowerCase();
+        if (prov.includes('hà nội') || prov.includes('hồ chí minh') || prov.includes('hcm') || prov.includes('đà nẵng')) {
+            modifier = 0.8; // Hub discount
+        } else if (prov.includes('hà giang') || prov.includes('cao bằng') || prov.includes('lai châu') || prov.includes('điện biên') || prov.includes('cà mau') || prov.includes('kiên giang')) {
+            modifier = 1.4; // Remote area surcharge
+        } else {
+            modifier = 1.1; // Standard province surcharge
+        }
+    }
+    
+    let finalShipping = Math.round((subtotalShipping * modifier) / 500) * 500; // Round to nearest 500đ
+    
+    return {
+        price: finalShipping,
+        weight: totalWeight.toFixed(2),
+        bulkiness: totalBulkiness.toFixed(2)
+    };
+}
 
 // ==========================================
 // 1. AUTHENTICATION CHECK
@@ -142,7 +255,10 @@ citySelect.addEventListener("change", async function () {
     districtSelect.disabled = true;
     wardSelect.disabled = true;
 
-    if (!cityCode) return;
+    if (!cityCode) {
+        loadAndRenderCart();
+        return;
+    }
 
     try {
         districtSelect.disabled = true;
@@ -163,6 +279,8 @@ citySelect.addEventListener("change", async function () {
     } catch (error) {
         console.error('[Checkout] ❌ Error loading districts:', error);
         districtSelect.innerHTML = '<option value="">Lỗi tải dữ liệu quận huyện</option>';
+    } finally {
+        loadAndRenderCart();
     }
 });
 
@@ -308,13 +426,16 @@ async function loadAndRenderCart() {
         productList.innerHTML += productHTML;
     });
 
-    const shipping = shippingRates[selectedShipping];
+    // Calculate dynamic shipping fee
+    const province = citySelect ? citySelect.value : '';
+    const shippingInfo = calculateShippingFee(rawItems, selectedShipping, province);
+    const shipping = shippingInfo.price;
     const discount = DISCOUNT;
     totalAmount = subtotal + shipping - discount;
 
-    console.log('[Checkout] 💰 Order Summary:');
+    console.log('[Checkout] 💰 Order Summary (Dynamic):');
     console.log('[Checkout] - Subtotal:', subtotal);
-    console.log('[Checkout] - Shipping:', shipping);
+    console.log('[Checkout] - Shipping (Dynamic):', shipping, 'Weight:', shippingInfo.weight, 'Bulkiness:', shippingInfo.bulkiness);
     console.log('[Checkout] - Discount:', discount);
     console.log('[Checkout] - TOTAL:', totalAmount);
 
@@ -328,16 +449,22 @@ async function loadAndRenderCart() {
     const timeDisplay = document.getElementById('shippingTimeDisplay');
     const priceDisplay = document.getElementById('shippingPriceDisplay');
     const subDisplay = document.getElementById('shippingSubDisplay');
+    const physicsDisplay = document.getElementById('shippingPhysicsDisplay');
+    
+    // Display package physics estimation
+    if (physicsDisplay) {
+        physicsDisplay.textContent = `📦 Ước lượng kiện hàng: ~${shippingInfo.weight} kg (Cồng kềnh: ${shippingInfo.bulkiness})`;
+    }
     
     if (selectedShipping === 'standard') {
         if (nameDisplay) nameDisplay.textContent = 'Nhanh - Shopee Xử Lý';
         if (timeDisplay) timeDisplay.textContent = `Dự kiến giao: ${getStandardShippingEstimate().replace('Dự kiến giao: ', '')}`;
-        if (priceDisplay) priceDisplay.textContent = '16.500đ';
+        if (priceDisplay) priceDisplay.textContent = formatCurrency(shipping);
         if (subDisplay) subDisplay.style.display = 'flex';
     } else {
         if (nameDisplay) nameDisplay.textContent = 'Trong Ngày (Hỏa tốc)';
         if (timeDisplay) timeDisplay.textContent = 'Dự kiến giao: Hôm nay';
-        if (priceDisplay) priceDisplay.textContent = '25.000đ';
+        if (priceDisplay) priceDisplay.textContent = formatCurrency(shipping);
         if (subDisplay) subDisplay.style.display = 'none';
     }
 
@@ -372,6 +499,23 @@ function openShippingModal() {
     if (estText) {
         estText.innerHTML = `Get by ${getStandardShippingEstimate().replace('Dự kiến giao: ', '')} <span class="help-circle">?</span>`;
     }
+    
+    // Update dynamic shipping prices inside modal cards
+    let rawItems = [];
+    try {
+        const cartStr = localStorage.getItem('hyper_core_cart');
+        rawItems = JSON.parse(cartStr) || [];
+    } catch (e) {}
+
+    const province = citySelect ? citySelect.value : '';
+    const standardFee = calculateShippingFee(rawItems, 'standard', province).price;
+    const expressFee = calculateShippingFee(rawItems, 'express', province).price;
+
+    const optStandardPrice = document.querySelector('#opt-standard .option-price-tag');
+    const optExpressPrice = document.querySelector('#opt-express .option-price-tag');
+
+    if (optStandardPrice) optStandardPrice.textContent = formatCurrency(standardFee);
+    if (optExpressPrice) optExpressPrice.textContent = formatCurrency(expressFee);
     
     document.getElementById('shippingModalOverlay').classList.add('active');
 }
@@ -662,12 +806,12 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
 
     // Get selected payment method
     const creditCard = document.getElementById('creditCard');
-    const paypal = document.getElementById('paypal');
+    const cod = document.getElementById('cod');
     const sepay = document.getElementById('sepay');
 
     let paymentMethod = '';
     if (creditCard.checked) paymentMethod = 'Credit Card';
-    else if (paypal.checked) paymentMethod = 'PayPal';
+    else if (cod && cod.checked) paymentMethod = 'COD';
     else if (sepay.checked) paymentMethod = 'SePay';
 
     if (!paymentMethod) {
@@ -722,6 +866,15 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
                 // Start polling for payment confirmation
                 startPaymentPolling(currentOrderId);
             }
+        } else if (paymentMethod === 'COD') {
+            hideLoading();
+            // Clear cart
+            localStorage.removeItem('hyper_core_cart');
+            localStorage.removeItem('hypercore_cart_items');
+            sessionStorage.setItem('current_orderId', currentOrderId);
+            
+            alert('Đặt hàng thành công! Đơn hàng của bạn đã được ghi nhận.');
+            window.location.href = `/paymentcomplete?status=success&orderId=${currentOrderId}&method=cod`;
         } else {
             // For other payment methods, handle accordingly
             hideLoading();

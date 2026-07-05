@@ -8,7 +8,7 @@
         const link = document.createElement('link');
         link.id = 'chatbot-global-style';
         link.rel = 'stylesheet';
-        link.href = '/assets/css/chatbot-global.css';
+        link.href = '/assets/css/chatbot-global.css?v=1.1.2';
         document.head.appendChild(link);
     }
 
@@ -16,6 +16,12 @@
     const chatbotHtml = `
         <div id="chatbot-button" class="chatbot-button" title="Mở trợ lý AI">
             💬
+            <span id="chatbot-badge" class="chatbot-button-badge"></span>
+        </div>
+
+        <div id="chatbot-bubble" class="chatbot-notification-bubble">
+            <div id="chatbot-bubble-text">Đang chuẩn bị gợi ý...</div>
+            <div style="font-size: 11px; color: #38bdf8; margin-top: 8px; text-align: right; font-weight: 500;">Bấm để xem & phản hồi ➜</div>
         </div>
 
         <div id="chatbot-modal" class="chatbot-modal">
@@ -38,7 +44,12 @@
             </div>
             <div class="chatbot-input-area">
                 <input type="text" id="chatbot-input" class="chatbot-input-field" placeholder="Nhập câu hỏi của bạn..." autocomplete="off">
-                <button id="chatbot-send" class="chatbot-send-btn">Gửi</button>
+                <button id="chatbot-send" class="chatbot-send-btn" title="Gửi câu hỏi">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block; margin:auto;">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
             </div>
         </div>
     `;
@@ -65,6 +76,9 @@
         const messagesContainer = document.getElementById("chatbot-messages");
         const inputField = document.getElementById("chatbot-input");
         const sendBtn = document.getElementById("chatbot-send");
+        const badge = document.getElementById("chatbot-badge");
+        const bubble = document.getElementById("chatbot-bubble");
+        const bubbleText = document.getElementById("chatbot-bubble-text");
 
         const API_CHAT = "/api/chatbot";
         const API_CONTEXT = "/api/chatbot/context-greeting";
@@ -76,19 +90,43 @@
             sessionStorage.setItem("pc_store_chat_session", sessionId);
         }
 
-        // Toggle modal
+        // Toggle modal functions
+        function openChatbot() {
+            modal.classList.add("active");
+            btn.classList.add("active");
+            inputField.focus();
+            
+            // Clear notifications when chat is opened
+            if (badge) badge.style.display = "none";
+            if (bubble) bubble.style.display = "none";
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function closeChatbot() {
+            modal.classList.remove("active");
+            btn.classList.remove("active");
+        }
+
+        // Bind open events
         btn.addEventListener("click", () => {
-            modal.classList.toggle("active");
-            btn.classList.toggle("active");
             if (modal.classList.contains("active")) {
-                inputField.focus();
+                closeChatbot();
+            } else {
+                openChatbot();
             }
         });
 
+        if (bubble) {
+            bubble.addEventListener("click", () => {
+                openChatbot();
+            });
+        }
+
         closeBtn.addEventListener("click", (e) => {
             e.stopPropagation();
-            modal.classList.remove("active");
-            btn.classList.remove("active");
+            closeChatbot();
         });
 
         // Enter key support
@@ -194,10 +232,10 @@
         }
 
         let hasTriggeredContext = false;
-        const triggerDelayMs = 10000; // 10 giây để kiểm thử nhanh
+        const triggerDelayMs = 20000; // 20 giây theo yêu cầu mới
 
         setTimeout(async () => {
-            // Chỉ tự động mở khi:
+            // Chỉ tự động kích hoạt khi:
             // - Khung chat chưa mở
             // - Chưa kích hoạt tự động ở trang này
             // - Người dùng ĐÃ TỪNG xem ít nhất một chi tiết sản phẩm trong phiên làm việc
@@ -232,12 +270,7 @@
                 }
             }
 
-            console.log(`[Chatbot Context] Auto-opening chatbot on ${pageType}. Last viewed product: ${lastViewedProduct}`);
-
-            // Tự động mở khung chat
-            modal.classList.add("active");
-            btn.classList.add("active");
-            showLoading();
+            console.log(`[Chatbot Context] Fetching background greeting on ${pageType} for product: ${lastViewedProduct}`);
 
             try {
                 const response = await fetch(API_CONTEXT, {
@@ -247,7 +280,7 @@
                         url: window.location.href,
                         pageType: pageType,
                         pageTitle: document.title,
-                        productName: lastViewedProduct, // Gửi tên sản phẩm cuối cùng đã xem
+                        productName: lastViewedProduct,
                         sessionId: sessionId,
                         userId: userId
                     })
@@ -255,17 +288,29 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    hideLoading();
+                    
+                    // 1. Thêm câu trả lời vào trong chatbox ngầm
                     appendMessage(data.reply, "bot");
+
+                    // 2. Hiển thị dấu chấm đỏ thông báo và bong bóng chat bên ngoài
+                    if (badge) badge.style.display = "block";
+                    if (bubbleText) bubbleText.textContent = data.reply;
+                    if (bubble) bubble.style.display = "block";
+
+                    console.log("[Chatbot Context] Background greeting loaded and notification shown.");
                 } else {
                     throw new Error("API_ERROR");
                 }
             } catch (err) {
                 console.error("Failed to load context greeting:", err);
-                hideLoading();
+                
                 // Phản hồi mặc định nếu API lỗi
                 let defaultMsg = `Chào bạn! Tôi thấy bạn đang quan tâm sản phẩm ${lastViewedProduct}. Bạn có cần tôi tư vấn thêm về thông số kỹ thuật hay ưu đãi đi kèm không?`;
                 appendMessage(defaultMsg, "bot");
+
+                if (badge) badge.style.display = "block";
+                if (bubbleText) bubbleText.textContent = defaultMsg;
+                if (bubble) bubble.style.display = "block";
             }
         }, triggerDelayMs);
     }
