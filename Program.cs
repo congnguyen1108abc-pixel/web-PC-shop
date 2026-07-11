@@ -18,7 +18,9 @@ using System.Threading.RateLimiting;
 var builder = WebApplication.CreateBuilder(args);
 
 // ── MVC / Swagger ─────────────────────────────────────────────────────────────
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+        opts.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 builder.Services.AddEndpointsApiExplorer();
 
 // ── SignalR (built-in, không cần package ngoài) ────────────────────────────
@@ -132,6 +134,9 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IWarrantyService, WarrantyService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<RecommendationDAO>();
+builder.Services.AddSingleton<AprioriAlgorithm>();
+builder.Services.AddScoped<IRecommendationService, RecommendationService>();
 
 // ── Email Service (Brevo & General SMTP) ──────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
@@ -340,10 +345,40 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.MapPost("/Login", async context =>
+app.MapPost("/Login", context =>
 {
     context.Response.Redirect("/Homepage");
-    await Task.CompletedTask;
+    return Task.CompletedTask;
+});
+
+app.MapGet("/Register", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "register.html"));
+});
+
+app.MapGet("/forgot-password", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "forgot-password.html"));
+});
+
+app.MapGet("/reset-password", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "reset-password.html"));
+});
+
+app.MapGet("/voucher", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "voucher.html"));
+});
+
+app.MapGet("/product-detail", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "product-detail.html"));
 });
 
 app.MapGet("/product/{slug}", async context =>

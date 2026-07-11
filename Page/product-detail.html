@@ -412,6 +412,24 @@
       color: #111827;
     }
 
+    .product-description-box {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 18px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(249, 250, 251, 0.96), rgba(255, 255, 255, 0.96));
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    .product-description-text {
+      font-size: 14px;
+      line-height: 1.75;
+      color: #374151;
+      white-space: pre-line;
+    }
+
     /* VARIANTS */
     .variant-group {
       display: flex;
@@ -685,6 +703,245 @@
       .thumb {
         width: 64px;
         height: 64px;
+      }
+    }
+
+    /* ================================================= */
+    /* RECOMMENDED PRODUCTS SECTION */
+    /* ================================================= */
+    .recommended-products-section {
+      max-width: 1400px;
+      margin: 0 auto 70px;
+      padding: 0 50px;
+    }
+
+    .recommended-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .recommended-section-header h2 {
+      font-size: clamp(1.4rem, 2.4vw, 2rem);
+      font-weight: 900;
+      color: #111827;
+      margin-top: 6px;
+    }
+
+    .recommended-section-header p {
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    .recommended-products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .recommended-product-card {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      opacity: 0;
+      transform: translateY(22px) scale(0.985);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.45s ease, border-color 0.3s ease;
+      will-change: transform, opacity;
+    }
+
+    .recommended-product-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .recommended-product-card:hover {
+      transform: translateY(-10px) scale(1.01);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.16);
+      border-color: rgba(17, 24, 39, 0.14);
+    }
+
+    .recommended-product-image {
+      position: relative;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+    }
+
+    .recommended-product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 18px;
+      transition: transform 0.3s ease;
+    }
+
+    .recommended-product-card:hover .recommended-product-image img {
+      transform: scale(1.08);
+    }
+
+    .recommended-badges {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .recommended-badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      background: rgba(17, 24, 39, 0.78);
+      color: #ffffff;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+    }
+
+    .recommended-discount {
+      background: rgba(239, 68, 68, 0.92);
+    }
+
+    .recommended-product-body {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .recommended-product-name {
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.45;
+      color: #111827;
+      min-height: 42px;
+    }
+
+    .recommended-rating-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #6b7280;
+      flex-wrap: wrap;
+    }
+
+    .recommended-stars {
+      color: #f59e0b;
+      letter-spacing: 1px;
+      font-size: 13px;
+    }
+
+    .recommended-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .recommended-current-price {
+      font-size: 18px;
+      font-weight: 900;
+      color: #111827;
+    }
+
+    .recommended-original-price {
+      font-size: 13px;
+      color: #9ca3af;
+      text-decoration: line-through;
+    }
+
+    .recommended-meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: #6b7280;
+      flex-wrap: wrap;
+    }
+
+    .recommended-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 46px;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .recommended-btn {
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(17, 24, 39, 0.12);
+      background: rgba(255, 255, 255, 0.92);
+      color: #111827;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .recommended-btn:hover {
+      transform: translateY(-2px);
+      background: #111827;
+      color: #ffffff;
+      border-color: #111827;
+    }
+
+    .recommended-btn.primary {
+      background: #111827;
+      color: #ffffff;
+    }
+
+    .recommended-btn.primary:hover {
+      background: #000000;
+    }
+
+    .recommended-btn.icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .recommended-empty {
+      grid-column: 1 / -1;
+      padding: 32px 24px;
+      text-align: center;
+      border-radius: 18px;
+      background: rgba(249, 250, 251, 0.9);
+      border: 1px dashed rgba(17, 24, 39, 0.12);
+      color: #6b7280;
+    }
+
+    @media (max-width: 1024px) {
+      .recommended-products-section {
+        padding: 0 24px;
+      }
+
+      .recommended-products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .recommended-products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .recommended-actions {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1464,6 +1721,11 @@
 
       <div class="divider"></div>
 
+      <div class="product-description-box">
+        <span class="section-label">Mô Tả Sản Phẩm</span>
+        <p class="product-description-text" id="pd-description">Đang tải mô tả sản phẩm...</p>
+      </div>
+
       <!-- QUICK SPECS -->
       <span class="section-label">Thông Số Nhanh</span>
       <div class="specs-grid">
@@ -1522,6 +1784,21 @@
 
     </div><!-- /col-right -->
   </div><!-- /detail-wrapper -->
+
+  <!-- RECOMMENDED PRODUCTS -->
+  <section class="recommended-products-section" id="recommendedProductsSection">
+    <div class="recommended-section-header">
+      <div>
+        <span class="section-label">🔥 Recommended For You</span>
+        <h2>Customers Also Bought</h2>
+      </div>
+      <p id="recommendedProductsHint">Dữ liệu đề xuất được xếp hạng bằng Apriori + High Utility Itemset từ các đơn hàng hoàn tất.</p>
+    </div>
+
+    <div class="recommended-products-grid" id="recommendedProductsGrid">
+      <div class="recommended-empty">Đang tải sản phẩm gợi ý...</div>
+    </div>
+  </section>
 
   <!-- REVIEWS SECTION -->
   <div class="reviews-wrapper">
@@ -1762,6 +2039,7 @@
         document.getElementById('bc-cat').href = `/Products`;
         document.getElementById('bc-name').textContent = p.productName;
         document.getElementById('pd-name').textContent = p.productName;
+        document.getElementById('pd-description').textContent = p.description || 'Sản phẩm này chưa có mô tả chi tiết.';
 
         // Rating & Stock
         let stockCls = '#22d3a0';
@@ -1848,6 +2126,7 @@
         loadReviewList(p.productId, true);
         initReviewFilters();
         checkReviewFormAuth();
+        loadRecommendedProducts(p.productId);
 
       } catch (error) {
         console.error('Error loading product details:', error);
@@ -1935,6 +2214,206 @@
     // ============================================================
     function buyNow() {
       window.location.href = '/shoppingcart';
+    }
+
+    // ============================================================
+    // RECOMMENDED PRODUCTS
+    // ============================================================
+    let recommendationObserver = null;
+
+    function getRecommendationObserver() {
+      if (recommendationObserver) {
+        return recommendationObserver;
+      }
+
+      if (!('IntersectionObserver' in window)) {
+        recommendationObserver = {
+          observe: el => el.classList.add('visible'),
+          unobserve: () => {},
+          disconnect: () => {}
+        };
+        return recommendationObserver;
+      }
+
+      recommendationObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            recommendationObserver.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.16,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      return recommendationObserver;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getWishlistIds() {
+      try {
+        return JSON.parse(localStorage.getItem('pc_store_wishlist') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function setWishlistIds(ids) {
+      localStorage.setItem('pc_store_wishlist', JSON.stringify(ids));
+    }
+
+    function toggleWishlist(productId, button) {
+      const ids = getWishlistIds();
+      const index = ids.indexOf(productId);
+      const active = index >= 0;
+
+      if (active) {
+        ids.splice(index, 1);
+      } else {
+        ids.push(productId);
+      }
+
+      setWishlistIds(ids);
+
+      if (button) {
+        button.textContent = active ? '♡' : '♥';
+        button.title = active ? 'Thêm vào Wishlist' : 'Đã lưu Wishlist';
+        button.style.color = active ? '#111827' : '#ef4444';
+      }
+    }
+
+    async function loadRecommendedProducts(productId) {
+      const grid = document.getElementById('recommendedProductsGrid');
+      const hint = document.getElementById('recommendedProductsHint');
+      if (!grid) return;
+
+      grid.innerHTML = '<div class="recommended-empty">Đang tải sản phẩm gợi ý...</div>';
+
+      try {
+        const response = await fetch(`/api/Products/${productId}/recommendations?topN=8`);
+        if (!response.ok) {
+          throw new Error('Failed to load recommendations');
+        }
+
+        const items = await response.json();
+        renderRecommendedProducts(Array.isArray(items) ? items : []);
+
+        if (hint) {
+          hint.textContent = items && items.length
+            ? `Tìm thấy ${items.length} sản phẩm được đề xuất từ các đơn hàng đã hoàn tất.`
+            : 'Chưa đủ dữ liệu giao dịch để tạo đề xuất phù hợp.';
+        }
+      } catch (error) {
+        console.error('Error loading recommended products:', error);
+        grid.innerHTML = '<div class="recommended-empty">Không thể tải danh sách gợi ý vào lúc này.</div>';
+        if (hint) {
+          hint.textContent = 'Khối gợi ý sẽ tự ẩn nếu dữ liệu không khả dụng.';
+        }
+      }
+    }
+
+    function renderRecommendedProducts(items) {
+      const grid = document.getElementById('recommendedProductsGrid');
+      if (!grid) return;
+
+      grid.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        grid.innerHTML = '<div class="recommended-empty">Chưa có sản phẩm gợi ý phù hợp với lịch sử đơn hàng.</div>';
+        return;
+      }
+
+      const observer = getRecommendationObserver();
+      const savedWishlistIds = new Set(getWishlistIds().map(Number));
+
+      items.forEach((item, index) => {
+        const card = document.createElement('article');
+        card.className = 'recommended-product-card';
+        card.style.transitionDelay = `${index * 80}ms`;
+
+        const hasDiscount = item.discountPrice > 0 && item.discountPrice < item.price;
+        const priceText = fmt(hasDiscount ? item.discountPrice : item.price);
+        const originalText = hasDiscount ? fmt(item.price) : '';
+        const discountPercent = hasDiscount ? Math.round((1 - item.discountPrice / item.price) * 100) : 0;
+        const ratingValue = Number(item.avgRating || 0);
+        const stars = ratingValue > 0 ? getStars(ratingValue) : '☆☆☆☆☆';
+        const imageUrl = item.imageUrl || `https://placehold.co/800x800/f3f4f6/111827?text=${encodeURIComponent(item.productName || 'Product')}`;
+        const detailsUrl = item.slug ? `/product/${encodeURIComponent(item.slug)}` : `/product/${item.productId}`;
+        const utilityText = Number(item.utility || 0).toFixed(0);
+
+        card.innerHTML = `
+          <div class="recommended-product-image">
+            <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(item.productName)}" loading="lazy" />
+            <div class="recommended-badges">
+              ${hasDiscount ? `<span class="recommended-badge recommended-discount">-${discountPercent}%</span>` : '<span class="recommended-badge">Best Match</span>'}
+              <span class="recommended-badge">Utility ${utilityText}</span>
+            </div>
+          </div>
+          <div class="recommended-product-body">
+            <div class="recommended-product-name">${escapeHtml(item.productName)}</div>
+            <div class="recommended-rating-row">
+              <span class="recommended-stars">${stars}</span>
+              <span>${ratingValue.toFixed(1)}</span>
+              <span>(${item.reviewCount || 0})</span>
+            </div>
+            <div class="recommended-price-row">
+              <span class="recommended-current-price">${priceText}</span>
+              ${hasDiscount ? `<span class="recommended-original-price">${originalText}</span>` : ''}
+            </div>
+            <div class="recommended-meta-row">
+              <span>Đã bán: ${item.soldCount || 0}</span>
+              <span>Support ${(Number(item.support || 0) * 100).toFixed(1)}%</span>
+            </div>
+            <div class="recommended-actions">
+              <button class="recommended-btn primary js-view-details" type="button">View Details</button>
+              <button class="recommended-btn js-add-cart" type="button">Add To Cart</button>
+              <button class="recommended-btn icon-btn js-wishlist" type="button" title="Thêm vào Wishlist">${savedWishlistIds.has(Number(item.productId)) ? '♥' : '♡'}</button>
+            </div>
+          </div>
+        `;
+
+        const viewBtn = card.querySelector('.js-view-details');
+        const cartBtn = card.querySelector('.js-add-cart');
+        const wishBtn = card.querySelector('.js-wishlist');
+
+        viewBtn.addEventListener('click', () => {
+          window.location.href = detailsUrl;
+        });
+
+        cartBtn.addEventListener('click', async () => {
+          const originalLabel = cartBtn.textContent;
+          cartBtn.disabled = true;
+          cartBtn.textContent = '...';
+
+          const success = await addToCartHelper(item.productId, 1);
+          cartBtn.textContent = success ? 'Added' : 'Retry';
+          cartBtn.style.borderColor = success ? '#22c55e' : '#ef4444';
+          cartBtn.style.color = success ? '#22c55e' : '#ef4444';
+
+          setTimeout(() => {
+            cartBtn.disabled = false;
+            cartBtn.textContent = originalLabel;
+            cartBtn.style.borderColor = '';
+            cartBtn.style.color = '';
+          }, 1800);
+        });
+
+        wishBtn.addEventListener('click', () => {
+          toggleWishlist(Number(item.productId), wishBtn);
+        });
+
+        grid.appendChild(card);
+        observer.observe(card);
+      });
     }
 
     // ============================================================

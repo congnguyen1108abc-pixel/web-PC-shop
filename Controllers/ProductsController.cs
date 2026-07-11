@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PC_Store.DTOs.Admin;
 using PC_Store.DTOs.Common;
 using PC_Store.DTOs.Products;
+using PC_Store.DTOs.Recommendations;
 using PC_Store.Services.Interfaces;
 
 namespace PC_Store.Controllers;
@@ -12,10 +13,12 @@ namespace PC_Store.Controllers;
 public sealed class ProductsController : ControllerBase
 {
     private readonly IProductService _products;
+    private readonly IRecommendationService _recommendations;
 
-    public ProductsController(IProductService products)
+    public ProductsController(IProductService products, IRecommendationService recommendations)
     {
         _products = products;
+        _recommendations = recommendations;
     }
 
     // ── Public APIs ───────────────────────────────────────────────────────────
@@ -84,6 +87,21 @@ public sealed class ProductsController : ControllerBase
     {
         var result = await _products.GetReviewsAsync(productId);
         return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("{productId:int}/recommendations")]
+    public async Task<ActionResult<IEnumerable<RecommendationResult>>> GetRecommendations(int productId, [FromQuery] int topN = 8)
+    {
+        try
+        {
+            var result = await _recommendations.GetRecommendationsAsync(productId, topN);
+            return Ok(result);
+        }
+        catch
+        {
+            return Ok(Array.Empty<RecommendationResult>());
+        }
     }
 
     // ── Product Management APIs ───────────────────────────────────────────────

@@ -1783,8 +1783,8 @@
     // API-loaded products will be stored here
     let PRODUCTS = [];
 
-    // Category mapping: UI categories to database CategoryIds
-    const CATEGORY_MAP = {
+    // Category mapping: UI categories to database CategoryIds (sẽ được cập nhật từ API)
+    let CATEGORY_MAP = {
       'vga': 1,      // Card Đồ Họa
       'cpu': 2,      // Bộ Vi Xử Lý  
       'main': 3,     // Mainboard
@@ -1793,14 +1793,62 @@
       'psu': 6       // Nguồn / PSU
     };
 
-    // Reverse mapping: CategoryId to category code
-    const CATEGORY_ID_TO_CODE = Object.fromEntries(
+    // Reverse mapping: CategoryId to category code (build từ CATEGORY_MAP)
+    let CATEGORY_ID_TO_CODE = Object.fromEntries(
       Object.entries(CATEGORY_MAP).map(([key, value]) => [value, key])
     );
+
+    // Ánh xạ từ tên category (chứa keyword) sang code UI
+    const CATEGORY_NAME_KEYWORDS = [
+      { code: 'vga',     keywords: ['vga', 'card đồ họa', 'gpu', 'graphic'] },
+      { code: 'cpu',     keywords: ['cpu', 'vi xử lý', 'processor'] },
+      { code: 'main',    keywords: ['main', 'mainboard', 'motherboard'] },
+      { code: 'ram',     keywords: ['ram', 'bộ nhớ', 'memory'] },
+      { code: 'ssd',     keywords: ['ssd', 'ổ cứng', 'storage', 'hdd', 'nvme'] },
+      { code: 'psu',     keywords: ['psu', 'nguồn', 'power supply'] },
+      { code: 'case',    keywords: ['case', 'thùng máy', 'chassis'] },
+      { code: 'cooling', keywords: ['cooling', 'tản nhiệt', 'cooler', 'fan'] },
+    ];
+
+    function categoryNameToCode(name) {
+      if (!name) return 'other';
+      const lower = name.toLowerCase();
+      for (const { code, keywords } of CATEGORY_NAME_KEYWORDS) {
+        if (keywords.some(k => lower.includes(k))) return code;
+      }
+      return 'other';
+    }
+
+    // Function to load categories from API and build dynamic mapping
+    async function loadCategoriesMapping() {
+      try {
+        const res = await fetch('/api/Categories');
+        if (!res.ok) return;
+        const data = await res.json();
+        // data có thể là array hoặc { items: [...] }
+        const cats = Array.isArray(data) ? data
+                   : (data.items ?? data.Items ?? data.data ?? []);
+        cats.forEach(c => {
+          const id   = c.categoryId   ?? c.CategoryId;
+          const name = c.categoryName ?? c.CategoryName ?? '';
+          const code = categoryNameToCode(name);
+          if (code !== 'other') {
+            CATEGORY_MAP[code] = id;
+            CATEGORY_ID_TO_CODE[id] = code;
+          }
+        });
+        console.log('[Products] Category mapping built from API:', CATEGORY_ID_TO_CODE);
+      } catch (e) {
+        console.warn('[Products] Could not load categories from API, using default mapping:', e);
+      }
+    }
 
     // Function to load products from API
     async function loadProductsFromAPI() {
       console.log('[Products] Loading products from API...');
+      
+      // Load category mapping trước để đảm bảo ID khớp với DB
+      await loadCategoriesMapping();
       
       try {
         const response = await fetch('/api/Products?PageSize=100&OnlyActive=true');
@@ -1813,31 +1861,60 @@
         const data = await response.json();
         console.log('[Products] API response:', data);
 
+        // Handle both camelCase and PascalCase responses safely
+        const items = data.items ?? data.Items ?? [];
+        if (!Array.isArray(items)) {
+          console.error('[Products] Unexpected API response shape:', data);
+          applyFiltersAndRender();
+          return;
+        }
+
+        if (items.length === 0) {
+          console.warn('[Products] API returned 0 products. Check OnlyActive filter or database data.');
+        }
+
         // Map API response to UI format
-        PRODUCTS = data.items.map(p => {
+        PRODUCTS = items.map(p => {
+          // Normalize field names (camelCase preferred, fallback to PascalCase)
+          const productId     = p.productId     ?? p.ProductId;
+          const categoryId    = p.categoryId    ?? p.CategoryId;
+          const brandName     = p.brandName     ?? p.BrandName     ?? 'Unknown';
+          const productName   = p.productName   ?? p.ProductName   ?? '';
+          const description   = p.description   ?? p.Description   ?? '';
+          const price         = p.price         ?? p.Price         ?? 0;
+          const discountPrice = p.discountPrice ?? p.DiscountPrice ?? 0;
+          const effectivePrice= p.effectivePrice?? p.EffectivePrice?? price;
+          const stockQuantity = p.stockQuantity ?? p.StockQuantity ?? 0;
+          const defaultImageUrl = p.defaultImageUrl ?? p.DefaultImageUrl ?? null;
+          const avgRating     = p.avgRating     ?? p.AvgRating     ?? 0;
+          const reviewCount   = p.reviewCount   ?? p.ReviewCount   ?? 0;
+          const slug          = p.slug          ?? p.Slug          ?? null;
+
           // Determine stock status based on StockQuantity
           let stock = 'out';
-          if (p.stockQuantity > 10) stock = 'in';
-          else if (p.stockQuantity > 0) stock = 'low';
+          if (stockQuantity > 10) stock = 'in';
+          else if (stockQuantity > 0) stock = 'low';
 
-          // Determine badge (this is simplified - can be enhanced)
+          // Determine badge
           let badge = null;
-          if (p.discountPrice > 0 && p.discountPrice < p.price) badge = 'sale';
-          
-          // Use default image or placeholder
-          const img = p.defaultImageUrl || `https://placehold.co/300x200/081120/7dd3fc?text=${encodeURIComponent(p.productName.substring(0, 20))}`;
+          if (discountPrice > 0 && discountPrice < price) badge = 'sale';
 
+          // Use default image or placeholder
+          const img = defaultImageUrl || `https://placehold.co/300x200/081120/7dd3fc?text=${encodeURIComponent((productName || 'Product').substring(0, 20))}`;
+
+          const categoryName   = p.categoryName  ?? p.CategoryName  ?? '';
+          
           return {
-            id: p.productId,  // This is the REAL ProductId from database
-            slug: p.slug,
-            cat: CATEGORY_ID_TO_CODE[p.categoryId] || 'other',
-            brand: p.brandName || 'Unknown',
-            name: p.productName,
-            specs: p.description ? p.description.substring(0, 80) : 'Xem chi tiết để biết thêm',
-            price: p.effectivePrice,
-            oldPrice: (p.discountPrice > 0 && p.discountPrice < p.price) ? p.price : null,
-            rating: p.avgRating || 0,
-            reviews: p.reviewCount || 0,
+            id: productId,
+            slug: slug,
+            cat: CATEGORY_ID_TO_CODE[categoryId] || categoryNameToCode(categoryName),
+            brand: brandName,
+            name: productName,
+            specs: description ? description.substring(0, 80) : 'Xem chi tiết để biết thêm',
+            price: effectivePrice,
+            oldPrice: (discountPrice > 0 && discountPrice < price) ? price : null,
+            rating: avgRating,
+            reviews: reviewCount,
             stock: stock,
             badge: badge,
             img: img

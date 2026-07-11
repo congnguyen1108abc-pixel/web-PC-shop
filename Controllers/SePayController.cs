@@ -334,7 +334,7 @@ public class SePayController : ControllerBase
             }
 
             return Ok(ApiResponse<object>.SuccessResponse(
-                status.Data, "Lấy trạng thái thành công", 200
+                status.Data ?? new object(), "Lấy trạng thái thành công", 200
             ));
         }
         catch (Exception ex)

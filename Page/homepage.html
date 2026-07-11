@@ -258,7 +258,8 @@
         .header-search-container {
             display: flex;
             align-items: center;
-            flex-direction: row; /* icon bên trái */
+            flex-direction: row;
+            /* icon bên trái */
             overflow: visible;
             position: relative;
         }
@@ -310,7 +311,8 @@
         /* ----- USER GREETING & DROPDOWN ----- */
         .user-greeting-wrap {
             position: relative;
-            display: none; /* hiện bằng JS khi đã login */
+            display: none;
+            /* hiện bằng JS khi đã login */
             align-items: center;
         }
 
@@ -329,7 +331,7 @@
         }
 
         .user-greeting-btn:hover {
-            background: rgba(0,0,0,0.06);
+            background: rgba(0, 0, 0, 0.06);
         }
 
         .user-avatar {
@@ -370,11 +372,11 @@
             top: calc(100% + 10px);
             right: 0;
             background: #ffffff;
-            border: 1px solid rgba(0,0,0,0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 16px;
             padding: 8px;
             min-width: 200px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
             opacity: 0;
             pointer-events: none;
             transform: translateY(-8px);
@@ -390,7 +392,7 @@
 
         .dropdown-header {
             padding: 10px 12px 8px;
-            border-bottom: 1px solid rgba(0,0,0,0.07);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.07);
             margin-bottom: 6px;
         }
 
@@ -424,24 +426,25 @@
         }
 
         .dropdown-item:hover {
-            background: rgba(0,0,0,0.05);
+            background: rgba(0, 0, 0, 0.05);
         }
 
         .dropdown-item.logout {
             color: #ef4444;
             margin-top: 4px;
-            border-top: 1px solid rgba(0,0,0,0.06);
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
             border-radius: 0 0 10px 10px;
             padding-top: 12px;
         }
 
         .dropdown-item.logout:hover {
-            background: rgba(239,68,68,0.08);
+            background: rgba(239, 68, 68, 0.08);
         }
 
         /* icon link không đăng nhập */
         .account-login-link {
-            display: flex; /* mặc định hiện, ẩn bằng JS khi login */
+            display: flex;
+            /* mặc định hiện, ẩn bằng JS khi login */
         }
 
         /* ================================= */
@@ -638,13 +641,14 @@
             position: relative;
             z-index: 10;
             background-color: #FFFFFF;
-            padding: 120px 80px;
+            padding: 78px 80px;
+            min-height: unset;
         }
 
         .section-title {
             text-align: center;
             font-size: 58px;
-            margin-bottom: 70px;
+            margin-bottom: 45px;
             color: #FFFFFF;
         }
 
@@ -660,6 +664,7 @@
             backdrop-filter: blur(20px);
             border-radius: 30px;
             overflow: hidden;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1), background 120ms cubic-bezier(.22, 1, .36, 1), border-color 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .product-image {
@@ -953,8 +958,7 @@
             }
 
             .products {
-                padding-left: 20px;
-                padding-right: 20px;
+                padding: 65px 20px;
             }
 
             .glass-box h2 {
@@ -970,8 +974,9 @@
 
         .reveal {
             opacity: 0;
-            transform: translateY(80px) scale(.96);
-            transition: all 1s cubic-bezier(.2, .65, .2, 1);
+            transform: translateY(30px) scale(0.97);
+            transition: opacity 500ms cubic-bezier(.22, 1, .36, 1),
+                transform 500ms cubic-bezier(.22, 1, .36, 1);
             will-change: transform, opacity;
         }
 
@@ -1051,12 +1056,13 @@
             position: relative;
             z-index: 10;
             background-color: #FFFFFF;
-            padding: 120px 80px;
+            padding: 78px 80px;
+            min-height: unset;
         }
 
         .gear-header {
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 50px;
         }
 
         .gear-tag {
@@ -1103,7 +1109,7 @@
             background: rgba(0, 0, 0, .05);
             border: 1px solid rgba(0, 0, 0, .1);
             backdrop-filter: blur(20px);
-            transition: .6s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .gear-big-card:hover {
@@ -1154,7 +1160,7 @@
             color: #FFFFFF;
             font-weight: 700;
             cursor: pointer;
-            transition: .4s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .gear-btn:hover {
@@ -1177,7 +1183,7 @@
             background: rgba(0, 0, 0, .05);
             border: 1px solid rgba(0, 0, 0, .1);
             min-height: 330px;
-            transition: .5s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .gear-small-card:hover {
@@ -1188,7 +1194,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: 1s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .gear-small-card:hover img {
@@ -1220,7 +1226,8 @@
             position: relative;
             z-index: 10;
             background-color: #FFFFFF;
-            padding: 120px 80px;
+            padding: 78px 80px;
+            min-height: unset;
         }
 
         .laptop-container {
@@ -1245,7 +1252,7 @@
             background: rgba(0, 0, 0, .05);
             border: 1px solid rgba(0, 0, 0, .1);
             backdrop-filter: blur(20px);
-            transition: .5s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .laptop-card:hover {
@@ -1256,7 +1263,7 @@
         .laptop-card img {
             width: 280px;
             border-radius: 20px;
-            transition: .6s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .laptop-card:hover img {
@@ -1276,12 +1283,13 @@
             position: relative;
             z-index: 10;
             background-color: #FFFFFF;
-            padding: 120px 80px;
+            padding: 78px 80px;
+            min-height: unset;
         }
 
         .audio-center {
             text-align: center;
-            margin-bottom: 70px;
+            margin-bottom: 50px;
         }
 
         .audio-grid {
@@ -1297,7 +1305,7 @@
             min-height: 500px;
             background: rgba(0, 0, 0, .05);
             border: 1px solid rgba(0, 0, 0, .1);
-            transition: .6s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .audio-card:hover {
@@ -1308,7 +1316,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: 1s;
+            transition: transform 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .audio-card:hover img {
@@ -1352,7 +1360,7 @@
             .gear-section,
             .laptop-section,
             .audio-section {
-                padding: 100px 20px;
+                padding: 65px 20px;
             }
 
             .laptop-card {
@@ -2204,7 +2212,8 @@
                     d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
             </svg>
         </a>
-        <a href="https://www.youtube.com/channel/UCaYgBUfFPI3YldZeRfbfitA" target="_blank" class="social-item" title="YouTube">
+        <a href="https://www.youtube.com/channel/UCaYgBUfFPI3YldZeRfbfitA" target="_blank" class="social-item"
+            title="YouTube">
             <svg viewBox="0 0 24 24">
                 <path
                     d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -2323,42 +2332,40 @@
 
             <!-- SEARCH -->
             <div class="header-search-container" id="headerSearchWrap">
-                <input
-                    type="text"
-                    id="headerSearchInput"
-                    class="header-search-input"
-                    placeholder="Tìm kiếm sản phẩm..."
+                <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Tìm kiếm sản phẩm..."
                     onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
-                <button
-                    class="header-icon-btn search-toggle-btn"
-                    onclick="toggleHeaderSearch(this)"
-                    title="Tìm kiếm"
+                <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)" title="Tìm kiếm"
                     aria-label="Tìm kiếm">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
                 </button>
             </div>
 
             <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
-            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                    <circle cx="12" cy="7" r="4"/>
+            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;"
+                class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
                 </svg>
             </a>
 
             <!-- USER GREETING (hiện khi đã đăng nhập) -->
             <div class="user-greeting-wrap" id="userGreetingWrap">
-                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()"
+                    aria-label="Tài khoản">
                     <div class="user-avatar" id="userAvatar">U</div>
                     <div class="user-greeting-name">
                         <em>Xin chào,</em>
                         <span id="userDisplayName">Người dùng</span>
                     </div>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"/>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
                     </svg>
                 </button>
 
@@ -2369,30 +2376,50 @@
                         <small id="dropdownEmail">email@example.com</small>
                     </div>
                     <a href="#" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
                         Hồ sơ của tôi
                     </a>
                     <a href="/shoppingcart" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
                         Giỏ hàng
                     </a>
                     <a href="/checkout" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
                         Đơn hàng
                     </a>
                     <button class="dropdown-item logout" onclick="handleLogout()">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
                         Đăng xuất
                     </button>
                 </div>
             </div>
 
             <!-- CART -->
-            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"/>
-                    <circle cx="20" cy="21" r="1"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link"
+                title="Giỏ hàng" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                 </svg>
                 <span class="cart-badge" id="cartCount">0</span>
             </a>
@@ -2433,8 +2460,9 @@
                 </p>
 
                 <div class="hero-buttons" style="justify-content: flex-start;">
-                    <button class="hero-btn hero-primary">Khám Phá Ngay</button>
-                    <button class="hero-btn hero-secondary" onclick="window.location.href='/Products'">Xem Sản
+                    <button class="hero-btn hero-primary" onclick="window.location.href='/Products'">Khám Phá
+                        Ngay</button>
+                    <button class="hero-btn hero-secondary" onclick="window.location.href='/voucher'">Xem Sản
                         Phẩm</button>
                 </div>
 
@@ -2579,9 +2607,7 @@
 
             </div>
 
-            <div class="product-card">
-
-                <img src="/images/laptop.jpg" class="product-image" alt="Laptop" />
+            <div class="product-card reveal floating">
 
                 <div class="product-info">
 
@@ -2738,7 +2764,7 @@
             <div class="laptop-left reveal">
 
                 <span class="gear-tag">
-                    RTX SERIES
+                    Voucher khuyến mãi
                 </span>
 
                 <h2 class="laptop-title">
@@ -2752,14 +2778,15 @@
 
                 <p class="laptop-text">
 
-                    Hiệu năng thế hệ mới với RTX AI,
-                    màn hình 240Hz và hệ thống tản nhiệt
-                    vapor chamber cao cấp dành cho esports.
+                    SĂN VOUCHER ESPORTS – CHIẾN GAME NHẬN QUÀ!
+                    Vào game săn mã, hạ giá cực sâu siêu phẩm gaming thế hệ mới: Sức mạnh RTX AI, 
+                    màn hình 240Hz xé gió và tản nhiệt Vapor Chamber cao cấp. 
+                    Click chơi ngay, voucher về tay!
 
                 </p>
 
-                <button class="gear-btn">
-                    KHÁM PHÁ NGAY
+                <button class="gear-btn" onclick="window.location.href='/voucher'">
+                    SĂN MÃ VOUCHER NGAY
                 </button>
 
             </div>
@@ -2938,7 +2965,7 @@
             </div>
         </div>
 
-                <div class="footer-bottom">
+        <div class="footer-bottom">
             © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
         </div>
     </footer>
@@ -2976,31 +3003,47 @@
 
         /* REVEAL EFFECT */
 
-        const reveals = document.querySelectorAll(".reveal");
+        /* REVEAL EFFECT */
 
-        function revealOnScroll() {
+        const STAGGER_MS = 150; // ms giữa mỗi card trong grid
 
-            const triggerBottom = window.innerHeight * 0.88;
+        const GRID_CONFIGS = [
+            { sel: '.product-grid', childSel: ':scope > .reveal', baseDelay: 0 },
+            { sel: '.gear-layout', childSel: ':scope > .reveal', baseDelay: 0 },
+            { sel: '.gear-small-grid', childSel: ':scope > .reveal', baseDelay: 150 },
+            { sel: '.laptop-right', childSel: ':scope > .reveal', baseDelay: 0 },
+            { sel: '.audio-grid', childSel: ':scope > .reveal', baseDelay: 0 }
+        ];
 
-            reveals.forEach((item, index) => {
-
-                const top = item.getBoundingClientRect().top;
-
-                if (top < triggerBottom) {
-
-                    setTimeout(() => {
-                        item.classList.add("active");
-                    }, index * 120);
-
-                }
-
+        // Gán index stagger cho từng card trong grid
+        GRID_CONFIGS.forEach(({ sel, childSel, baseDelay }) => {
+            const grid = document.querySelector(sel);
+            if (!grid) return;
+            grid.querySelectorAll(childSel).forEach((card, i) => {
+                card.dataset.staggerDelay = baseDelay + i * STAGGER_MS;
             });
+        });
 
-        }
+        // Observe từng card riêng biệt
+        // rootMargin âm để card chỉ trigger khi scroll thực sự đến
+        const revealObserver = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    const el = entry.target;
+                    const delay = Number(el.dataset.staggerDelay) || 0;
+                    el.style.transitionDelay = delay + 'ms';
+                    el.classList.add('active');
+                    revealObserver.unobserve(el);
+                });
+            },
+            {
+                threshold: 0.1,
+                rootMargin: '0px 0px -8% 0px'
+            }
+        );
 
-        window.addEventListener("scroll", revealOnScroll);
-
-        revealOnScroll();
+        document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
 
 
