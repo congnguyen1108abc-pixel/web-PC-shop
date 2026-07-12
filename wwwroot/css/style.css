@@ -465,14 +465,14 @@ nav a:hover::after, nav a.active::after {
 /* ================================= */
 .carousel-wrapper {
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    width: 100%;
     margin-bottom: 80px;
 }
 
 .carousel-arrow {
-    flex-shrink: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -484,14 +484,22 @@ nav a:hover::after, nav a.active::after {
     justify-content: center;
     transition: all 0.2s ease;
     color: #333;
-    z-index: 2;
+    z-index: 10;
+}
+
+.carousel-arrow-left {
+    left: -22px;
+}
+
+.carousel-arrow-right {
+    right: -22px;
 }
 
 .carousel-arrow:hover {
     background: #111111;
     color: #ffffff;
     border-color: #111111;
-    transform: scale(1.05);
+    transform: translateY(-50%) scale(1.05);
 }
 
 .bento-grid {
@@ -501,6 +509,7 @@ nav a:hover::after, nav a.active::after {
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     gap: 24px;
+    padding-top: 12px;
     padding-bottom: 20px;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
@@ -511,55 +520,94 @@ nav a:hover::after, nav a.active::after {
 }
 
 .bento-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: all 0.2s ease;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: visible;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
     display: flex;
     flex-direction: column;
     flex: 0 0 calc(33.333% - 16px);
     scroll-snap-align: start;
     min-width: 320px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
 .bento-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    border-color: #d1d5db;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .card-img-wrapper {
     width: 100%;
-    height: 260px;
-    overflow: hidden;
+    height: 200px;
+    overflow: visible;
     position: relative;
-    background: #f4f4f5;
+    background: #ffffff;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.card-img-wrapper img {
+.card-img-wrapper .pc-img {
+    max-width: 70%;
+    max-height: 85%;
+    object-fit: contain;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.bento-card:hover .card-img-wrapper .pc-img {
+    transform: scale(1.03);
+}
+
+.streamer-avatar-wrapper {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3.5px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    background: #ffffff;
+    z-index: 10;
+    transition: transform 0.3s ease;
+}
+
+.bento-card:hover .streamer-avatar-wrapper {
+    transform: scale(1.06);
+}
+
+.streamer-avatar {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.2s ease;
-}
-
-.bento-card:hover .card-img-wrapper img {
-    transform: none;
+    display: block;
 }
 
 .card-tag {
     position: absolute;
-    top: 20px;
-    left: 20px;
-    background: #111827;
+    top: 16px;
+    left: 16px;
+    background: rgba(17, 24, 39, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: #ffffff;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    z-index: 5;
 }
 
 .card-body {
@@ -567,60 +615,104 @@ nav a:hover::after, nav a.active::after {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    background: #ffffff;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 }
 
 .card-title {
     font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 8px;
-    color: var(--text-dark);
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.btn-customize-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.3s ease;
+    font-family: inherit;
+}
+
+.btn-customize-link span.arrow {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.btn-customize-link:hover {
+    color: #000000;
+}
+
+.btn-customize-link:hover span.arrow {
+    transform: translateX(4px);
 }
 
 .card-price {
-    font-size: 20px;
-    font-weight: 900;
-    color: var(--text-dark);
-    margin-bottom: 20px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 24px; /* Increased space between price and specs tags */
 }
 
 .specs-tags,
 .config-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
     margin-bottom: 24px;
+    text-align: left;
 }
 
 .specs-tag,
 .config-tag {
-    background: #f4f4f5;
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    color: var(--text-muted);
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
+    background: none;
+    border: none;
+    color: #374151; /* Dark grey */
+    padding: 0;
+    border-radius: 0;
+    font-size: 13px;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-start;
+}
+
+.specs-icon {
+    filter: grayscale(1) opacity(0.65);
+    font-size: 13px;
+    display: inline-block;
+    flex-shrink: 0;
 }
 
 .bento-btn {
     width: 100%;
-    background: #111827;
+    background: #1f2937;
     color: #ffffff;
     border: none;
     outline: none;
-    padding: 13px;
-    border-radius: 30px;
+    padding: 12px;
+    border-radius: 12px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     text-align: center;
     margin-top: auto;
 }
 
 .bento-btn:hover {
-    background: #374151;
-    transform: translateY(-1px);
+    background: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* ================================= */
@@ -647,19 +739,26 @@ nav a:hover::after, nav a.active::after {
 
 /* List Row */
 .builder-row {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
+    background: #f9fafb;
+    border: 1.5px dashed #d1d5db;
     border-radius: 16px;
-    padding: 20px 28px;
+    padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
-.builder-row:hover {
-    border-color: rgba(0, 0, 0, 0.15);
-    background: #fafafa;
+.builder-row.selected {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    padding: 16.5px 16.5px;
+}
+
+.builder-row.selected:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border-color: #d1d5db;
 }
 
 .row-info {
@@ -671,29 +770,48 @@ nav a:hover::after, nav a.active::after {
 .row-icon {
     width: 44px;
     height: 44px;
-    background: #f4f4f5;
+    background: #f3f4f6;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-dark);
-    font-weight: 800;
-    font-size: 14px;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.builder-row.selected .row-icon {
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.row-thumbnail-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #f3f4f6;
 }
 
 .category-name {
     font-size: 11px;
-    color: var(--text-muted);
+    color: #9ca3af;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.05em;
     margin-bottom: 2px;
 }
 
 .selected-item-title {
     font-size: 15px;
-    font-weight: 700;
-    color: var(--text-dark);
+    font-weight: 400;
+    color: #6b7280;
+    font-style: italic;
+}
+
+.builder-row.selected .selected-item-title {
+    font-weight: 600;
+    color: #111827;
+    font-style: normal;
 }
 
 .row-action {
@@ -703,19 +821,20 @@ nav a:hover::after, nav a.active::after {
 }
 
 .row-price {
-    font-size: 15px;
-    font-weight: 800;
-    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    text-align: right;
 }
 
 .row-btn {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border: 1px solid #111827;
     background: transparent;
-    color: var(--text-dark);
-    font-size: 16px;
+    color: #111827;
+    font-size: 18px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -727,19 +846,28 @@ nav a:hover::after, nav a.active::after {
 .row-btn:hover {
     background: #111827;
     color: #ffffff;
-    border-color: #111827;
 }
 
-.row-btn.selected {
-    background: rgba(239, 68, 68, 0.05);
+.row-btn-remove {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.row-btn-remove svg {
+    color: #9ca3af;
+    transition: color 0.2s ease;
+}
+
+.row-btn-remove:hover svg {
     color: #ef4444;
-    border-color: rgba(239, 68, 68, 0.2);
-}
-
-.row-btn.selected:hover {
-    background: #ef4444;
-    color: #ffffff;
-    border-color: #ef4444;
 }
 
 /* ================================= */
@@ -915,24 +1043,45 @@ nav a:hover::after, nav a.active::after {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 
 .item-option-card {
     background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
-    padding: 18px;
+    padding: 12px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    box-sizing: border-box;
 }
 
 .item-option-card:hover {
-    border-color: #111827;
-    background: #fafafa;
+    background: #f8fafc;
+    border-color: #d1d5db;
+}
+
+.item-option-card.active {
+    border: 2px solid #111827;
+    padding: 11px 15px;
+}
+
+.option-left {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.option-thumbnail {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    border: 1px solid #f3f4f6;
+    object-fit: cover;
+    background: #ffffff;
 }
 
 .option-details {
@@ -943,19 +1092,40 @@ nav a:hover::after, nav a.active::after {
 
 .option-title {
     font-size: 14px;
-    font-weight: 700;
-    color: var(--text-dark);
+    font-weight: 600;
+    color: #111827;
 }
 
 .option-spec {
-    font-size: 12px;
-    color: var(--text-muted);
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.option-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .option-price {
-    font-size: 14px;
-    font-weight: 800;
-    color: var(--text-dark);
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.option-checkmark {
+    background: #111827;
+    color: #ffffff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
 }
 
 /* ================================= */
@@ -1063,66 +1233,28 @@ nav a:hover::after, nav a.active::after {
 /* ================================= */
 /* DUAL IMAGE PRODUCT CARD LAYOUT */
 /* ================================= */
+/* Redesigned to support cover + avatar profile card style */
 .card-img-wrapper.image-container {
     display: flex;
-    flex-direction: row;
-    height: 260px;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
     width: 100%;
-    background: #f4f4f5;
-    overflow: hidden;
-}
-
-.streamer-img-wrapper,
-.pc-img-wrapper {
-    width: 50%;
-    height: 100%;
-    overflow: hidden;
+    background: #ffffff;
     position: relative;
+    overflow: visible;
 }
 
-.streamer-img-wrapper {
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.streamer-img-wrapper img,
-.pc-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.card-img-wrapper.image-container .pc-img {
+    max-width: 70% !important;
+    max-height: 85% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
     display: block;
-    transition: transform 0.3s ease;
-}
-
-.streamer-img-wrapper img {
-    object-fit: cover;
-}
-
-.pc-img-wrapper img {
-    object-fit: cover;
-}
-
-.bento-card:hover .streamer-img-wrapper img {
-    transform: scale(1.04);
-}
-
-.bento-card:hover .pc-img-wrapper img {
-    transform: scale(1.06);
-}
-
-@media (max-width: 768px) {
-    .card-img-wrapper.image-container {
-        flex-direction: column;
-        height: 380px;
-    }
-    .streamer-img-wrapper,
-    .pc-img-wrapper {
-        width: 100%;
-        height: 50%;
-    }
-    .streamer-img-wrapper {
-        border-right: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
+    transition: transform 0.5s ease;
 }
 
 /* ================================= */

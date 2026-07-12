@@ -572,9 +572,51 @@
             .trending-section, .stats-section, .features-section, .brands-section, .filter-bar, .brand-filter-bar, .quick-filter-bar, .grid-container { padding:0 20px; }
             .feature-item { min-width:100%; }
         }
+
+        /* ===== PAGINATION STYLE ===== */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        .page-btn {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #222;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .page-btn:hover:not(.disabled) {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.05);
+            color: #111;
+        }
+        .page-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        .page-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
     </style>
     <link rel="stylesheet" href="/css/style.css?v=1.0.5">
-    <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
 <body>
 
@@ -632,7 +674,7 @@
             </div>
             <div class="nav-item-dropdown">
                 <a href="/gaminggear" id="nav-gaminggear" class="active">Gaming Gear</a>
-                <div class="mega-menu" style="width:220px;grid-template-columns:1fr;gap:10px;padding:16px;">
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
                     <div class="mega-col">
                         <h3>Gaming Gear</h3>
                         <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
@@ -647,7 +689,7 @@
             </div>
             <div class="nav-item-dropdown">
                 <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
-                <div class="mega-menu" style="width:220px;grid-template-columns:1fr;gap:10px;padding:16px;">
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
                     <div class="mega-col">
                         <h3>PC Build</h3>
                         <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
@@ -1137,14 +1179,17 @@
     let currentCategory = 'all';
     let currentBrand = 'all';
     let currentQuick = 'all';
-    const gridItems = Array.from(document.querySelectorAll('.grid-item'));
+    let currentPage = 1;
+    const itemsPerPage = 9;
     const priceSelect = document.getElementById('priceSelect');
 
     function filterProducts() {
         const priceVal = priceSelect.value;
-        let delay = 0;
+        const gridItems = Array.from(document.querySelectorAll('.grid-item'));
 
-        gridItems.forEach((item, idx) => {
+        // Find all items that match current filter selections
+        const matchingItems = [];
+        gridItems.forEach(item => {
             const itemPrice = parseInt(item.getAttribute('data-price'));
             const itemCat   = item.getAttribute('data-category');
             const itemBrand = item.getAttribute('data-brand') || 'all';
@@ -1159,9 +1204,30 @@
             if (priceVal === 'over4' && itemPrice <= 4000000) priceMatch = false;
 
             if (catMatch && brandMatch && quickMatch && priceMatch) {
+                matchingItems.push(item);
+            } else {
+                item.style.display = 'none';
+                item.classList.add('hidden');
+                item.style.opacity = '0';
+            }
+        });
+
+        // Calculate pagination parameters
+        const totalItems = matchingItems.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        // Render matching items for current page with delay transition
+        let delay = 0;
+        matchingItems.forEach((item, idx) => {
+            if (idx >= startIndex && idx < endIndex) {
                 item.style.display = 'flex';
                 item.classList.remove('hidden');
-                // stagger fade-in
                 item.style.opacity = '0';
                 item.style.transform = 'translateY(20px)';
                 item.style.transition = `opacity .45s ease ${delay * 65}ms, transform .45s cubic-bezier(.22,1,.36,1) ${delay * 65}ms`;
@@ -1171,16 +1237,54 @@
                 })(item), 20 + delay * 65);
                 delay++;
             } else {
+                item.style.display = 'none';
+                item.classList.add('hidden');
                 item.style.opacity = '0';
-                item.style.transform = 'translateY(8px)';
-                item.style.transition = 'opacity .3s ease, transform .3s ease';
-                setTimeout((_item => () => {
-                    _item.classList.add('hidden');
-                    _item.style.display = 'none';
-                })(item), 300);
             }
         });
+
+        // Re-render pagination buttons
+        renderPaginationControls(totalPages);
     }
+
+    function renderPaginationControls(totalPages) {
+        let container = document.getElementById('paginationContainer');
+        if (!container) {
+            const grid = document.getElementById('productGrid');
+            container = document.createElement('div');
+            container.id = 'paginationContainer';
+            container.className = 'pagination-container';
+            grid.parentNode.appendChild(container);
+        }
+
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        // Prev button
+        html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>`;
+
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+        }
+
+        // Next button
+        html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>`;
+
+        container.innerHTML = html;
+    }
+
+    window.changePage = function(page) {
+        currentPage = page;
+        filterProducts();
+        document.getElementById('all-gear').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     // ── 7. CATEGORY BUTTONS ──
     document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -1188,6 +1292,7 @@
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentCategory = btn.getAttribute('data-filter');
+            currentPage = 1;
             filterProducts();
         });
     });
@@ -1198,6 +1303,7 @@
             document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentBrand = btn.getAttribute('data-brand-filter');
+            currentPage = 1;
             filterProducts();
         });
     });
@@ -1209,12 +1315,11 @@
             pill.classList.add('active');
             const brand = pill.getAttribute('data-brand');
             currentBrand = brand;
-            // sync brand-btn
             document.querySelectorAll('.brand-btn').forEach(b => {
                 b.classList.toggle('active', b.getAttribute('data-brand-filter') === brand);
             });
+            currentPage = 1;
             filterProducts();
-            // scroll to grid
             document.getElementById('all-gear').scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
@@ -1230,15 +1335,19 @@
             } else {
                 currentQuick = 'all';
             }
+            currentPage = 1;
             filterProducts();
         });
     });
 
     // ── 11. PRICE FILTER ──
-    priceSelect.addEventListener('change', filterProducts);
+    priceSelect.addEventListener('change', () => {
+        currentPage = 1;
+        filterProducts();
+    });
 
     // ── 12. URL PARAMS ──
-    (function applyUrlParams() {
+    function applyUrlParams() {
         const urlParams = new URLSearchParams(window.location.search);
         let catParam = urlParams.get('category') || urlParams.get('cat');
         if (catParam) {
@@ -1258,7 +1367,7 @@
                 filterProducts();
             }
         }
-    })();
+    }
 
     // ── 13. CART ──
     function updateCartBadge() {
@@ -1270,7 +1379,6 @@
             countEl.style.display = total > 0 ? 'flex' : 'none';
         }
     }
-    updateCartBadge();
 
     const formatPrice = n => n.toLocaleString('vi-VN') + ' ₫';
 
@@ -1555,8 +1663,7 @@
             renderTrendingGrid();
             renderMainGrid(PRODUCTS);
 
-            gridItems.length = 0;
-            gridItems.push(...document.querySelectorAll('#productGrid .grid-item'));
+            const gridItems = Array.from(document.querySelectorAll('#productGrid .grid-item'));
 
             filterProducts();
             setupAddToCartButtons();

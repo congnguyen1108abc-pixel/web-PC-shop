@@ -785,22 +785,7 @@ BEGIN
 END;
 GO
 
--- [TRIGGER 03] trg_LimitActiveBanners | Dòng gốc: 460-473
-
--- Trigger 3: Giới hạn tối đa 5 Banner IsActive = 1 cùng lúc
-CREATE TRIGGER trg_LimitActiveBanners
-ON Banners
-AFTER INSERT, UPDATE
-AS
-BEGIN
-    SET NOCOUNT ON;
-    IF (SELECT COUNT(*) FROM Banners WHERE IsActive = 1) > 5
-    BEGIN
-        RAISERROR(N'Lỗi: Chỉ được bật tối đa 5 Banner cùng lúc!', 16, 1);
-        ROLLBACK TRANSACTION;
-    END
-END;
-GO
+-- [TRIGGER 03] trg_LimitActiveBanners đã được xóa để không giới hạn số lượng banner hoạt động.
 
 -- [TRIGGER 04] trg_PreventDeleteOrders | Dòng gốc: 475-484
 

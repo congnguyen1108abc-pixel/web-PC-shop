@@ -1339,9 +1339,51 @@
         display: none;
       }
     }
+
+    /* ===== PAGINATION STYLE ===== */
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: 50px;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+    .page-btn {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #222222;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .page-btn:hover:not(.disabled) {
+      background: rgba(0, 0, 0, 0.05);
+      color: #111111;
+      transform: translateY(-2px);
+    }
+    .page-btn.active {
+      background: #111111;
+      color: #ffffff;
+      border-color: #111111;
+      font-weight: 600;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+    .page-btn.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
   </style>
   <link rel="stylesheet" href="/css/style.css?v=1.0.5">
-  <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5">
+  <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
 
 <body>
@@ -1416,7 +1458,7 @@
       </div>
       <div class="nav-item-dropdown">
         <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
-        <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+        <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
           <div class="mega-col">
             <h3>Gaming Gear</h3>
             <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
@@ -1431,7 +1473,7 @@
       </div>
       <div class="nav-item-dropdown">
         <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
-        <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+        <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
           <div class="mega-col">
             <h3>PC Build</h3>
             <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
@@ -1782,15 +1824,19 @@
   <script>
     // API-loaded products will be stored here
     let PRODUCTS = [];
+    let currentPage = 1;
+    const itemsPerPage = 9;
 
     // Category mapping: UI categories to database CategoryIds (sẽ được cập nhật từ API)
     let CATEGORY_MAP = {
       'vga': 1,      // Card Đồ Họa
       'cpu': 2,      // Bộ Vi Xử Lý  
-      'main': 3,     // Mainboard
-      'ram': 4,      // RAM
-      'ssd': 5,      // SSD / Ổ Cứng
-      'psu': 6       // Nguồn / PSU
+      'ssd': 3,      // SSD / Ổ Cứng
+      'main': 4,     // Mainboard
+      'psu': 5,      // Nguồn / PSU
+      'case': 8,     // Case - Vỏ máy tính
+      'cooling': 9,  // Tản nhiệt PC
+      'ram': 10      // RAM
     };
 
     // Reverse mapping: CategoryId to category code (build từ CATEGORY_MAP)
@@ -1973,11 +2019,23 @@
 
       if (!list.length) {
         empty.classList.add('show');
+        renderPaginationControls(0);
         return;
       }
       empty.classList.remove('show');
 
-      list.forEach((p, i) => {
+      // Calculate pagination parameters
+      const totalItems = list.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+      if (currentPage > totalPages) {
+        currentPage = totalPages;
+      }
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedList = list.slice(startIndex, endIndex);
+
+      paginatedList.forEach((p, i) => {
         const isOut = p.stock === 'out';
 
         // Xây dựng dòng trạng thái chữ nhỏ dưới giá
@@ -2021,7 +2079,8 @@
 
       });
 
-
+      // Re-render pagination buttons
+      renderPaginationControls(totalPages);
 
       // Cart event setup
       grid.querySelectorAll('.btn-add:not([disabled])').forEach(btn => {
@@ -2034,6 +2093,45 @@
         });
       });
     }
+
+    function renderPaginationControls(totalPages) {
+      let container = document.getElementById('paginationContainer');
+      if (!container) {
+        const grid = document.getElementById('productGrid');
+        container = document.createElement('div');
+        container.id = 'paginationContainer';
+        container.className = 'pagination-container';
+        grid.parentNode.appendChild(container);
+      }
+
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let html = '';
+      // Prev button
+      html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </button>`;
+
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+      }
+
+      // Next button
+      html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </button>`;
+
+      container.innerHTML = html;
+    }
+
+    window.changePage = function(page) {
+      currentPage = page;
+      applyFiltersAndRender();
+      document.querySelector('.top-bar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     function getFilteredList() {
       let list = [...PRODUCTS];
@@ -2366,6 +2464,7 @@
 
     function resetAll() {
       filters = { cat: 'all', brands: [], priceMin: null, priceMax: null, search: '', sort: 'default' };
+      currentPage = 1;
 
       // Reset input values
       document.getElementById('searchInput').value = '';
@@ -2398,6 +2497,7 @@
     // Search input event
     document.getElementById('searchInput').addEventListener('input', function () {
       filters.search = this.value.trim();
+      currentPage = 1;
       applyFiltersAndRender();
     });
 
@@ -2405,6 +2505,7 @@
     document.querySelectorAll('input[name="cat"]').forEach(radio => {
       radio.addEventListener('change', function () {
         filters.cat = this.value;
+        currentPage = 1;
         applyFiltersAndRender();
       });
     });
@@ -2413,6 +2514,7 @@
     document.querySelectorAll('#brandFilter input').forEach(checkbox => {
       checkbox.addEventListener('change', function () {
         filters.brands = Array.from(document.querySelectorAll('#brandFilter input:checked')).map(input => input.value);
+        currentPage = 1;
         applyFiltersAndRender();
       });
     });
@@ -2420,6 +2522,7 @@
     // Sort selector
     document.getElementById('sortSelect').addEventListener('change', function () {
       filters.sort = this.value;
+      currentPage = 1;
       applyFiltersAndRender();
     });
 
@@ -2433,7 +2536,7 @@
 
       // Read checked brands
       filters.brands = Array.from(document.querySelectorAll('#brandFilter input:checked')).map(input => input.value);
-
+      currentPage = 1;
       applyFiltersAndRender();
     });
 

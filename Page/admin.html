@@ -17,6 +17,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
 
     <link rel="stylesheet" href="/assets/css/admin.css">
+    <style>
+        /* BANNERS PAGE STYLE */
+        .banner-page-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .banner-page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+        }
+        .banner-img-preview {
+            width: 120px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.05);
+        }
+    </style>
 </head>
 
 <body>
@@ -67,6 +93,9 @@
             </li>
             <li class="menu-item" data-tab="notifications">
                 <a href="#" title="Thông Báo Hệ Thống"><span class="menu-icon">🔔</span> <span class="menu-text">Thông Báo Hệ Thống</span></a>
+            </li>
+            <li class="menu-item" data-tab="banners">
+                <a href="#" title="Banner Các Trang"><span class="menu-icon">🖼️</span> <span class="menu-text">Banner Các Trang</span></a>
             </li>
         </ul>
 
@@ -542,6 +571,62 @@
                 </form>
             </div>
         </div>
+
+        <!-- SECTION 8: BANNERS -->
+        <div id="banners-section" class="section-container">
+            <!-- PAGE GRID (Trang chính, Build PC, Gaming Gear) -->
+            <div class="banners-page-grid" id="bannersPageGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 30px;">
+                <!-- Card Trang chính -->
+                <div class="glass-card banner-page-card" onclick="selectBannerPage('home')">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🏠</div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark);">Trang Chính</h3>
+                    <p style="font-size: 13px; color: var(--text-muted);">Quản lý banner slideshow chính của trang chủ</p>
+                </div>
+                <!-- Card Build PC -->
+                <div class="glass-card banner-page-card" onclick="selectBannerPage('pcbuild')">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚡</div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark);">Build PC</h3>
+                    <p style="font-size: 13px; color: var(--text-muted);">Quản lý video/image banner của trang xây dựng cấu hình</p>
+                </div>
+                <!-- Card Gaming Gear -->
+                <div class="glass-card banner-page-card" onclick="selectBannerPage('gaminggear')">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🎮</div>
+                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark);">Gaming Gear</h3>
+                    <p style="font-size: 13px; color: var(--text-muted);">Quản lý banner của trang sản phẩm gaming gear premium</p>
+                </div>
+            </div>
+
+            <!-- DETAILED BANNER LIST (Hidden initially, shown when page selected) -->
+            <div class="glass-card" id="bannerDetailCard" style="display: none;">
+                <div class="management-title-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <div>
+                        <button class="btn-cancel" onclick="backToBannerPages()" style="padding: 8px 16px; margin-right: 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">← Quay lại</button>
+                        <h2 id="selectedPageTitle" style="display: inline-block; vertical-align: middle;">Quản lý Banner</h2>
+                    </div>
+                    <button class="btn-submit" onclick="openAddBannerModal()" style="padding: 10px 16px; font-size:12px; font-weight:700; border-radius:8px; display:flex; align-items:center; gap:6px; background:var(--success); border:none; color:white; cursor:pointer;">
+                        <span>➕</span> THÊM BANNER MỚI
+                    </button>
+                </div>
+
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Ảnh Demo</th>
+                                <th>Tiêu Đề</th>
+                                <th>Liên Kết (Link)</th>
+                                <th>Thời Gian Hiển Thị</th>
+                                <th>Trạng Thái</th>
+                                <th>Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bannersTableBody">
+                            <!-- Dynamic banners load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL: ORDER DETAILS & STATUS UPDATE -->
@@ -809,6 +894,116 @@
         </div>
     </div>
 
+    <!-- MODAL: ADD / EDIT BANNER -->
+    <div class="modal-overlay" id="bannerModal">
+        <div class="modal-card" style="max-width: 550px;">
+            <div class="modal-header">
+                <h3 id="modalBannerTitle">Thêm Banner Mới</h3>
+                <button class="modal-close" onclick="closeBannerModal()">✕</button>
+            </div>
+            <form id="bannerForm" onsubmit="submitBannerForm(event)">
+                <input type="hidden" id="editBannerId" />
+                <input type="hidden" id="bannerPageType" />
+
+                <div class="admin-form-group">
+                    <label for="bannerTitle">Tiêu Đề Banner *</label>
+                    <input type="text" id="bannerTitle" required placeholder="Nhập tiêu đề banner..." />
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="bannerImageUrl">Đường Dẫn Ảnh / Video (URL) *</label>
+                    <input type="text" id="bannerImageUrl" required placeholder="Ví dụ: /images/banner1.jpg hoặc link online..." />
+                </div>
+
+                <div class="admin-form-group" id="bannerLinkUrlGroup">
+                    <label for="bannerLinkUrl">Đường Dẫn Liên Kết (Redirect Link)</label>
+                    <input type="text" id="bannerLinkUrl" placeholder="Ví dụ: /Products?category=cpu (nếu có)..." />
+                </div>
+
+                <div id="streamerPcFormGroup" style="display: none; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;">
+                    <h4 style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Cấu hình linh kiện (Dữ liệu SQL)</h4>
+                    
+                    <div class="form-row">
+                        <div class="admin-form-group">
+                            <label for="streamerTag">Nhãn Cấu Hình *</label>
+                            <input type="text" id="streamerTag" placeholder="Ví dụ: Esport Master, Streamer Elite..." />
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="streamerAvatar">Avatar Streamer (URL) *</label>
+                            <input type="text" id="streamerAvatar" placeholder="Ví dụ: /images/3ga.png..." />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="admin-form-group">
+                            <label for="pcCpuSelect">CPU *</label>
+                            <select id="pcCpuSelect" required></select>
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="pcMainboardSelect">Mainboard *</label>
+                            <select id="pcMainboardSelect" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="admin-form-group">
+                            <label for="pcRamSelect">RAM *</label>
+                            <select id="pcRamSelect" required></select>
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="pcVgaSelect">VGA *</label>
+                            <select id="pcVgaSelect" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="admin-form-group">
+                            <label for="pcPsuSelect">PSU (Nguồn) *</label>
+                            <select id="pcPsuSelect" required></select>
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="pcCaseSelect">Vỏ Case *</label>
+                            <select id="pcCaseSelect" required></select>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-form-group">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--text-dark); background: rgba(59, 130, 246, 0.08); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.15); display: flex; justify-content: space-between;">
+                            <span>Tổng giá cấu hình dự kiến (SQL):</span>
+                            <span id="streamerPcTotalPrice" style="color: var(--primary); font-weight: 700;">0đ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="bannerDisplayOrder" value="0" />
+                <div class="form-row">
+                    <div class="admin-form-group" style="display: flex; align-items: center; padding-top: 12px; padding-bottom: 12px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
+                            <input type="checkbox" id="bannerIsActive" checked style="width: 18px; height: 18px;" />
+                            <span>Kích hoạt (Active)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: none;">
+                    <div class="admin-form-group">
+                        <label for="bannerStartDate">Ngày Bắt Đầu</label>
+                        <input type="datetime-local" id="bannerStartDate" />
+                    </div>
+                    <div class="admin-form-group">
+                        <label for="bannerEndDate">Ngày Kết Thúc</label>
+                        <input type="datetime-local" id="bannerEndDate" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeBannerModal()">Hủy</button>
+                    <button type="submit" class="btn-submit">LƯU BANNER</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script>
         // ==========================================
@@ -927,7 +1122,8 @@
             customers: { title: "Quản Lý Khách Hàng", subtitle: "Kiểm soát quyền truy cập và phân quyền tài khoản" },
             reviews: { title: "Duyệt Đánh Giá", subtitle: "Xét duyệt hoặc gỡ bỏ nhận xét của khách hàng" },
             chats: { title: "Tin Nhắn Chatbot AI", subtitle: "Xem lịch sử hội thoại hỗ trợ khách hàng của bot" },
-            notifications: { title: "Thông Báo Hệ Thống", subtitle: "Gửi thông báo đẩy SignalR thời gian thực đến người dùng" }
+            notifications: { title: "Thông Báo Hệ Thống", subtitle: "Gửi thông báo đẩy SignalR thời gian thực đến người dùng" },
+            banners: { title: "Quản Lý Banner Các Trang", subtitle: "Quản lý hình ảnh banner hiển thị ở các trang chủ, PC Build, và Gaming Gear" }
         };
 
         document.querySelectorAll('.menu-item:not(.client-link)').forEach(item => {
@@ -958,6 +1154,7 @@
             else if (tab === 'reviews') loadReviewsData();
             else if (tab === 'chats') loadChatSessions();
             else if (tab === 'notifications') populateNotificationUsers();
+            else if (tab === 'banners') loadBannersData();
         }
 
         // ==========================================
@@ -2204,6 +2401,481 @@
             if (collapsedState === 'true') {
                 document.body.classList.add('sidebar-collapsed');
             }
+        }
+
+        // ==========================================
+        // 12. QUẢN LÝ BANNER CÁC TRANG
+        // ==========================================
+        let allBannersData = [];
+        let currentSelectedPageType = ''; // 'home', 'pcbuild', 'gaminggear'
+        let pcBuildProductsList = [];
+
+        async function loadBannersData() {
+            try {
+                const res = await fetch('/api/Admin/banners', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                if (!res.ok) {
+                    showToast('Không thể tải danh sách banner', 'error');
+                    return;
+                }
+                allBannersData = await res.json();
+
+                // Nếu đang hiển thị chi tiết thì render lại bảng của page đó
+                if (currentSelectedPageType) {
+                    renderBannersTable(currentSelectedPageType);
+                } else {
+                    backToBannerPages();
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Lỗi kết nối máy chủ khi tải banner', 'error');
+            }
+        }
+
+        async function populatePcBuildProducts() {
+            if (pcBuildProductsList.length === 0) {
+                try {
+                    const res = await fetch('/api/Products?PageSize=250&OnlyActive=true');
+                    if (res.ok) {
+                        const data = await res.json();
+                        pcBuildProductsList = data.items || [];
+                    }
+                } catch (e) {
+                    console.error("Lỗi fetch products cho PC Build:", e);
+                }
+            }
+
+            const categories = {
+                cpu: [],
+                mainboard: [],
+                ram: [],
+                vga: [],
+                psu: [],
+                case: []
+            };
+
+            pcBuildProductsList.forEach(p => {
+                const catName = (p.categoryName || "").toLowerCase();
+                const catId = p.categoryId;
+
+                let targetCat = null;
+                if (catId === 2 || catName.includes("cpu") || catName.includes("vi xử lý") || catName.includes("bộ xử lý")) {
+                    targetCat = "cpu";
+                } else if (catId === 4 || catName.includes("mainboard") || catName.includes("bo mạch") || catName.includes("motherboard")) {
+                    targetCat = "mainboard";
+                } else if (catId === 10 || catName.includes("ram") || catName.includes("bộ nhớ ram")) {
+                    targetCat = "ram";
+                } else if (catId === 1 || catName.includes("vga") || catName.includes("card đồ họa") || catName.includes("card màn hình")) {
+                    targetCat = "vga";
+                } else if (catId === 5 || catName.includes("psu") || catName.includes("nguồn") || catName.includes("power")) {
+                    targetCat = "psu";
+                } else if (catId === 8 || catName.includes("case") || catName.includes("vỏ máy") || catName.includes("thùng máy")) {
+                    targetCat = "case";
+                }
+
+                if (targetCat) {
+                    categories[targetCat].push(p);
+                }
+            });
+
+            const selectsMap = {
+                cpu: 'pcCpuSelect',
+                mainboard: 'pcMainboardSelect',
+                ram: 'pcRamSelect',
+                vga: 'pcVgaSelect',
+                psu: 'pcPsuSelect',
+                case: 'pcCaseSelect'
+            };
+
+            Object.keys(selectsMap).forEach(cat => {
+                const selectId = selectsMap[cat];
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '';
+                    const items = categories[cat];
+                    if (items.length === 0) {
+                        select.innerHTML = '<option value="" data-price="0">— Không có sản phẩm —</option>';
+                    } else {
+                        items.forEach(p => {
+                            select.innerHTML += `<option value="${p.productId}" data-price="${p.price}">${p.productName} (${p.price.toLocaleString('vi-VN')}đ)</option>`;
+                        });
+                    }
+                    select.onchange = updateStreamerPcTotalPrice;
+                }
+            });
+
+            updateStreamerPcTotalPrice();
+        }
+
+        function updateStreamerPcTotalPrice() {
+            let total = 0;
+            const selects = ['pcCpuSelect', 'pcMainboardSelect', 'pcRamSelect', 'pcVgaSelect', 'pcPsuSelect', 'pcCaseSelect'];
+            selects.forEach(selId => {
+                const sel = document.getElementById(selId);
+                if (sel && sel.selectedOptions.length > 0) {
+                    const price = parseFloat(sel.selectedOptions[0].getAttribute('data-price')) || 0;
+                    total += price;
+                }
+            });
+            document.getElementById('streamerPcTotalPrice').textContent = total.toLocaleString('vi-VN') + 'đ';
+        }
+
+        async function selectBannerPage(pageType) {
+            currentSelectedPageType = pageType;
+            document.getElementById('bannersPageGrid').style.display = 'none';
+            document.getElementById('bannerDetailCard').style.display = 'block';
+
+            let title = 'Quản lý Banner - Trang Chủ';
+            if (pageType === 'pcbuild') {
+                title = 'Quản lý Cấu hình PC theo Streamer';
+                await populatePcBuildProducts();
+            }
+            if (pageType === 'gaminggear') title = 'Quản lý Banner - Gaming Gear';
+            document.getElementById('selectedPageTitle').textContent = title;
+
+            renderBannersTable(pageType);
+        }
+
+        function backToBannerPages() {
+            currentSelectedPageType = '';
+            document.getElementById('bannersPageGrid').style.display = 'grid';
+            document.getElementById('bannerDetailCard').style.display = 'none';
+        }
+
+        function renderBannersTable(pageType) {
+            const tbody = document.getElementById('bannersTableBody');
+            tbody.innerHTML = '';
+
+            const thead = document.querySelector('#bannerDetailCard .admin-table thead');
+            if (pageType === 'pcbuild') {
+                thead.innerHTML = `
+                    <tr>
+                        <th>Ảnh PC</th>
+                        <th>Tên</th>
+                        <th>Tiêu đề</th>
+                        <th>Cấu hình</th>
+                        <th>Tổng giá</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                `;
+            } else {
+                thead.innerHTML = `
+                    <tr>
+                        <th>Ảnh Demo</th>
+                        <th>Tiêu Đề</th>
+                        <th>Liên Kết (Link)</th>
+                        <th>Thời Gian Hiển Thị</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                `;
+            }
+
+            const filtered = allBannersData.filter(b => {
+                const title = b.title || '';
+                if (pageType === 'pcbuild') return title.startsWith('[pcbuild]');
+                if (pageType === 'gaminggear') return title.startsWith('[gaminggear]');
+                return title.startsWith('[home]') || (!title.startsWith('[pcbuild]') && !title.startsWith('[gaminggear]'));
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding: 24px;">Không có cấu hình nào ở trang này. Nhấn nút thêm mới để tạo!</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(b => {
+                let cleanTitle = b.title || '';
+                if (cleanTitle.startsWith('[home]')) cleanTitle = cleanTitle.substring(6);
+                if (cleanTitle.startsWith('[pcbuild]')) cleanTitle = cleanTitle.substring(9);
+                if (cleanTitle.startsWith('[gaminggear]')) cleanTitle = cleanTitle.substring(12);
+
+                const statusBadge = b.isActive 
+                    ? `<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 700;">Đang hoạt động</span>`
+                    : `<span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 700;">Tạm khóa</span>`;
+
+                const startStr = b.startDate ? new Date(b.startDate).toLocaleDateString('vi-VN') : '—';
+                const endStr = b.endDate ? new Date(b.endDate).toLocaleDateString('vi-VN') : '—';
+
+                const isVideo = b.imageUrl && (b.imageUrl.endsWith('.mp4') || b.imageUrl.endsWith('.webm'));
+                const previewHtml = isVideo
+                    ? `<video src="${b.imageUrl}" class="banner-img-preview" muted loop autoplay style="width: 120px; height: 60px; object-fit: cover; border-radius: 8px;"></video>`
+                    : `<img src="${b.imageUrl}" class="banner-img-preview" onerror="this.src='/images/no-image.png'" style="width: 120px; height: 60px; object-fit: cover; border-radius: 8px;" />`;
+
+                if (pageType === 'pcbuild') {
+                    let specsHtml = 'Chưa cấu hình linh kiện';
+                    let totalPriceStr = '—';
+                    let tagText = '—';
+                    let avatarHtml = '—';
+                    
+                    try {
+                        const meta = JSON.parse(b.linkUrl);
+                        tagText = meta.tag || '—';
+                        avatarHtml = meta.avatar 
+                            ? `<img src="${meta.avatar}" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:1.5px solid var(--primary);" onerror="this.src='/images/3ga.png'" />`
+                            : '—';
+                            
+                        const cpu = pcBuildProductsList.find(p => p.productId === meta.cpuId);
+                        const mb = pcBuildProductsList.find(p => p.productId === meta.mainboardId);
+                        const ram = pcBuildProductsList.find(p => p.productId === meta.ramId);
+                        const vga = pcBuildProductsList.find(p => p.productId === meta.vgaId);
+                        const psu = pcBuildProductsList.find(p => p.productId === meta.psuId);
+                        const cas = pcBuildProductsList.find(p => p.productId === meta.caseId);
+                        
+                        const cpuName = cpu ? cpu.productName : `CPU #${meta.cpuId}`;
+                        const mbName = mb ? mb.productName : `Mainboard #${meta.mainboardId}`;
+                        const ramName = ram ? ram.productName : `RAM #${meta.ramId}`;
+                        const vgaName = vga ? vga.productName : `VGA #${meta.vgaId}`;
+                        const psuName = psu ? psu.productName : `PSU #${meta.psuId}`;
+                        const caseName = cas ? cas.productName : `Case #${meta.caseId}`;
+                        
+                        specsHtml = `<div style="font-size:11px; line-height:1.4; text-align:left;">
+                            • CPU: <b>${cpuName}</b><br/>
+                            • Main: <b>${mbName}</b><br/>
+                            • RAM: <b>${ramName}</b><br/>
+                            • VGA: <b>${vgaName}</b><br/>
+                            • PSU: <b>${psuName}</b><br/>
+                            • Case: <b>${caseName}</b>
+                        </div>`;
+                        
+                        const total = (cpu?.price || 0) + (mb?.price || 0) + (ram?.price || 0) + (vga?.price || 0) + (psu?.price || 0) + (cas?.price || 0);
+                        totalPriceStr = `<b>${total.toLocaleString('vi-VN')}đ</b>`;
+                    } catch (e) {
+                        console.error("Lỗi parse cấu hình banner:", e);
+                    }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="width: 140px;">${previewHtml}</td>
+                            <td style="font-weight: 600; color: var(--text-dark);">${cleanTitle}</td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    ${avatarHtml}
+                                    <span style="background:var(--primary); color:white; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:700;">${tagText}</span>
+                                </div>
+                            </td>
+                            <td>${specsHtml}</td>
+                            <td style="color:var(--primary);">${totalPriceStr}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div style="display:flex; gap: 8px;">
+                                    <button class="btn-submit" onclick="openEditBannerModal(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer;">Sửa</button>
+                                    <button class="btn-cancel" onclick="deleteBanner(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer; background:rgba(239, 68, 68, 0.1); color:#ef4444;">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td style="width: 140px;">${previewHtml}</td>
+                            <td style="font-weight: 600; color: var(--text-dark);">${cleanTitle}</td>
+                            <td><a href="${b.linkUrl || '#'}" target="_blank" style="color: var(--primary); text-decoration: none;">${b.linkUrl || 'Không có link'}</a></td>
+                            <td style="font-size: 11px; line-height: 1.4;">Bắt đầu: ${startStr}<br/>Kết thúc: ${endStr}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div style="display:flex; gap: 8px;">
+                                    <button class="btn-submit" onclick="openEditBannerModal(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer;">Sửa</button>
+                                    <button class="btn-cancel" onclick="deleteBanner(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer; background:rgba(239, 68, 68, 0.1); color:#ef4444;">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+        }
+
+        async function openAddBannerModal() {
+            document.getElementById('bannerForm').reset();
+            document.getElementById('editBannerId').value = '';
+            document.getElementById('bannerPageType').value = currentSelectedPageType;
+            document.getElementById('modalBannerTitle').textContent = currentSelectedPageType === 'pcbuild' ? 'Thêm Cấu Hình PC Mới' : 'Thêm Banner Mới';
+            document.getElementById('bannerIsActive').checked = true;
+
+            if (currentSelectedPageType === 'pcbuild') {
+                document.getElementById('bannerLinkUrlGroup').style.display = 'none';
+                document.getElementById('streamerPcFormGroup').style.display = 'block';
+                await populatePcBuildProducts();
+                document.getElementById('streamerTag').value = '';
+                document.getElementById('streamerAvatar').value = '';
+            } else {
+                document.getElementById('bannerLinkUrlGroup').style.display = 'block';
+                document.getElementById('streamerPcFormGroup').style.display = 'none';
+            }
+
+            const now = new Date();
+            const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('bannerStartDate').value = localNow;
+            
+            const nextYear = new Date();
+            nextYear.setFullYear(now.getFullYear() + 1);
+            const localNextYear = new Date(nextYear.getTime() - nextYear.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('bannerEndDate').value = localNextYear;
+
+            document.getElementById('bannerModal').classList.add('active');
+        }
+
+        async function openEditBannerModal(bannerId) {
+            const b = allBannersData.find(x => x.bannerId === bannerId);
+            if (!b) return;
+
+            document.getElementById('editBannerId').value = b.bannerId;
+            document.getElementById('bannerPageType').value = currentSelectedPageType;
+            document.getElementById('modalBannerTitle').textContent = currentSelectedPageType === 'pcbuild' ? 'Chỉnh Sửa Cấu Hình PC' : 'Chỉnh Sửa Banner';
+
+            let cleanTitle = b.title || '';
+            if (cleanTitle.startsWith('[home]')) cleanTitle = cleanTitle.substring(6);
+            if (cleanTitle.startsWith('[pcbuild]')) cleanTitle = cleanTitle.substring(9);
+            if (cleanTitle.startsWith('[gaminggear]')) cleanTitle = cleanTitle.substring(12);
+
+            document.getElementById('bannerTitle').value = cleanTitle;
+            document.getElementById('bannerImageUrl').value = b.imageUrl || '';
+            document.getElementById('bannerDisplayOrder').value = b.displayOrder;
+            document.getElementById('bannerIsActive').checked = b.isActive;
+
+            if (currentSelectedPageType === 'pcbuild') {
+                document.getElementById('bannerLinkUrlGroup').style.display = 'none';
+                document.getElementById('streamerPcFormGroup').style.display = 'block';
+                await populatePcBuildProducts();
+                
+                try {
+                    const meta = JSON.parse(b.linkUrl || '{}');
+                    document.getElementById('streamerTag').value = meta.tag || '';
+                    document.getElementById('streamerAvatar').value = meta.avatar || '';
+                    
+                    if (meta.cpuId) document.getElementById('pcCpuSelect').value = meta.cpuId;
+                    if (meta.mainboardId) document.getElementById('pcMainboardSelect').value = meta.mainboardId;
+                    if (meta.ramId) document.getElementById('pcRamSelect').value = meta.ramId;
+                    if (meta.vgaId) document.getElementById('pcVgaSelect').value = meta.vgaId;
+                    if (meta.psuId) document.getElementById('pcPsuSelect').value = meta.psuId;
+                    if (meta.caseId) document.getElementById('pcCaseSelect').value = meta.caseId;
+                } catch (err) {
+                    console.error("Lỗi parse JSON linkUrl:", err);
+                    document.getElementById('streamerTag').value = '';
+                    document.getElementById('streamerAvatar').value = '';
+                }
+                updateStreamerPcTotalPrice();
+            } else {
+                document.getElementById('bannerLinkUrlGroup').style.display = 'block';
+                document.getElementById('streamerPcFormGroup').style.display = 'none';
+                document.getElementById('bannerLinkUrl').value = b.linkUrl || '';
+            }
+
+            if (b.startDate) {
+                const date = new Date(b.startDate);
+                const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                document.getElementById('bannerStartDate').value = local;
+            } else {
+                document.getElementById('bannerStartDate').value = '';
+            }
+
+            if (b.endDate) {
+                const date = new Date(b.endDate);
+                const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                document.getElementById('bannerEndDate').value = local;
+            } else {
+                document.getElementById('bannerEndDate').value = '';
+            }
+
+            document.getElementById('bannerModal').classList.add('active');
+        }
+
+        function closeBannerModal() {
+            document.getElementById('bannerModal').classList.remove('active');
+        }
+
+        async function submitBannerForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('editBannerId').value;
+            const pageType = document.getElementById('bannerPageType').value;
+            const rawTitle = document.getElementById('bannerTitle').value.trim();
+            const imageUrl = document.getElementById('bannerImageUrl').value.trim();
+            const displayOrder = parseInt(document.getElementById('bannerDisplayOrder').value) || 0;
+            const isActive = document.getElementById('bannerIsActive').checked;
+            
+            const startVal = document.getElementById('bannerStartDate').value;
+            const endVal = document.getElementById('bannerEndDate').value;
+
+            let linkUrl = '';
+            if (pageType === 'pcbuild') {
+                const meta = {
+                    tag: document.getElementById('streamerTag').value.trim(),
+                    avatar: document.getElementById('streamerAvatar').value.trim(),
+                    cpuId: parseInt(document.getElementById('pcCpuSelect').value),
+                    mainboardId: parseInt(document.getElementById('pcMainboardSelect').value),
+                    ramId: parseInt(document.getElementById('pcRamSelect').value),
+                    vgaId: parseInt(document.getElementById('pcVgaSelect').value),
+                    psuId: parseInt(document.getElementById('pcPsuSelect').value),
+                    caseId: parseInt(document.getElementById('pcCaseSelect').value)
+                };
+
+                if (!meta.tag || !meta.avatar || !meta.cpuId || !meta.mainboardId || !meta.ramId || !meta.vgaId || !meta.psuId || !meta.caseId) {
+                    showToast('Vui lòng điền nhãn, avatar và chọn tất cả các linh kiện!', 'error');
+                    return;
+                }
+                linkUrl = JSON.stringify(meta);
+            } else {
+                linkUrl = document.getElementById('bannerLinkUrl').value.trim();
+            }
+
+            const title = `[${pageType}] ${rawTitle}`;
+
+            const payload = {
+                bannerId: id ? parseInt(id) : null,
+                title,
+                imageUrl,
+                linkUrl: linkUrl || null,
+                displayOrder,
+                startDate: startVal ? new Date(startVal).toISOString() : null,
+                endDate: endVal ? new Date(endVal).toISOString() : null,
+                isActive
+            };
+
+            try {
+                const res = await fetch('/api/Admin/banner', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    showToast('Lưu banner thành công!', 'success');
+                    closeBannerModal();
+                    loadBannersData();
+                } else {
+                    const data = await res.json();
+                    showToast(data.message || 'Lưu banner thất bại', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Có lỗi xảy ra khi lưu banner', 'error');
+            }
+        }
+
+        function deleteBanner(bannerId) {
+            showConfirm('Bạn có chắc chắn muốn xóa cấu hình/banner này không?', async () => {
+                try {
+                    const res = await fetch(`/api/Admin/banner/${bannerId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+
+                    if (res.ok) {
+                        showToast('Xóa banner thành công!', 'success');
+                        loadBannersData();
+                    } else {
+                        const data = await res.json();
+                        showToast(data.message || 'Xóa banner thất bại', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast('Có lỗi xảy ra khi xóa banner', 'error');
+                }
+            });
         }
 
         // AUTO INITIALIZE OVERVIEW DATA ON LAUNCH

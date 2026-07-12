@@ -7,8 +7,120 @@
     <title>Xây Dựng Cấu Hình PC - HYPER CORE</title>
 
     <!-- Style Link -->
-    <link rel="stylesheet" href="/css/style.css?v=1.0.5">
-    <link rel="stylesheet" href="/assets/css/auth-ui.css?v=1.0.5">
+    <link rel="stylesheet" href="/css/style.css?v=1.1.8">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css">
+    <style>
+        /* ===== PAGINATION STYLE ===== */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .page-btn {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #222222;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .page-btn:hover:not(.disabled) {
+            background: rgba(0, 0, 0, 0.05);
+            color: #111111;
+            transform: translateY(-2px);
+        }
+        .page-btn.active {
+            background: #111111;
+            color: #ffffff;
+            border-color: #111111;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        .page-btn.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        /* ===== INLINE DROPDOWN STYLE ===== */
+        .inline-dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .inline-dropdown-trigger {
+            cursor: pointer;
+            border-bottom: 2px dashed #d1d5db;
+            padding-bottom: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #111827;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+        .inline-dropdown-trigger:hover {
+            color: #111827;
+            border-bottom-color: #111827;
+        }
+        .inline-dropdown-trigger .chevron-icon {
+            transition: transform 0.2s ease;
+            stroke-width: 3px;
+        }
+        .inline-dropdown-trigger.open .chevron-icon {
+            transform: rotate(180deg);
+        }
+        .inline-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            min-width: 150px;
+            flex-direction: column;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .inline-dropdown-menu.show {
+            display: flex;
+        }
+        .inline-dropdown-item {
+            padding: 10px 18px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #4b5563;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-align: left;
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+            border: none;
+            background: transparent;
+            width: 100%;
+            display: block;
+            box-sizing: border-box;
+        }
+        .inline-dropdown-item:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+        .inline-dropdown-item.active {
+            background: #f3f4f6;
+            color: #111827;
+        }
+    </style>
 </head>
 
 <body>
@@ -50,7 +162,7 @@
             </div>
             <div class="nav-item-dropdown">
                 <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
-                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
                     <div class="mega-col">
                         <h3>Gaming Gear</h3>
                         <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
@@ -65,7 +177,7 @@
             </div>
             <div class="nav-item-dropdown">
                 <a href="/pcbuild" id="nav-pcbuild" class="active">PC Build</a>
-                <div class="mega-menu" style="width: 220px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
                     <div class="mega-col">
                         <h3>PC Build</h3>
                         <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
@@ -165,9 +277,19 @@
     <!-- CONTENT WRAPPER -->
     <div class="pc-build-content">
         <main class="main-container">
-            <!-- SECTION 1: RECOMMENDED CONFIGURATIONS -->
             <div class="section-header" id="pc-streamer-section">
-                <h2>PC Streamer / Cấu hình đề xuất</h2>
+                <h2>PC 
+                    <span class="inline-dropdown-wrapper">
+                        <span class="inline-dropdown-trigger" id="streamerDropdownTrigger">STREAMER <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+                        <div class="inline-dropdown-menu" id="streamerDropdownMenu">
+                            <div class="inline-dropdown-item active" data-value="STREAMER">STREAMER</div>
+                            <div class="inline-dropdown-item" data-value="GAME THỦ">GAME THỦ</div>
+                            <div class="inline-dropdown-item" data-value="KOL">KOL</div>
+                            <div class="inline-dropdown-item" data-value="CREATOR">CREATOR</div>
+                        </div>
+                    </span> 
+                    / Cấu hình đề xuất
+                </h2>
             <div class="line"></div>
         </div>
 
@@ -177,21 +299,18 @@
             </button>
             <div class="bento-grid" id="bentoCarousel">
             <!-- CARD 1 -->
-            <div class="bento-card">
+            <div class="bento-card" data-category="KOL">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Esport Master</span>
-                    <div class="streamer-img-wrapper">
-                        <img src="/images/3ga.png" alt="Setup Streamer" class="streamer-img">
-                    </div>
-                    <div class="pc-img-wrapper">
-                        <img src="/images/pc_valorant_pc.png" alt="PC Build" class="pc-img">
+                    <img src="/images/pc_valorant_pc.png" alt="PC Build" class="pc-img">
+                    <div class="streamer-avatar-wrapper">
+                        <img src="/images/3ga.png" alt="Streamer Avatar" class="streamer-avatar">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">PC Esport Master</h3>
-                    <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <p class="card-price" data-price="18500000" style="margin-bottom: 0;">18.500.000 đ</p>
-                        <button class="btn-customize" 
+                    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <h3 class="card-title">PC Esport Master</h3>
+                        <button class="btn-customize-link" 
                                 data-cpu="Intel Core i5-12400F" data-cpu-price="3500000" 
                                 data-vga="RTX 3060 12GB" data-vga-price="8000000" 
                                 data-ram="16GB RAM DDR4" data-ram-price="1500000" 
@@ -199,36 +318,33 @@
                                 data-psu="Deepcool PF650 650W" data-psu-price="1500000" 
                                 data-case="Xigmatek NYX Premium" data-case-price="1800000" 
                                 onclick="customizePrebuilt(this)">
-                            <svg class="edit-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                            Tham khảo
+                            Tham khảo <span class="arrow">→</span>
                         </button>
                     </div>
+                    <div class="card-price">18.500.000 đ</div>
                     <div class="specs-tags config-tags">
-                        <span class="specs-tag config-tag">Intel Core i5-12400F</span>
-                        <span class="specs-tag config-tag">RTX 3060 12GB</span>
-                        <span class="specs-tag config-tag">16GB RAM DDR4</span>
-                        <span class="specs-tag config-tag">500GB SSD NVMe</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>i5-12400F</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>RTX 3060 12GB</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💾</span>16GB RAM</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💿</span>500GB SSD</span>
                     </div>
                     <button class="bento-btn" onclick="addPrebuiltToCart('PC Esport Master', 'Intel Core i5-12400F | RTX 3060 12GB | 16GB RAM DDR4 | 500GB SSD NVMe', 18500000, '/images/3ga.png')">Thêm vào giỏ</button>
                 </div>
             </div>
 
             <!-- CARD 2 -->
-            <div class="bento-card">
+            <div class="bento-card" data-category="STREAMER">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Streamer Elite</span>
-                    <div class="streamer-img-wrapper">
-                        <img src="/images/doshisha.png" alt="Setup Streamer" class="streamer-img">
-                    </div>
-                    <div class="pc-img-wrapper">
-                        <img src="/images/pc_streamer_pc.png" alt="PC Build" class="pc-img">
+                    <img src="/images/pc_streamer_pc.png" alt="PC Build" class="pc-img">
+                    <div class="streamer-avatar-wrapper">
+                        <img src="/images/doshisha.png" alt="Streamer Avatar" class="streamer-avatar">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">PC Streamer Elite</h3>
-                    <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <p class="card-price" data-price="32000000" style="margin-bottom: 0;">32.000.000 đ</p>
-                        <button class="btn-customize" 
+                    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <h3 class="card-title">PC Streamer Elite</h3>
+                        <button class="btn-customize-link" 
                                 data-cpu="AMD Ryzen 7 5700X" data-cpu-price="6000000" 
                                 data-vga="RTX 4060 Ti 8GB" data-vga-price="13500000" 
                                 data-ram="32GB RAM DDR4" data-ram-price="3000000" 
@@ -236,36 +352,33 @@
                                 data-psu="Corsair CV750 750W" data-psu-price="2500000" 
                                 data-case="NZXT H5 Flow" data-case-price="3200000" 
                                 onclick="customizePrebuilt(this)">
-                            <svg class="edit-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                            Tham khảo
+                            Tham khảo <span class="arrow">→</span>
                         </button>
                     </div>
+                    <div class="card-price">32.000.000 đ</div>
                     <div class="specs-tags config-tags">
-                        <span class="specs-tag config-tag">AMD Ryzen 7 5700X</span>
-                        <span class="specs-tag config-tag">RTX 4060 Ti 8GB</span>
-                        <span class="specs-tag config-tag">32GB RAM DDR4</span>
-                        <span class="specs-tag config-tag">1TB SSD Gen4</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>R7 5700X</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>RTX 4060 Ti</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💾</span>32GB RAM</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💿</span>1TB SSD</span>
                     </div>
                     <button class="bento-btn" onclick="addPrebuiltToCart('PC Streamer Elite', 'AMD Ryzen 7 5700X | RTX 4060 Ti 8GB | 32GB RAM DDR4 | 1TB SSD Gen4', 32000000, '/images/doshisha.png')">Thêm vào giỏ</button>
                 </div>
             </div>
 
             <!-- CARD 3 -->
-            <div class="bento-card">
+            <div class="bento-card" data-category="CREATOR">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Creator Extreme</span>
-                    <div class="streamer-img-wrapper">
-                        <img src="/images/dungct.png" alt="Setup Streamer" class="streamer-img">
-                    </div>
-                    <div class="pc-img-wrapper">
-                        <img src="/images/pc_creator_pc.png" alt="PC Build" class="pc-img">
+                    <img src="/images/pc_creator_pc.png" alt="PC Build" class="pc-img">
+                    <div class="streamer-avatar-wrapper">
+                        <img src="/images/dungct.png" alt="Streamer Avatar" class="streamer-avatar">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">PC Creator Extreme Setup</h3>
-                    <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <p class="card-price" data-price="62000000" style="margin-bottom: 0;">62.000.000 đ</p>
-                        <button class="btn-customize" 
+                    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <h3 class="card-title">PC Creator Extreme Setup</h3>
+                        <button class="btn-customize-link" 
                                 data-cpu="Intel Core i9-13900K" data-cpu-price="13500000" 
                                 data-vga="GeForce RTX 4080 Super 16GB" data-vga-price="27500000" 
                                 data-ram="64GB DDR5 RAM" data-ram-price="6000000" 
@@ -273,36 +386,33 @@
                                 data-psu="Corsair RM1000x 1000W" data-psu-price="4500000" 
                                 data-case="Lian Li O11 Dynamic EVO" data-case-price="2000000" 
                                 onclick="customizePrebuilt(this)">
-                            <svg class="edit-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                            Tham khảo
+                            Tham khảo <span class="arrow">→</span>
                         </button>
                     </div>
+                    <div class="card-price">62.000.000 đ</div>
                     <div class="specs-tags config-tags">
-                        <span class="specs-tag config-tag">Intel Core i9-13900K</span>
-                        <span class="specs-tag config-tag">GeForce RTX 4080 Super 16GB</span>
-                        <span class="specs-tag config-tag">64GB DDR5 RAM</span>
-                        <span class="specs-tag config-tag">2TB Gen4 SSD</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>i9-13900K</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>RTX 4080 Super</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💾</span>64GB RAM</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💿</span>2TB SSD</span>
                     </div>
                     <button class="bento-btn" onclick="addPrebuiltToCart('PC Creator Extreme Setup', 'Intel Core i9-13900K | RTX 4080 Super 16GB | 64GB RAM', 62000000, '/images/dungct.png')">Thêm vào giỏ</button>
                 </div>
             </div>
 
-            <!-- CARD 4 (PC Gia Tốc Gaming) -->
-            <div class="bento-card">
+            <!-- CARD 4 -->
+            <div class="bento-card" data-category="GAME THỦ">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Gia Tốc Gaming</span>
-                    <div class="streamer-img-wrapper">
-                        <img src="/images/image_9879a8.jpg" alt="Setup Streamer" class="streamer-img">
-                    </div>
-                    <div class="pc-img-wrapper">
-                        <img src="/images/pc_giatoc_pc.png" alt="PC Build" class="pc-img">
+                    <img src="/images/pc_giatoc_pc.png" alt="PC Build" class="pc-img">
+                    <div class="streamer-avatar-wrapper">
+                        <img src="/images/image_9879a8.jpg" alt="Streamer Avatar" class="streamer-avatar">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">PC Gia Tốc Gaming</h3>
-                    <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <p class="card-price" data-price="30500000" style="margin-bottom: 0;">30.500.000 đ</p>
-                        <button class="btn-customize" 
+                    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <h3 class="card-title">PC Gia Tốc Gaming</h3>
+                        <button class="btn-customize-link" 
                                 data-cpu="Intel Core i7-13700K" data-cpu-price="9500000" 
                                 data-vga="RTX 4070 12GB" data-vga-price="12000000" 
                                 data-ram="32GB DDR5" data-ram-price="3000000" 
@@ -310,36 +420,33 @@
                                 data-psu="750W Gold" data-psu-price="1500000" 
                                 data-case="Modern Glass Case" data-case-price="1000000" 
                                 onclick="customizePrebuilt(this)">
-                            <svg class="edit-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                            Tham khảo
+                            Tham khảo <span class="arrow">→</span>
                         </button>
                     </div>
+                    <div class="card-price">30.500.000 đ</div>
                     <div class="specs-tags config-tags">
-                        <span class="specs-tag config-tag">Intel Core i7-13700K</span>
-                        <span class="specs-tag config-tag">RTX 4070 12GB</span>
-                        <span class="specs-tag config-tag">32GB DDR5</span>
-                        <span class="specs-tag config-tag">1TB SSD Gen4</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>i7-13700K</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>RTX 4070 12GB</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💾</span>32GB RAM</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💿</span>1TB SSD</span>
                     </div>
                     <button class="bento-btn" onclick="addPrebuiltToCart('PC Gia Tốc Gaming', 'Intel Core i7-13700K | RTX 4070 12GB | 32GB DDR5 | 1TB SSD Gen4', 30500000, '/images/image_9879a8.jpg')">Thêm vào giỏ</button>
                 </div>
             </div>
 
             <!-- CARD 5 -->
-            <div class="bento-card">
+            <div class="bento-card" data-category="GAME THỦ">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Ultimate Gaming</span>
-                    <div class="streamer-img-wrapper">
-                        <img src="/images/3ga.png" alt="Setup Streamer" class="streamer-img">
-                    </div>
-                    <div class="pc-img-wrapper">
-                        <img src="/images/pc_valorant_pc.png" alt="PC Build" class="pc-img">
+                    <img src="/images/pc_valorant_pc.png" alt="PC Build" class="pc-img">
+                    <div class="streamer-avatar-wrapper">
+                        <img src="/images/3ga.png" alt="Streamer Avatar" class="streamer-avatar">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">PC Ultimate Gaming</h3>
-                    <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <p class="card-price" data-price="27500000" style="margin-bottom: 0;">27.500.000 đ</p>
-                        <button class="btn-customize" 
+                    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <h3 class="card-title">PC Ultimate Gaming</h3>
+                        <button class="btn-customize-link" 
                                 data-cpu="AMD Ryzen 5 7600X" data-cpu-price="5500000" 
                                 data-vga="RTX 4070 12GB" data-vga-price="13500000" 
                                 data-ram="32GB RAM DDR5" data-ram-price="3000000" 
@@ -347,36 +454,33 @@
                                 data-psu="Cooler Master MWE 750W" data-psu-price="1500000" 
                                 data-case="Corsair 3000D" data-case-price="1000000" 
                                 onclick="customizePrebuilt(this)">
-                            <svg class="edit-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                            Tham khảo
+                            Tham khảo <span class="arrow">→</span>
                         </button>
                     </div>
+                    <div class="card-price">27.500.000 đ</div>
                     <div class="specs-tags config-tags">
-                        <span class="specs-tag config-tag">AMD Ryzen 5 7600X</span>
-                        <span class="specs-tag config-tag">RTX 4070 12GB</span>
-                        <span class="specs-tag config-tag">32GB RAM DDR5</span>
-                        <span class="specs-tag config-tag">1TB SSD NVMe</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>R5 7600X</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>RTX 4070 12GB</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💾</span>32GB RAM</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💿</span>1TB SSD</span>
                     </div>
                     <button class="bento-btn" onclick="addPrebuiltToCart('PC Ultimate Gaming', 'AMD Ryzen 5 7600X | RTX 4070 12GB | 32GB RAM DDR5 | 1TB SSD NVMe', 27500000, '/images/3ga.png')">Thêm vào giỏ</button>
                 </div>
             </div>
 
             <!-- CARD 6 -->
-            <div class="bento-card">
+            <div class="bento-card" data-category="STREAMER">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Streamer Pro</span>
-                    <div class="streamer-img-wrapper">
-                        <img src="/images/doshisha.png" alt="Setup Streamer" class="streamer-img">
-                    </div>
-                    <div class="pc-img-wrapper">
-                        <img src="/images/pc_streamer_pc.png" alt="PC Build" class="pc-img">
+                    <img src="/images/pc_streamer_pc.png" alt="PC Build" class="pc-img">
+                    <div class="streamer-avatar-wrapper">
+                        <img src="/images/doshisha.png" alt="Streamer Avatar" class="streamer-avatar">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">PC Streamer Pro</h3>
-                    <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <p class="card-price" data-price="45000000" style="margin-bottom: 0;">45.000.000 đ</p>
-                        <button class="btn-customize" 
+                    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <h3 class="card-title">PC Streamer Pro</h3>
+                        <button class="btn-customize-link" 
                                 data-cpu="Intel Core i7-14700K" data-cpu-price="9500000" 
                                 data-vga="RTX 4070 Ti Super 16GB" data-vga-price="22000000" 
                                 data-ram="32GB RAM DDR5" data-ram-price="3500000" 
@@ -384,36 +488,33 @@
                                 data-psu="Corsair RM850e 850W" data-psu-price="3000000" 
                                 data-case="NZXT H7 Flow" data-case-price="1000000" 
                                 onclick="customizePrebuilt(this)">
-                            <svg class="edit-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                            Tham khảo
+                            Tham khảo <span class="arrow">→</span>
                         </button>
                     </div>
+                    <div class="card-price">45.000.000 đ</div>
                     <div class="specs-tags config-tags">
-                        <span class="specs-tag config-tag">Intel Core i7-14700K</span>
-                        <span class="specs-tag config-tag">RTX 4070 Ti Super 16GB</span>
-                        <span class="specs-tag config-tag">32GB RAM DDR5</span>
-                        <span class="specs-tag config-tag">1TB SSD Gen4</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>i7-14700K</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>RTX 4070 Ti Super</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💾</span>32GB RAM</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💿</span>1TB SSD</span>
                     </div>
                     <button class="bento-btn" onclick="addPrebuiltToCart('PC Streamer Pro', 'Intel Core i7-14700K | RTX 4070 Ti Super 16GB | 32GB RAM DDR5 | 1TB SSD Gen4', 45000000, '/images/doshisha.png')">Thêm vào giỏ</button>
                 </div>
             </div>
 
             <!-- CARD 7 -->
-            <div class="bento-card">
+            <div class="bento-card" data-category="CREATOR">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Creator Pro</span>
-                    <div class="streamer-img-wrapper">
-                        <img src="/images/dungct.png" alt="Setup Streamer" class="streamer-img">
-                    </div>
-                    <div class="pc-img-wrapper">
-                        <img src="/images/pc_creator_pc.png" alt="PC Build" class="pc-img">
+                    <img src="/images/pc_creator_pc.png" alt="PC Build" class="pc-img">
+                    <div class="streamer-avatar-wrapper">
+                        <img src="/images/dungct.png" alt="Streamer Avatar" class="streamer-avatar">
                     </div>
                 </div>
                 <div class="card-body">
-                    <h3 class="card-title">PC Creator Pro</h3>
-                    <div class="price-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <p class="card-price" data-price="55000000" style="margin-bottom: 0;">55.000.000 đ</p>
-                        <button class="btn-customize" 
+                    <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <h3 class="card-title">PC Creator Pro</h3>
+                        <button class="btn-customize-link" 
                                 data-cpu="AMD Ryzen 9 7900X" data-cpu-price="11500000" 
                                 data-vga="RTX 4080 16GB" data-vga-price="26500000" 
                                 data-ram="64GB RAM DDR5" data-ram-price="6000000" 
@@ -421,15 +522,15 @@
                                 data-psu="Antec NeoECO 850W" data-psu-price="3000000" 
                                 data-case="Fractal Design Pop Air" data-case-price="2000000" 
                                 onclick="customizePrebuilt(this)">
-                            <svg class="edit-icon" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                            Tham khảo
+                            Tham khảo <span class="arrow">→</span>
                         </button>
                     </div>
+                    <div class="card-price">55.000.000 đ</div>
                     <div class="specs-tags config-tags">
-                        <span class="specs-tag config-tag">AMD Ryzen 9 7900X</span>
-                        <span class="specs-tag config-tag">RTX 4080 16GB</span>
-                        <span class="specs-tag config-tag">64GB RAM DDR5</span>
-                        <span class="specs-tag config-tag">2TB SSD Gen4</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>R9 7900X</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>RTX 4080 16GB</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💾</span>64GB RAM</span>
+                        <span class="specs-tag config-tag"><span class="specs-icon">💿</span>2TB SSD</span>
                     </div>
                     <button class="bento-btn" onclick="addPrebuiltToCart('PC Creator Pro', 'AMD Ryzen 9 7900X | RTX 4080 16GB | 64GB RAM DDR5 | 2TB SSD Gen4', 55000000, '/images/dungct.png')">Thêm vào giỏ</button>
                 </div>
@@ -452,7 +553,9 @@
                 <!-- Row CPU -->
                 <div class="builder-row" data-category="cpu">
                     <div class="row-info">
-                        <div class="row-icon">CPU</div>
+                        <div class="row-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>
+                        </div>
                         <div>
                             <div class="category-name">Bộ xử lý trung tâm</div>
                             <div class="selected-item-title" id="selected-cpu">Chưa chọn CPU</div>
@@ -467,7 +570,9 @@
                 <!-- Row Mainboard -->
                 <div class="builder-row" data-category="mainboard">
                     <div class="row-info">
-                        <div class="row-icon">MB</div>
+                        <div class="row-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"></rect><rect x="5" y="5" width="6" height="6"></rect><path d="M16 5h1"></path><path d="M16 9h1"></path><path d="M16 13h1"></path><rect x="5" y="14" width="8" height="4"></rect></svg>
+                        </div>
                         <div>
                             <div class="category-name">Bo mạch chủ</div>
                             <div class="selected-item-title" id="selected-mainboard">Chưa chọn Bo mạch chủ</div>
@@ -482,7 +587,9 @@
                 <!-- Row RAM -->
                 <div class="builder-row" data-category="ram">
                     <div class="row-info">
-                        <div class="row-icon">RAM</div>
+                        <div class="row-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="1"></rect><line x1="6" y1="18" x2="6" y2="15"></line><line x1="10" y1="18" x2="10" y2="15"></line><line x1="14" y1="18" x2="14" y2="15"></line><line x1="18" y1="18" x2="18" y2="15"></line><rect x="5" y="9" width="3" height="4"></rect><rect x="10" y="9" width="3" height="4"></rect><rect x="16" y="9" width="3" height="4"></rect></svg>
+                        </div>
                         <div>
                             <div class="category-name">Bộ nhớ RAM</div>
                             <div class="selected-item-title" id="selected-ram">Chưa chọn RAM</div>
@@ -497,7 +604,9 @@
                 <!-- Row VGA -->
                 <div class="builder-row" data-category="vga">
                     <div class="row-info">
-                        <div class="row-icon">VGA</div>
+                        <div class="row-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><circle cx="8" cy="12" r="3"></circle><circle cx="16" cy="12" r="3"></circle><line x1="2" y1="16" x2="22" y2="16"></line></svg>
+                        </div>
                         <div>
                             <div class="category-name">Card đồ họa</div>
                             <div class="selected-item-title" id="selected-vga">Chưa chọn Card đồ họa</div>
@@ -512,7 +621,9 @@
                 <!-- Row PSU -->
                 <div class="builder-row" data-category="psu">
                     <div class="row-info">
-                        <div class="row-icon">PSU</div>
+                        <div class="row-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M15 7h2"></path><path d="M15 11h2"></path><path d="M7 15h10"></path></svg>
+                        </div>
                         <div>
                             <div class="category-name">Bộ nguồn máy tính</div>
                             <div class="selected-item-title" id="selected-psu">Chưa chọn Nguồn máy tính</div>
@@ -527,7 +638,9 @@
                 <!-- Row Case -->
                 <div class="builder-row" data-category="case">
                     <div class="row-info">
-                        <div class="row-icon">CASE</div>
+                        <div class="row-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="12" cy="20" r="1"></circle></svg>
+                        </div>
                         <div>
                             <div class="category-name">Vỏ máy tính (Case)</div>
                             <div class="selected-item-title" id="selected-case">Chưa chọn Vỏ máy tính</div>
@@ -795,37 +908,12 @@
     <script>
         // Static component database fallback
         const staticDatabase = {
-            cpu: [
-                { id: "cpu1", name: "Intel Core i5-13600K", spec: "14 Nhân 20 Luồng | 3.5GHz up to 5.1GHz", price: 7800000 },
-                { id: "cpu2", name: "AMD Ryzen 5 7600X", spec: "6 Nhân 12 Luồng | 4.7GHz up to 5.3GHz", price: 6200000 },
-                { id: "cpu3", name: "Intel Core i9-14900K", spec: "24 Nhân 32 Luồng | 3.2GHz up to 6.0GHz", price: 14500000 }
-            ],
-            mainboard: [
-                { id: "mb1", name: "ASUS ROG Strix Z790-F Gaming Wifi", spec: "Intel LGA1700 | ATX | DDR5", price: 9200000 },
-                { id: "mb2", name: "MSI MAG B650 Tomahawk Wi-Fi", spec: "AMD AM5 | ATX | DDR5", price: 5500000 },
-                { id: "mb3", name: "Gigabyte Z790 AORUS Elite AX", spec: "Intel LGA1700 | ATX | DDR5", price: 6800000 }
-            ],
-            ram: [
-                { id: "ram1", name: "Corsair Vengeance RGB 32GB (2x16GB) 6000MHz", spec: "DDR5 | CL36 | Black", price: 3200000 },
-                { id: "ram2", name: "G.Skill Trident Z5 Neo RGB 32GB (2x16GB) 6000MHz", spec: "DDR5 | CL30 | AMD Expo", price: 3500000 },
-                { id: "ram3", name: "Kingston FURY Beast 16GB (2x8GB) 5200MHz", spec: "DDR5 | CL40 | Black", price: 1600000 }
-            ],
-            vga: [
-                { id: "vga1", name: "ASUS ROG Strix RTX 4070 Ti Super 16GB", spec: "AURA Sync | DLSS 3 | 3 Fan", price: 26900000 },
-                { id: "vga2", name: "MSI Gaming X Slim RTX 4060 Ti 8GB", spec: "Aesthetic Slim | DLSS 3 | 3 Fan", price: 11500000 },
-                { id: "vga3", name: "Gigabyte GeForce RTX 4080 Super Windforce 16GB", spec: "Heavy Duty | DLSS 3 | 3 Fan", price: 32500000 },
-                { id: "vga4", name: "NVIDIA GeForce RTX 4090 Founders Edition 24GB", spec: "Ultimate Power | Ray Tracing | 3 Fan", price: 48900000 }
-            ],
-            psu: [
-                { id: "psu1", name: "Corsair RM850x 850W", spec: "80 Plus Gold | Full Modular", price: 3600000 },
-                { id: "psu2", name: "MSI MAG A750GL 750W", spec: "80 Plus Gold | PCIe 5.0 Ready", price: 2400000 },
-                { id: "psu3", name: "ASUS ROG Thor 1000W Platinum II", spec: "80 Plus Platinum | OLED Display", price: 8900000 }
-            ],
-            case: [
-                { id: "case1", name: "Lian Li O11 Dynamic EVO", spec: "Dual Chamber | Mid Tower", price: 4500000 },
-                { id: "case2", name: "NZXT H9 Flow Matte White", spec: "Panoramic Glass | Mid Tower", price: 3800000 },
-                { id: "case3", name: "Corsair 4000D Airflow Tempered Glass", spec: "Minimalist Black | Mid Tower", price: 2200000 }
-            ]
+            cpu: [],
+            mainboard: [],
+            ram: [],
+            vga: [],
+            psu: [],
+            case: []
         };
 
         // Live database copy that will be updated from SQL
@@ -864,15 +952,15 @@
                     let targetCat = null;
                     if (catId === 2 || catName.includes("cpu") || catName.includes("vi xử lý") || catName.includes("bộ xử lý")) {
                         targetCat = "cpu";
-                    } else if (catId === 3 || catName.includes("mainboard") || catName.includes("bo mạch") || catName.includes("motherboard")) {
+                    } else if (catId === 4 || catName.includes("mainboard") || catName.includes("bo mạch") || catName.includes("motherboard")) {
                         targetCat = "mainboard";
-                    } else if (catId === 4 || catName.includes("ram") || catName.includes("bộ nhớ ram")) {
+                    } else if (catId === 10 || catName.includes("ram") || catName.includes("bộ nhớ ram")) {
                         targetCat = "ram";
                     } else if (catId === 1 || catName.includes("vga") || catName.includes("card đồ họa") || catName.includes("card màn hình")) {
                         targetCat = "vga";
-                    } else if (catId === 6 || catName.includes("psu") || catName.includes("nguồn") || catName.includes("power")) {
+                    } else if (catId === 5 || catName.includes("psu") || catName.includes("nguồn") || catName.includes("power")) {
                         targetCat = "psu";
-                    } else if (catName.includes("case") || catName.includes("vỏ máy") || catName.includes("thùng máy")) {
+                    } else if (catId === 8 || catName.includes("case") || catName.includes("vỏ máy") || catName.includes("thùng máy")) {
                         targetCat = "case";
                     }
 
@@ -931,11 +1019,265 @@
             }
         }
 
+        // Function to fetch active streamer configurations from Banners API and render them dynamically
+        let streamerBannersList = [];
+        let filteredStreamerBanners = [];
+        let streamerCurrentPage = 1;
+        const streamerItemsPerPage = 3;
+        let currentStreamerCategory = 'STREAMER';
+
+        function selectStreamerCategory(category) {
+            currentStreamerCategory = category;
+            
+            // Update trigger text
+            const trigger = document.getElementById('streamerDropdownTrigger');
+            if (trigger) {
+                trigger.innerHTML = `${category} <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+            }
+
+            // Update active class in dropdown items
+            const items = document.querySelectorAll('.inline-dropdown-item');
+            items.forEach(item => {
+                if (item.getAttribute('data-value') === category) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Filter
+            filteredStreamerBanners = streamerBannersList.filter(card => {
+                const cardCat = (card.getAttribute('data-category') || '').trim().toUpperCase();
+                if (category === 'GAME THỦ') {
+                    return cardCat === 'GAME THỦ' || cardCat === 'PRO PLAYER' || cardCat === 'PROPLAYER';
+                }
+                if (category === 'KOL') {
+                    return cardCat === 'KOL' || cardCat === 'CẦU THỦ BÓNG ĐÁ' || cardCat === 'CAU THU BONG DA';
+                }
+                return cardCat === category;
+            });
+
+            // Reset page
+            streamerCurrentPage = 1;
+            renderStreamerPage();
+        }
+
+        function renderStreamerPage() {
+            const container = document.getElementById('bentoCarousel');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (filteredStreamerBanners.length === 0) {
+                container.innerHTML = '<div style="width: 100%; text-align: center; padding: 40px 0; color: #6b7280; font-size: 15px; font-style: italic; font-weight: 500;">Không có cấu hình nào trong danh mục này.</div>';
+                renderStreamerPaginationControls(0);
+                return;
+            }
+
+            const totalPages = Math.ceil(filteredStreamerBanners.length / streamerItemsPerPage) || 1;
+            if (streamerCurrentPage > totalPages) {
+                streamerCurrentPage = totalPages;
+            }
+
+            const start = (streamerCurrentPage - 1) * streamerItemsPerPage;
+            const end = start + streamerItemsPerPage;
+            const paginated = filteredStreamerBanners.slice(start, end);
+
+            paginated.forEach(card => {
+                container.appendChild(card);
+            });
+
+            renderStreamerPaginationControls(totalPages);
+        }
+
+        function renderStreamerPaginationControls(totalPages) {
+            let container = document.getElementById('streamerPaginationContainer');
+            if (!container) {
+                const wrapper = document.querySelector('.carousel-wrapper');
+                container = document.createElement('div');
+                container.id = 'streamerPaginationContainer';
+                container.className = 'pagination-container';
+                wrapper.appendChild(container);
+            }
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            // Prev button
+            html += `<button class="page-btn ${streamerCurrentPage === 1 ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage - 1})" ${streamerCurrentPage === 1 ? 'disabled' : ''}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>`;
+
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === streamerCurrentPage ? 'active' : ''}" onclick="changeStreamerPage(${i})">${i}</button>`;
+            }
+
+            // Next button
+            html += `<button class="page-btn ${streamerCurrentPage === totalPages ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage + 1})" ${streamerCurrentPage === totalPages ? 'disabled' : ''}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>`;
+
+            container.innerHTML = html;
+        }
+
+        window.changeStreamerPage = function(page) {
+            streamerCurrentPage = page;
+            renderStreamerPage();
+        };
+
+        function fallbackToStatic() {
+            const container = document.getElementById('bentoCarousel');
+            if (!container) return;
+            const staticCards = Array.from(container.querySelectorAll('.bento-card'));
+            streamerBannersList = staticCards;
+            selectStreamerCategory('STREAMER');
+        }
+
+        // Function to fetch active streamer configurations from Banners API and render them dynamically
+        async function loadStreamerConfigs() {
+            console.log('[PC Build] Loading dynamic streamer configurations...');
+            try {
+                streamerBannersList = [];
+                const response = await fetch('/api/Banners/active');
+                if (!response.ok) {
+                    console.warn('[PC Build] Failed to fetch streamer banners, using static list.');
+                    fallbackToStatic();
+                    return;
+                }
+                const banners = await response.json();
+                const streamerBanners = banners.filter(b => b.title && b.title.startsWith('[pcbuild]'));
+                
+                if (streamerBanners.length === 0) {
+                    console.log('[PC Build] No active streamer PC configurations found in database, using default ones.');
+                    fallbackToStatic();
+                    return;
+                }
+
+                streamerBanners.forEach(b => {
+                    let cleanName = b.title.substring(9).trim();
+                    let tag = 'Streamer';
+                    let avatar = '/images/3ga.png';
+                    let cpuId = 0, mainboardId = 0, ramId = 0, vgaId = 0, psuId = 0, caseId = 0;
+                    
+                    try {
+                        const meta = JSON.parse(b.linkUrl || '{}');
+                        tag = meta.tag || 'Streamer';
+                        avatar = meta.avatar || '/images/3ga.png';
+                        cpuId = meta.cpuId;
+                        mainboardId = meta.mainboardId;
+                        ramId = meta.ramId;
+                        vgaId = meta.vgaId;
+                        psuId = meta.psuId;
+                        caseId = meta.caseId;
+                    } catch (e) {
+                        console.error('[PC Build] Error parsing JSON metadata for streamer config:', b.linkUrl, e);
+                        return;
+                    }
+
+                    // Lookup products in the live database loaded from SQL
+                    const cpu = database.cpu.find(p => p.id === cpuId);
+                    const mb = database.mainboard.find(p => p.id === mainboardId);
+                    const ram = database.ram.find(p => p.id === ramId);
+                    const vga = database.vga.find(p => p.id === vgaId);
+                    const psu = database.psu.find(p => p.id === psuId);
+                    const cas = database.case.find(p => p.id === caseId);
+
+                    const cpuSpec = cpu ? cpu.name : 'Chưa cấu hình CPU';
+                    const mainboardSpec = mb ? mb.name : 'Chưa cấu hình Mainboard';
+                    const ramSpec = ram ? ram.name : 'Chưa cấu hình RAM';
+                    const vgaSpec = vga ? vga.name : 'Chưa cấu hình VGA';
+                    const psuSpec = psu ? psu.name : 'Chưa cấu hình PSU';
+                    const caseSpec = cas ? cas.name : 'Chưa cấu hình Vỏ Case';
+
+                    const totalPrice = (cpu?.price || 0) + (mb?.price || 0) + (ram?.price || 0) + (vga?.price || 0) + (psu?.price || 0) + (cas?.price || 0);
+
+                    // Form short specs for badges
+                    const cpuShort = cpuSpec.split(' ').pop();
+                    const vgaShort = vgaSpec.replace('GeForce ', '').replace('RTX ', '');
+                    const ramShort = ramSpec.split(' ').slice(0, 2).join(' ');
+
+                    const card = document.createElement('div');
+                    card.className = 'bento-card';
+                    card.setAttribute('data-category', tag.toUpperCase());
+                    card.innerHTML = `
+                        <div class="card-img-wrapper image-container">
+                            <span class="card-tag">${tag}</span>
+                            <img src="${b.imageUrl}" alt="${cleanName}" class="pc-img" onerror="this.src='/images/pc_valorant_pc.png'">
+                            <div class="streamer-avatar-wrapper">
+                                <img src="${avatar}" alt="Streamer Avatar" class="streamer-avatar" onerror="this.src='/images/3ga.png'">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <h3 class="card-title">${cleanName}</h3>
+                                <button class="btn-customize-link" 
+                                        data-cpu-id="${cpuId}"
+                                        data-mainboard-id="${mainboardId}"
+                                        data-ram-id="${ramId}"
+                                        data-vga-id="${vgaId}"
+                                        data-psu-id="${psuId}"
+                                        data-case-id="${caseId}"
+                                        onclick="customizePrebuilt(this)">
+                                    Tham khảo <span class="arrow">→</span>
+                                </button>
+                            </div>
+                            <div class="card-price">${totalPrice.toLocaleString('vi-VN')} đ</div>
+                            <div class="specs-tags config-tags">
+                                <span class="specs-tag config-tag"><span class="specs-icon">⚡</span>${cpuShort}</span>
+                                <span class="specs-tag config-tag"><span class="specs-icon">🎮</span>${vgaShort}</span>
+                                <span class="specs-tag config-tag"><span class="specs-icon">💾</span>${ramShort}</span>
+                                <span class="specs-tag config-tag"><span class="specs-icon">💿</span>SSD 500GB+</span>
+                            </div>
+                            <button class="bento-btn" onclick="addPrebuiltToCart('${cleanName.replace(/'/g, "\\'")}', '${cpuSpec} | ${vgaSpec} | ${ramSpec}', ${totalPrice}, '${avatar}')">Thêm vào giỏ</button>
+                        </div>
+                    `;
+                    streamerBannersList.push(card);
+                });
+                selectStreamerCategory('STREAMER');
+            } catch (err) {
+                console.error('[PC Build] Error rendering streamer configurations:', err);
+                fallbackToStatic();
+            }
+        }
+
         // Initialize Cart badge and load SQL components on load
         document.addEventListener("DOMContentLoaded", async () => {
             updateHeaderCartCount();
             updateBenchmark(0);
             await loadComponentsFromAPI();
+            await loadStreamerConfigs();
+            updateCarouselArrows();
+            setTimeout(updateCarouselArrows, 150);
+
+            // Hook up inline dropdown menu
+            const trigger = document.getElementById('streamerDropdownTrigger');
+            const menu = document.getElementById('streamerDropdownMenu');
+            if (trigger && menu) {
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    menu.classList.toggle('show');
+                    trigger.classList.toggle('open');
+                });
+
+                document.addEventListener('click', () => {
+                    menu.classList.remove('show');
+                    trigger.classList.remove('open');
+                });
+
+                const items = menu.querySelectorAll('.inline-dropdown-item');
+                items.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const val = item.getAttribute('data-value');
+                        selectStreamerCategory(val);
+                        menu.classList.remove('show');
+                        trigger.classList.remove('open');
+                    });
+                });
+            }
         });
 
         // 1. Pre-built add to cart function
@@ -948,7 +1290,7 @@
             for (const card of cards) {
                 const titleEl = card.querySelector('.card-title');
                 if (titleEl && titleEl.textContent.trim() === name) {
-                    customizeBtn = card.querySelector('.btn-customize');
+                    customizeBtn = card.querySelector('.btn-customize-link');
                     break;
                 }
             }
@@ -963,19 +1305,24 @@
             let addedAny = false;
 
             for (const cat of categories) {
-                const searchName = (customizeBtn.dataset[cat] || "").toLowerCase().trim();
-                if (!searchName) continue;
-
+                const idVal = customizeBtn.getAttribute(`data-${cat}-id`);
+                let bestMatch = null;
                 const list = database[cat] || [];
-                // Find matching product in our loaded database
-                let bestMatch = list.find(p => 
-                    p.name.toLowerCase().includes(searchName) || 
-                    searchName.includes(p.name.toLowerCase())
-                );
                 
-                if (!bestMatch && list.length > 0) {
-                    // Fallback to first product in category
-                    bestMatch = list[0];
+                if (idVal) {
+                    const idNum = parseInt(idVal);
+                    bestMatch = list.find(p => p.id === idNum);
+                } else {
+                    const searchName = (customizeBtn.dataset[cat] || "").toLowerCase().trim();
+                    if (searchName) {
+                        bestMatch = list.find(p => 
+                            p.name.toLowerCase().includes(searchName) || 
+                            searchName.includes(p.name.toLowerCase())
+                        );
+                        if (!bestMatch && list.length > 0) {
+                            bestMatch = list[0];
+                        }
+                    }
                 }
 
                 if (bestMatch) {
@@ -1031,15 +1378,22 @@
             } else {
                 items.forEach(item => {
                     const card = document.createElement("div");
-                    card.className = "item-option-card";
+                    const isSelected = selectedComponents[category] && selectedComponents[category].id === item.id;
+                    card.className = `item-option-card${isSelected ? ' active' : ''}`;
                     card.onclick = () => selectComponent(item);
                     
                     card.innerHTML = `
-                        <div class="option-details">
-                            <div class="option-title">${item.name}</div>
-                            <div class="option-spec">${item.spec}</div>
+                        <div class="option-left">
+                            ${getProductImageHtml(item.img, "option-thumbnail", item.name)}
+                            <div class="option-details">
+                                <div class="option-title">${item.name}</div>
+                                <div class="option-spec">${item.spec}</div>
+                            </div>
                         </div>
-                        <div class="option-price">${item.price.toLocaleString("vi-VN")} đ</div>
+                        <div class="option-right">
+                            <div class="option-price">${item.price.toLocaleString("vi-VN")} đ</div>
+                            ${isSelected ? `<div class="option-checkmark">✓</div>` : ""}
+                        </div>
                     `;
                     container.appendChild(card);
                 });
@@ -1059,68 +1413,87 @@
             document.body.style.overflow = "";
         }
 
+        function getProductImageHtml(imgSrc, className, altText) {
+            const fallbackSvg = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'%3E%3C/rect%3E%3Ccircle cx='9' cy='9' r='2'%3E%3C/circle%3E%3Cpath d='M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21'%3E%3C/path%3E%3C/svg%3E";
+            const src = imgSrc || fallbackSvg;
+            return `<img src="${src}" onerror="this.onerror=null; this.src='${fallbackSvg}';" class="${className}" alt="${altText || ''}" />`;
+        }
+
+        function getCategoryIcon(cat) {
+            const icons = {
+                cpu: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>`,
+                mainboard: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"></rect><rect x="5" y="5" width="6" height="6"></rect><path d="M16 5h1"></path><path d="M16 9h1"></path><path d="M16 13h1"></path><rect x="5" y="14" width="8" height="4"></rect></svg>`,
+                ram: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="1"></rect><line x1="6" y1="18" x2="6" y2="15"></line><line x1="10" y1="18" x2="10" y2="15"></line><line x1="14" y1="18" x2="14" y2="15"></line><line x1="18" y1="18" x2="18" y2="15"></line><rect x="5" y="9" width="3" height="4"></rect><rect x="10" y="9" width="3" height="4"></rect><rect x="16" y="9" width="3" height="4"></rect></svg>`,
+                vga: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><circle cx="8" cy="12" r="3"></circle><circle cx="16" cy="12" r="3"></circle><line x1="2" y1="16" x2="22" y2="16"></line></svg>`,
+                psu: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="M15 7h2"></path><path d="M15 11h2"></path><path d="M7 15h10"></path></svg>`,
+                case: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="12" cy="20" r="1"></circle></svg>`
+            };
+            return icons[cat] || "";
+        }
+
+        function applyComponentSelectionUI(cat, item) {
+            const titleEl = document.getElementById(`selected-${cat}`);
+            const priceEl = document.getElementById(`price-${cat}`);
+            const rowEl = document.querySelector(`.builder-row[data-category="${cat}"]`);
+            const btnEl = rowEl.querySelector(".row-btn") || rowEl.querySelector(".row-btn-remove");
+
+            if (item) {
+                rowEl.classList.add("selected");
+                titleEl.innerText = item.name;
+                priceEl.innerText = item.price.toLocaleString("vi-VN") + " đ";
+
+                const iconEl = rowEl.querySelector(".row-icon");
+                iconEl.innerHTML = getProductImageHtml(item.img, "row-thumbnail-img", item.name);
+
+                btnEl.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="trash-icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
+                btnEl.className = "row-btn-remove";
+                btnEl.onclick = (e) => {
+                    e.stopPropagation();
+                    removeComponent(cat);
+                };
+
+                const summaryRow = document.getElementById(`summary-${cat}`);
+                const summaryTitle = document.getElementById(`summary-${cat}-title`);
+                if (summaryRow) summaryRow.style.display = "flex";
+                if (summaryTitle) summaryTitle.innerText = item.name;
+            } else {
+                rowEl.classList.remove("selected");
+                
+                const defaultPlaceholder = {
+                    cpu: "Chưa chọn CPU",
+                    mainboard: "Chưa chọn Bo mạch chủ",
+                    ram: "Chưa chọn RAM",
+                    vga: "Chưa chọn Card đồ họa",
+                    psu: "Chưa chọn Nguồn máy tính",
+                    case: "Chưa chọn Vỏ máy tính"
+                };
+                titleEl.innerText = defaultPlaceholder[cat];
+                priceEl.innerText = "0 đ";
+
+                const iconEl = rowEl.querySelector(".row-icon");
+                iconEl.innerHTML = getCategoryIcon(cat);
+
+                btnEl.innerHTML = "+";
+                btnEl.className = "row-btn";
+                btnEl.onclick = () => openDrawer(cat);
+
+                const summaryRow = document.getElementById(`summary-${cat}`);
+                if (summaryRow) summaryRow.style.display = "none";
+            }
+        }
+
         // Component selection and state update
         function selectComponent(item) {
             const cat = currentActiveCategory;
             selectedComponents[cat] = item;
-
-            // Update UI list row
-            const titleEl = document.getElementById(`selected-${cat}`);
-            const priceEl = document.getElementById(`price-${cat}`);
-            const rowEl = document.querySelector(`.builder-row[data-category="${cat}"]`);
-            const btnEl = rowEl.querySelector(".row-btn");
-
-            titleEl.innerText = item.name;
-            priceEl.innerText = item.price.toLocaleString("vi-VN") + " đ";
-
-            // Transform button to red '✕' for removing
-            btnEl.innerText = "✕";
-            btnEl.className = "row-btn selected";
-            btnEl.onclick = (e) => {
-                e.stopPropagation(); // Stop opening drawer again
-                removeComponent(cat);
-            };
-
-            // Update sticky summary
-            const summaryRow = document.getElementById(`summary-${cat}`);
-            const summaryTitle = document.getElementById(`summary-${cat}-title`);
-            summaryRow.style.display = "flex";
-            summaryTitle.innerText = item.name;
-
+            applyComponentSelectionUI(cat, item);
             updateTotals();
             closeDrawer();
         }
 
         function removeComponent(cat) {
             selectedComponents[cat] = null;
-
-            // Restore UI row
-            const titleEl = document.getElementById(`selected-${cat}`);
-            const priceEl = document.getElementById(`price-${cat}`);
-            const rowEl = document.querySelector(`.builder-row[data-category="${cat}"]`);
-            const btnEl = rowEl.querySelector(".row-btn");
-
-            const defaultPlaceholder = {
-                cpu: "Chưa chọn CPU",
-                mainboard: "Chưa chọn Bo mạch chủ",
-                ram: "Chưa chọn RAM",
-                vga: "Chưa chọn Card đồ họa",
-                psu: "Chưa chọn Nguồn máy tính",
-                case: "Chưa chọn Vỏ máy tính"
-            };
-
-            titleEl.innerText = defaultPlaceholder[cat];
-            priceEl.innerText = "0 đ";
-
-            // Restore button back to '+'
-            btnEl.innerText = "+";
-            btnEl.className = "row-btn";
-            btnEl.onclick = () => openDrawer(cat);
-
-            // Hide from sticky summary
-            const summaryRow = document.getElementById(`summary-${cat}`);
-            summaryRow.style.display = "none";
-
+            applyComponentSelectionUI(cat, null);
             updateTotals();
         }
 
@@ -1156,59 +1529,41 @@
         }
 
         function customizePrebuilt(btn) {
-            const data = btn.dataset;
             const categories = ['cpu', 'mainboard', 'ram', 'vga', 'psu', 'case'];
             
             categories.forEach(cat => {
-                const name = data[cat];
-                if (name) {
-                    const searchName = name.toLowerCase().trim();
-                    const list = database[cat] || [];
-                    
-                    // Tìm sản phẩm trùng khớp nhất trong database SQL
-                    let bestMatch = list.find(p => 
-                        p.name.toLowerCase().includes(searchName) || 
-                        searchName.includes(p.name.toLowerCase())
-                    );
-                    
-                    if (!bestMatch && list.length > 0) {
-                        bestMatch = list[0]; // Fallback về sản phẩm đầu tiên của danh mục
-                    }
-                    
-                    if (bestMatch) {
-                        selectedComponents[cat] = bestMatch;
-                        
-                        // Update UI list row
-                        const titleEl = document.getElementById(`selected-${cat}`);
-                        const priceEl = document.getElementById(`price-${cat}`);
-                        const rowEl = document.querySelector(`.builder-row[data-category="${cat}"]`);
-                        const btnEl = rowEl.querySelector(".row-btn");
-
-                        titleEl.innerText = bestMatch.name;
-                        priceEl.innerText = bestMatch.price.toLocaleString("vi-VN") + " đ";
-
-                        // Transform button to red '✕' for removing
-                        btnEl.innerText = "✕";
-                        btnEl.className = "row-btn selected";
-                        btnEl.onclick = (e) => {
-                            e.stopPropagation();
-                            removeComponent(cat);
-                        };
-
-                        // Update sticky summary
-                        const summaryRow = document.getElementById(`summary-${cat}`);
-                        const summaryTitle = document.getElementById(`summary-${cat}-title`);
-                        summaryRow.style.display = "flex";
-                        summaryTitle.innerText = bestMatch.name;
-                    }
+                let bestMatch = null;
+                const list = database[cat] || [];
+                const idVal = btn.getAttribute(`data-${cat}-id`);
+                
+                if (idVal) {
+                    const idNum = parseInt(idVal);
+                    bestMatch = list.find(p => p.id === idNum);
                 } else {
-                    removeComponent(cat);
+                    const name = btn.dataset[cat];
+                    if (name) {
+                        const searchName = name.toLowerCase().trim();
+                        bestMatch = list.find(p => 
+                            p.name.toLowerCase().includes(searchName) || 
+                            searchName.includes(p.name.toLowerCase())
+                        );
+                        if (!bestMatch && list.length > 0) {
+                            bestMatch = list[0];
+                        }
+                    }
+                }
+                
+                if (bestMatch) {
+                    selectedComponents[cat] = bestMatch;
+                    applyComponentSelectionUI(cat, bestMatch);
+                } else {
+                    selectedComponents[cat] = null;
+                    applyComponentSelectionUI(cat, null);
                 }
             });
             
             updateTotals();
             
-            // Smooth scroll down to builder section
             const builderSection = document.getElementById('custom-builder-section');
             if (builderSection) {
                 builderSection.scrollIntoView({ behavior: 'smooth' });
@@ -1528,6 +1883,18 @@
             const scrollAmount = card ? card.offsetWidth + 24 : 400; // card width + gap
             grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
+
+        // Show/hide carousel arrow buttons based on content overflow
+        function updateCarouselArrows() {
+            const leftArrow = document.querySelector('.carousel-arrow-left');
+            const rightArrow = document.querySelector('.carousel-arrow-right');
+            if (leftArrow) leftArrow.style.display = 'none';
+            if (rightArrow) rightArrow.style.display = 'none';
+        }
+
+        // Add resize and load event listeners for responsiveness
+        window.addEventListener('resize', updateCarouselArrows);
+        window.addEventListener('load', updateCarouselArrows);
     </script>
     <!-- Chatbot Global -->
     <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>

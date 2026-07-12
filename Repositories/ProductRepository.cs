@@ -19,10 +19,15 @@ public sealed class ProductRepository : IProductRepository
         
         var items = await _db.QueryAsync<ProductListItemWithTotal>("sp_Product_GetAllPaged", new
         {
-            normalized.CategoryId, normalized.BrandId, normalized.Keyword,
-            normalized.MinPrice, normalized.MaxPrice,
-            OnlyActive = normalized.OnlyActive, normalized.SortBy,
-            normalized.PageNumber, normalized.PageSize
+            CategoryId = normalized.CategoryId,
+            BrandId = normalized.BrandId,
+            Keyword = normalized.Keyword,
+            MinPrice = normalized.MinPrice,
+            MaxPrice = normalized.MaxPrice,
+            OnlyActive = normalized.OnlyActive,
+            SortBy = normalized.SortBy,
+            PageNumber = normalized.PageNumber,
+            PageSize = normalized.PageSize
         });
 
         var itemsList = items.ToList();
