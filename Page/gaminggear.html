@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -1272,7 +1272,195 @@
     }
     updateCartBadge();
 
-    const PRODUCTS = [
+    const formatPrice = n => n.toLocaleString('vi-VN') + ' ₫';
+
+    function getSubcategoryFromProduct(p) {
+        const sku = (p.sku || p.SKU || '').toUpperCase();
+        const name = (p.productName || p.ProductName || '').toLowerCase();
+        const desc = (p.description || p.Description || '').toLowerCase();
+
+        if (sku.includes('MOUSE') || name.includes('mouse') || name.includes('chuột')) return 'mouse';
+        if (sku.includes('KB') || name.includes('keyboard') || name.includes('bàn phím') || name.includes('keychron') || name.includes('akko')) return 'keyboard';
+        if (sku.includes('HS') || name.includes('headset') || name.includes('tai nghe') || name.includes('sound')) return 'headset';
+        if (sku.includes('MIC') || name.includes('mic') || name.includes('micro')) return 'mic';
+        if ((sku.includes('PAD') && !sku.includes('MPAD')) || name.includes('gamepad') || name.includes('tay cầm')) return 'gamepad';
+        if (sku.includes('MPAD') || name.includes('lót chuột') || name.includes('mousepad') || name.includes('pad')) return 'pad';
+        if (sku.includes('ACC') || sku.includes('RC') || name.includes('vô lăng') || name.includes('stand') || name.includes('giá treo') || name.includes('wheel') || name.includes('phụ kiện')) return 'acc';
+        return 'acc';
+    }
+
+    function getTagsFromProduct(p) {
+        const sku = (p.sku || p.SKU || '').toUpperCase();
+        const name = (p.productName || p.ProductName || '').toLowerCase();
+        const desc = (p.description || p.Description || '').toLowerCase();
+        const tags = [];
+
+        if (name.includes('wireless') || desc.includes('không dây') || desc.includes('wireless') || desc.includes('bluetooth') || name.includes('pro')) {
+            tags.push('wireless');
+        }
+        if (name.includes('rgb') || desc.includes('rgb') || desc.includes('led')) {
+            tags.push('rgb');
+        }
+        if (sku.includes('MOUSE') || sku.includes('PAD') || sku.includes('RC')) {
+            tags.push('bestseller');
+        }
+        if (sku.includes('KB') || sku.includes('MIC') || sku.includes('ACC')) {
+            tags.push('hotdeal');
+        }
+        if (sku.includes('HS')) {
+            tags.push('newarrival');
+        }
+        return tags.join(' ');
+    }
+
+    function renderShowcaseCard() {
+        const showcaseProd = PRODUCTS.find(p => p.id === 41) || PRODUCTS[0];
+        if (showcaseProd) {
+            const card = document.getElementById('showcaseCard1');
+            if (card) {
+                const img = card.querySelector('.product-img');
+                const tag = card.querySelector('.item-tag');
+                const name = card.querySelector('.item-name');
+                const price = card.querySelector('.item-price');
+
+                if (img) img.src = showcaseProd.img;
+                if (tag) tag.textContent = showcaseProd.specs;
+                if (name) name.textContent = showcaseProd.name;
+                if (price) price.textContent = formatPrice(showcaseProd.price);
+
+                card.onclick = () => {
+                    window.location.href = window.location.protocol === 'file:' 
+                        ? `product-detail.html?id=${showcaseProd.id}` 
+                        : `/product-detail?id=${showcaseProd.id}`;
+                };
+                card.style.cursor = 'pointer';
+            }
+        }
+    }
+
+    function renderTrendingGrid() {
+        const trendingIds = [41, 42, 45, 43];
+        const trendingCards = document.querySelectorAll('.trending-card');
+        trendingCards.forEach((card, idx) => {
+            const targetId = trendingIds[idx];
+            const p = PRODUCTS.find(prod => prod.id === targetId);
+            if (p) {
+                const img = card.querySelector('.trending-card-img');
+                const tag = card.querySelector('.trending-card-tag');
+                const name = card.querySelector('.trending-card-name');
+                const priceRow = card.querySelector('.trending-card-price-row');
+                const btnAdd = card.querySelector('.btn-add');
+                const btnDetail = card.querySelector('.btn-detail');
+
+                if (img) img.src = p.img;
+                if (tag) tag.textContent = p.specs;
+                if (name) name.textContent = p.name;
+                if (priceRow) {
+                    priceRow.innerHTML = `<span class="trending-card-price">${formatPrice(p.price)}</span>`;
+                    if (p.oldPrice) {
+                        priceRow.innerHTML += `
+                            <span class="price-old-tag" style="margin-left: 8px;">${formatPrice(p.oldPrice)}</span>
+                            <span class="discount-tag" style="margin-left: 4px;">-${p.discount}%</span>
+                        `;
+                    }
+                }
+                if (btnAdd) {
+                    btnAdd.setAttribute('data-name', p.name);
+                    if (p.stock === 'out') {
+                        btnAdd.setAttribute('disabled', 'true');
+                        btnAdd.querySelector('.btn-text').textContent = 'Hết hàng';
+                    } else {
+                        btnAdd.removeAttribute('disabled');
+                        btnAdd.querySelector('.btn-text').textContent = 'Thêm vào giỏ';
+                    }
+                }
+                if (btnDetail) {
+                    btnDetail.href = window.location.protocol === 'file:' 
+                        ? `product-detail.html?id=${p.id}` 
+                        : `/product-detail?id=${p.id}`;
+                }
+            }
+        });
+    }
+
+    function renderMainGrid(list) {
+        const grid = document.getElementById('productGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        list.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'tilt-card grid-item';
+            card.setAttribute('data-category', p.cat);
+            card.setAttribute('data-price', p.price);
+            card.setAttribute('data-brand', p.brand ? p.brand.toLowerCase() : 'all');
+            card.setAttribute('data-tags', p.tags || '');
+
+            const isOut = p.stock === 'out';
+            const badgeHTML = p.badge ? `<span class="card-badge ${p.badge}">${p.badge.toUpperCase()}</span>` : '';
+            const oldPriceHTML = p.oldPrice ? `
+                <span class="price-old-tag">${formatPrice(p.oldPrice)}</span>
+                <span class="discount-tag">-${p.discount}%</span>
+            ` : '';
+
+            const detailUrl = window.location.protocol === 'file:' ? `product-detail.html?id=${p.id}` : `/product-detail?id=${p.id}`;
+
+            card.innerHTML = `
+                <div class="glass-base"></div>
+                <div class="card-img-wrap">
+                    ${badgeHTML}
+                    <img src="${p.img}" alt="${p.name}" loading="lazy">
+                </div>
+                <div class="card-body">
+                    <div class="card-name">${p.name}</div>
+                    <div class="card-specs">${p.specs}</div>
+                    <div class="card-price-row">
+                        <span class="price-new">${formatPrice(p.price)}</span>
+                        ${oldPriceHTML}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-add" data-name="${p.name}" ${isOut ? 'disabled' : ''}>
+                            <span class="btn-text">${isOut ? 'Hết hàng' : 'Thêm vào giỏ'}</span>
+                            <span class="btn-check">✓ Đã thêm</span>
+                        </button>
+                        <a href="${detailUrl}" class="btn-detail">Chi tiết</a>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function setupAddToCartButtons() {
+        document.querySelectorAll('.btn-add').forEach(btn => {
+            if (btn.dataset.listenerAttached) return;
+            btn.dataset.listenerAttached = 'true';
+
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault(); e.stopPropagation();
+                if (btn.classList.contains('added')) return;
+                const name = btn.getAttribute('data-name');
+                const p = PRODUCTS.find(x => x.name === name);
+                if (!p) return;
+                const ok = await addToCartHelper(p.id, 1);
+                if (ok) {
+                    btn.classList.add('added');
+                    updateCartBadge();
+                    setTimeout(() => btn.classList.remove('added'), 2200);
+                }
+            });
+
+            btn.addEventListener('mousedown', (e) => {
+                const r = btn.getBoundingClientRect();
+                btn.style.setProperty('--rx', (e.clientX - r.left) + 'px');
+                btn.style.setProperty('--ry', (e.clientY - r.top) + 'px');
+                btn.classList.add('ripple');
+                setTimeout(() => btn.classList.remove('ripple'), 500);
+            });
+        });
+    }
+
+    let PRODUCTS = [
         { id:41, name:"CORE M-PRO",    price:2450000, img:"https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png",    specs:"Mouse"      },
         { id:42, name:"CORE K-ELITE",  price:3890000, img:"https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png", specs:"Keyboard"   },
         { id:43, name:"CORE H-SOUND",  price:2890000, img:"https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png", specs:"Headset"    },
@@ -1283,30 +1471,101 @@
         { id:48, name:"CORE WHEEL",    price:9500000, img:"https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g923-and-trueforce/g923-gallery-1.png?v=1", specs:"Racing"     }
     ];
 
-    // btn-add handlers
-    document.querySelectorAll('.btn-add').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault(); e.stopPropagation();
-            if (btn.classList.contains('added')) return;
-            const name = btn.getAttribute('data-name');
-            const p = PRODUCTS.find(x => x.name === name);
-            if (!p) return;
-            const ok = await addToCartHelper(p.id, 1);
-            if (ok) {
-                btn.classList.add('added');
-                updateCartBadge();
-                setTimeout(() => btn.classList.remove('added'), 2200);
+    async function loadCategoriesMapping() {
+        try {
+            const res = await fetch('/api/Categories');
+            if (!res.ok) return 7;
+            const data = await res.json();
+            const cats = Array.isArray(data) ? data : (data.items ?? data.Items ?? []);
+            const ggCat = cats.find(c => {
+                const name = c.categoryName ?? c.CategoryName ?? '';
+                return name.toLowerCase().includes('gaming gear');
+            });
+            return ggCat ? (ggCat.categoryId ?? ggCat.CategoryId) : 7;
+        } catch (e) {
+            console.warn('[GamingGear] Could not load categories mapping:', e);
+            return 7;
+        }
+    }
+
+    async function loadGamingGearFromAPI() {
+        console.log('[GamingGear] Loading products from SQL via API...');
+        const categoryId = await loadCategoriesMapping();
+        try {
+            const response = await fetch(`/api/Products?CategoryId=${categoryId}&PageSize=100&OnlyActive=true`);
+            if (!response.ok) {
+                console.error('[GamingGear] API error:', response.status, response.statusText);
+                return;
             }
-        });
-        // Ripple effect
-        btn.addEventListener('mousedown', (e) => {
-            const r = btn.getBoundingClientRect();
-            btn.style.setProperty('--rx', (e.clientX - r.left) + 'px');
-            btn.style.setProperty('--ry', (e.clientY - r.top) + 'px');
-            btn.classList.add('ripple');
-            setTimeout(() => btn.classList.remove('ripple'), 500);
-        });
-    });
+            const data = await response.json();
+            const items = data.items ?? data.Items ?? [];
+            if (!Array.isArray(items) || items.length === 0) {
+                console.warn('[GamingGear] API returned 0 products, using hardcoded fallback.');
+                return;
+            }
+
+            PRODUCTS = items.map(p => {
+                const productId     = p.productId     ?? p.ProductId;
+                const brandName     = p.brandName     ?? p.BrandName     ?? 'Unknown';
+                const productName   = p.productName   ?? p.ProductName   ?? '';
+                const description   = p.description   ?? p.Description   ?? '';
+                const price         = p.price         ?? p.Price         ?? 0;
+                const discountPrice = p.discountPrice ?? p.DiscountPrice ?? 0;
+                const effectivePrice= p.effectivePrice?? p.EffectivePrice?? price;
+                const stockQuantity = p.stockQuantity ?? p.StockQuantity ?? 0;
+                const defaultImageUrl = p.defaultImageUrl ?? p.DefaultImageUrl ?? null;
+                const slug          = p.slug          ?? p.Slug          ?? null;
+
+                const cat = getSubcategoryFromProduct(p);
+                const tags = getTagsFromProduct(p);
+
+                let stock = 'in';
+                if (stockQuantity <= 0) stock = 'out';
+                else if (stockQuantity < 10) stock = 'low';
+
+                let badge = null;
+                if (discountPrice > 0 && discountPrice < price) badge = 'sale';
+                else if (tags.includes('bestseller')) badge = 'hot';
+
+                const img = defaultImageUrl || `https://placehold.co/300x200/081120/7dd3fc?text=${encodeURIComponent((productName || 'Product').substring(0, 20))}`;
+
+                const oldPrice = (discountPrice > 0 && discountPrice < price) ? price : null;
+                const discount = oldPrice ? Math.round((1 - effectivePrice / oldPrice) * 100) : 0;
+
+                return {
+                    id: productId,
+                    name: productName,
+                    price: effectivePrice,
+                    oldPrice: oldPrice,
+                    discount: discount,
+                    img: img,
+                    specs: description ? description.substring(0, 80) : 'Xem chi tiết để biết thêm',
+                    cat: cat,
+                    brand: brandName,
+                    tags: tags,
+                    stock: stock,
+                    badge: badge,
+                    slug: slug
+                };
+            });
+
+            console.log('[GamingGear] Loaded', PRODUCTS.length, 'products from SQL');
+
+            renderShowcaseCard();
+            renderTrendingGrid();
+            renderMainGrid(PRODUCTS);
+
+            gridItems.length = 0;
+            gridItems.push(...document.querySelectorAll('#productGrid .grid-item'));
+
+            filterProducts();
+            setupAddToCartButtons();
+            revealTrendingCards();
+
+        } catch (error) {
+            console.error('[GamingGear] Error loading products from SQL:', error);
+        }
+    }
 
     // ── 14. COUNTER ANIMATION ──
     function animateCounter(el) {
@@ -1349,11 +1608,29 @@
         });
     }
 
-    // ── 16. INITIAL GRID REVEAL ──
-    revealGridItems();
-
-    // ── 17. INITIAL TRENDING REVEAL ──
-    revealTrendingCards();
+    // ── 16. INITIALIZATION ──
+    (async function init() {
+        console.log('[GamingGear] Initializing page...');
+        
+        // Setup static add-to-cart click listeners (fallback)
+        setupAddToCartButtons();
+        
+        // Fetch products from SQL database via API
+        await loadGamingGearFromAPI();
+        
+        // If API didn't load any items (e.g. running locally via file:// or API failed),
+        // animate the fallback products already in HTML
+        if (document.querySelectorAll('#productGrid .grid-item').length > 0 && 
+            !document.querySelector('#productGrid .grid-item').classList.contains('hidden')) {
+            // Already handled by API response callback (filterProducts + revealTrendingCards)
+        } else {
+            revealGridItems();
+            revealTrendingCards();
+        }
+        
+        // Sync cart badge
+        updateCartBadge();
+    })();
 
     // ── 18. LOCAL FILE PROTOCOL FIX ──
     if (window.location.protocol === 'file:') {
