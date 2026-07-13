@@ -48,6 +48,7 @@ public sealed record AdminOrderHeader(
     DateTime OrderDate,
     decimal TotalAmount,
     decimal DiscountAmount,
+    decimal ShippingFee,
     decimal FinalAmount,
     string? VoucherCode,
     string Status,
@@ -55,7 +56,8 @@ public sealed record AdminOrderHeader(
     string PaymentStatus,
     string ShippingAddress,
     string? AdminNote,
-    DateTime? UpdatedAt);
+    DateTime? UpdatedAt,
+    string? ShippingTrackingCode);
 
 public sealed record AdminOrderDetailItem(
     int DetailId,

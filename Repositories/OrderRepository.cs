@@ -16,7 +16,11 @@ public sealed class OrderRepository : IOrderRepository
     {
         var r = await _db.QuerySingleAsync<NewIdResult>("sp_Customer_PlaceOrder", new
         {
-            request.UserId, request.ShippingAddress, request.PaymentMethod, request.VoucherCode
+            request.UserId,
+            request.ShippingAddress,
+            request.PaymentMethod,
+            request.VoucherCode,
+            request.ShippingFee
         });
         return r?.NewOrderId;
     }
@@ -90,16 +94,30 @@ public sealed class OrderRepository : IOrderRepository
         return (header, items);
     }
 
-    public Task UpdateOrderStatusAsync(UpdateOrderStatusRequest request)
-        => _db.ExecuteAsync("sp_Admin_UpdateOrderStatus", new
+    public async Task UpdateOrderStatusAsync(UpdateOrderStatusRequest request)
+    {
+        await _db.ExecuteAsync("sp_Admin_UpdateOrderStatus", new
         {
             request.OrderId, request.NewStatus, request.AdminNote
         });
+
+        if (request.NewStatus == "Hoàn tất")
+        {
+            await _db.ExecuteRawAsync("UPDATE Orders SET PaymentStatus = 'Paid' WHERE OrderID = @OrderId", new { OrderId = request.OrderId });
+        }
+    }
 
     public Task<IEnumerable<AdminOrderDetailListItem>> GetAdminOrderDetailsAsync(AdminOrderDetailQueryRequest request)
         => _db.QueryAsync<AdminOrderDetailListItem>("sp_Admin_GetOrderDetails", new
         {
             request.OrderId, request.ProductId, request.UserId, request.DateFrom, request.DateTo
+        });
+
+    public Task UpdateOrderTrackingCodeAsync(int orderId, string trackingCode)
+        => _db.ExecuteRawAsync("UPDATE Orders SET ShippingTrackingCode = @TrackingCode WHERE OrderID = @OrderId", new
+        {
+            OrderId = orderId,
+            TrackingCode = trackingCode
         });
 
     private sealed record NewIdResult(int NewOrderId);

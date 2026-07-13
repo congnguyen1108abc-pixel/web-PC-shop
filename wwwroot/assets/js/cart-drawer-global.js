@@ -67,7 +67,7 @@
                         <span class="subtotal-amount" id="drawerSubtotal">$0.00 USD</span>
                     </div>
                 </div>
-                <button class="cart-checkout-btn" onclick="window.location.href='/shoppingcart'">
+                <button class="cart-checkout-btn" onclick="window.location.href='/checkout'">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -86,26 +86,40 @@
         initDrawerTabs();
     }
 
-    const RECOMMEND_PRODUCTS = [
-      {
-        id: 4,
-        name: "Corsair Dominator DDR5 32GB",
-        specs: "DDR5 · 32GB (2x16) · 6400MHz",
-        price: 4800000,
-        oldPrice: 5500000,
-        currency: "VND",
-        img: "https://placehold.co/100x100/081120/7dd3fc?text=DDR5+32GB"
-      },
-      {
-        id: 5,
-        name: "Samsung 990 Pro NVMe 2TB",
-        specs: "PCIe 4.0 · 7450 MB/s · M.2 2280",
-        price: 3200000,
-        oldPrice: 3800000,
-        currency: "VND",
-        img: "https://placehold.co/100x100/081120/7dd3fc?text=Samsung+990+Pro"
-      }
-    ];
+    let cachedRecommendations = [];
+
+    async function fetchCartRecommendations() {
+        let cart = [];
+        try {
+            cart = JSON.parse(localStorage.getItem('hyper_core_cart') || '[]');
+        } catch(e) {}
+
+        let url = '/api/recommendations/homepage?topN=4';
+        if (cart.length > 0) {
+            const firstItem = cart[0];
+            const productId = firstItem.id;
+            if (productId) {
+                url = `/api/recommendations/product/${productId}?topN=4`;
+            }
+        }
+
+        try {
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                cachedRecommendations = data.map(item => ({
+                    id: item.productId,
+                    name: item.productName,
+                    price: item.price,
+                    oldPrice: item.discountPrice > 0 ? item.price : 0,
+                    img: item.defaultImageUrl || 'https://placehold.co/100x100?text=No+Image',
+                    specs: 'Sản phẩm gợi ý'
+                }));
+            }
+        } catch (e) {
+            console.error('[fetchCartRecommendations Error]:', e);
+        }
+    }
 
     function openCartDrawer() {
         const cartDrawer = document.getElementById('cartDrawer');
@@ -161,7 +175,7 @@
     };
 
     // Render cart items inside the drawer
-    function renderCartDrawer() {
+    async function renderCartDrawer() {
         const listEl = document.getElementById('cartItemsList');
         const countEl = document.getElementById('drawerCartCount');
         const badgeEl = document.getElementById('cartCount');
@@ -322,6 +336,7 @@
             badgeEl.textContent = totalItems;
             badgeEl.style.display = totalItems > 0 ? 'flex' : 'none';
         }
+        await fetchCartRecommendations();
         renderRecommendations();
     }
 
@@ -330,7 +345,7 @@
         if (!recContainer) return;
 
         let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
-        const availableRecs = RECOMMEND_PRODUCTS.filter(rec => !cart.some(item => item.id === rec.id || item.name === rec.name));
+        const availableRecs = cachedRecommendations.filter(rec => !cart.some(item => item.id === rec.id || item.name === rec.name));
 
         if (availableRecs.length === 0) {
             recContainer.style.display = 'none';
@@ -412,7 +427,7 @@
         if (typeof addToCartHelper === 'function') {
             await addToCartHelper(id, 1);
         } else {
-            const rec = RECOMMEND_PRODUCTS.find(r => r.id === id);
+            const rec = cachedRecommendations.find(r => r.id === id);
             if (rec) {
                 let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
                 cart.push({
@@ -420,7 +435,7 @@
                     name: rec.name,
                     specs: rec.specs,
                     price: rec.price,
-                    currency: rec.currency,
+                    currency: 'VND',
                     qty: 1,
                     img: rec.img
                 });
@@ -435,6 +450,14 @@
 
     // Register event listeners on cart badge / cart icon
     function initCartLinkInterception() {
+        // Intercept any link pointing to shoppingcart
+        document.querySelectorAll('a[href*="shoppingcart"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openCartDrawer();
+            });
+        });
+
         const cartBtns = document.querySelectorAll('.cart-link');
         cartBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -444,10 +467,9 @@
         });
     }
 
-    // Sync database and render on startup
-    document.addEventListener('DOMContentLoaded', async () => {
+    async function initCartDrawer() {
         const path = window.location.pathname.toLowerCase();
-        if (path.includes('products.html') || path === '/products' || path.includes('shoppingcart.html') || path === '/shoppingcart' || path.includes('checkout.html') || path === '/checkout') {
+        if (path.includes('checkout.html') || path === '/checkout') {
             return;
         }
 
@@ -467,14 +489,32 @@
             }
         });
 
+        // Auto-open drawer if requested in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('openCart') === 'true') {
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.replaceState({ path: newUrl }, '', newUrl);
+            setTimeout(() => {
+                openCartDrawer();
+            }, 300);
+        }
+
         // If local protocol is file:, adjust links
         if (window.location.protocol === 'file:') {
             document.querySelectorAll(".cart-checkout-btn").forEach(btn => {
-                btn.onclick = function() { window.location.href = 'shoppingcart.html'; };
+                btn.onclick = function() { window.location.href = 'checkout.html'; };
             });
             document.querySelectorAll(".continue-shopping-btn").forEach(btn => {
                 btn.onclick = function() { closeCartDrawer(); window.location.href = 'products.html'; };
             });
         }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCartDrawer);
+    } else {
+        initCartDrawer();
+    }
+
+
 })();

@@ -23,7 +23,10 @@ public sealed record PlaceOrderRequest(
     int UserId,
     string ShippingAddress,
     string PaymentMethod,
-    string? VoucherCode);
+    string? VoucherCode,
+    decimal ShippingFee,
+    string ToWardCode,
+    int ToDistrictId);
 
 public sealed record OrderHistoryItem(
     int OrderId,
@@ -43,12 +46,14 @@ public class OrderDetailHeader
     public DateTime OrderDate { get; set; }
     public decimal TotalAmount { get; set; }
     public decimal DiscountAmount { get; set; }
+    public decimal ShippingFee { get; set; }
     public decimal FinalAmount { get; set; }
     public string? VoucherCode { get; set; }
     public string Status { get; set; } = string.Empty;
     public string PaymentMethod { get; set; } = string.Empty;
     public string PaymentStatus { get; set; } = string.Empty;
     public string ShippingAddress { get; set; } = string.Empty;
+    public string? ShippingTrackingCode { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
 

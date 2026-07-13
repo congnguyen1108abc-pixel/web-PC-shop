@@ -14,4 +14,5 @@ public interface IOrderService
     Task<(AdminOrderHeader? Header, IEnumerable<AdminOrderDetailItem> Items)> GetAdminOrderDetailAsync(int orderId);
     Task UpdateOrderStatusAsync(UpdateOrderStatusRequest request);
     Task<IEnumerable<AdminOrderDetailListItem>> GetAdminOrderDetailsAsync(AdminOrderDetailQueryRequest request);
+    Task UpdateOrderTrackingCodeAsync(int orderId, string trackingCode);
 }

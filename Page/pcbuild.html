@@ -903,7 +903,7 @@
 
     <!-- DATA & LOGIC JAVASCRIPT -->
     <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
-    <script src="/assets/js/cart-drawer-global.js"></script>
+    <script src="/assets/js/cart-drawer-global.js?v=1.0.7"></script>
     <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
     <script>
         // Static component database fallback
@@ -1337,11 +1337,11 @@
                 return;
             }
 
-            // Redirect to shoppingcart page
-            if (window.location.protocol === 'file:') {
-                window.location.href = "shoppingcart.html";
+            // Open global Cart Drawer directly on this page
+            if (typeof openCartDrawer === 'function') {
+                openCartDrawer();
             } else {
-                window.location.href = "/shoppingcart";
+                window.location.href = "/Homepage?openCart=true";
             }
         }
 
@@ -1587,11 +1587,11 @@
 
             resetConfiguration();
 
-            // Redirect to shoppingcart page
-            if (window.location.protocol === 'file:') {
-                window.location.href = "shoppingcart.html";
+            // Open global Cart Drawer directly on this page
+            if (typeof openCartDrawer === 'function') {
+                openCartDrawer();
             } else {
-                window.location.href = "/shoppingcart";
+                window.location.href = "/Homepage?openCart=true";
             }
         }
 

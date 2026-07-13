@@ -31,6 +31,7 @@ public sealed class AdminController : ControllerBase
     private readonly IChatService _chat;
     private readonly INotificationService _notifications;
     private readonly INotificationPusher _pusher;
+    private readonly IHighUtilityMiningService _mining;
 
     public AdminController(
         IUserService users,
@@ -43,7 +44,8 @@ public sealed class AdminController : ControllerBase
         IReviewService reviews,
         IChatService chat,
         INotificationService notifications,
-        INotificationPusher pusher)
+        INotificationPusher pusher,
+        IHighUtilityMiningService mining)
     {
         _users         = users;
         _products      = products;
@@ -56,6 +58,7 @@ public sealed class AdminController : ControllerBase
         _chat          = chat;
         _notifications = notifications;
         _pusher        = pusher;
+        _mining        = mining;
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────
@@ -355,5 +358,19 @@ public sealed class AdminController : ControllerBase
         {
             message = $"Đã gửi thông báo đến {request.UserIds.Length} người dùng."
         });
+    }
+
+    [HttpPost("run-mining")]
+    public async Task<ActionResult> RunMining([FromQuery] decimal minUtil = 1000000)
+    {
+        var result = await _mining.RunMiningAsync(minUtil);
+        return Ok(result);
+    }
+
+    [HttpGet("mined-itemsets")]
+    public async Task<ActionResult> GetMinedItemsets()
+    {
+        var result = await _mining.GetMinedItemsetsAsync();
+        return Ok(result);
     }
 }

@@ -44,39 +44,54 @@ function initAuthUI() {
         const displayEl = document.getElementById('userDisplayName');
         if (displayEl) displayEl.textContent = firstName;
 
-        // Dropdown header
-        const dropName = document.getElementById('dropdownFullName');
-        const dropEmail = document.getElementById('dropdownEmail');
-        if (dropName) dropName.textContent = fullName;
-        if (dropEmail) dropEmail.textContent = email;
-
-        // Inject admin dashboard link if user is Admin
-        if (user.role === 'Admin') {
-            const dropdown = document.getElementById('userDropdown');
-            if (dropdown && !document.getElementById('adminDashboardLink')) {
-                const adminLink = document.createElement('a');
-                adminLink.href = '/admin';
-                adminLink.id = 'adminDashboardLink';
-                adminLink.className = 'dropdown-item';
-                adminLink.style.color = '#0284c7';
-                adminLink.style.fontWeight = '700';
-                adminLink.innerHTML = '⚙️ Trang Quản Trị';
-                
-                const header = dropdown.querySelector('.dropdown-header');
-                if (header) {
-                    header.after(adminLink);
-                } else {
-                    dropdown.prepend(adminLink);
-                }
+        // Rebuild user dropdown items to standardize links and icons across all pages
+        const dropdown = document.getElementById('userDropdown');
+        if (dropdown) {
+            const currentPath = window.location.pathname.toLowerCase();
+            const isActivePage = (path) => currentPath === path.toLowerCase() || 
+                                           (path === '/profile' && currentPath.startsWith('/profile/'));
+            
+            let htmlContent = `
+                <div class="dropdown-header">
+                    <span id="dropdownFullName">${fullName}</span>
+                    <small id="dropdownEmail">${email}</small>
+                </div>
+            `;
+            
+            // Inject admin dashboard link if user is Admin
+            if (user.role === 'Admin') {
+                htmlContent += `
+                    <a href="/admin" id="adminDashboardLink" class="dropdown-item" style="color: #0284c7; font-weight: 700;">
+                        ⚙️ Trang Quản Trị
+                    </a>
+                `;
             }
+            
+            htmlContent += `
+                <a href="/profile/info" class="dropdown-item ${isActivePage('/profile') || isActivePage('/profile/info') ? 'active' : ''}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Hồ sơ của tôi
+                </a>
+                <a href="/shoppingcart" class="dropdown-item ${isActivePage('/shoppingcart') ? 'active' : ''}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Giỏ hàng
+                </a>
+                <a href="/order-status" class="dropdown-item ${isActivePage('/order-status') ? 'active' : ''}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    Đơn hàng
+                </a>
+                <a href="/customer-returns" class="dropdown-item ${isActivePage('/customer-returns') ? 'active' : ''}">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+                    Đổi trả / Hoàn tiền
+                </a>
+                <button class="dropdown-item logout" onclick="handleLogout()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Đăng xuất
+                </button>
+            `;
+            
+            dropdown.innerHTML = htmlContent;
         }
-
-        // Update all profile links to point to /profile
-        document.querySelectorAll('.dropdown-item').forEach(item => {
-            if (item.textContent.includes('Hồ sơ của tôi')) {
-                item.setAttribute('href', '/profile');
-            }
-        });
 
         // Ẩn icon login, hiện greeting
         if (loginLink) loginLink.style.display = 'none';

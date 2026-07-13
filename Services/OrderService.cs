@@ -19,4 +19,5 @@ public sealed class OrderService : IOrderService
     public Task<(AdminOrderHeader?, IEnumerable<AdminOrderDetailItem>)> GetAdminOrderDetailAsync(int orderId) => _repo.GetAdminOrderDetailAsync(orderId);
     public Task UpdateOrderStatusAsync(UpdateOrderStatusRequest request) => _repo.UpdateOrderStatusAsync(request);
     public Task<IEnumerable<AdminOrderDetailListItem>> GetAdminOrderDetailsAsync(AdminOrderDetailQueryRequest request) => _repo.GetAdminOrderDetailsAsync(request);
+    public Task UpdateOrderTrackingCodeAsync(int orderId, string trackingCode) => _repo.UpdateOrderTrackingCodeAsync(orderId, trackingCode);
 }

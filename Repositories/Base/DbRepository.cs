@@ -21,6 +21,9 @@ public sealed class DbRepository : IDbRepository
     public Task<int> ExecuteAsync(string storedProcedure, object? parameters = null)
         => _connection.ExecuteAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
 
+    public Task<T?> ExecuteScalarAsync<T>(string storedProcedure, object? parameters = null)
+        => _connection.ExecuteScalarAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
+
     public Task<SqlMapper.GridReader> QueryMultipleAsync(string storedProcedure, object? parameters = null)
         => _connection.QueryMultipleAsync(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
 

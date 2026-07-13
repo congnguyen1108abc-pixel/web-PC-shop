@@ -1206,7 +1206,8 @@ CREATE OR ALTER PROCEDURE sp_Customer_PlaceOrder
     @UserID          INT,
     @ShippingAddress NVARCHAR(500),
     @PaymentMethod   NVARCHAR(50),
-    @VoucherCode     NVARCHAR(20) = NULL
+    @VoucherCode     NVARCHAR(20) = NULL,
+    @ShippingFee     DECIMAL(18, 2) = 0
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1301,7 +1302,8 @@ BEGIN
             END
         END
 
-        SET @FinalAmount = @TotalAmount - @DiscountAmt;
+        -- Tính FinalAmount bao gồm phí vận chuyển
+        SET @FinalAmount = @TotalAmount - @DiscountAmt + @ShippingFee;
         IF @FinalAmount < 0 SET @FinalAmount = 0;
 
         INSERT INTO Orders
@@ -1309,6 +1311,7 @@ BEGIN
             UserID,
             TotalAmount,
             DiscountAmount,
+            ShippingFee,
             FinalAmount,
             VoucherCode,
             ShippingAddress,
@@ -1321,6 +1324,7 @@ BEGIN
             @UserID,
             @TotalAmount,
             @DiscountAmt,
+            @ShippingFee,
             @FinalAmount,
             @VoucherCode,
             @ShippingAddress,
@@ -1344,15 +1348,17 @@ BEGIN
         JOIN Products p ON c.ProductID = p.ProductID
         WHERE c.UserID = @UserID;
 
+        -- Record voucher usage
         IF @VoucherCode IS NOT NULL
         BEGIN
             INSERT INTO VoucherUsage (VoucherCode, UserID, OrderID)
             VALUES (@VoucherCode, @UserID, @NewOrderID);
         END
 
-        DELETE FROM Cart
-        WHERE UserID = @UserID;
+        -- Clear user cart
+        DELETE FROM Cart WHERE UserID = @UserID;
 
+        -- Insert notification
         INSERT INTO Notifications (UserID, Title, Message, Type, RelatedID)
         VALUES
         (
@@ -1363,12 +1369,11 @@ BEGIN
             @NewOrderID
         );
 
-        COMMIT;
+        COMMIT TRANSACTION;
         SELECT @NewOrderID AS NewOrderID;
     END TRY
     BEGIN CATCH
-        IF @@TRANCOUNT > 0
-            ROLLBACK;
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
         THROW;
     END CATCH
 END;
@@ -1464,7 +1469,8 @@ BEGIN
     SET NOCOUNT ON;
     -- Header đơn hàng
     SELECT o.OrderID, o.OrderDate, o.TotalAmount, o.DiscountAmount, o.FinalAmount,
-           o.Status, o.PaymentMethod, o.PaymentStatus, o.ShippingAddress, o.VoucherCode
+           o.Status, o.PaymentMethod, o.PaymentStatus, o.ShippingAddress, o.VoucherCode,
+           o.ShippingTrackingCode
     FROM Orders o
     WHERE o.OrderID = @OrderID AND o.UserID = @UserID;
     -- Chi tiết sản phẩm
@@ -1827,6 +1833,10 @@ CREATE PROCEDURE sp_Admin_GetRevenueReport
 AS
 BEGIN
     SET NOCOUNT ON;
+    
+    -- Ensure @EndDate covers the entire day (up to 23:59:59.997)
+    DECLARE @ActualEndDate DATETIME = DATEADD(MILLISECOND, -3, CAST(DATEADD(DAY, 1, CAST(@EndDate AS DATE)) AS DATETIME));
+
     SELECT
         CAST(o.OrderDate AS DATE)        AS SalesDate,
         COUNT(o.OrderID)                  AS TotalOrders,
@@ -1834,7 +1844,7 @@ BEGIN
         SUM(o.DiscountAmount)             AS TotalDiscount,
         AVG(o.FinalAmount)                AS AvgOrderValue
     FROM Orders o
-    WHERE o.OrderDate BETWEEN @StartDate AND @EndDate
+    WHERE o.OrderDate BETWEEN @StartDate AND @ActualEndDate
       AND o.Status = N'Hoàn tất'
     GROUP BY CAST(o.OrderDate AS DATE)
     ORDER BY SalesDate DESC;
@@ -1903,6 +1913,9 @@ BEGIN
     SET @StartDate = ISNULL(@StartDate, DATEADD(MONTH, -1, GETDATE()));
     SET @EndDate   = ISNULL(@EndDate, GETDATE());
 
+    -- Ensure @EndDate covers the entire day (up to 23:59:59.997)
+    DECLARE @ActualEndDate DATETIME = DATEADD(MILLISECOND, -3, CAST(DATEADD(DAY, 1, CAST(@EndDate AS DATE)) AS DATETIME));
+
     SELECT TOP (@TopN)
         p.ProductID, p.ProductName, p.SKU,
         SUM(od.Quantity)              AS TotalSold,
@@ -1911,7 +1924,7 @@ BEGIN
     JOIN Products p ON od.ProductID = p.ProductID
     JOIN Orders   o ON od.OrderID   = o.OrderID
     WHERE o.Status    = N'Hoàn tất'
-      AND o.OrderDate BETWEEN @StartDate AND @EndDate
+      AND o.OrderDate BETWEEN @StartDate AND @ActualEndDate
     GROUP BY p.ProductID, p.ProductName, p.SKU
     ORDER BY TotalSold DESC;
 END;
@@ -2913,7 +2926,8 @@ BEGIN
         o.PaymentStatus,
         o.ShippingAddress,
         o.AdminNote,
-        o.UpdatedAt
+        o.UpdatedAt,
+        o.ShippingTrackingCode
     FROM Orders o
     JOIN Users u ON o.UserID = u.UserID
     WHERE o.OrderID = @OrderID;
@@ -6414,6 +6428,231 @@ WHERE Slug IS NULL OR Slug <> dbo.fn_GenerateSlug(ProductName);
 GO
 
 
+-- ----------------------------------------------------------------------------
+-- PHẦN 4.5: HỆ THỐNG GỢI Ý KHAI THÁC DỮ LIỆU HIỆU QUẢ CAO (HUIM - APRIORI)
+-- ----------------------------------------------------------------------------
+
+-- 1. Bổ sung cột ImportPrice lưu giá nhập cho Products
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Products') AND name = 'ImportPrice')
+BEGIN
+    ALTER TABLE Products ADD ImportPrice DECIMAL(18,2) DEFAULT 0;
+END;
+GO
+
+UPDATE Products
+SET ImportPrice = CASE
+    WHEN ISNULL(DiscountPrice, 0) > 0 THEN ROUND(DiscountPrice * 0.75, 0)
+    ELSE ROUND(Price * 0.75, 0)
+END
+WHERE ImportPrice IS NULL OR ImportPrice = 0;
+GO
+
+-- 2. Tạo bảng HighUtilityItemsets lưu các tập phổ biến lợi nhuận cao
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'HighUtilityItemsets')
+BEGIN
+    CREATE TABLE HighUtilityItemsets (
+        ItemsetID INT PRIMARY KEY IDENTITY(1,1),
+        ProductIDs NVARCHAR(500) NOT NULL,
+        TotalUtility DECIMAL(18,2) NOT NULL,
+        SupportCount INT NOT NULL,
+        MinedAt DATETIME DEFAULT GETDATE()
+    );
+END;
+GO
+
+-- 3. Tạo bảng ProductRecommendations lưu các sản phẩm gợi ý
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ProductRecommendations')
+BEGIN
+    CREATE TABLE ProductRecommendations (
+        SourceProductID INT FOREIGN KEY REFERENCES Products(ProductID) ON DELETE CASCADE,
+        RecommendedProductID INT FOREIGN KEY REFERENCES Products(ProductID),
+        UtilityScore DECIMAL(18,2) NOT NULL,
+        PRIMARY KEY (SourceProductID, RecommendedProductID)
+    );
+END;
+GO
+
+-- 4. SP: Lấy sản phẩm gợi ý trên Trang Chủ
+CREATE OR ALTER PROCEDURE sp_Recommendations_GetForHomepage
+    @TopN INT = 8
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @Result TABLE (
+        ProductID INT,
+        ProductName NVARCHAR(255),
+        Price DECIMAL(18,2),
+        DiscountPrice DECIMAL(18,2),
+        Slug NVARCHAR(255),
+        DefaultImageUrl NVARCHAR(500),
+        Score DECIMAL(18,2),
+        AvgRating DECIMAL(18,2),
+        ReviewCount INT
+    );
+
+    INSERT INTO @Result
+    SELECT TOP (@TopN)
+        p.ProductID,
+        p.ProductName,
+        p.Price,
+        p.DiscountPrice,
+        p.Slug,
+        (SELECT TOP 1 ImageURL FROM ProductImages WHERE ProductID = p.ProductID ORDER BY IsDefault DESC, SortOrder ASC) AS DefaultImageUrl,
+        SUM((od.UnitPrice - ISNULL(p.ImportPrice, 0)) * od.Quantity) AS CumulativeProfit,
+        ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(18,2))) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0.0) AS AvgRating,
+        ISNULL((SELECT COUNT(*) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0) AS ReviewCount
+    FROM OrderDetails od
+    JOIN Orders o ON od.OrderID = o.OrderID
+    JOIN Products p ON od.ProductID = p.ProductID
+    WHERE o.Status = N'Hoàn tất'
+    GROUP BY p.ProductID, p.ProductName, p.Price, p.DiscountPrice, p.Slug
+    ORDER BY SUM((od.UnitPrice - ISNULL(p.ImportPrice, 0)) * od.Quantity) DESC;
+
+    IF (SELECT COUNT(*) FROM @Result) < @TopN
+    BEGIN
+        INSERT INTO @Result
+        SELECT TOP (@TopN - (SELECT COUNT(*) FROM @Result))
+            p.ProductID,
+            p.ProductName,
+            p.Price,
+            p.DiscountPrice,
+            p.Slug,
+            (SELECT TOP 1 ImageURL FROM ProductImages WHERE ProductID = p.ProductID ORDER BY IsDefault DESC, SortOrder ASC) AS DefaultImageUrl,
+            (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END - ISNULL(p.ImportPrice, 0)) AS Score,
+            ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(18,2))) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0.0) AS AvgRating,
+            ISNULL((SELECT COUNT(*) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0) AS ReviewCount
+        FROM Products p
+        WHERE p.IsActive = 1
+          AND p.ProductID NOT IN (SELECT ProductID FROM @Result)
+        ORDER BY (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END - ISNULL(p.ImportPrice, 0)) DESC;
+    END
+
+    SELECT * FROM @Result ORDER BY Score DESC;
+END;
+GO
+
+-- 5. SP: Lấy gợi ý sản phẩm đi kèm trên Trang Chi Tiết
+CREATE OR ALTER PROCEDURE sp_Recommendations_GetForProduct
+    @ProductID INT,
+    @TopN INT = 4
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @Result TABLE (
+        ProductID INT,
+        ProductName NVARCHAR(255),
+        Price DECIMAL(18,2),
+        DiscountPrice DECIMAL(18,2),
+        Slug NVARCHAR(255),
+        DefaultImageUrl NVARCHAR(500),
+        Score DECIMAL(18,2),
+        AvgRating DECIMAL(18,2),
+        ReviewCount INT
+    );
+
+    INSERT INTO @Result
+    SELECT TOP (@TopN)
+        p.ProductID,
+        p.ProductName,
+        p.Price,
+        p.DiscountPrice,
+        p.Slug,
+        (SELECT TOP 1 ImageURL FROM ProductImages WHERE ProductID = p.ProductID ORDER BY IsDefault DESC, SortOrder ASC) AS DefaultImageUrl,
+        r.UtilityScore,
+        ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(18,2))) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0.0) AS AvgRating,
+        ISNULL((SELECT COUNT(*) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0) AS ReviewCount
+    FROM ProductRecommendations r
+    JOIN Products p ON r.RecommendedProductID = p.ProductID
+    WHERE r.SourceProductID = @ProductID AND p.IsActive = 1
+    ORDER BY r.UtilityScore DESC;
+
+    IF (SELECT COUNT(*) FROM @Result) < @TopN
+    BEGIN
+        DECLARE @CategoryID INT;
+        SELECT @CategoryID = CategoryID FROM Products WHERE ProductID = @ProductID;
+
+        INSERT INTO @Result
+        SELECT TOP (@TopN - (SELECT COUNT(*) FROM @Result))
+            p.ProductID,
+            p.ProductName,
+            p.Price,
+            p.DiscountPrice,
+            p.Slug,
+            (SELECT TOP 1 ImageURL FROM ProductImages WHERE ProductID = p.ProductID ORDER BY IsDefault DESC, SortOrder ASC) AS DefaultImageUrl,
+            (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END - ISNULL(p.ImportPrice, 0)) AS Score,
+            ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(18,2))) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0.0) AS AvgRating,
+            ISNULL((SELECT COUNT(*) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0) AS ReviewCount
+        FROM Products p
+        WHERE p.CategoryID = @CategoryID
+          AND p.ProductID <> @ProductID
+          AND p.IsActive = 1
+          AND p.ProductID NOT IN (SELECT ProductID FROM @Result)
+        ORDER BY (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END - ISNULL(p.ImportPrice, 0)) DESC;
+    END
+
+    IF (SELECT COUNT(*) FROM @Result) < @TopN
+    BEGIN
+        INSERT INTO @Result
+        SELECT TOP (@TopN - (SELECT COUNT(*) FROM @Result))
+            p.ProductID,
+            p.ProductName,
+            p.Price,
+            p.DiscountPrice,
+            p.Slug,
+            (SELECT TOP 1 ImageURL FROM ProductImages WHERE ProductID = p.ProductID ORDER BY IsDefault DESC, SortOrder ASC) AS DefaultImageUrl,
+            (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END - ISNULL(p.ImportPrice, 0)) AS Score,
+            ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(18,2))) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0.0) AS AvgRating,
+            ISNULL((SELECT COUNT(*) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0) AS ReviewCount
+        FROM Products p
+        WHERE p.ProductID <> @ProductID
+          AND p.IsActive = 1
+          AND p.ProductID NOT IN (SELECT ProductID FROM @Result)
+        ORDER BY (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END - ISNULL(p.ImportPrice, 0)) DESC;
+    END
+
+    SELECT * FROM @Result ORDER BY Score DESC;
+END;
+GO
+
+-- 6. SP: Lấy danh sách giao dịch hoàn tất dạng phẳng phục vụ khai thác HUIM
+CREATE OR ALTER PROCEDURE sp_Admin_GetFlatCompletedTransactions
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        o.OrderID, 
+        od.ProductID, 
+        od.Quantity, 
+        od.UnitPrice, 
+        ISNULL(p.ImportPrice, 0) AS ImportPrice
+    FROM Orders o 
+    JOIN OrderDetails od ON o.OrderID = od.OrderID 
+    JOIN Products p ON od.ProductID = p.ProductID 
+    WHERE o.Status = N'Hoàn tất';
+END;
+GO
+
+-- 7. SP: Lấy danh sách Product ID và Product Name phục vụ tra cứu trong C#
+CREATE OR ALTER PROCEDURE sp_Admin_GetProductLookup
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT ProductID, ProductName FROM Products;
+END;
+GO
+
+-- 8. SP: Lấy các tập HUI đã khai thác được để hiển thị báo cáo ở Admin UI
+CREATE OR ALTER PROCEDURE sp_Admin_GetMinedItemsets
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT ItemsetID, ProductIDs, TotalUtility, SupportCount FROM HighUtilityItemsets ORDER BY TotalUtility DESC;
+END;
+GO
+
+
 -- ============================================================================
 -- PHẦN 5: GHI CHÚ PHỤ TRỢ
 -- ============================================================================
@@ -6462,6 +6701,8 @@ PRINT N'⏱ Token hết hạn sau 15 phút';
 PRINT N'🔒 Token chỉ dùng được 1 lần';
 GO
 
+GO
+
 -----------------------------------------------------------
 -- COMPLETION
 -----------------------------------------------------------
@@ -6470,4 +6711,388 @@ PRINT '📊 Bảng: RefreshTokens';
 PRINT '📝 Stored Procedures: 6';
 PRINT '🔍 Indexes: 3';
 PRINT '⚡ Triggers: 1';
+GO
+
+-- ============================================================
+-- PHẦN CẬP NHẬT DỮ LIỆU SEED & HÌNH ẢNH SẢN PHẨM MỚI
+-- ============================================================
+PRINT N'⏳ Bắt đầu cập nhật hình ảnh linh kiện thật cho sản phẩm...';
+GO
+
+-- Xóa và cập nhật hình ảnh linh kiện thật cho các sản phẩm gợi ý chính
+DELETE FROM ProductImages WHERE ProductID IN (1, 2, 4, 6, 8, 9, 66);
+
+-- Product 1: ASUS Dual GeForce RTX 4060 OC 8GB GDDR6
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+VALUES (1, '/images/products/gpu.jpg', 'ASUS Dual GeForce RTX 4060', 0, 1);
+
+-- Product 2: MSI GeForce RTX 4060 Ti Ventus 2X Black 8GB
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+VALUES (2, '/images/products/gpu.jpg', 'MSI GeForce RTX 4060 Ti', 0, 1);
+
+-- Product 4: Intel Core i5-13400F
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+VALUES (4, '/images/products/cpu.jpg', 'Intel Core i5-13400F', 0, 1);
+
+-- Product 6: AMD Ryzen 5 5600
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+VALUES (6, '/images/products/cpu.jpg', 'AMD Ryzen 5 5600', 0, 1);
+
+-- Product 8: ASUS Prime B760M-K D4
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+VALUES (8, '/images/products/mainboard.jpg', 'ASUS Prime B760M-K D4', 0, 1);
+
+-- Product 9: MSI B550M PRO-VDH WIFI
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+VALUES (9, '/images/products/mainboard.jpg', 'MSI B550M PRO-VDH WIFI', 0, 1);
+
+-- Product 66: NVIDIA GeForce RTX 4090 Founders Edition 24GB
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+VALUES (66, '/images/products/gpu.jpg', 'NVIDIA GeForce RTX 4090', 0, 1);
+GO
+
+-- Gán ảnh linh kiện chất lượng cao tương ứng theo CategoryID cho tất cả sản phẩm chưa có ảnh
+INSERT INTO ProductImages (ProductID, ImageURL, AltText, SortOrder, IsDefault)
+SELECT p.ProductID,
+       CASE p.CategoryID
+           WHEN 1 THEN '/images/products/gpu.jpg'
+           WHEN 2 THEN '/images/products/cpu.jpg'
+           WHEN 3 THEN '/images/products/mainboard.jpg'
+           WHEN 4 THEN '/images/products/ram.jpg'
+           WHEN 5 THEN '/images/products/ssd.jpg'
+           WHEN 6 THEN '/images/products/psu.jpg'
+           WHEN 7 THEN '/images/products/keyboard.jpg'
+           WHEN 8 THEN '/images/products/case.jpg'
+           WHEN 9 THEN '/images/products/cooler.jpg'
+           ELSE '/images/products/gpu.jpg'
+       END AS ImageURL,
+       p.ProductName AS AltText,
+       0 AS SortOrder,
+       1 AS IsDefault
+FROM Products p
+WHERE NOT EXISTS (
+    SELECT 1 FROM ProductImages pi WHERE pi.ProductID = p.ProductID
+);
+GO
+
+-- Cập nhật tất cả các ảnh placeholder hiện tại thành ảnh thật
+UPDATE pi
+SET pi.ImageURL = CASE p.CategoryID
+    WHEN 1 THEN '/images/products/gpu.jpg'
+    WHEN 2 THEN '/images/products/cpu.jpg'
+    WHEN 3 THEN '/images/products/mainboard.jpg'
+    WHEN 4 THEN '/images/products/ram.jpg'
+    WHEN 5 THEN '/images/products/ssd.jpg'
+    WHEN 6 THEN '/images/products/psu.jpg'
+    WHEN 7 THEN '/images/products/keyboard.jpg'
+    WHEN 8 THEN '/images/products/case.jpg'
+    WHEN 9 THEN '/images/products/cooler.jpg'
+    ELSE '/images/products/gpu.jpg'
+END
+FROM ProductImages pi
+JOIN Products p ON pi.ProductID = p.ProductID
+WHERE pi.ImageURL LIKE '%placehold.co%' 
+   OR pi.ImageURL LIKE '%default%' 
+   OR pi.ImageURL IS NULL 
+   OR pi.ImageURL = '';
+GO
+
+-- ============================================================
+-- CẬP NHẬT TÀI KHOẢN ADMIN MẶC ĐỊNH
+-- ============================================================
+PRINT N'⏳ Đang cấu hình tài khoản admin phongrainbowsix@gmail.com...';
+UPDATE Users
+SET PasswordHash = 'a265bbdb5c5206c40ba48afb17f5f7f65d4d31f490d8dca6cb5e52c403d65d92',
+    Role = 'Admin'
+WHERE Email = 'phongrainbowsix@gmail.com';
+-- ============================================================
+-- CẤU HÌNH GHN TRACKING COLUMN
+-- ============================================================
+IF NOT EXISTS (
+    SELECT 1 FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Orders') AND name = 'ShippingTrackingCode'
+)
+BEGIN
+    ALTER TABLE Orders ADD ShippingTrackingCode NVARCHAR(100) NULL;
+END
+GO
+
+-- ============================================================
+-- CẤU HÌNH GHN SHIPPING FEE COLUMN (2026-07-08)
+-- ============================================================
+IF NOT EXISTS (
+    SELECT 1 FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Orders') AND name = 'ShippingFee'
+)
+BEGIN
+    ALTER TABLE Orders ADD ShippingFee DECIMAL(18, 2) DEFAULT 0;
+    PRINT 'Added ShippingFee column to Orders table.';
+END
+GO
+
+-- ============================================================
+-- CẤU HÌNH HOÀN ĐƠN & HOÀN TIỀN (RETURN & REFUND SCHEMA)
+-- ============================================================
+
+-- 1. Tạo bảng ReturnRequests nếu chưa tồn tại
+IF OBJECT_ID('ReturnRequests', 'U') IS NULL
+BEGIN
+    CREATE TABLE ReturnRequests (
+        ReturnID INT IDENTITY(1,1) PRIMARY KEY,
+        OrderID INT NOT NULL FOREIGN KEY REFERENCES Orders(OrderID),
+        UserID INT NOT NULL FOREIGN KEY REFERENCES Users(UserID),
+        Reason NVARCHAR(500) NOT NULL,
+        EvidenceImages NVARCHAR(MAX) NULL,
+        RefundAmount DECIMAL(18,2) NOT NULL,
+        RefundBankName NVARCHAR(100) NULL,
+        RefundAccountNo NVARCHAR(50) NULL,
+        RefundAccountName NVARCHAR(150) NULL,
+        ReturnAddress NVARCHAR(500) NULL,
+        ReturnWardCode NVARCHAR(50) NULL,
+        ReturnDistrictId INT NULL,
+        Status NVARCHAR(50) NOT NULL DEFAULT 'Pending', -- 'Pending', 'Approved', 'Rejected', 'Picking', 'Received', 'Refunded', 'Completed'
+        ReturnTrackingCode NVARCHAR(100) NULL,
+        AdminNote NVARCHAR(500) NULL,
+        CreatedAt DATETIME DEFAULT GETDATE(),
+        UpdatedAt DATETIME DEFAULT GETDATE()
+    );
+    PRINT 'Created ReturnRequests table.';
+END
+GO
+
+-- 2. Tạo bảng RefundTransactions nếu chưa tồn tại
+IF OBJECT_ID('RefundTransactions', 'U') IS NULL
+BEGIN
+    CREATE TABLE RefundTransactions (
+        RefundTransactionID INT IDENTITY(1,1) PRIMARY KEY,
+        ReturnID INT NOT NULL FOREIGN KEY REFERENCES ReturnRequests(ReturnID),
+        Amount DECIMAL(18,2) NOT NULL,
+        PaymentMethod NVARCHAR(50) NOT NULL,
+        TransactionNo NVARCHAR(100) NULL,
+        Status NVARCHAR(50) NOT NULL DEFAULT 'Success',
+        CreatedAt DATETIME DEFAULT GETDATE()
+    );
+    PRINT 'Created RefundTransactions table.';
+END
+GO
+
+-- 3. Tạo chỉ mục (Indexes)
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_ReturnRequests_OrderID')
+    CREATE INDEX IX_ReturnRequests_OrderID ON ReturnRequests(OrderID);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_ReturnRequests_UserID')
+    CREATE INDEX IX_ReturnRequests_UserID ON ReturnRequests(UserID);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_ReturnRequests_Status')
+    CREATE INDEX IX_ReturnRequests_Status ON ReturnRequests(Status);
+IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_RefundTransactions_ReturnID')
+    CREATE INDEX IX_RefundTransactions_ReturnID ON RefundTransactions(ReturnID);
+GO
+
+-- 4. Tạo Stored Procedures
+
+-- SP Khách hàng tạo yêu cầu trả hàng
+IF OBJECT_ID('sp_Customer_CreateReturnRequest', 'P') IS NOT NULL
+    DROP PROCEDURE sp_Customer_CreateReturnRequest;
+GO
+CREATE PROCEDURE sp_Customer_CreateReturnRequest
+    @OrderID INT,
+    @UserID INT,
+    @Reason NVARCHAR(500),
+    @EvidenceImages NVARCHAR(MAX),
+    @RefundAmount DECIMAL(18,2),
+    @RefundBankName NVARCHAR(100),
+    @RefundAccountNo NVARCHAR(50),
+    @RefundAccountName NVARCHAR(150),
+    @ReturnAddress NVARCHAR(500),
+    @ReturnWardCode NVARCHAR(50),
+    @ReturnDistrictId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO ReturnRequests (OrderID, UserID, Reason, EvidenceImages, RefundAmount, RefundBankName, RefundAccountNo, RefundAccountName, ReturnAddress, ReturnWardCode, ReturnDistrictId, Status, CreatedAt, UpdatedAt)
+    VALUES (@OrderID, @UserID, @Reason, @EvidenceImages, @RefundAmount, @RefundBankName, @RefundAccountNo, @RefundAccountName, @ReturnAddress, @ReturnWardCode, @ReturnDistrictId, 'Pending', GETDATE(), GETDATE());
+    
+    SELECT SCOPE_IDENTITY() AS NewReturnID;
+END;
+GO
+
+-- SP Lấy danh sách yêu cầu trả hàng cho Admin (Phân trang & Lọc trạng thái)
+IF OBJECT_ID('sp_Admin_GetReturnRequestsPaged', 'P') IS NOT NULL
+    DROP PROCEDURE sp_Admin_GetReturnRequestsPaged;
+GO
+CREATE PROCEDURE sp_Admin_GetReturnRequestsPaged
+    @Status NVARCHAR(50) = NULL,
+    @PageNumber INT = 1,
+    @PageSize INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+    IF @PageNumber < 1 SET @PageNumber = 1;
+    IF @PageSize < 1 SET @PageSize = 10;
+    
+    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+    
+    WITH FilteredReturns AS (
+        SELECT 
+            r.ReturnID,
+            r.OrderID,
+            r.UserID,
+            u.FullName,
+            u.Email,
+            r.Reason,
+            r.EvidenceImages,
+            r.RefundAmount,
+            r.RefundBankName,
+            r.RefundAccountNo,
+            r.RefundAccountName,
+            r.ReturnAddress,
+            r.ReturnWardCode,
+            r.ReturnDistrictId,
+            r.Status,
+            r.ReturnTrackingCode,
+            r.AdminNote,
+            r.CreatedAt,
+            r.UpdatedAt,
+            COUNT(*) OVER() AS TotalRecords
+        FROM ReturnRequests r
+        JOIN Users u ON r.UserID = u.UserID
+        WHERE (@Status IS NULL OR r.Status = @Status)
+    )
+    SELECT * FROM FilteredReturns
+    ORDER BY CreatedAt DESC
+    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+END;
+GO
+
+-- SP Admin xử lý yêu cầu (Duyệt/Từ chối)
+IF OBJECT_ID('sp_Admin_ProcessReturnRequest', 'P') IS NOT NULL
+    DROP PROCEDURE sp_Admin_ProcessReturnRequest;
+GO
+CREATE PROCEDURE sp_Admin_ProcessReturnRequest
+    @ReturnID INT,
+    @NewStatus NVARCHAR(50),
+    @AdminNote NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE ReturnRequests
+    SET Status = @NewStatus,
+        AdminNote = ISNULL(@AdminNote, AdminNote),
+        UpdatedAt = GETDATE()
+    WHERE ReturnID = @ReturnID;
+END;
+GO
+
+-- SP Cập nhật mã vận đơn lấy hàng thu hồi từ GHN
+IF OBJECT_ID('sp_Admin_UpdateReturnTrackingCode', 'P') IS NOT NULL
+    DROP PROCEDURE sp_Admin_UpdateReturnTrackingCode;
+GO
+CREATE PROCEDURE sp_Admin_UpdateReturnTrackingCode
+    @ReturnID INT,
+    @TrackingCode NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE ReturnRequests
+    SET ReturnTrackingCode = @TrackingCode,
+        Status = 'Picking',
+        UpdatedAt = GETDATE()
+    WHERE ReturnID = @ReturnID;
+END;
+GO
+
+-- SP Nhận hàng hoàn và cộng trả tồn kho
+IF OBJECT_ID('sp_Inventory_RestockOnReturn', 'P') IS NOT NULL
+    DROP PROCEDURE sp_Inventory_RestockOnReturn;
+GO
+CREATE PROCEDURE sp_Inventory_RestockOnReturn
+    @ReturnID INT,
+    @AdminNote NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        DECLARE @OrderID INT;
+        SELECT @OrderID = OrderID FROM ReturnRequests WHERE ReturnID = @ReturnID;
+
+        -- Cập nhật trạng thái đổi trả thành 'Received'
+        UPDATE ReturnRequests
+        SET Status = 'Received',
+            AdminNote = ISNULL(@AdminNote, AdminNote),
+            UpdatedAt = GETDATE()
+        WHERE ReturnID = @ReturnID;
+
+        -- Cộng lại hàng vào kho
+        UPDATE p
+        SET p.StockQuantity = p.StockQuantity + od.Quantity,
+            p.SoldCount = p.SoldCount - od.Quantity,
+            p.UpdatedAt = GETDATE()
+        FROM Products p
+        JOIN OrderDetails od ON p.ProductID = od.ProductID
+        WHERE od.OrderID = @OrderID;
+
+        -- Ghi InventoryLog
+        INSERT INTO InventoryLog (ProductID, ChangeQuantity, QuantityAfter, LogType, RelatedOrderID, Note)
+        SELECT od.ProductID, od.Quantity, p.StockQuantity, N'Hoàn trả',
+               @OrderID, N'Nhận hàng hoàn đơn từ yêu cầu #' + CAST(@ReturnID AS NVARCHAR(20))
+        FROM OrderDetails od
+        JOIN Products p ON od.ProductID = p.ProductID
+        WHERE od.OrderID = @OrderID;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- SP Hoàn tất chuyển khoản hoàn tiền
+IF OBJECT_ID('sp_Admin_CompleteRefund', 'P') IS NOT NULL
+    DROP PROCEDURE sp_Admin_CompleteRefund;
+GO
+CREATE PROCEDURE sp_Admin_CompleteRefund
+    @ReturnID INT,
+    @PaymentMethod NVARCHAR(50),
+    @TransactionNo NVARCHAR(100) = NULL,
+    @AdminNote NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        DECLARE @OrderID INT;
+        DECLARE @RefundAmount DECIMAL(18,2);
+        SELECT @OrderID = OrderID, @RefundAmount = RefundAmount FROM ReturnRequests WHERE ReturnID = @ReturnID;
+
+        -- Cập nhật trạng thái đổi trả thành 'Refunded'
+        UPDATE ReturnRequests
+        SET Status = 'Refunded',
+            AdminNote = ISNULL(@AdminNote, AdminNote),
+            UpdatedAt = GETDATE()
+        WHERE ReturnID = @ReturnID;
+
+        -- Ghi nhận lịch sử giao dịch hoàn tiền
+        INSERT INTO RefundTransactions (ReturnID, Amount, PaymentMethod, TransactionNo, Status, CreatedAt)
+        VALUES (@ReturnID, @RefundAmount, @PaymentMethod, @TransactionNo, 'Success', GETDATE());
+
+        -- Cập nhật trạng thái đơn hàng gốc thành 'Đã hủy' và trạng thái thanh toán thành 'Hoàn tiền'
+        UPDATE Orders
+        SET Status = N'Đã hủy',
+            PaymentStatus = N'Hoàn tiền',
+            AdminNote = N'Hoàn đơn thành công - Đã hoàn tiền cho khách',
+            UpdatedAt = GETDATE()
+        WHERE OrderID = @OrderID;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+PRINT N'✅ Hoàn tất cập nhật cơ sở dữ liệu PC_Store!';
 GO

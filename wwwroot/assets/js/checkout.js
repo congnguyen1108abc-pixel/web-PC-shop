@@ -11,13 +11,14 @@ console.log('[Checkout] ============ PAGE LOAD ============');
 const API_BASE = '';
 const DISCOUNT = 0; // Chưa hỗ trợ voucher
 let totalAmount = 0;
+let currentShippingFee = 25000;
 let currentOrderId = null;
 let pollingInterval = null;
 
 // Shipping selection states
 let selectedShipping = 'standard';
 let tempSelectedShipping = 'standard';
-const shippingNames = { standard: 'Nhanh - Shopee Xử Lý', express: 'Trong Ngày' };
+const shippingNames = { standard: 'Giao hàng nhanh - GHN', express: 'Hỏa tốc - Trong Ngày (GHN)' };
 
 /**
  * Calculate weight and bulkiness for a product based on its name
@@ -222,19 +223,47 @@ const citiesLoadedPromise = new Promise((resolve) => {
 async function loadCities() {
     try {
         citySelect.innerHTML = '<option value="">Đang tải danh sách tỉnh thành...</option>';
-        const response = await fetch("https://provinces.open-api.vn/api/p/");
-        const cities = await response.json();
+        const response = await fetch("/api/orders/shipping/provinces");
+        const resData = await response.json();
+        const allProvinces = resData.data || [];
+
+        // ── Lọc bỏ các tỉnh test/giả của GHN Sandbox ──────────────────────────────
+        // Danh sách 63 tỉnh/thành thực tế của Việt Nam
+        const VALID_PROVINCES = new Set([
+            'An Giang','Bà Rịa - Vũng Tàu','Bắc Giang','Bắc Kạn','Bạc Liêu',
+            'Bắc Ninh','Bến Tre','Bình Định','Bình Dương','Bình Phước',
+            'Bình Thuận','Cà Mau','Cần Thơ','Cao Bằng','Đà Nẵng',
+            'Đắk Lắk','Đắk Nông','Điện Biên','Đồng Nai','Đồng Tháp',
+            'Gia Lai','Hà Giang','Hà Nam','Hà Nội','Hà Tĩnh',
+            'Hải Dương','Hải Phòng','Hậu Giang','Hòa Bình','Hưng Yên',
+            'Khánh Hòa','Kiên Giang','Kon Tum','Lai Châu','Lâm Đồng',
+            'Lạng Sơn','Lào Cai','Long An','Nam Định','Nghệ An',
+            'Ninh Bình','Ninh Thuận','Phú Thọ','Phú Yên','Quảng Bình',
+            'Quảng Nam','Quảng Ngãi','Quảng Ninh','Quảng Trị','Sóc Trăng',
+            'Sơn La','Tây Ninh','Thái Bình','Thái Nguyên','Thanh Hóa',
+            'Thừa Thiên Huế','Tiền Giang','TP. Hồ Chí Minh','Trà Vinh',
+            'Tuyên Quang','Vĩnh Long','Vĩnh Phúc','Yên Bái'
+        ]);
+
+        const provinces = allProvinces.filter(p => {
+            const name = (p.ProvinceName || '').trim();
+            const testPattern = /\d|test|alert|demo|fake|trial/i;
+            return VALID_PROVINCES.has(name) && !testPattern.test(name);
+        });
+
+        // Sắp xếp Alphabet
+        provinces.sort((a, b) => a.ProvinceName.localeCompare(b.ProvinceName));
 
         citySelect.innerHTML = '<option value="">--- Chọn Tỉnh / Thành phố ---</option>';
-        cities.forEach(city => {
+        provinces.forEach(prov => {
             const option = document.createElement("option");
-            option.value = city.name;
-            option.dataset.code = city.code;
-            option.textContent = city.name;
+            option.value = prov.ProvinceName;
+            option.dataset.code = prov.ProvinceID;
+            option.textContent = prov.ProvinceName;
             citySelect.appendChild(option);
         });
 
-        console.log('[Checkout] ✅ Loaded', cities.length, 'provinces');
+        console.log('[Checkout] ✅ Loaded', provinces.length, 'provinces from GHN');
     } catch (error) {
         console.error('[Checkout] ❌ Error loading provinces:', error);
         citySelect.innerHTML = '<option value="">Lỗi tải dữ liệu tỉnh thành</option>';
@@ -248,14 +277,14 @@ async function loadCities() {
 // Load districts when province changes
 citySelect.addEventListener("change", async function () {
     const selectedOption = this.options[this.selectedIndex];
-    const cityCode = selectedOption ? selectedOption.dataset.code : '';
+    const provinceId = selectedOption ? selectedOption.dataset.code : '';
 
     districtSelect.innerHTML = '<option value="">--- Chọn Quận / Huyện ---</option>';
     wardSelect.innerHTML = '<option value="">--- Chọn Phường / Xã ---</option>';
     districtSelect.disabled = true;
     wardSelect.disabled = true;
 
-    if (!cityCode) {
+    if (!provinceId) {
         loadAndRenderCart();
         return;
     }
@@ -263,19 +292,27 @@ citySelect.addEventListener("change", async function () {
     try {
         districtSelect.disabled = true;
         districtSelect.innerHTML = '<option value="">Đang tải quận huyện...</option>';
-        const response = await fetch(`https://provinces.open-api.vn/api/p/${cityCode}?depth=2`);
-        const data = await response.json();
+        const response = await fetch(`/api/orders/shipping/districts?provinceId=${provinceId}`);
+        const resData = await response.json();
+        const allDistricts = resData.data || [];
+
+        // Lọc quận huyện ảo của Sandbox
+        const testPattern = /\d|test|alert|demo|fake|trial/i;
+        const districts = allDistricts.filter(d => !testPattern.test(d.DistrictName || ''));
+
+        // Sắp xếp
+        districts.sort((a, b) => a.DistrictName.localeCompare(b.DistrictName));
 
         districtSelect.innerHTML = '<option value="">--- Chọn Quận / Huyện ---</option>';
-        data.districts.forEach(district => {
+        districts.forEach(d => {
             const option = document.createElement("option");
-            option.value = district.name;
-            option.dataset.code = district.code;
-            option.textContent = district.name;
+            option.value = d.DistrictName;
+            option.dataset.code = d.DistrictID;
+            option.textContent = d.DistrictName;
             districtSelect.appendChild(option);
         });
         districtSelect.disabled = false;
-        console.log('[Checkout] ✅ Loaded', data.districts.length, 'districts');
+        console.log('[Checkout] ✅ Loaded', districts.length, 'districts from GHN');
     } catch (error) {
         console.error('[Checkout] ❌ Error loading districts:', error);
         districtSelect.innerHTML = '<option value="">Lỗi tải dữ liệu quận huyện</option>';
@@ -287,36 +324,53 @@ citySelect.addEventListener("change", async function () {
 // Load wards when district changes
 districtSelect.addEventListener("change", async function () {
     const selectedOption = this.options[this.selectedIndex];
-    const districtCode = selectedOption ? selectedOption.dataset.code : '';
+    const districtId = selectedOption ? selectedOption.dataset.code : '';
 
     wardSelect.innerHTML = '<option value="">--- Chọn Phường / Xã ---</option>';
     wardSelect.disabled = true;
 
-    if (!districtCode) return;
+    if (!districtId) {
+        loadAndRenderCart();
+        return;
+    }
 
     try {
         wardSelect.disabled = true;
         wardSelect.innerHTML = '<option value="">Đang tải phường xã...</option>';
-        const response = await fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-        const data = await response.json();
+        const response = await fetch(`/api/orders/shipping/wards?districtId=${districtId}`);
+        const resData = await response.json();
+        const allWards = resData.data || [];
+
+        // Lọc phường xã ảo
+        const testPattern = /\d|test|alert|demo|fake|trial/i;
+        const wards = allWards.filter(w => !testPattern.test(w.WardName || ''));
+
+        // Sắp xếp
+        wards.sort((a, b) => a.WardName.localeCompare(b.WardName));
 
         wardSelect.innerHTML = '<option value="">--- Chọn Phường / Xã ---</option>';
-        data.wards.forEach(ward => {
+        wards.forEach(w => {
             const option = document.createElement("option");
-            option.value = ward.name;
-            option.textContent = ward.name;
+            option.value = w.WardName;
+            option.dataset.code = w.WardCode;
+            option.textContent = w.WardName;
             wardSelect.appendChild(option);
         });
         wardSelect.disabled = false;
-        console.log('[Checkout] ✅ Loaded', data.wards.length, 'wards');
+        console.log('[Checkout] ✅ Loaded', wards.length, 'wards from GHN');
     } catch (error) {
         console.error('[Checkout] ❌ Error loading wards:', error);
         wardSelect.innerHTML = '<option value="">Lỗi tải dữ liệu phường xã</option>';
+    } finally {
+        loadAndRenderCart();
     }
 });
 
-// Initialize loading of cities
+// Load cities on start
 loadCities();
+
+// Listener when ward changes
+wardSelect.addEventListener("change", loadAndRenderCart);
 
 // ==========================================
 // 4. LOAD AND RENDER CART
@@ -426,21 +480,72 @@ async function loadAndRenderCart() {
         productList.innerHTML += productHTML;
     });
 
-    // Calculate dynamic shipping fee
-    const province = citySelect ? citySelect.value : '';
-    const shippingInfo = calculateShippingFee(rawItems, selectedShipping, province);
-    const shipping = shippingInfo.price;
-    const discount = DISCOUNT;
-    totalAmount = subtotal + shipping - discount;
+    // Calculate dynamic shipping fee from GHN API
+    let estWeight = 2.0;
 
-    console.log('[Checkout] 💰 Order Summary (Dynamic):');
+    const selectedDistrictOption = districtSelect ? districtSelect.options[districtSelect.selectedIndex] : null;
+    const selectedWardOption = wardSelect ? wardSelect.options[wardSelect.selectedIndex] : null;
+    const districtId = (selectedDistrictOption && selectedDistrictOption.dataset.code) ? parseInt(selectedDistrictOption.dataset.code) : 0;
+    const wardCode = (selectedWardOption && selectedWardOption.dataset.code) ? selectedWardOption.dataset.code : '';
+
+    if (districtId && wardCode) {
+        try {
+            // Tính khối lượng từ giỏ hàng để gửi lên GHN
+            let totalWeightGrams = 0;
+            rawItems.forEach(item => {
+                const qty = item.qty || item.quantity || 1;
+                const physics = estimateProductPhysics(item.name || '');
+                totalWeightGrams += Math.round(physics.weight * 1000) * qty;
+            });
+            if (totalWeightGrams === 0) totalWeightGrams = 2000;
+            estWeight = totalWeightGrams / 1000.0;
+
+            // Luôn lấy phí chuẩn (standard) từ GHN thực tế
+            const feeResponse = await fetch('/api/orders/shipping/fee', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    toDistrictId: districtId,
+                    toWardCode: wardCode,
+                    weightGrams: totalWeightGrams
+                })
+            });
+
+            if (feeResponse.ok) {
+                const feeData = await feeResponse.json();
+                const standardFee = feeData.fee;
+
+                if (selectedShipping === 'express') {
+                    // Phí hỏa tốc = phí chuẩn × 2.5, nhưng chỉ update nếu chưa được set từ modal
+                    if (!window._ghnExpressFee) {
+                        window._ghnExpressFee = Math.round(standardFee * 2.5 / 1000) * 1000;
+                    }
+                    currentShippingFee = window._ghnExpressFee;
+                } else {
+                    currentShippingFee = standardFee;
+                    window._ghnExpressFee = null; // Reset express khi về standard
+                }
+            }
+        } catch (err) {
+            console.error('[Checkout] Failed to fetch GHN fee, using default:', err);
+            if (currentShippingFee <= 0) currentShippingFee = 25000;
+        }
+    } else {
+        // Chưa chọn đủ địa chỉ — dùng giá mặc định
+        currentShippingFee = 25000;
+    }
+
+    const discount = DISCOUNT;
+    totalAmount = subtotal + currentShippingFee - discount;
+
+    console.log('[Checkout] 💰 Order Summary (GHN Sandbox):');
     console.log('[Checkout] - Subtotal:', subtotal);
-    console.log('[Checkout] - Shipping (Dynamic):', shipping, 'Weight:', shippingInfo.weight, 'Bulkiness:', shippingInfo.bulkiness);
+    console.log('[Checkout] - Shipping:', currentShippingFee);
     console.log('[Checkout] - Discount:', discount);
     console.log('[Checkout] - TOTAL:', totalAmount);
 
     if (subtotalEl) subtotalEl.innerText = formatCurrency(subtotal);
-    if (shippingEl) shippingEl.innerText = formatCurrency(shipping);
+    if (shippingEl) shippingEl.innerText = formatCurrency(currentShippingFee);
     if (discountEl) discountEl.innerText = '-' + formatCurrency(discount);
     if (totalEl) totalEl.innerText = formatCurrency(totalAmount);
 
@@ -449,22 +554,16 @@ async function loadAndRenderCart() {
     const timeDisplay = document.getElementById('shippingTimeDisplay');
     const priceDisplay = document.getElementById('shippingPriceDisplay');
     const subDisplay = document.getElementById('shippingSubDisplay');
-    const physicsDisplay = document.getElementById('shippingPhysicsDisplay');
-    
-    // Display package physics estimation
-    if (physicsDisplay) {
-        physicsDisplay.textContent = `📦 Ước lượng kiện hàng: ~${shippingInfo.weight} kg (Cồng kềnh: ${shippingInfo.bulkiness})`;
-    }
     
     if (selectedShipping === 'standard') {
-        if (nameDisplay) nameDisplay.textContent = 'Nhanh - Shopee Xử Lý';
+        if (nameDisplay) nameDisplay.textContent = 'Giao hàng nhanh - GHN';
         if (timeDisplay) timeDisplay.textContent = `Dự kiến giao: ${getStandardShippingEstimate().replace('Dự kiến giao: ', '')}`;
-        if (priceDisplay) priceDisplay.textContent = formatCurrency(shipping);
+        if (priceDisplay) priceDisplay.textContent = formatCurrency(currentShippingFee);
         if (subDisplay) subDisplay.style.display = 'flex';
     } else {
-        if (nameDisplay) nameDisplay.textContent = 'Trong Ngày (Hỏa tốc)';
+        if (nameDisplay) nameDisplay.textContent = 'Hỏa tốc - Trong Ngày (GHN)';
         if (timeDisplay) timeDisplay.textContent = 'Dự kiến giao: Hôm nay';
-        if (priceDisplay) priceDisplay.textContent = formatCurrency(shipping);
+        if (priceDisplay) priceDisplay.textContent = formatCurrency(currentShippingFee);
         if (subDisplay) subDisplay.style.display = 'none';
     }
 
@@ -491,7 +590,7 @@ function getStandardShippingEstimate() {
     return `Dự kiến giao: ${formatDayMonth(tomorrow)} - ${formatDayMonth(threeDays)}`;
 }
 
-function openShippingModal() {
+async function openShippingModal() {
     tempSelectedShipping = selectedShipping;
     updateModalSelectionUI();
     
@@ -499,24 +598,58 @@ function openShippingModal() {
     if (estText) {
         estText.innerHTML = `Get by ${getStandardShippingEstimate().replace('Dự kiến giao: ', '')} <span class="help-circle">?</span>`;
     }
-    
-    // Update dynamic shipping prices inside modal cards
-    let rawItems = [];
+
+    // ── Lấy phí ship thực tế từ GHN ──────────────────────────────────────
+    const selectedDistrictOption = districtSelect ? districtSelect.options[districtSelect.selectedIndex] : null;
+    const selectedWardOption = wardSelect ? wardSelect.options[wardSelect.selectedIndex] : null;
+    const districtId = (selectedDistrictOption && selectedDistrictOption.dataset.code) ? parseInt(selectedDistrictOption.dataset.code) : 0;
+    const wardCode = (selectedWardOption && selectedWardOption.dataset.code) ? selectedWardOption.dataset.code : '';
+
+    // Tính khối lượng
+    let totalWeightGrams = 2000;
     try {
         const cartStr = localStorage.getItem('hyper_core_cart');
-        rawItems = JSON.parse(cartStr) || [];
-    } catch (e) {}
-
-    const province = citySelect ? citySelect.value : '';
-    const standardFee = calculateShippingFee(rawItems, 'standard', province).price;
-    const expressFee = calculateShippingFee(rawItems, 'express', province).price;
+        const rawItems = JSON.parse(cartStr) || [];
+        let w = 0;
+        rawItems.forEach(item => {
+            const qty = item.qty || item.quantity || 1;
+            const physics = estimateProductPhysics(item.name || '');
+            w += Math.round(physics.weight * 1000) * qty;
+        });
+        if (w > 0) totalWeightGrams = w;
+    } catch(e) {}
 
     const optStandardPrice = document.querySelector('#opt-standard .option-price-tag');
     const optExpressPrice = document.querySelector('#opt-express .option-price-tag');
 
-    if (optStandardPrice) optStandardPrice.textContent = formatCurrency(standardFee);
-    if (optExpressPrice) optExpressPrice.textContent = formatCurrency(expressFee);
-    
+    if (districtId && wardCode) {
+        // Lấy phí chuẩn (service_type_id=2) từ GHN thực tế
+        let standardFee = currentShippingFee; // dùng giá đang có sẵn trước
+        try {
+            const r = await fetch('/api/orders/shipping/fee', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ toDistrictId: districtId, toWardCode: wardCode, weightGrams: totalWeightGrams })
+            });
+            if (r.ok) {
+                const d = await r.json();
+                standardFee = d.fee || standardFee;
+                currentShippingFee = standardFee; // Đồng bộ lại fee ngoài
+            }
+        } catch(e) {}
+
+        // Phí hỏa tốc ≈ phí chuẩn × 2.5 (GHN quy định giao trong ngày đắt hơn)
+        const expressFee = Math.round(standardFee * 2.5 / 1000) * 1000;
+        window._ghnExpressFee = expressFee;
+
+        if (optStandardPrice) optStandardPrice.textContent = formatCurrency(standardFee);
+        if (optExpressPrice) optExpressPrice.textContent = formatCurrency(expressFee);
+    } else {
+        // Chưa chọn địa chỉ — hiển thị giá mặc định
+        if (optStandardPrice) optStandardPrice.textContent = '— (chưa chọn địa chỉ)';
+        if (optExpressPrice) optExpressPrice.textContent = '— (chưa chọn địa chỉ)';
+    }
+
     document.getElementById('shippingModalOverlay').classList.add('active');
 }
 
@@ -544,10 +677,16 @@ function updateModalSelectionUI() {
     }
 }
 
-function confirmShippingOption() {
+async function confirmShippingOption() {
     selectedShipping = tempSelectedShipping;
+
+    // Khi chọn hỏa tốc: dùng phí express đã tính; khi chọn chuẩn: dùng currentShippingFee
+    if (selectedShipping === 'express' && window._ghnExpressFee) {
+        currentShippingFee = window._ghnExpressFee;
+    }
+
     closeShippingModal();
-    loadAndRenderCart();
+    await loadAndRenderCart();
 }
 
 // Close modal when clicking on overlay background
@@ -730,14 +869,29 @@ function startPaymentPolling(orderId) {
                     pollingStatus.style.color = '#059669';
                 }
 
+                // Show loading success state
+                const spinner = document.querySelector('#loadingOverlay .loading-spinner');
+                if (spinner) {
+                    spinner.style.border = 'none';
+                    spinner.style.animation = 'none';
+                    spinner.style.display = 'flex';
+                    spinner.style.justifyContent = 'center';
+                    spinner.style.alignItems = 'center';
+                    spinner.innerHTML = '<span style="font-size: 64px; line-height: 1; animation: popCheck 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;">✅</span>';
+                }
+                
+                showLoading(
+                    'Thanh toán thành công!',
+                    'Đơn hàng của bạn đã được xác nhận. Đang chuyển hướng sau giây lát...'
+                );
+
                 // Clear cart and redirect
                 setTimeout(() => {
                     localStorage.removeItem('hyper_core_cart');
                     localStorage.removeItem('hypercore_cart_items');
                     sessionStorage.setItem('current_orderId', orderId);
-                    alert('Thanh toán thành công! Đơn hàng của bạn đã được xác nhận.');
                     window.location.href = `/paymentcomplete?status=success&orderId=${orderId}&method=sepay`;
-                }, 2000);
+                }, 3000);
             }
         } catch (error) {
             consecutiveFailures++;
@@ -825,12 +979,20 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
     showLoading('Đang tạo đơn hàng...', 'Vui lòng đợi');
 
     try {
+        const selectedDistrictOption = districtSelect ? districtSelect.options[districtSelect.selectedIndex] : null;
+        const selectedWardOption = wardSelect ? wardSelect.options[wardSelect.selectedIndex] : null;
+        const districtId = (selectedDistrictOption && selectedDistrictOption.dataset.code) ? parseInt(selectedDistrictOption.dataset.code) : 0;
+        const wardCode = (selectedWardOption && selectedWardOption.dataset.code) ? selectedWardOption.dataset.code : '';
+
         // Create order via API
         const orderPayload = {
             userId: userId,
             shippingAddress: fullAddress,
             paymentMethod: paymentMethod,
-            voucherCode: null // TODO: Add voucher support later
+            voucherCode: null, // TODO: Add voucher support later
+            shippingFee: currentShippingFee,
+            toWardCode: wardCode,
+            toDistrictId: districtId
         };
 
         console.log('[Checkout] Creating order with payload:', orderPayload);
@@ -867,14 +1029,31 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
                 startPaymentPolling(currentOrderId);
             }
         } else if (paymentMethod === 'COD') {
-            hideLoading();
+            // Keep loading active and transition to success state
+            const spinner = document.querySelector('#loadingOverlay .loading-spinner');
+            if (spinner) {
+                spinner.style.border = 'none';
+                spinner.style.animation = 'none';
+                spinner.style.display = 'flex';
+                spinner.style.justifyContent = 'center';
+                spinner.style.alignItems = 'center';
+                spinner.innerHTML = '<span style="font-size: 64px; line-height: 1; animation: popCheck 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;">✅</span>';
+            }
+            
+            showLoading(
+                'Đặt hàng thành công!',
+                'Đơn hàng của bạn đã được ghi nhận. Đang chuyển hướng sau giây lát...'
+            );
+
             // Clear cart
             localStorage.removeItem('hyper_core_cart');
             localStorage.removeItem('hypercore_cart_items');
             sessionStorage.setItem('current_orderId', currentOrderId);
             
-            alert('Đặt hàng thành công! Đơn hàng của bạn đã được ghi nhận.');
-            window.location.href = `/paymentcomplete?status=success&orderId=${currentOrderId}&method=cod`;
+            // Redirect after 3 seconds
+            setTimeout(() => {
+                window.location.href = `/paymentcomplete?status=success&orderId=${currentOrderId}&method=cod`;
+            }, 3000);
         } else {
             // For other payment methods, handle accordingly
             hideLoading();
