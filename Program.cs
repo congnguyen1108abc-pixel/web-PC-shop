@@ -179,6 +179,14 @@ builder.Services.AddRateLimiter(options =>
 
     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
     {
+        var path = httpContext.Request.Path.Value ?? "";
+        
+        // Không áp dụng rate limit cho các trang tĩnh, hình ảnh, CSS, JS (các request không thuộc /api)
+        if (!path.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
+        {
+            return RateLimitPartition.GetNoLimiter("static_bypass");
+        }
+
         var ip = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()
                  ?? httpContext.Connection.RemoteIpAddress?.ToString()
                  ?? "unknown";
@@ -187,7 +195,7 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: $"global:{ip}",
             factory: _ => new SlidingWindowRateLimiterOptions
             {
-                PermitLimit              = 300,
+                PermitLimit              = 500, // Tăng nhẹ giới hạn cho các API thực tế
                 Window                   = TimeSpan.FromMinutes(1),
                 SegmentsPerWindow        = 6,
                 QueueProcessingOrder     = QueueProcessingOrder.OldestFirst,

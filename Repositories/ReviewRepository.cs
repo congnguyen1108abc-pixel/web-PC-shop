@@ -96,7 +96,7 @@ public sealed class ReviewRepository : IReviewRepository
                 u.AvatarURL
             FROM [dbo].[Reviews] r
             INNER JOIN [dbo].[Users] u ON r.UserID = u.UserID
-            WHERE r.Rating = 5 AND r.IsApproved = 1
+            WHERE r.Rating >= 4 AND r.IsApproved = 1
             ORDER BY r.CreatedAt DESC;";
         return _db.QueryRawAsync<TestimonialItem>(sql);
     }
