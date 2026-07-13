@@ -18,29 +18,30 @@
 
     <link rel="stylesheet" href="/assets/css/admin.css">
     <style>
-        /* BANNERS PAGE STYLE */
-        .banner-page-card {
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 40px 20px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .banner-page-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary);
-        }
-        .banner-img-preview {
-            width: 120px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
+        .filter-tab {
+            padding: 8px 18px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
-            background: rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-dark);
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--primary);
+            background: rgba(2, 132, 199, 0.05);
+            color: var(--primary);
+        }
+
+        .filter-tab.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
         }
     </style>
 </head>
@@ -91,11 +92,14 @@
             <li class="menu-item" data-tab="chats">
                 <a href="#" title="Tin Nhắn Chat"><span class="menu-icon">💬</span> <span class="menu-text">Tin Nhắn Chat</span></a>
             </li>
+            <li class="menu-item" data-tab="mining">
+                <a href="#" title="Khai Thác HUIM"><span class="menu-icon">🔍</span> <span class="menu-text">Khai Thác </span></a>
+            </li>
             <li class="menu-item" data-tab="notifications">
                 <a href="#" title="Thông Báo Hệ Thống"><span class="menu-icon">🔔</span> <span class="menu-text">Thông Báo Hệ Thống</span></a>
             </li>
-            <li class="menu-item" data-tab="banners">
-                <a href="#" title="Banner Các Trang"><span class="menu-icon">🖼️</span> <span class="menu-text">Banner Các Trang</span></a>
+            <li class="menu-item" data-tab="returns">
+                <a href="#" title="Trả Hàng & Hoàn Tiền"><span class="menu-icon">↩️</span> <span class="menu-text">Trả Hàng & Hoàn Tiền</span></a>
             </li>
         </ul>
 
@@ -193,7 +197,7 @@
                         </svg>
                     </div>
                     <div class="gauge-info">
-                        <span>Target: 150Mđ</span>
+                        <span>Target: 400Mđ</span>
                         <span id="gaugeAchievedText">Đã đạt: 0đ</span>
                     </div>
                 </div>
@@ -572,56 +576,117 @@
             </div>
         </div>
 
-        <!-- SECTION 8: BANNERS -->
-        <div id="banners-section" class="section-container">
-            <!-- PAGE GRID (Trang chính, Build PC, Gaming Gear) -->
-            <div class="banners-page-grid" id="bannersPageGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 30px;">
-                <!-- Card Trang chính -->
-                <div class="glass-card banner-page-card" onclick="selectBannerPage('home')">
-                    <div style="font-size: 48px; margin-bottom: 16px;">🏠</div>
-                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark);">Trang Chính</h3>
-                    <p style="font-size: 13px; color: var(--text-muted);">Quản lý banner slideshow chính của trang chủ</p>
+        <!-- SECTION 8: DATA MINING (HUIM) -->
+        <div id="mining-section" class="section-container">
+            <div class="glass-card">
+                <div class="management-title-row">
+                    <h2>Khai Thác Mẫu Phổ Biến Lợi Nhuận Cao </h2>
                 </div>
-                <!-- Card Build PC -->
-                <div class="glass-card banner-page-card" onclick="selectBannerPage('pcbuild')">
-                    <div style="font-size: 48px; margin-bottom: 16px;">⚡</div>
-                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark);">Build PC</h3>
-                    <p style="font-size: 13px; color: var(--text-muted);">Quản lý video/image banner của trang xây dựng cấu hình</p>
-                </div>
-                <!-- Card Gaming Gear -->
-                <div class="glass-card banner-page-card" onclick="selectBannerPage('gaminggear')">
-                    <div style="font-size: 48px; margin-bottom: 16px;">🎮</div>
-                    <h3 style="font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark);">Gaming Gear</h3>
-                    <p style="font-size: 13px; color: var(--text-muted);">Quản lý banner của trang sản phẩm gaming gear premium</p>
-                </div>
-            </div>
-
-            <!-- DETAILED BANNER LIST (Hidden initially, shown when page selected) -->
-            <div class="glass-card" id="bannerDetailCard" style="display: none;">
-                <div class="management-title-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div>
-                        <button class="btn-cancel" onclick="backToBannerPages()" style="padding: 8px 16px; margin-right: 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">← Quay lại</button>
-                        <h2 id="selectedPageTitle" style="display: inline-block; vertical-align: middle;">Quản lý Banner</h2>
+                <div class="control-panel" style="gap: 20px; align-items: flex-end; flex-wrap: wrap;">
+                    <style>
+                        .mining-input-glow {
+                            height: 44px;
+                            padding: 10px 16px;
+                            border-radius: 10px;
+                            border: 2px solid rgba(14, 165, 233, 0.3);
+                            background: rgba(15, 23, 42, 0.6);
+                            color: #fff;
+                            font-size: 16px;
+                            font-weight: 700;
+                            width: 100%;
+                            transition: all 0.3s ease;
+                            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+                        }
+                        .mining-input-glow:focus {
+                            border-color: #0ea5e9 !important;
+                            box-shadow: 0 0 12px rgba(14, 165, 233, 0.4), inset 0 2px 4px rgba(0,0,0,0.2) !important;
+                            outline: none !important;
+                            background: rgba(15, 23, 42, 0.8) !important;
+                        }
+                    </style>
+                    <div class="admin-form-group" style="margin-bottom: 0; min-width: 280px;">
+                        <label for="minUtilInput" style="font-weight: 700; color: #38bdf8; display: block; margin-bottom: 8px;">Ngưỡng Lợi Nhuận Tối Thiểu (Min Utility - VNĐ)</label>
+                        <input type="text" id="minUtilInput" class="mining-input-glow" value="1.000.000" placeholder="Ví dụ: 1.000.000" />
                     </div>
-                    <button class="btn-submit" onclick="openAddBannerModal()" style="padding: 10px 16px; font-size:12px; font-weight:700; border-radius:8px; display:flex; align-items:center; gap:6px; background:var(--success); border:none; color:white; cursor:pointer;">
-                        <span>➕</span> THÊM BANNER MỚI
+                    <button class="restock-btn" onclick="runDataMining()" style="height: 44px; margin-bottom: 0; display: flex; align-items: center; gap: 8px; border-radius: 10px;">
+                        <span>🔍</span> KÍCH HOẠT KHAI THÁC 
                     </button>
                 </div>
 
-                <div style="overflow-x: auto; margin-top: 20px;">
+                <!-- Mining Summary Report -->
+                <div id="miningReportBox" style="display: none; margin-top: 24px; padding: 20px; border-radius: 12px; background: rgba(14, 165, 233, 0.05); border: 1px solid rgba(14, 165, 233, 0.2);">
+                    <h3 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 12px;">📊 Báo Cáo Kết Quả Khai Thác</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <div style="padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.15);">
+                            <div style="font-size: 12px; color: var(--text-muted-light);">Giao dịch hoàn tất đã quét</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;" id="reportScannedTx">—</div>
+                        </div>
+                        <div style="padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.15);">
+                            <div style="font-size: 12px; color: var(--text-muted-light);">Tập mục lợi nhuận cao tìm thấy</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;" id="reportTotalHui">—</div>
+                        </div>
+                        <div style="padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.15);">
+                            <div style="font-size: 12px; color: var(--text-muted-light);">Thời gian xử lý thuật toán</div>
+                            <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;" id="reportExecTime">—</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 13.5px; color: rgba(255,255,255,0.8); line-height: 1.5;" id="reportStatusMsg"></div>
+                </div>
+
+                <!-- Table displaying mined HUIs -->
+                <div style="margin-top: 24px; overflow-x: auto;">
                     <table class="admin-table">
                         <thead>
                             <tr>
-                                <th>Ảnh Demo</th>
-                                <th>Tiêu Đề</th>
-                                <th>Liên Kết (Link)</th>
-                                <th>Thời Gian Hiển Thị</th>
-                                <th>Trạng Thái</th>
-                                <th>Hành Động</th>
+                                <th style="width: 80px;">ID</th>
+                                <th>Tập mục sản phẩm mua chung (Itemset)</th>
+                                <th style="width: 150px; text-align: right;">Số lần mua chung</th>
+                                <th style="width: 200px; text-align: right;">Tổng lợi nhuận tích lũy</th>
                             </tr>
                         </thead>
-                        <tbody id="bannersTableBody">
-                            <!-- Dynamic banners load here -->
+                        <tbody id="miningResultTableBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: var(--text-muted-light); padding: 40px 0;">Chưa chạy khai thác dữ liệu. Hãy chọn Min Utility và bấm nút Khai Thác.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 9: RETURN & REFUND MANAGEMENT -->
+        <div id="returns-section" class="section-container">
+            <div class="glass-card">
+                <div class="management-title-row">
+                    <h2>Quản Lý Đổi Trả & Hoàn Tiền</h2>
+                </div>
+                <div class="control-panel" style="justify-content: flex-start; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="filter-tab active" onclick="filterReturns('all', this)">Tất Cả</button>
+                    <button class="filter-tab" onclick="filterReturns('Pending', this)">Chờ Duyệt</button>
+                    <button class="filter-tab" onclick="filterReturns('Picking', this)">Shipper Lấy</button>
+                    <button class="filter-tab" onclick="filterReturns('Received', this)">Đã Nhận Hàng</button>
+                    <button class="filter-tab" onclick="filterReturns('Refunded', this)">Đã Hoàn Tiền</button>
+                    <button class="filter-tab" onclick="filterReturns('Rejected', this)">Từ Chối</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">Mã</th>
+                                <th style="width: 90px;">Đơn Gốc</th>
+                                <th>Khách Hàng</th>
+                                <th>Lý Do Trả Hàng</th>
+                                <th style="text-align: right; width: 120px;">Số Tiền Hoàn</th>
+                                <th style="width: 140px; text-align: center;">Trạng Thái</th>
+                                <th style="width: 140px; text-align: center;">Mã Vận Đơn</th>
+                                <th style="width: 220px; text-align: right;">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="returnsTableBody">
+                            <tr>
+                                <td colspan="8" style="text-align: center; color: var(--text-muted-light); padding: 40px 0;">Đang tải danh sách yêu cầu đổi trả...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -631,28 +696,71 @@
 
     <!-- MODAL: ORDER DETAILS & STATUS UPDATE -->
     <div class="modal-overlay" id="orderModal">
-        <div class="modal-card" style="max-width:600px;">
+        <div class="modal-card" style="max-width:720px; width:96vw;">
             <div class="modal-header">
                 <h3 id="modalOrderTitle">Chi Tiết Đơn Hàng #0</h3>
                 <button class="modal-close" onclick="closeOrderModal()">✕</button>
             </div>
-            <div style="max-height: 400px; overflow-y: auto; padding-right:8px;">
-                <div class="admin-form-group">
-                    <label>Địa Chỉ Giao Hàng</label>
-                    <p style="font-size:13px; font-weight:600;" id="modalOrderAddress">—</p>
-                </div>
-                <div class="form-row">
-                    <div class="admin-form-group">
-                        <label>Phương Thức</label>
-                        <p style="font-size:13px; font-weight:600;" id="modalOrderMethod">—</p>
-                    </div>
-                    <div class="admin-form-group">
-                        <label>Trạng Thế Hiện Tại</label>
-                        <p style="font-size:13px; font-weight:600;" id="modalCurrentStatus">—</p>
+            <div style="max-height: 80vh; overflow-y: auto; padding-right:8px;">
+
+                <!-- KHÁCH HÀNG -->
+                <div style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe); border-radius:12px; padding:14px 16px; margin-bottom:14px; border:1px solid #bae6fd;">
+                    <div style="font-size:11px; font-weight:700; color:#0369a1; letter-spacing:0.06em; margin-bottom:8px;">👤 THÔNG TIN KHÁCH HÀNG</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div><span style="font-size:11px; color:#64748b;">Tên khách</span><br><strong id="modalCustName" style="font-size:13px;">—</strong></div>
+                        <div><span style="font-size:11px; color:#64748b;">Email</span><br><strong id="modalCustEmail" style="font-size:13px;">—</strong></div>
+                        <div><span style="font-size:11px; color:#64748b;">Số điện thoại</span><br><strong id="modalCustPhone" style="font-size:13px;">—</strong></div>
+                        <div><span style="font-size:11px; color:#64748b;">Ngày đặt</span><br><strong id="modalOrderDate" style="font-size:13px;">—</strong></div>
                     </div>
                 </div>
+
+                <!-- ĐỊA CHỈ & PHƯƠNG THỨC -->
+                <div style="background:#f8fafc; border-radius:12px; padding:14px 16px; margin-bottom:14px; border:1px solid #e2e8f0;">
+                    <div style="font-size:11px; font-weight:700; color:#475569; letter-spacing:0.06em; margin-bottom:8px;">🚚 GIAO HÀNG & THANH TOÁN</div>
+                    <div class="admin-form-group" style="margin-bottom:8px;">
+                        <label>Địa Chỉ Giao Hàng</label>
+                        <p style="font-size:13px; font-weight:600;" id="modalOrderAddress">—</p>
+                    </div>
+                    <div class="form-row">
+                        <div class="admin-form-group">
+                            <label>Phương Thức TT</label>
+                            <p style="font-size:13px; font-weight:600;" id="modalOrderMethod">—</p>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Trạng Thái TT</label>
+                            <p style="font-size:13px; font-weight:600;" id="modalPaymentStatus">—</p>
+                        </div>
+                    </div>
+                    <!-- GHN TRACKING CODE -->
+                    <div id="modalTrackingSection" style="display:none; background: #eff6ff; border-radius:8px; padding:10px 14px; margin-top:8px; border:1px solid #bfdbfe;">
+                        <div style="font-size:11px; font-weight:700; color:#1d4ed8; margin-bottom:4px;">📦 MÃ VẬN ĐƠN GHN (SANDBOX)</div>
+                        <code id="modalTrackingCode" style="font-size:15px; font-weight:800; color:#2563eb; letter-spacing:0.05em;">—</code>
+                        <div id="modalTrackingStatus" style="font-size:11px; color:#475569; margin-top:4px;"></div>
+                    </div>
+                </div>
+
+                <!-- TỔNG TIỀN -->
+                <div style="background:#f8fafc; border-radius:12px; padding:14px 16px; margin-bottom:14px; border:1px solid #e2e8f0;">
+                    <div style="font-size:11px; font-weight:700; color:#475569; letter-spacing:0.06em; margin-bottom:8px;">💰 THỐNG KÊ GIÁ TRỊ ĐƠN</div>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                        <div style="display:flex; justify-content:space-between; font-size:13px;"><span style="color:#64748b;">Tạm tính</span><strong id="modalSubtotal">—</strong></div>
+                        <div style="display:flex; justify-content:space-between; font-size:13px;" id="modalShippingRow"><span style="color:#64748b;">Phí vận chuyển (GHN)</span><strong id="modalShippingFee" style="color:#0369a1;">—</strong></div>
+                        <div style="display:flex; justify-content:space-between; font-size:13px;" id="modalDiscountRow"><span style="color:#64748b;">Giảm giá</span><strong id="modalDiscount" style="color:#16a34a;">—</strong></div>
+                        <div style="display:flex; justify-content:space-between; font-size:14px; font-weight:800; padding-top:8px; border-top:2px solid #111; margin-top:4px;"><span>Tổng thanh toán</span><span id="modalTotal" style="color:#dc2626;">—</span></div>
+                    </div>
+                </div>
+
+                <!-- TRẠNG THÁI HIỆN TẠI -->
+                <div class="form-row" style="margin-bottom:14px;">
+                    <div class="admin-form-group" style="flex:1;">
+                        <label>Trạng Thái Đơn Hàng Hiện Tại</label>
+                        <p style="font-size:14px; font-weight:700;" id="modalCurrentStatus">—</p>
+                    </div>
+                </div>
+
+                <!-- DANH SÁCH SẢN PHẨM -->
                 <div class="admin-form-group">
-                    <label>Danh Sách Linh Kiện / Sản Phẩm</label>
+                    <label>Danh Sách Sản Phẩm Trong Đơn</label>
                     <div id="modalOrderItemsList" style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
                         <!-- Order items -->
                     </div>
@@ -683,6 +791,71 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL: PROCESS RETURN REQUEST -->
+    <div class="modal-overlay" id="returnProcessModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="returnProcessTitle">Duyệt Yêu Cầu Trả Hàng</h3>
+                <button class="modal-close" onclick="closeReturnProcessModal()">✕</button>
+            </div>
+            <form id="returnProcessForm" onsubmit="submitReturnProcess(event)">
+                <input type="hidden" id="returnProcessId" />
+                <input type="hidden" id="returnProcessAction" />
+                <div class="admin-form-group">
+                    <label for="returnAdminNote">Ghi Chú Phản Hồi Khách Hàng</label>
+                    <textarea id="returnAdminNote" placeholder="Ví dụ: Đồng ý nhận lại hàng, shipper GHN sẽ liên hệ lấy hàng..." required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeReturnProcessModal()">Đóng</button>
+                    <button type="submit" class="btn-submit" id="btnSubmitReturnProcess">XÁC NHẬN</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: COMPLETE REFUND -->
+    <div class="modal-overlay" id="refundModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Xác Nhận Hoàn Tiền</h3>
+                <button class="modal-close" onclick="closeRefundModal()">✕</button>
+            </div>
+            <form id="refundForm" onsubmit="submitRefund(event)">
+                <input type="hidden" id="refundReturnId" />
+                <div class="admin-form-group" style="border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 12px; margin-bottom: 12px;">
+                    <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 700;">Thông Tin Tài Khoản Khách Hàng</label>
+                    <div id="refundCustomerBankInfo" style="margin-top: 8px;">—</div>
+                </div>
+                <div class="admin-form-group" style="margin-bottom: 16px;">
+                    <label for="refundAmountVal" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; font-weight: 700;">Số Tiền Hoàn Trả (VND)</label>
+                    <input type="text" id="refundAmountVal" required readonly
+                           style="font-weight:800 !important; color:#000000 !important; font-size:24px !important; background:none !important; border:none !important; box-shadow:none !important; padding: 4px 0 !important; text-align:left !important; cursor:default !important; outline:none !important; height:auto !important;" />
+                    <div style="font-size:11px; color:#64748b; font-weight:500; margin-top:2px; text-align:left;">* Số tiền tự động lấy từ yêu cầu đổi trả của khách</div>
+                </div>
+                <div class="form-row">
+                    <div class="admin-form-group">
+                        <label for="refundMethod">Phương thức hoàn</label>
+                        <select id="refundMethod" required>
+                            <option value="Bank Transfer">Chuyển khoản ngân hàng</option>
+                            <option value="Cash">Tiền mặt</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group">
+                        <label for="refundTxNo">📝 Mã Giao Dịch (tùy chọn)</label>
+                        <input type="text" id="refundTxNo" placeholder="VD: FT2610292345 — để trống nếu hoàn tiền mặt" />
+                        <div style="font-size:11px; color:#94a3b8; margin-top:4px;">
+                            • Chuyển khoản: nhập mã GD ngân hàng sau khi chuyển &nbsp;• Tiền mặt: có thể để trống
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeRefundModal()">Đóng</button>
+                    <button type="submit" class="btn-submit">XÁC NHẬN HOÀN TIỀN</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -894,116 +1067,6 @@
         </div>
     </div>
 
-    <!-- MODAL: ADD / EDIT BANNER -->
-    <div class="modal-overlay" id="bannerModal">
-        <div class="modal-card" style="max-width: 550px;">
-            <div class="modal-header">
-                <h3 id="modalBannerTitle">Thêm Banner Mới</h3>
-                <button class="modal-close" onclick="closeBannerModal()">✕</button>
-            </div>
-            <form id="bannerForm" onsubmit="submitBannerForm(event)">
-                <input type="hidden" id="editBannerId" />
-                <input type="hidden" id="bannerPageType" />
-
-                <div class="admin-form-group">
-                    <label for="bannerTitle">Tiêu Đề Banner *</label>
-                    <input type="text" id="bannerTitle" required placeholder="Nhập tiêu đề banner..." />
-                </div>
-
-                <div class="admin-form-group">
-                    <label for="bannerImageUrl">Đường Dẫn Ảnh / Video (URL) *</label>
-                    <input type="text" id="bannerImageUrl" required placeholder="Ví dụ: /images/banner1.jpg hoặc link online..." />
-                </div>
-
-                <div class="admin-form-group" id="bannerLinkUrlGroup">
-                    <label for="bannerLinkUrl">Đường Dẫn Liên Kết (Redirect Link)</label>
-                    <input type="text" id="bannerLinkUrl" placeholder="Ví dụ: /Products?category=cpu (nếu có)..." />
-                </div>
-
-                <div id="streamerPcFormGroup" style="display: none; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;">
-                    <h4 style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Cấu hình linh kiện (Dữ liệu SQL)</h4>
-                    
-                    <div class="form-row">
-                        <div class="admin-form-group">
-                            <label for="streamerTag">Nhãn Cấu Hình *</label>
-                            <input type="text" id="streamerTag" placeholder="Ví dụ: Esport Master, Streamer Elite..." />
-                        </div>
-                        <div class="admin-form-group">
-                            <label for="streamerAvatar">Avatar Streamer (URL) *</label>
-                            <input type="text" id="streamerAvatar" placeholder="Ví dụ: /images/3ga.png..." />
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="admin-form-group">
-                            <label for="pcCpuSelect">CPU *</label>
-                            <select id="pcCpuSelect" required></select>
-                        </div>
-                        <div class="admin-form-group">
-                            <label for="pcMainboardSelect">Mainboard *</label>
-                            <select id="pcMainboardSelect" required></select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="admin-form-group">
-                            <label for="pcRamSelect">RAM *</label>
-                            <select id="pcRamSelect" required></select>
-                        </div>
-                        <div class="admin-form-group">
-                            <label for="pcVgaSelect">VGA *</label>
-                            <select id="pcVgaSelect" required></select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="admin-form-group">
-                            <label for="pcPsuSelect">PSU (Nguồn) *</label>
-                            <select id="pcPsuSelect" required></select>
-                        </div>
-                        <div class="admin-form-group">
-                            <label for="pcCaseSelect">Vỏ Case *</label>
-                            <select id="pcCaseSelect" required></select>
-                        </div>
-                    </div>
-                    
-                    <div class="admin-form-group">
-                        <div style="font-size: 13px; font-weight: 600; color: var(--text-dark); background: rgba(59, 130, 246, 0.08); padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.15); display: flex; justify-content: space-between;">
-                            <span>Tổng giá cấu hình dự kiến (SQL):</span>
-                            <span id="streamerPcTotalPrice" style="color: var(--primary); font-weight: 700;">0đ</span>
-                        </div>
-                    </div>
-                </div>
-
-                <input type="hidden" id="bannerDisplayOrder" value="0" />
-                <div class="form-row">
-                    <div class="admin-form-group" style="display: flex; align-items: center; padding-top: 12px; padding-bottom: 12px;">
-                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;">
-                            <input type="checkbox" id="bannerIsActive" checked style="width: 18px; height: 18px;" />
-                            <span>Kích hoạt (Active)</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-row" style="display: none;">
-                    <div class="admin-form-group">
-                        <label for="bannerStartDate">Ngày Bắt Đầu</label>
-                        <input type="datetime-local" id="bannerStartDate" />
-                    </div>
-                    <div class="admin-form-group">
-                        <label for="bannerEndDate">Ngày Kết Thúc</label>
-                        <input type="datetime-local" id="bannerEndDate" />
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel" onclick="closeBannerModal()">Hủy</button>
-                    <button type="submit" class="btn-submit">LƯU BANNER</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
 
     <script>
         // ==========================================
@@ -1087,29 +1150,205 @@
             overlay.classList.add('active');
         }
 
-        const authToken = localStorage.getItem('pc_store_token');
-        const userRaw = localStorage.getItem('pc_store_user');
-        let currentAdminUser = null;
-
-        if (!authToken || !userRaw) {
-            window.location.href = '/login';
-        } else {
+        function isTokenExpired(token) {
+            if (!token) return true;
             try {
-                currentAdminUser = JSON.parse(userRaw);
-                if (currentAdminUser.role !== 'Admin') {
-                    showToast('Bạn không có quyền truy cập trang quản trị!', 'error');
-                    window.location.href = '/Homepage';
-                }
+                const parts = token.split('.');
+                if (parts.length < 3) return true;
+                const payload = JSON.parse(atob(parts[1]));
+                if (!payload.exp) return false;
+                const now = Math.floor(Date.now() / 1000);
+                return payload.exp < now;
             } catch (e) {
-                window.location.href = '/login';
+                return true;
             }
         }
 
-        // Cập nhật thông tin admin ở Topbar
-        if (currentAdminUser) {
-            document.getElementById('adminName').textContent = currentAdminUser.fullName || currentAdminUser.email;
-            document.getElementById('adminAvatar').textContent = (currentAdminUser.fullName || 'A').trim().charAt(0).toUpperCase();
+        // ── LƯU GIỮ ORIGINAL FETCH TRƯỚC KHI BỊ OVERRIDE ────────────────────────
+        // PHẢI khai báo trước mọi thứ khác để dùng khi refresh token (tránh vòng lặp)
+        const _rawFetch = window.fetch.bind(window);
+
+        const authToken = localStorage.getItem('pc_store_token');
+        const userRaw   = localStorage.getItem('pc_store_user');
+        let currentAdminUser = null;
+
+        // ── HELPER: Luôn lấy token mới nhất từ localStorage ──────────────────────
+        function getAdminToken() {
+            return localStorage.getItem('pc_store_token') || '';
         }
+
+        // ── HELPER: Decode JWT để lấy tên Admin ──────────────────────────────────
+        function getAdminNameFromToken(token) {
+            try {
+                if (!token) return null;
+                const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+                const payload = JSON.parse(atob(base64));
+                return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
+                    || payload['name'] || payload['email'] || payload['sub'] || null;
+            } catch { return null; }
+        }
+
+        // ── HELPER: Kiểm tra token sắp hết hạn (trong vòng 5 phút) ──────────────
+        function isTokenExpiringSoon(token) {
+            if (!token) return true;
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+                if (!payload.exp) return false;
+                // Coi là sắp hết hạn nếu còn < 5 phút
+                return (payload.exp - Math.floor(Date.now() / 1000)) < 300;
+            } catch { return true; }
+        }
+
+        // ── REFRESH TOKEN: Dùng _rawFetch để KHÔNG qua interceptor (tránh vòng lặp) 
+        let _isRefreshing = false;
+        async function tryRefreshToken() {
+            if (_isRefreshing) return false; // Chặn double-refresh
+            const refreshToken = localStorage.getItem('pc_store_refresh_token');
+            if (!refreshToken) return false;
+            _isRefreshing = true;
+            try {
+                const res = await _rawFetch('/api/auth/refresh-token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refreshToken })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const newToken = data.accessToken || data.token;
+                    if (newToken) {
+                        localStorage.setItem('pc_store_token', newToken);
+                        if (data.refreshToken) localStorage.setItem('pc_store_refresh_token', data.refreshToken);
+                        console.log('✅ Token đã được tự động refresh thành công');
+                        _isRefreshing = false;
+                        return true;
+                    }
+                }
+            } catch (e) { console.error('❌ Lỗi khi refresh token:', e); }
+            _isRefreshing = false;
+            return false;
+        }
+
+        // ── GLOBAL FETCH INTERCEPTOR: Tự động refresh khi gặp 401 ────────────────
+        window.fetch = async function(...args) {
+            try {
+                const response = await _rawFetch(...args);
+                if (response.status === 401) {
+                    console.warn('⚠️ API 401:', args[0]);
+                    // Thử refresh token rồi gọi lại request một lần nữa
+                    const refreshed = await tryRefreshToken();
+                    if (refreshed) {
+                        // Gọi lại request với token mới
+                        const newToken = getAdminToken();
+                        let retryArgs = [...args];
+                        
+                        // Khởi tạo options và headers nếu chưa có
+                        if (!retryArgs[1]) {
+                            retryArgs[1] = {};
+                        }
+                        if (!retryArgs[1].headers) {
+                            retryArgs[1].headers = {};
+                        }
+
+                        // Cập nhật Authorization header tùy theo kiểu dữ liệu (Headers object hay plain object)
+                        if (retryArgs[1].headers instanceof Headers) {
+                            retryArgs[1].headers.set('Authorization', `Bearer ${newToken}`);
+                        } else {
+                            retryArgs[1].headers = {
+                                ...retryArgs[1].headers,
+                                'Authorization': `Bearer ${newToken}`
+                            };
+                        }
+
+                        console.log('🔄 Retrying request with new token...');
+                        return await _rawFetch(...retryArgs);
+                    } else {
+                        // Refresh thất bại → về login
+                        console.error('❌ Refresh token thất bại - về trang đăng nhập');
+                        localStorage.removeItem('pc_store_token');
+                        localStorage.removeItem('pc_store_user');
+                        localStorage.removeItem('pc_store_refresh_token');
+                        window.location.href = '/login';
+                        return response;
+                    }
+                }
+                return response;
+            } catch (error) {
+                throw error;
+            }
+        };
+
+        // ── KHỞI TẠO ADMIN: Kiểm tra auth, refresh nếu cần, load dữ liệu ─────────
+        async function initAdminAuth() {
+            let token = getAdminToken();
+
+            // 1. Không có token → login
+            if (!token || !userRaw) {
+                localStorage.removeItem('pc_store_token');
+                localStorage.removeItem('pc_store_user');
+                window.location.href = '/login';
+                return;
+            }
+
+            // 2. Token hết hạn → thử refresh
+            if (isTokenExpired(token)) {
+                console.log('⏰ Token hết hạn - đang thử refresh...');
+                const refreshed = await tryRefreshToken();
+                if (!refreshed) {
+                    localStorage.removeItem('pc_store_token');
+                    localStorage.removeItem('pc_store_user');
+                    window.location.href = '/login';
+                    return;
+                }
+                token = getAdminToken();
+                console.log('✅ Token mới đã sẵn sàng sau refresh');
+            }
+
+            // 3. Parse user info
+            try {
+                currentAdminUser = JSON.parse(userRaw);
+                if (!currentAdminUser || currentAdminUser.role !== 'Admin') {
+                    showToast('Bạn không có quyền truy cập trang quản trị!', 'error');
+                    window.location.href = '/Homepage';
+                    return;
+                }
+            } catch (e) {
+                // Fallback: đọc tên từ JWT
+                const nameFromJwt = getAdminNameFromToken(token);
+                if (nameFromJwt) {
+                    currentAdminUser = { fullName: nameFromJwt, email: nameFromJwt, role: 'Admin' };
+                } else {
+                    localStorage.removeItem('pc_store_token');
+                    localStorage.removeItem('pc_store_user');
+                    window.location.href = '/login';
+                    return;
+                }
+            }
+
+            // 4. Hiển thị tên Admin trên Topbar
+            const displayName = (currentAdminUser.fullName || '').trim()
+                || (currentAdminUser.email || '').trim()
+                || getAdminNameFromToken(token)
+                || 'Quản trị viên';
+            const adminNameEl   = document.getElementById('adminName');
+            const adminAvatarEl = document.getElementById('adminAvatar');
+            if (adminNameEl)   adminNameEl.textContent   = displayName;
+            if (adminAvatarEl) adminAvatarEl.textContent = displayName.charAt(0).toUpperCase();
+
+            // 5. Auto-refresh token 5 phút một lần (proactive, trước khi hết hạn)
+            setInterval(async () => {
+                const tok = getAdminToken();
+                if (tok && isTokenExpiringSoon(tok)) {
+                    console.log('⏰ Token sắp hết hạn - proactive refresh...');
+                    await tryRefreshToken();
+                }
+            }, 5 * 60 * 1000);
+
+            // 6. Load dữ liệu dashboard
+            loadOverviewData();
+            loadCategoriesAndBrands();
+            initSidebarToggle();
+        }
+
 
         // ==========================================
         // 2. CHUYỂN TAB DYNAMIC (SINGLE PAGE APP)
@@ -1122,8 +1361,9 @@
             customers: { title: "Quản Lý Khách Hàng", subtitle: "Kiểm soát quyền truy cập và phân quyền tài khoản" },
             reviews: { title: "Duyệt Đánh Giá", subtitle: "Xét duyệt hoặc gỡ bỏ nhận xét của khách hàng" },
             chats: { title: "Tin Nhắn Chatbot AI", subtitle: "Xem lịch sử hội thoại hỗ trợ khách hàng của bot" },
+            mining: { title: "Khai Thác Dữ Liệu Khách Hàng " },
             notifications: { title: "Thông Báo Hệ Thống", subtitle: "Gửi thông báo đẩy SignalR thời gian thực đến người dùng" },
-            banners: { title: "Quản Lý Banner Các Trang", subtitle: "Quản lý hình ảnh banner hiển thị ở các trang chủ, PC Build, và Gaming Gear" }
+            returns: { title: "Đổi Trả & Hoàn Tiền", subtitle: "Phê duyệt đổi trả và thực hiện thủ tục hoàn tiền cho khách hàng" }
         };
 
         document.querySelectorAll('.menu-item:not(.client-link)').forEach(item => {
@@ -1143,7 +1383,7 @@
 
             // Cập nhật Title
             document.getElementById('pageTitle').textContent = tabData[tab].title;
-            document.getElementById('pageSubtitle').textContent = tabData[tab].subtitle;
+            document.getElementById('pageSubtitle').textContent = tabData[tab].subtitle || '';
 
             // Load data tương ứng
             if (tab === 'overview') loadOverviewData();
@@ -1153,8 +1393,9 @@
             else if (tab === 'customers') loadUsersData();
             else if (tab === 'reviews') loadReviewsData();
             else if (tab === 'chats') loadChatSessions();
+            else if (tab === 'mining') loadMiningData();
             else if (tab === 'notifications') populateNotificationUsers();
-            else if (tab === 'banners') loadBannersData();
+            else if (tab === 'returns') loadReturnRequests();
         }
 
         // ==========================================
@@ -1163,7 +1404,7 @@
         let revenueChart = null;
 
         function updateGaugeChart(achievedRevenue) {
-            const target = 150000000; // 150 Triệu VND mục tiêu
+            const target = 400000000; // 400 Triệu VND mục tiêu
             let pct = Math.round((achievedRevenue / target) * 100);
             if (pct > 100) pct = 100;
 
@@ -1179,15 +1420,26 @@
         }
 
         async function loadOverviewData() {
+            const token = getAdminToken();
+            if (!token) {
+                console.error('Không có token - không thể tải dữ liệu');
+                showToast('Phiên đăng nhập hết hạn, vui lòng đăng nhập lại', 'error');
+                return;
+            }
             try {
                 // 1. Load summary metrics
                 const response = await fetch('/api/Admin/dashboard', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
+                console.log('Dashboard API status:', response.status);
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('Dashboard data:', data);
                     document.getElementById('valOrders').textContent = (data.completedOrders + data.shippingOrders + data.pendingOrders).toLocaleString();
                     document.getElementById('notifBadge').style.display = data.unreadNotifications > 0 ? 'block' : 'none';
+                } else {
+                    console.error('Dashboard API lỗi:', response.status, await response.text());
+                    if (response.status === 403) showToast('Tài khoản không có quyền Admin!', 'error');
                 }
 
                 // 2. Load Revenue Report (30 ngày qua) để tính tổng doanh thu và vẽ biểu đồ
@@ -1200,6 +1452,7 @@
                 loadLowStockOverview();
             } catch (err) {
                 console.error('Lỗi tải dữ liệu Overview:', err);
+                showToast('Lỗi kết nối máy chủ khi tải dữ liệu', 'error');
             }
         }
 
@@ -1212,10 +1465,15 @@
             const endStr = endDate.toISOString().split('T')[0];
 
             try {
+                const token = getAdminToken();
                 const response = await fetch(`/api/Admin/revenue-report?StartDate=${startStr}&EndDate=${endStr}`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-                if (!response.ok) return;
+                console.log('Revenue report API status:', response.status, `(${startStr} -> ${endStr})`);
+                if (!response.ok) {
+                    console.error('Revenue report API lỗi:', response.status, await response.text());
+                    return;
+                }
                 const items = await response.json();
 
                 // Tính tổng doanh thu hoàn tất
@@ -1289,7 +1547,7 @@
         async function loadLatestReviewsOverview() {
             try {
                 const res = await fetch('/api/Admin/reviews?PageSize=3', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (res.ok) {
                     const data = await res.json();
@@ -1329,7 +1587,7 @@
 
             try {
                 const res = await fetch('/api/Admin/low-stock?Threshold=5', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (res.ok) {
                     const items = await res.json();
@@ -1382,7 +1640,7 @@
         async function loadOrdersData() {
             try {
                 const res = await fetch('/api/Admin/orders?PageSize=100', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (!res.ok) return;
                 allOrders = await res.json();
@@ -1444,7 +1702,7 @@
         async function viewOrderDetail(orderId, userId) {
             try {
                 const res = await fetch(`/api/Admin/orders/${orderId}`, {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (!res.ok) return;
                 const data = await res.json();
@@ -1452,24 +1710,67 @@
                 const items = data.items || [];
 
                 document.getElementById('modalOrderTitle').textContent = `Chi Tiết Đơn Hàng #${orderId}`;
-                document.getElementById('modalOrderAddress').textContent = h.shippingAddress;
-                document.getElementById('modalOrderMethod').textContent = h.paymentMethod;
+
+                // Customer Info
+                document.getElementById('modalCustName').textContent = h.fullName || '—';
+                document.getElementById('modalCustEmail').textContent = h.email || '—';
+                document.getElementById('modalCustPhone').textContent = h.phoneNumber || '—';
+                document.getElementById('modalOrderDate').textContent = h.orderDate ? new Date(h.orderDate).toLocaleString('vi-VN') : '—';
+
+                // Shipping & Payment
+                document.getElementById('modalOrderAddress').textContent = h.shippingAddress || '—';
+                document.getElementById('modalOrderMethod').textContent = h.paymentMethod || '—';
+                document.getElementById('modalPaymentStatus').textContent = h.paymentStatus || '—';
+
+                // GHN Tracking Code
+                const trackingSection = document.getElementById('modalTrackingSection');
+                const trackingCode = h.shippingTrackingCode;
+                if (trackingCode) {
+                    trackingSection.style.display = 'block';
+                    document.getElementById('modalTrackingCode').textContent = trackingCode;
+                    document.getElementById('modalTrackingStatus').textContent = `Trạng thái đơn hàng: ${h.status} — Mã này dùng để tra cứu trên hệ thống GHN Sandbox.`;
+                } else {
+                    trackingSection.style.display = 'none';
+                }
+
+                // Pricing
+                const fmtVnd = (v) => (v || 0).toLocaleString('vi-VN') + 'đ';
+                document.getElementById('modalSubtotal').textContent = fmtVnd(h.totalAmount);
+                document.getElementById('modalShippingFee').textContent = fmtVnd(h.shippingFee);
+                if (h.discountAmount > 0) {
+                    document.getElementById('modalDiscountRow').style.display = 'flex';
+                    document.getElementById('modalDiscount').textContent = '-' + fmtVnd(h.discountAmount);
+                } else {
+                    document.getElementById('modalDiscountRow').style.display = 'none';
+                }
+                document.getElementById('modalTotal').textContent = fmtVnd(h.finalAmount);
+
+                // Current status
                 document.getElementById('modalCurrentStatus').textContent = h.status;
-                
                 document.getElementById('modalOrderIdVal').value = orderId;
-                document.getElementById('modalUserIdVal').value = userId;
+                document.getElementById('modalUserIdVal').value = userId || h.userId;
                 document.getElementById('newStatusSelect').value = h.status;
                 document.getElementById('adminNote').value = h.adminNote || '';
 
-                // Render items
+                // Render product items
                 const listContainer = document.getElementById('modalOrderItemsList');
                 let itemsHtml = '';
                 items.forEach(it => {
                     itemsHtml += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 12px; border-radius:8px; border:1px solid var(--border-color); font-size:12px;">
-                            <span style="font-weight:600; flex:1; max-width:70%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${it.productName}</span>
-                            <span style="color:var(--text-muted);">x${it.quantity}</span>
-                            <span style="font-weight:700; color:var(--primary);">${(it.unitPrice * it.quantity).toLocaleString()}đ</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:10px 14px; border-radius:10px; border:1px solid var(--border-color); font-size:13px; gap:12px;">
+                            <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+                                <img src="${it.defaultImageUrl || '/assets/img/placeholder-product.png'}" 
+                                     style="width:36px; height:36px; border-radius:6px; object-fit:cover; flex-shrink:0;"
+                                     onerror="this.src='/assets/img/placeholder-product.png'">
+                                <div style="min-width:0;">
+                                    <div style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${it.productName}</div>
+                                    <div style="color:#94a3b8; font-size:11px;">${it.sku || ''}</div>
+                                </div>
+                            </div>
+                            <div style="text-align:right; flex-shrink:0;">
+                                <div style="color:var(--text-muted);">x${it.quantity}</div>
+                                <div style="font-weight:700; color:var(--primary);">${(it.unitPrice * it.quantity).toLocaleString('vi-VN')}đ</div>
+                            </div>
                         </div>
                     `;
                 });
@@ -1477,7 +1778,7 @@
 
                 document.getElementById('orderModal').classList.add('active');
             } catch (e) {
-                console.error(e);
+                console.error('[Admin] viewOrderDetail error:', e);
             }
         }
 
@@ -1496,7 +1797,7 @@
                 const res = await fetch('/api/Admin/order-status', {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `Bearer ${authToken}`,
+                        'Authorization': `Bearer ${getAdminToken()}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ orderId, userId, newStatus, adminNote })
@@ -1721,7 +2022,7 @@
                 const res = await fetch(url, {
                     method: method,
                     headers: {
-                        'Authorization': `Bearer ${authToken}`,
+                        'Authorization': `Bearer ${getAdminToken()}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload)
@@ -1746,7 +2047,7 @@
                 try {
                     const res = await fetch(`/api/Products/${productId}`, {
                         method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${authToken}` }
+                        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                     });
                     const result = await res.json();
                     if (res.ok) {
@@ -1786,7 +2087,7 @@
                 const res = await fetch('/api/Admin/import-stock', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${authToken}`,
+                        'Authorization': `Bearer ${getAdminToken()}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ productId, quantityToAdd, note })
@@ -1817,7 +2118,7 @@
         async function loadUsersData() {
             try {
                 const res = await fetch('/api/Admin/users?PageSize=100', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (!res.ok) return;
                 const data = await res.json();
@@ -1896,7 +2197,7 @@
                     const res = await fetch('/api/Admin/users/status', {
                         method: 'PUT',
                         headers: {
-                            'Authorization': `Bearer ${authToken}`,
+                            'Authorization': `Bearer ${getAdminToken()}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ userId, isActive: !currentStatus })
@@ -1989,7 +2290,7 @@
                 toggleDetailRolesDisabled(false);
                 try {
                     const res = await fetch(`/api/Admin/users/${userId}`, {
-                        headers: { 'Authorization': `Bearer ${authToken}` }
+                        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                     });
                     if (res.ok) {
                         const data = await res.json();
@@ -2038,7 +2339,7 @@
                 const res = await fetch('/api/Admin/user-role', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${authToken}`,
+                        'Authorization': `Bearer ${getAdminToken()}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
@@ -2070,7 +2371,7 @@
         async function loadReviewsData() {
             try {
                 const res = await fetch('/api/Admin/reviews?PageSize=100', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (!res.ok) return;
                 const data = await res.json();
@@ -2121,7 +2422,7 @@
                 const res = await fetch('/api/Admin/review', {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `Bearer ${authToken}`,
+                        'Authorization': `Bearer ${getAdminToken()}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ reviewId, isApproved })
@@ -2144,7 +2445,7 @@
                 try {
                     const res = await fetch(`/api/Admin/reviews/${reviewId}`, {
                         method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${authToken}` }
+                        headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                     });
 
                     if (res.ok) {
@@ -2168,7 +2469,7 @@
         async function loadChatSessions() {
             try {
                 const res = await fetch('/api/Admin/chat-messages?PageSize=200', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (!res.ok) return;
                 const data = await res.json();
@@ -2274,7 +2575,7 @@
         async function populateNotificationUsers() {
             try {
                 const res = await fetch('/api/Admin/users?PageSize=200', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 if (!res.ok) return;
                 const data = await res.json();
@@ -2299,7 +2600,7 @@
             if (target === 'all') {
                 // Lấy tất cả user IDs
                 const res = await fetch('/api/Admin/users?PageSize=200', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
                 });
                 const data = await res.json();
                 const usersList = Array.isArray(data) ? data : (data.items || []);
@@ -2313,7 +2614,7 @@
                 const res = await fetch('/api/Admin/notification', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${authToken}`,
+                        'Authorization': `Bearer ${getAdminToken()}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ userIds, title, message })
@@ -2328,6 +2629,88 @@
                 }
             } catch (err) {
                 showToast('Có lỗi xảy ra.', 'error');
+            }
+        }
+
+        // ==========================================
+        // 9.5. KHAI THÁC DỮ LIỆU HUIM (APRIORI)
+        // ==========================================
+        async function loadMiningData() {
+            try {
+                const res = await fetch('/api/Admin/mined-itemsets', {
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                const tbody = document.getElementById('miningResultTableBody');
+                
+                if (data.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted-light); padding: 40px 0;">Chưa tìm thấy tập mục lợi nhuận cao nào. Hãy tăng số lượng đơn hàng hoặc giảm ngưỡng Min Utility và chạy lại.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                data.forEach(item => {
+                    html += `
+                        <tr>
+                            <td><strong>#${item.itemsetID}</strong></td>
+                            <td style="color: var(--primary); font-weight: 600;">${item.productNames}</td>
+                            <td style="text-align: right; font-weight: 700;">${item.supportCount}</td>
+                            <td style="text-align: right; color: #10b981; font-weight: 700;">${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.totalUtility)}</td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (e) {
+                console.error("[loadMiningData Error]:", e);
+            }
+        }
+
+        async function runDataMining() {
+            const minUtilVal = document.getElementById('minUtilInput').value;
+            const minUtil = parseInt(minUtilVal.replace(/\D/g, '')) || 0;
+            if (minUtil < 10000) {
+                showToast('Vui lòng nhập ngưỡng Min Utility tối thiểu là 10.000 VNĐ', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#mining-section button');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span> ĐANG KHAI THÁC...';
+
+            try {
+                const res = await fetch(`/api/Admin/run-mining?minUtil=${minUtil}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getAdminToken()}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast('Chạy thuật toán Apriori-HUIM thành công!', 'success');
+                    
+                    // Hiển thị báo cáo thống kê
+                    document.getElementById('miningReportBox').style.display = 'block';
+                    document.getElementById('reportScannedTx').textContent = data.scannedTransactions;
+                    document.getElementById('reportTotalHui').textContent = data.totalHighUtilityItemsets;
+                    document.getElementById('reportExecTime').textContent = `${data.executionTimeMs.toFixed(2)} ms`;
+                    document.getElementById('reportStatusMsg').textContent = data.statusMessage;
+
+                    // Load lại bảng
+                    await loadMiningData();
+                } else {
+                    const txt = await res.text();
+                    showToast(`Khai thác thất bại: ${txt}`, 'error');
+                }
+            } catch (err) {
+                showToast('Đã có lỗi xảy ra khi gọi API khai thác.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             }
         }
 
@@ -2349,6 +2732,57 @@
             if (activeTab === 'overview') loadOverviewData();
             else if (activeTab === 'orders') loadOrdersData();
         });
+
+        connection.on("AdminEvent", (payload) => {
+            console.log("[SignalR AdminEvent Received]:", payload);
+            if (payload.eventType === "NewReturnRequest" || payload.eventType === "NewOrder") {
+                // Play "ting ting" chime sound!
+                playTingTingChime();
+                
+                // Show floating notification
+                showToast(`🔔 ${payload.data.message || 'Có thông báo mới!'}`);
+                
+                // If in relevant tab, reload
+                const activeTab = document.querySelector('.menu-item.active').getAttribute('data-tab');
+                if (activeTab === 'returns' && payload.eventType === "NewReturnRequest") {
+                    loadReturnRequests();
+                } else if (activeTab === 'orders' && payload.eventType === "NewOrder") {
+                    loadOrdersData();
+                }
+            }
+        });
+
+        function playTingTingChime() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+
+                const playChimeNode = (time, pitch) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(pitch, time);
+
+                    gain.gain.setValueAtTime(0, time);
+                    gain.gain.linearRampToValueAtTime(0.3, time + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.5);
+
+                    osc.start(time);
+                    osc.stop(time + 0.6);
+                };
+
+                // Play "Ting - Ting" (first chime, then second chime shortly after)
+                const now = ctx.currentTime;
+                playChimeNode(now, 880); // High pitch A5
+                playChimeNode(now + 0.15, 1200); // Higher pitch
+            } catch (e) {
+                console.error("Web Audio API chime failed:", e);
+            }
+        }
 
         connection.start()
             .then(() => console.log("[SignalR] Connection established successfully."))
@@ -2403,486 +2837,339 @@
             }
         }
 
+        // AUTO INITIALIZE OVERVIEW DATA ON LAUNCH
         // ==========================================
-        // 12. QUẢN LÝ BANNER CÁC TRANG
+        // 12. RETURN & REFUND MANAGEMENT FUNCTIONS
         // ==========================================
-        let allBannersData = [];
-        let currentSelectedPageType = ''; // 'home', 'pcbuild', 'gaminggear'
-        let pcBuildProductsList = [];
+        let currentReturnFilter = 'all';
 
-        async function loadBannersData() {
-            try {
-                const res = await fetch('/api/Admin/banners', {
-                    headers: { 'Authorization': `Bearer ${authToken}` }
-                });
-                if (!res.ok) {
-                    showToast('Không thể tải danh sách banner', 'error');
-                    return;
-                }
-                allBannersData = await res.json();
-
-                // Nếu đang hiển thị chi tiết thì render lại bảng của page đó
-                if (currentSelectedPageType) {
-                    renderBannersTable(currentSelectedPageType);
-                } else {
-                    backToBannerPages();
-                }
-            } catch (e) {
-                console.error(e);
-                showToast('Lỗi kết nối máy chủ khi tải banner', 'error');
-            }
-        }
-
-        async function populatePcBuildProducts() {
-            if (pcBuildProductsList.length === 0) {
-                try {
-                    const res = await fetch('/api/Products?PageSize=250&OnlyActive=true');
-                    if (res.ok) {
-                        const data = await res.json();
-                        pcBuildProductsList = data.items || [];
-                    }
-                } catch (e) {
-                    console.error("Lỗi fetch products cho PC Build:", e);
-                }
-            }
-
-            const categories = {
-                cpu: [],
-                mainboard: [],
-                ram: [],
-                vga: [],
-                psu: [],
-                case: []
-            };
-
-            pcBuildProductsList.forEach(p => {
-                const catName = (p.categoryName || "").toLowerCase();
-                const catId = p.categoryId;
-
-                let targetCat = null;
-                if (catId === 2 || catName.includes("cpu") || catName.includes("vi xử lý") || catName.includes("bộ xử lý")) {
-                    targetCat = "cpu";
-                } else if (catId === 4 || catName.includes("mainboard") || catName.includes("bo mạch") || catName.includes("motherboard")) {
-                    targetCat = "mainboard";
-                } else if (catId === 10 || catName.includes("ram") || catName.includes("bộ nhớ ram")) {
-                    targetCat = "ram";
-                } else if (catId === 1 || catName.includes("vga") || catName.includes("card đồ họa") || catName.includes("card màn hình")) {
-                    targetCat = "vga";
-                } else if (catId === 5 || catName.includes("psu") || catName.includes("nguồn") || catName.includes("power")) {
-                    targetCat = "psu";
-                } else if (catId === 8 || catName.includes("case") || catName.includes("vỏ máy") || catName.includes("thùng máy")) {
-                    targetCat = "case";
-                }
-
-                if (targetCat) {
-                    categories[targetCat].push(p);
-                }
-            });
-
-            const selectsMap = {
-                cpu: 'pcCpuSelect',
-                mainboard: 'pcMainboardSelect',
-                ram: 'pcRamSelect',
-                vga: 'pcVgaSelect',
-                psu: 'pcPsuSelect',
-                case: 'pcCaseSelect'
-            };
-
-            Object.keys(selectsMap).forEach(cat => {
-                const selectId = selectsMap[cat];
-                const select = document.getElementById(selectId);
-                if (select) {
-                    select.innerHTML = '';
-                    const items = categories[cat];
-                    if (items.length === 0) {
-                        select.innerHTML = '<option value="" data-price="0">— Không có sản phẩm —</option>';
-                    } else {
-                        items.forEach(p => {
-                            select.innerHTML += `<option value="${p.productId}" data-price="${p.price}">${p.productName} (${p.price.toLocaleString('vi-VN')}đ)</option>`;
-                        });
-                    }
-                    select.onchange = updateStreamerPcTotalPrice;
-                }
-            });
-
-            updateStreamerPcTotalPrice();
-        }
-
-        function updateStreamerPcTotalPrice() {
-            let total = 0;
-            const selects = ['pcCpuSelect', 'pcMainboardSelect', 'pcRamSelect', 'pcVgaSelect', 'pcPsuSelect', 'pcCaseSelect'];
-            selects.forEach(selId => {
-                const sel = document.getElementById(selId);
-                if (sel && sel.selectedOptions.length > 0) {
-                    const price = parseFloat(sel.selectedOptions[0].getAttribute('data-price')) || 0;
-                    total += price;
-                }
-            });
-            document.getElementById('streamerPcTotalPrice').textContent = total.toLocaleString('vi-VN') + 'đ';
-        }
-
-        async function selectBannerPage(pageType) {
-            currentSelectedPageType = pageType;
-            document.getElementById('bannersPageGrid').style.display = 'none';
-            document.getElementById('bannerDetailCard').style.display = 'block';
-
-            let title = 'Quản lý Banner - Trang Chủ';
-            if (pageType === 'pcbuild') {
-                title = 'Quản lý Cấu hình PC theo Streamer';
-                await populatePcBuildProducts();
-            }
-            if (pageType === 'gaminggear') title = 'Quản lý Banner - Gaming Gear';
-            document.getElementById('selectedPageTitle').textContent = title;
-
-            renderBannersTable(pageType);
-        }
-
-        function backToBannerPages() {
-            currentSelectedPageType = '';
-            document.getElementById('bannersPageGrid').style.display = 'grid';
-            document.getElementById('bannerDetailCard').style.display = 'none';
-        }
-
-        function renderBannersTable(pageType) {
-            const tbody = document.getElementById('bannersTableBody');
-            tbody.innerHTML = '';
-
-            const thead = document.querySelector('#bannerDetailCard .admin-table thead');
-            if (pageType === 'pcbuild') {
-                thead.innerHTML = `
-                    <tr>
-                        <th>Ảnh PC</th>
-                        <th>Tên</th>
-                        <th>Tiêu đề</th>
-                        <th>Cấu hình</th>
-                        <th>Tổng giá</th>
-                        <th>Trạng thái</th>
-                        <th>Hành động</th>
-                    </tr>
-                `;
-            } else {
-                thead.innerHTML = `
-                    <tr>
-                        <th>Ảnh Demo</th>
-                        <th>Tiêu Đề</th>
-                        <th>Liên Kết (Link)</th>
-                        <th>Thời Gian Hiển Thị</th>
-                        <th>Trạng Thái</th>
-                        <th>Hành Động</th>
-                    </tr>
-                `;
-            }
-
-            const filtered = allBannersData.filter(b => {
-                const title = b.title || '';
-                if (pageType === 'pcbuild') return title.startsWith('[pcbuild]');
-                if (pageType === 'gaminggear') return title.startsWith('[gaminggear]');
-                return title.startsWith('[home]') || (!title.startsWith('[pcbuild]') && !title.startsWith('[gaminggear]'));
-            });
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding: 24px;">Không có cấu hình nào ở trang này. Nhấn nút thêm mới để tạo!</td></tr>`;
-                return;
-            }
-
-            filtered.forEach(b => {
-                let cleanTitle = b.title || '';
-                if (cleanTitle.startsWith('[home]')) cleanTitle = cleanTitle.substring(6);
-                if (cleanTitle.startsWith('[pcbuild]')) cleanTitle = cleanTitle.substring(9);
-                if (cleanTitle.startsWith('[gaminggear]')) cleanTitle = cleanTitle.substring(12);
-
-                const statusBadge = b.isActive 
-                    ? `<span style="background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 700;">Đang hoạt động</span>`
-                    : `<span style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 700;">Tạm khóa</span>`;
-
-                const startStr = b.startDate ? new Date(b.startDate).toLocaleDateString('vi-VN') : '—';
-                const endStr = b.endDate ? new Date(b.endDate).toLocaleDateString('vi-VN') : '—';
-
-                const isVideo = b.imageUrl && (b.imageUrl.endsWith('.mp4') || b.imageUrl.endsWith('.webm'));
-                const previewHtml = isVideo
-                    ? `<video src="${b.imageUrl}" class="banner-img-preview" muted loop autoplay style="width: 120px; height: 60px; object-fit: cover; border-radius: 8px;"></video>`
-                    : `<img src="${b.imageUrl}" class="banner-img-preview" onerror="this.src='/images/no-image.png'" style="width: 120px; height: 60px; object-fit: cover; border-radius: 8px;" />`;
-
-                if (pageType === 'pcbuild') {
-                    let specsHtml = 'Chưa cấu hình linh kiện';
-                    let totalPriceStr = '—';
-                    let tagText = '—';
-                    let avatarHtml = '—';
-                    
-                    try {
-                        const meta = JSON.parse(b.linkUrl);
-                        tagText = meta.tag || '—';
-                        avatarHtml = meta.avatar 
-                            ? `<img src="${meta.avatar}" style="width:30px; height:30px; border-radius:50%; object-fit:cover; border:1.5px solid var(--primary);" onerror="this.src='/images/3ga.png'" />`
-                            : '—';
-                            
-                        const cpu = pcBuildProductsList.find(p => p.productId === meta.cpuId);
-                        const mb = pcBuildProductsList.find(p => p.productId === meta.mainboardId);
-                        const ram = pcBuildProductsList.find(p => p.productId === meta.ramId);
-                        const vga = pcBuildProductsList.find(p => p.productId === meta.vgaId);
-                        const psu = pcBuildProductsList.find(p => p.productId === meta.psuId);
-                        const cas = pcBuildProductsList.find(p => p.productId === meta.caseId);
-                        
-                        const cpuName = cpu ? cpu.productName : `CPU #${meta.cpuId}`;
-                        const mbName = mb ? mb.productName : `Mainboard #${meta.mainboardId}`;
-                        const ramName = ram ? ram.productName : `RAM #${meta.ramId}`;
-                        const vgaName = vga ? vga.productName : `VGA #${meta.vgaId}`;
-                        const psuName = psu ? psu.productName : `PSU #${meta.psuId}`;
-                        const caseName = cas ? cas.productName : `Case #${meta.caseId}`;
-                        
-                        specsHtml = `<div style="font-size:11px; line-height:1.4; text-align:left;">
-                            • CPU: <b>${cpuName}</b><br/>
-                            • Main: <b>${mbName}</b><br/>
-                            • RAM: <b>${ramName}</b><br/>
-                            • VGA: <b>${vgaName}</b><br/>
-                            • PSU: <b>${psuName}</b><br/>
-                            • Case: <b>${caseName}</b>
-                        </div>`;
-                        
-                        const total = (cpu?.price || 0) + (mb?.price || 0) + (ram?.price || 0) + (vga?.price || 0) + (psu?.price || 0) + (cas?.price || 0);
-                        totalPriceStr = `<b>${total.toLocaleString('vi-VN')}đ</b>`;
-                    } catch (e) {
-                        console.error("Lỗi parse cấu hình banner:", e);
-                    }
-
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="width: 140px;">${previewHtml}</td>
-                            <td style="font-weight: 600; color: var(--text-dark);">${cleanTitle}</td>
-                            <td>
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    ${avatarHtml}
-                                    <span style="background:var(--primary); color:white; padding:2px 8px; border-radius:12px; font-size:10px; font-weight:700;">${tagText}</span>
-                                </div>
-                            </td>
-                            <td>${specsHtml}</td>
-                            <td style="color:var(--primary);">${totalPriceStr}</td>
-                            <td>${statusBadge}</td>
-                            <td>
-                                <div style="display:flex; gap: 8px;">
-                                    <button class="btn-submit" onclick="openEditBannerModal(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer;">Sửa</button>
-                                    <button class="btn-cancel" onclick="deleteBanner(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer; background:rgba(239, 68, 68, 0.1); color:#ef4444;">Xóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td style="width: 140px;">${previewHtml}</td>
-                            <td style="font-weight: 600; color: var(--text-dark);">${cleanTitle}</td>
-                            <td><a href="${b.linkUrl || '#'}" target="_blank" style="color: var(--primary); text-decoration: none;">${b.linkUrl || 'Không có link'}</a></td>
-                            <td style="font-size: 11px; line-height: 1.4;">Bắt đầu: ${startStr}<br/>Kết thúc: ${endStr}</td>
-                            <td>${statusBadge}</td>
-                            <td>
-                                <div style="display:flex; gap: 8px;">
-                                    <button class="btn-submit" onclick="openEditBannerModal(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer;">Sửa</button>
-                                    <button class="btn-cancel" onclick="deleteBanner(${b.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer; background:rgba(239, 68, 68, 0.1); color:#ef4444;">Xóa</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                }
-            });
-        }
-
-        async function openAddBannerModal() {
-            document.getElementById('bannerForm').reset();
-            document.getElementById('editBannerId').value = '';
-            document.getElementById('bannerPageType').value = currentSelectedPageType;
-            document.getElementById('modalBannerTitle').textContent = currentSelectedPageType === 'pcbuild' ? 'Thêm Cấu Hình PC Mới' : 'Thêm Banner Mới';
-            document.getElementById('bannerIsActive').checked = true;
-
-            if (currentSelectedPageType === 'pcbuild') {
-                document.getElementById('bannerLinkUrlGroup').style.display = 'none';
-                document.getElementById('streamerPcFormGroup').style.display = 'block';
-                await populatePcBuildProducts();
-                document.getElementById('streamerTag').value = '';
-                document.getElementById('streamerAvatar').value = '';
-            } else {
-                document.getElementById('bannerLinkUrlGroup').style.display = 'block';
-                document.getElementById('streamerPcFormGroup').style.display = 'none';
-            }
-
-            const now = new Date();
-            const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-            document.getElementById('bannerStartDate').value = localNow;
+        async function loadReturnRequests(status = currentReturnFilter, page = 1) {
+            const tbody = document.getElementById('returnsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px 0;">Đang tải dữ liệu...</td></tr>';
             
-            const nextYear = new Date();
-            nextYear.setFullYear(now.getFullYear() + 1);
-            const localNextYear = new Date(nextYear.getTime() - nextYear.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-            document.getElementById('bannerEndDate').value = localNextYear;
-
-            document.getElementById('bannerModal').classList.add('active');
-        }
-
-        async function openEditBannerModal(bannerId) {
-            const b = allBannersData.find(x => x.bannerId === bannerId);
-            if (!b) return;
-
-            document.getElementById('editBannerId').value = b.bannerId;
-            document.getElementById('bannerPageType').value = currentSelectedPageType;
-            document.getElementById('modalBannerTitle').textContent = currentSelectedPageType === 'pcbuild' ? 'Chỉnh Sửa Cấu Hình PC' : 'Chỉnh Sửa Banner';
-
-            let cleanTitle = b.title || '';
-            if (cleanTitle.startsWith('[home]')) cleanTitle = cleanTitle.substring(6);
-            if (cleanTitle.startsWith('[pcbuild]')) cleanTitle = cleanTitle.substring(9);
-            if (cleanTitle.startsWith('[gaminggear]')) cleanTitle = cleanTitle.substring(12);
-
-            document.getElementById('bannerTitle').value = cleanTitle;
-            document.getElementById('bannerImageUrl').value = b.imageUrl || '';
-            document.getElementById('bannerDisplayOrder').value = b.displayOrder;
-            document.getElementById('bannerIsActive').checked = b.isActive;
-
-            if (currentSelectedPageType === 'pcbuild') {
-                document.getElementById('bannerLinkUrlGroup').style.display = 'none';
-                document.getElementById('streamerPcFormGroup').style.display = 'block';
-                await populatePcBuildProducts();
+            const token = localStorage.getItem('pc_store_token');
+            const statusParam = status === 'all' ? '' : `&status=${status}`;
+            
+            try {
+                const res = await fetch(`/api/ReturnRequests/admin/list?pageNumber=${page}&pageSize=50${statusParam}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 
-                try {
-                    const meta = JSON.parse(b.linkUrl || '{}');
-                    document.getElementById('streamerTag').value = meta.tag || '';
-                    document.getElementById('streamerAvatar').value = meta.avatar || '';
-                    
-                    if (meta.cpuId) document.getElementById('pcCpuSelect').value = meta.cpuId;
-                    if (meta.mainboardId) document.getElementById('pcMainboardSelect').value = meta.mainboardId;
-                    if (meta.ramId) document.getElementById('pcRamSelect').value = meta.ramId;
-                    if (meta.vgaId) document.getElementById('pcVgaSelect').value = meta.vgaId;
-                    if (meta.psuId) document.getElementById('pcPsuSelect').value = meta.psuId;
-                    if (meta.caseId) document.getElementById('pcCaseSelect').value = meta.caseId;
-                } catch (err) {
-                    console.error("Lỗi parse JSON linkUrl:", err);
-                    document.getElementById('streamerTag').value = '';
-                    document.getElementById('streamerAvatar').value = '';
-                }
-                updateStreamerPcTotalPrice();
-            } else {
-                document.getElementById('bannerLinkUrlGroup').style.display = 'block';
-                document.getElementById('streamerPcFormGroup').style.display = 'none';
-                document.getElementById('bannerLinkUrl').value = b.linkUrl || '';
-            }
-
-            if (b.startDate) {
-                const date = new Date(b.startDate);
-                const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-                document.getElementById('bannerStartDate').value = local;
-            } else {
-                document.getElementById('bannerStartDate').value = '';
-            }
-
-            if (b.endDate) {
-                const date = new Date(b.endDate);
-                const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-                document.getElementById('bannerEndDate').value = local;
-            } else {
-                document.getElementById('bannerEndDate').value = '';
-            }
-
-            document.getElementById('bannerModal').classList.add('active');
-        }
-
-        function closeBannerModal() {
-            document.getElementById('bannerModal').classList.remove('active');
-        }
-
-        async function submitBannerForm(e) {
-            e.preventDefault();
-            const id = document.getElementById('editBannerId').value;
-            const pageType = document.getElementById('bannerPageType').value;
-            const rawTitle = document.getElementById('bannerTitle').value.trim();
-            const imageUrl = document.getElementById('bannerImageUrl').value.trim();
-            const displayOrder = parseInt(document.getElementById('bannerDisplayOrder').value) || 0;
-            const isActive = document.getElementById('bannerIsActive').checked;
-            
-            const startVal = document.getElementById('bannerStartDate').value;
-            const endVal = document.getElementById('bannerEndDate').value;
-
-            let linkUrl = '';
-            if (pageType === 'pcbuild') {
-                const meta = {
-                    tag: document.getElementById('streamerTag').value.trim(),
-                    avatar: document.getElementById('streamerAvatar').value.trim(),
-                    cpuId: parseInt(document.getElementById('pcCpuSelect').value),
-                    mainboardId: parseInt(document.getElementById('pcMainboardSelect').value),
-                    ramId: parseInt(document.getElementById('pcRamSelect').value),
-                    vgaId: parseInt(document.getElementById('pcVgaSelect').value),
-                    psuId: parseInt(document.getElementById('pcPsuSelect').value),
-                    caseId: parseInt(document.getElementById('pcCaseSelect').value)
-                };
-
-                if (!meta.tag || !meta.avatar || !meta.cpuId || !meta.mainboardId || !meta.ramId || !meta.vgaId || !meta.psuId || !meta.caseId) {
-                    showToast('Vui lòng điền nhãn, avatar và chọn tất cả các linh kiện!', 'error');
+                if (!res.ok) throw new Error('Failed to fetch return requests');
+                
+                const result = await res.json();
+                const items = result.items || [];
+                
+                if (items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px 0; color: var(--text-muted);">Không tìm thấy yêu cầu đổi trả nào.</td></tr>';
                     return;
                 }
-                linkUrl = JSON.stringify(meta);
-            } else {
-                linkUrl = document.getElementById('bannerLinkUrl').value.trim();
-            }
-
-            const title = `[${pageType}] ${rawTitle}`;
-
-            const payload = {
-                bannerId: id ? parseInt(id) : null,
-                title,
-                imageUrl,
-                linkUrl: linkUrl || null,
-                displayOrder,
-                startDate: startVal ? new Date(startVal).toISOString() : null,
-                endDate: endVal ? new Date(endVal).toISOString() : null,
-                isActive
-            };
-
-            try {
-                const res = await fetch('/api/Admin/banner', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
+                
+                let html = '';
+                items.forEach(item => {
+                    html += `
+                    <tr>
+                        <td><strong>#${item.returnId}</strong></td>
+                        <td><a href="#" onclick="viewOrderDetail(${item.orderId}); return false;" style="color:var(--primary); font-weight:700;">#${item.orderId}</a></td>
+                        <td>
+                            <strong style="color:var(--text-dark);">${item.fullName || 'Khách hàng'}</strong><br>
+                            <span style="font-size:11px; color:var(--text-muted);">${item.email || ''}</span>
+                        </td>
+                        <td>
+                            <div style="font-size:13px; line-height:1.4; color:var(--text-dark);">${item.reason}</div>
+                            ${item.evidenceImages ? `<a href="${item.evidenceImages}" target="_blank" style="font-size:11px; color:#38bdf8; text-decoration:underline;">🖼️ Xem ảnh minh chứng</a>` : ''}
+                        </td>
+                        <td style="text-align: right;"><strong style="color:#22c55e;">${item.refundAmount.toLocaleString('vi-VN')}đ</strong></td>
+                        <td style="text-align: center;">
+                            <span class="status-badge ${getReturnBadgeClass(item.status)}">${getReturnStatusText(item.status)}</span>
+                        </td>
+                        <td style="text-align: center; font-family:monospace; font-weight:700;">
+                            ${item.returnTrackingCode ? `<span style="color:#0ea5e9;">${item.returnTrackingCode}</span>` : '<span style="color:var(--text-muted);">—</span>'}
+                        </td>
+                        <td style="text-align: right;">
+                            <div style="display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; align-items:center;">
+                                ${item.status === 'Pending' ? `
+                                    <button onclick="openReturnProcess(${item.returnId}, 'approve')" style="
+                                        padding: 6px 14px; font-size: 12px; font-weight: 700;
+                                        background: linear-gradient(135deg,#0ea5e9,#0284c7);
+                                        color:#fff; border:none; border-radius:8px; cursor:pointer;
+                                        transition:all 0.2s; white-space:nowrap;
+                                    ">✅ Duyệt</button>
+                                    <button onclick="openReturnProcess(${item.returnId}, 'reject')" style="
+                                        padding: 6px 14px; font-size: 12px; font-weight: 700;
+                                        background: linear-gradient(135deg,#ef4444,#dc2626);
+                                        color:#fff; border:none; border-radius:8px; cursor:pointer;
+                                        transition:all 0.2s; white-space:nowrap;
+                                    ">❌ Từ Chối</button>
+                                ` : ''}
+                                ${item.status === 'Picking' ? `
+                                    <button onclick="confirmReceiveReturn(${item.returnId})" style="
+                                        padding: 6px 14px; font-size: 12px; font-weight: 700;
+                                        background: linear-gradient(135deg,#f59e0b,#d97706);
+                                        color:#fff; border:none; border-radius:8px; cursor:pointer;
+                                        white-space:nowrap;
+                                    ">📦 Đã Nhận Hàng</button>
+                                ` : ''}
+                                ${item.status === 'Received' ? `
+                                    <button onclick="openRefundModal(${item.returnId}, ${item.refundAmount}, '${(item.refundBankName||'').replace(/'/g,'')}', '${(item.refundAccountNo||'').replace(/'/g,'')}', '${(item.refundAccountName||'').replace(/'/g,'')}', '${item.fullName||''}', ${item.orderId})" style="
+                                        padding: 6px 14px; font-size: 12px; font-weight: 700;
+                                        background: linear-gradient(135deg,#10b981,#059669);
+                                        color:#fff; border:none; border-radius:8px; cursor:pointer;
+                                        white-space:nowrap;
+                                    ">💸 Hoàn Tiền</button>
+                                ` : ''}
+                                ${item.status === 'Refunded' ? `
+                                    <span style="font-size:11px; color:#22c55e; font-weight:700;">✅ Đã hoàn tiền</span>
+                                ` : ''}
+                                ${item.status === 'Rejected' ? `
+                                    <span style="font-size:11px; color:#ef4444; font-weight:700;">❌ Đã từ chối</span>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>`;
                 });
+                tbody.innerHTML = html;
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px 0; color:red;">Lỗi tải dữ liệu yêu cầu đổi trả.</td></tr>';
+            }
+        }
 
+        function filterReturns(status, btn) {
+            currentReturnFilter = status;
+            document.querySelectorAll('#returns-section .filter-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadReturnRequests(status, 1);
+        }
+
+        function getReturnBadgeClass(status) {
+            const map = {
+                'Pending': 'badge-pending',
+                'Approved': 'badge-confirmed',
+                'Picking': 'badge-shipping',
+                'Received': 'badge-delivered',
+                'Refunded': 'badge-delivered',
+                'Rejected': 'badge-cancelled'
+            };
+            return map[status] || 'badge-pending';
+        }
+
+        function getReturnStatusText(status) {
+            const map = {
+                'Pending': 'Chờ duyệt',
+                'Approved': 'Đã duyệt',
+                'Picking': 'Shipper đang lấy',
+                'Received': 'Đã nhận hàng',
+                'Refunded': 'Đã hoàn tiền',
+                'Rejected': 'Từ chối'
+            };
+            return map[status] || status;
+        }
+
+        function openReturnProcess(returnId, action) {
+            document.getElementById('returnProcessId').value = returnId;
+            document.getElementById('returnProcessAction').value = action;
+            document.getElementById('returnAdminNote').value = '';
+            
+            if (action === 'approve') {
+                document.getElementById('returnProcessTitle').textContent = `Duyệt Yêu Cầu Trả Hàng #${returnId}`;
+                document.getElementById('returnAdminNote').placeholder = 'Đồng ý duyệt yêu cầu, shipper GHN sẽ liên hệ lấy hàng...';
+            } else {
+                document.getElementById('returnProcessTitle').textContent = `Từ Chối Yêu Cầu Trả Hàng #${returnId}`;
+                document.getElementById('returnAdminNote').placeholder = 'Lý do từ chối (Ảnh mờ, quá hạn đổi trả, sản phẩm không lỗi...)';
+            }
+            
+            document.getElementById('returnProcessModal').classList.add('active');
+        }
+
+        function closeReturnProcessModal() {
+            document.getElementById('returnProcessModal').classList.remove('active');
+        }
+
+        async function submitReturnProcess(e) {
+            e.preventDefault();
+            const returnId = parseInt(document.getElementById('returnProcessId').value);
+            const action = document.getElementById('returnProcessAction').value;
+            const adminNote = document.getElementById('returnAdminNote').value.trim();
+            
+            const token = localStorage.getItem('pc_store_token');
+            const url = action === 'approve' 
+                ? `/api/ReturnRequests/admin/approve/${returnId}`
+                : `/api/ReturnRequests/admin/reject`;
+                
+            const body = action === 'approve'
+                ? JSON.stringify(adminNote)
+                : JSON.stringify({ returnId, adminNote });
+                
+            const headers = {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            };
+            
+            const btn = document.getElementById('btnSubmitReturnProcess');
+            btn.disabled = true;
+            btn.textContent = 'Đang xử lý...';
+            
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers,
+                    body
+                });
+                
                 if (res.ok) {
-                    showToast('Lưu banner thành công!', 'success');
-                    closeBannerModal();
-                    loadBannersData();
+                    showToast('✅ Đã cập nhật yêu cầu đổi trả thành công!');
+                    closeReturnProcessModal();
+                    loadReturnRequests();
                 } else {
-                    const data = await res.json();
-                    showToast(data.message || 'Lưu banner thất bại', 'error');
+                    const err = await res.json();
+                    alert(err.message || 'Lỗi cập nhật yêu cầu đổi trả.');
                 }
             } catch (err) {
                 console.error(err);
-                showToast('Có lỗi xảy ra khi lưu banner', 'error');
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'XÁC NHẬN';
             }
         }
 
-        function deleteBanner(bannerId) {
-            showConfirm('Bạn có chắc chắn muốn xóa cấu hình/banner này không?', async () => {
+        function confirmReceiveReturn(returnId) {
+            showConfirm(`Xác nhận đã nhận lại sản phẩm hoàn trả của yêu cầu #${returnId} từ shipper GHN? Hệ thống sẽ tự động nhập trả lại kho hàng.`, async () => {
+                const token = localStorage.getItem('pc_store_token');
                 try {
-                    const res = await fetch(`/api/Admin/banner/${bannerId}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    const res = await fetch(`/api/ReturnRequests/admin/receive/${returnId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify("Đã nhận hàng trả về kho thành công.")
                     });
-
+                    
                     if (res.ok) {
-                        showToast('Xóa banner thành công!', 'success');
-                        loadBannersData();
+                        showToast('✅ Đã nhận hàng và cộng trả tồn kho thành công!');
+                        loadReturnRequests();
                     } else {
-                        const data = await res.json();
-                        showToast(data.message || 'Xóa banner thất bại', 'error');
+                        const err = await res.json();
+                        alert(err.message || 'Lỗi cập nhật trạng thái nhận hàng.');
                     }
                 } catch (err) {
                     console.error(err);
-                    showToast('Có lỗi xảy ra khi xóa banner', 'error');
+                    alert('Lỗi kết nối máy chủ.');
                 }
             });
         }
 
-        // AUTO INITIALIZE OVERVIEW DATA ON LAUNCH
-        loadOverviewData();
-        loadCategoriesAndBrands();
-        initSidebarToggle();
+        function openRefundModal(returnId, amount, bankName, accountNo, accountName, customerName, orderId) {
+            document.getElementById('refundReturnId').value = returnId;
+            document.getElementById('refundMethod').value = 'Bank Transfer';
+            document.getElementById('refundTxNo').value = '';
 
+            // Định dạng số tiền hoàn trả hiển thị có dấu chấm phân cách hàng nghìn
+            const fmtAmount = Number(amount).toLocaleString('vi-VN');
+            document.getElementById('refundAmountVal').value = fmtAmount;
+
+            // Hiển thị gọn gàng, tinh tế thông tin ngân hàng của khách hàng (căn lề trái, màu chữ đen)
+            document.getElementById('refundCustomerBankInfo').innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left; padding: 4px 0; font-family: 'Inter', sans-serif;">
+                    <div style="font-size: 13.5px; color: #475569; font-weight: 500; text-align: left;">
+                        Khách hàng: <strong style="color: #000000; font-weight: 700;">${customerName || accountName || '—'}</strong>
+                    </div>
+                    <div style="font-size: 13.5px; color: #475569; font-weight: 500; text-align: left;">
+                        Mã đơn hàng: <strong style="color: #000000; font-weight: 700;">#${orderId}</strong>
+                    </div>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; text-align: left; margin-top: 4px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+                            <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Ngân hàng</span>
+                            <span style="font-size: 13px; font-weight: 700; color: #000000; text-align: right;">${bankName || '—'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px;">
+                            <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Số tài khoản</span>
+                            <span style="font-size: 13px; font-weight: 700; color: #000000; font-family: monospace; letter-spacing: 0.5px; text-align: right;">${accountNo || '—'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Chủ tài khoản</span>
+                            <span style="font-size: 13px; font-weight: 700; color: #000000; text-transform: uppercase; text-align: right;">${accountName || '—'}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('refundModal').classList.add('active');
+        }
+
+        function closeRefundModal() {
+            document.getElementById('refundModal').classList.remove('active');
+        }
+
+        async function submitRefund(e) {
+            e.preventDefault();
+            const returnId = parseInt(document.getElementById('refundReturnId').value);
+            // Loại bỏ tất cả dấu chấm phân cách hàng nghìn trước khi chuyển thành số float gửi API
+            const refundAmountValStr = document.getElementById('refundAmountVal').value;
+            const refundAmount = parseFloat(refundAmountValStr.replace(/\./g, ''));
+            const refundMethod = document.getElementById('refundMethod').value;
+            const transactionNo = document.getElementById('refundTxNo').value.trim();
+            
+            const token = getAdminToken();
+            try {
+                const res = await fetch(`/api/ReturnRequests/admin/refund`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    // Quan trọng: map key refundMethod thành paymentMethod để khớp DTO AdminCompleteRefundRequest ở C#
+                    body: JSON.stringify({ 
+                        returnId, 
+                        paymentMethod: refundMethod, 
+                        transactionNo 
+                    })
+                });
+                
+                if (res.ok) {
+                    showToast('✅ Đã xác nhận hoàn tiền thành công!');
+                    closeRefundModal();
+                    loadReturnRequests();
+                } else {
+                    const err = await res.json();
+                    alert(err.message || 'Lỗi cập nhật thông tin hoàn tiền.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Lỗi kết nối máy chủ.');
+            }
+        }
+
+        // Khởi động admin (kiểm tra auth, refresh token nếu cần, rồi load data)
+        initAdminAuth();
+
+        // ── AUTO FORMAT MIN UTILITY INPUT WITH DOTS ──
+        (function() {
+            const minUtilInput = document.getElementById('minUtilInput');
+            if (minUtilInput) {
+                const formatInput = (inputVal) => {
+                    let digits = inputVal.replace(/\D/g, '');
+                    if (!digits) return '';
+                    return Number(digits).toLocaleString('vi-VN');
+                };
+
+                minUtilInput.addEventListener('input', function() {
+                    const formatted = formatInput(this.value);
+                    const cursorPosition = this.selectionStart;
+                    const prevLen = this.value.length;
+                    this.value = formatted;
+                    const newLen = this.value.length;
+                    const diff = newLen - prevLen;
+                    this.setSelectionRange(cursorPosition + diff, cursorPosition + diff);
+                });
+
+                // Format initially
+                minUtilInput.value = formatInput(minUtilInput.value);
+            }
+        })();
     </script>
 </body>
 

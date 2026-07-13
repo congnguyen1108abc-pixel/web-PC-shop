@@ -118,6 +118,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IWarrantyRepository, WarrantyRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IReturnRepository, ReturnRepository>();
 
 // ── Domain Services ───────────────────────────────────────────────────────────
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -137,6 +138,13 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<RecommendationDAO>();
 builder.Services.AddSingleton<AprioriAlgorithm>();
 builder.Services.AddScoped<IRecommendationService, RecommendationService>();
+builder.Services.AddScoped<IHighUtilityMiningService, HighUtilityMiningService>();
+
+// ── Return / Refund Services ──────────────────────────────────────────────────
+builder.Services.AddHttpClient<IGhnService, GhnService>();
+builder.Services.AddScoped<IGhnService, GhnService>();
+builder.Services.AddScoped<IReturnService, ReturnService>();
+builder.Services.AddHostedService<GhnStatusPollingService>();
 
 // ── Email Service (Brevo & General SMTP) ──────────────────────────────────────
 builder.Services.AddHttpContextAccessor();

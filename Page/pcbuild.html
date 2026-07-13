@@ -236,7 +236,7 @@
                         <span id="dropdownFullName">Người dùng</span>
                         <small id="dropdownEmail">email@example.com</small>
                     </div>
-                    <a href="#" class="dropdown-item">
+                    <a href="/profile/info" class="dropdown-item">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         Hồ sơ của tôi
                     </a>
@@ -244,9 +244,13 @@
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                         Giỏ hàng
                     </a>
-                    <a href="/checkout" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                    <a href="/order-status" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                         Đơn hàng
+                    </a>
+                    <a href="/customer-returns" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+                        Đổi trả / Hoàn tiền
                     </a>
                     <button class="dropdown-item logout" onclick="handleLogout()">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -904,7 +908,7 @@
     <!-- DATA & LOGIC JAVASCRIPT -->
     <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
     <script src="/assets/js/cart-drawer-global.js?v=1.0.7"></script>
-    <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
+    <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
     <script>
         // Static component database fallback
         const staticDatabase = {
@@ -949,16 +953,18 @@
                     const catName = (p.categoryName || "").toLowerCase();
                     const catId = p.categoryId;
 
+                    // CategoryID trong database:
+                    // 1=VGA, 2=CPU, 3=Mainboard, 4=RAM, 5=SSD, 6=PSU, 7=Keyboard, 8=Case, 9=Cooler
                     let targetCat = null;
                     if (catId === 2 || catName.includes("cpu") || catName.includes("vi xử lý") || catName.includes("bộ xử lý")) {
                         targetCat = "cpu";
-                    } else if (catId === 4 || catName.includes("mainboard") || catName.includes("bo mạch") || catName.includes("motherboard")) {
+                    } else if (catId === 3 || catName.includes("mainboard") || catName.includes("bo mạch") || catName.includes("motherboard")) {
                         targetCat = "mainboard";
-                    } else if (catId === 10 || catName.includes("ram") || catName.includes("bộ nhớ ram")) {
+                    } else if (catId === 4 || catName.includes("ram") || catName.includes("bộ nhớ ram")) {
                         targetCat = "ram";
                     } else if (catId === 1 || catName.includes("vga") || catName.includes("card đồ họa") || catName.includes("card màn hình")) {
                         targetCat = "vga";
-                    } else if (catId === 5 || catName.includes("psu") || catName.includes("nguồn") || catName.includes("power")) {
+                    } else if (catId === 6 || catName.includes("psu") || catName.includes("nguồn") || catName.includes("power")) {
                         targetCat = "psu";
                     } else if (catId === 8 || catName.includes("case") || catName.includes("vỏ máy") || catName.includes("thùng máy")) {
                         targetCat = "case";

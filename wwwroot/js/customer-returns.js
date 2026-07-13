@@ -3,6 +3,140 @@ let currentUserId = null;
 let authToken = null;
 let userOrders = [];
 
+/* ─────────────────────────────────────────────────────── */
+/* CUSTOM MODAL POPUP FOR CLEANER UI                       */
+/* ─────────────────────────────────────────────────────── */
+(function injectModalStyles() {
+    if (document.getElementById('app-modal-css')) return;
+    const style = document.createElement('style');
+    style.id = 'app-modal-css';
+    style.textContent = `
+    .app-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    .app-modal-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+    .app-modal-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 30px 24px;
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transform: scale(0.9) translateY(20px);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .app-modal-overlay.active .app-modal-card {
+        transform: scale(1) translateY(0);
+    }
+    .app-modal-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .app-modal-icon.success { background: #f0fdf4; color: #16a34a; border: 1.5px solid #bbf7d0; }
+    .app-modal-icon.error { background: #fef2f2; color: #dc2626; border: 1.5px solid #fca5a5; }
+    .app-modal-icon.warning { background: #fffde7; color: #eab308; border: 1.5px solid #fef08a; }
+
+    .app-modal-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 8px;
+    }
+    .app-modal-message {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+    .app-modal-btn {
+        width: 100%;
+        padding: 12px;
+        background: #000000;
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .app-modal-btn:hover {
+        background: #1e293b;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+    `;
+    document.head.appendChild(style);
+})();
+
+function showAppModal(title, message, type = 'success') {
+    const oldModal = document.getElementById('app-custom-modal');
+    if (oldModal) oldModal.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'app-custom-modal';
+    modal.className = 'app-modal-overlay';
+    
+    let iconHtml = '✔️';
+    let iconClass = 'success';
+    if (type === 'error') {
+        iconHtml = '❌';
+        iconClass = 'error';
+    } else if (type === 'warning') {
+        iconHtml = '⚠️';
+        iconClass = 'warning';
+    }
+
+    modal.innerHTML = `
+        <div class="app-modal-card">
+            <div class="app-modal-icon ${iconClass}">${iconHtml}</div>
+            <h3 class="app-modal-title">${title}</h3>
+            <p class="app-modal-message">${message}</p>
+            <button class="app-modal-btn">OK</button>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
+
+    const closeBtn = modal.querySelector('.app-modal-btn');
+    return new Promise((resolve) => {
+        closeBtn.onclick = () => {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.remove();
+                resolve();
+            }, 300);
+        };
+    });
+}
+
 // DOM elements
 const orderSelect = document.getElementById('orderSelect');
 const refundAmountInput = document.getElementById('refundAmount');
@@ -269,7 +403,7 @@ async function handleReturnSubmit(e) {
     e.preventDefault();
     const orderId = parseInt(orderSelect.value);
     if (!orderId) {
-        alert('Vui lòng chọn đơn hàng!');
+        showAppModal('Thông báo', 'Vui lòng chọn đơn hàng!', 'warning');
         return;
     }
 
@@ -299,7 +433,9 @@ async function handleReturnSubmit(e) {
                   || window._returnSelectedBank || '';
 
     if (!bankName) {
-        alert('Vui lòng chọn ngân hàng!');
+        showAppModal('Thông báo', 'Vui lòng chọn ngân hàng!', 'warning');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Gửi yêu cầu đổi trả';
         return;
     }
 
@@ -329,18 +465,18 @@ async function handleReturnSubmit(e) {
 
         const data = await res.json();
         if (res.ok) {
-            alert('Gửi yêu cầu đổi trả thành công!');
+            showAppModal('Thành công', 'Gửi yêu cầu đổi trả thành công!', 'success');
             document.getElementById('returnForm').reset();
             districtSelect.disabled = true;
             wardSelect.disabled = true;
             onOrderChange();
             await loadReturnHistory();
         } else {
-            alert(data.message || 'Lỗi gửi yêu cầu đổi trả.');
+            showAppModal('Thất bại', data.message || 'Lỗi gửi yêu cầu đổi trả.', 'error');
         }
     } catch (err) {
         console.error('Error submitting return request:', err);
-        alert('Có lỗi xảy ra, vui lòng thử lại.');
+        showAppModal('Lỗi', 'Có lỗi xảy ra, vui lòng thử lại.', 'error');
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Gửi yêu cầu đổi trả';

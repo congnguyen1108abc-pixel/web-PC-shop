@@ -47,7 +47,7 @@ public sealed class ReviewsController : ControllerBase
                 message = "Đánh giá của bạn đã được đăng thành công!"
             });
         }
-        catch (Microsoft.Data.SqlClient.SqlException ex)
+        catch (Exception ex)
         {
             return BadRequest(new { message = ex.Message });
         }
@@ -84,7 +84,7 @@ public sealed class ReviewsController : ControllerBase
                 message = "Xóa đánh giá thành công"
             });
         }
-        catch (Microsoft.Data.SqlClient.SqlException ex)
+        catch (Exception ex)
         {
             return BadRequest(new { message = ex.Message });
         }

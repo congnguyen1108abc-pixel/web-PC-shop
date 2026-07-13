@@ -5,7 +5,7 @@ namespace PC_Store.Services;
 public sealed class AprioriAlgorithm
 {
     public IReadOnlyList<HashSet<int>> FindFrequentItemsets(
-        IReadOnlyList<Transaction> transactions,
+        IReadOnlyList<PC_Store.DTOs.Recommendations.Transaction> transactions,
         int minSupportCount,
         int maxItemsetSize = 3)
     {

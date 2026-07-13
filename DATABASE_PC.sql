@@ -7096,3 +7096,266 @@ GO
 
 PRINT N'✅ Hoàn tất cập nhật cơ sở dữ liệu PC_Store!';
 GO
+
+-- ============================================================
+-- ĐỔI TRẢ & HOÀN TIỀN - RETURN REQUESTS MODULE
+-- ============================================================
+
+-- [TABLE] ReturnRequests
+IF NOT EXISTS (SELECT 1 FROM sysobjects WHERE name='ReturnRequests' AND xtype='U')
+BEGIN
+    CREATE TABLE ReturnRequests (
+        ReturnID          INT PRIMARY KEY IDENTITY(1,1),
+        OrderID           INT NOT NULL REFERENCES Orders(OrderID),
+        UserID            INT NOT NULL REFERENCES Users(UserID),
+        Reason            NVARCHAR(1000) NOT NULL,
+        EvidenceImages    NVARCHAR(MAX)  NULL,   -- JSON array of image URLs
+        RefundAmount      DECIMAL(18,0)  NOT NULL DEFAULT 0,
+        RefundBankName    NVARCHAR(100)  NULL,
+        RefundAccountNo   NVARCHAR(50)   NULL,
+        RefundAccountName NVARCHAR(150)  NULL,
+        ReturnAddress     NVARCHAR(500)  NULL,
+        ReturnWardCode    NVARCHAR(20)   NULL,
+        ReturnDistrictId  INT            NULL,
+        Status            NVARCHAR(30)   NOT NULL DEFAULT 'Pending',
+            -- Pending → Approved/Picking → Received → Refunded
+            -- Pending → Rejected
+        ReturnTrackingCode NVARCHAR(100) NULL,
+        AdminNote         NVARCHAR(500)  NULL,
+        RefundPaymentMethod NVARCHAR(50) NULL,
+        RefundTransactionNo NVARCHAR(100) NULL,
+        CreatedAt         DATETIME       NOT NULL DEFAULT GETDATE(),
+        UpdatedAt         DATETIME       NOT NULL DEFAULT GETDATE()
+    );
+    PRINT N'✅ Đã tạo bảng ReturnRequests';
+END
+ELSE
+    PRINT N'ℹ️ Bảng ReturnRequests đã tồn tại';
+GO
+
+-- ============================================================
+-- SP 01: Khách hàng gửi yêu cầu đổi trả
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_Customer_CreateReturnRequest
+    @OrderId          INT,
+    @UserId           INT,
+    @Reason           NVARCHAR(1000),
+    @EvidenceImages   NVARCHAR(MAX)  = NULL,
+    @RefundAmount     DECIMAL(18,0)  = 0,
+    @RefundBankName   NVARCHAR(100)  = NULL,
+    @RefundAccountNo  NVARCHAR(50)   = NULL,
+    @RefundAccountName NVARCHAR(150) = NULL,
+    @ReturnAddress    NVARCHAR(500)  = NULL,
+    @ReturnWardCode   NVARCHAR(20)   = NULL,
+    @ReturnDistrictId INT            = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Chỉ cho phép tạo đổi trả cho đơn đã hoàn tất
+    IF NOT EXISTS (
+        SELECT 1 FROM Orders
+        WHERE OrderID = @OrderId
+          AND UserID  = @UserId
+          AND Status  IN (N'Hoàn tất', N'Đã giao')
+    )
+    BEGIN
+        RAISERROR(N'Đơn hàng không đủ điều kiện đổi trả.', 16, 1);
+        RETURN;
+    END
+
+    -- Không cho tạo 2 yêu cầu cho cùng 1 đơn
+    IF EXISTS (
+        SELECT 1 FROM ReturnRequests
+        WHERE OrderID = @OrderId AND Status NOT IN ('Rejected')
+    )
+    BEGIN
+        RAISERROR(N'Đơn hàng này đã có yêu cầu đổi trả đang xử lý.', 16, 1);
+        RETURN;
+    END
+
+    INSERT INTO ReturnRequests
+        (OrderID, UserID, Reason, EvidenceImages, RefundAmount,
+         RefundBankName, RefundAccountNo, RefundAccountName,
+         ReturnAddress, ReturnWardCode, ReturnDistrictId, Status, CreatedAt, UpdatedAt)
+    VALUES
+        (@OrderId, @UserId, @Reason, @EvidenceImages, @RefundAmount,
+         @RefundBankName, @RefundAccountNo, @RefundAccountName,
+         @ReturnAddress, @ReturnWardCode, @ReturnDistrictId, 'Pending', GETDATE(), GETDATE());
+
+    SELECT SCOPE_IDENTITY() AS NewReturnId;
+END;
+GO
+
+-- ============================================================
+-- SP 02: Admin lấy danh sách yêu cầu đổi trả (có phân trang)
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_Admin_GetReturnRequestsPaged
+    @Status     NVARCHAR(30) = NULL,
+    @PageNumber INT          = 1,
+    @PageSize   INT          = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+
+    SELECT
+        r.ReturnID,
+        r.OrderID,
+        r.UserID,
+        u.FullName,
+        u.Email,
+        r.Reason,
+        r.EvidenceImages,
+        r.RefundAmount,
+        r.RefundBankName,
+        r.RefundAccountNo,
+        r.RefundAccountName,
+        r.ReturnAddress,
+        r.ReturnWardCode,
+        r.ReturnDistrictId,
+        r.Status,
+        r.ReturnTrackingCode,
+        r.AdminNote,
+        r.CreatedAt,
+        r.UpdatedAt,
+        COUNT(*) OVER() AS TotalRecords
+    FROM ReturnRequests r
+    JOIN Users u ON r.UserID = u.UserID
+    WHERE (@Status IS NULL OR r.Status = @Status)
+    ORDER BY r.CreatedAt DESC
+    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+END;
+GO
+
+-- ============================================================
+-- SP 03: Admin xử lý (duyệt / từ chối) yêu cầu đổi trả
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_Admin_ProcessReturnRequest
+    @ReturnID  INT,
+    @NewStatus NVARCHAR(30),
+    @AdminNote NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE ReturnRequests
+    SET Status    = @NewStatus,
+        AdminNote = ISNULL(@AdminNote, AdminNote),
+        UpdatedAt = GETDATE()
+    WHERE ReturnID = @ReturnID;
+END;
+GO
+
+-- ============================================================
+-- SP 04: Admin cập nhật mã vận đơn thu hồi (GHN)
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_Admin_UpdateReturnTrackingCode
+    @ReturnID    INT,
+    @TrackingCode NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE ReturnRequests
+    SET ReturnTrackingCode = @TrackingCode,
+        UpdatedAt = GETDATE()
+    WHERE ReturnID = @ReturnID;
+END;
+GO
+
+-- ============================================================
+-- SP 05: Nhân viên xác nhận đã nhận lại hàng → hoàn kho
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_Inventory_RestockOnReturn
+    @ReturnID  INT,
+    @AdminNote NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        -- Lấy OrderID
+        DECLARE @OrderID INT;
+        SELECT @OrderID = OrderID FROM ReturnRequests WHERE ReturnID = @ReturnID;
+
+        IF @OrderID IS NULL
+        BEGIN
+            RAISERROR(N'Không tìm thấy yêu cầu đổi trả.', 16, 1);
+            RETURN;
+        END
+
+        -- Hoàn kho từng sản phẩm trong đơn hàng
+        UPDATE p
+        SET p.StockQuantity = p.StockQuantity + od.Quantity,
+            p.UpdatedAt = GETDATE()
+        FROM Products p
+        JOIN OrderDetails od ON p.ProductID = od.ProductID
+        WHERE od.OrderID = @OrderID;
+
+        -- Cập nhật trạng thái đổi trả → Received
+        UPDATE ReturnRequests
+        SET Status    = 'Received',
+            AdminNote = ISNULL(@AdminNote, AdminNote),
+            UpdatedAt = GETDATE()
+        WHERE ReturnID = @ReturnID;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- ============================================================
+-- SP 06: Admin hoàn tất hoàn tiền → Refunded
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_Admin_CompleteRefund
+    @ReturnID         INT,
+    @PaymentMethod    NVARCHAR(50)  = NULL,
+    @TransactionNo    NVARCHAR(100) = NULL,
+    @AdminNote        NVARCHAR(500) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRANSACTION;
+    BEGIN TRY
+        DECLARE @OrderID INT;
+        SELECT @OrderID = OrderID FROM ReturnRequests WHERE ReturnID = @ReturnID;
+
+        IF @OrderID IS NULL
+        BEGIN
+            RAISERROR(N'Không tìm thấy yêu cầu đổi trả.', 16, 1);
+            RETURN;
+        END
+
+        -- Cập nhật yêu cầu đổi trả → Refunded
+        UPDATE ReturnRequests
+        SET Status               = 'Refunded',
+            RefundPaymentMethod  = @PaymentMethod,
+            RefundTransactionNo  = @TransactionNo,
+            AdminNote            = ISNULL(@AdminNote, AdminNote),
+            UpdatedAt            = GETDATE()
+        WHERE ReturnID = @ReturnID;
+
+        -- Cập nhật đơn hàng gốc → PaymentStatus = Hoàn tiền
+        UPDATE Orders
+        SET PaymentStatus = N'Hoàn tiền',
+            AdminNote     = ISNULL(@AdminNote, AdminNote),
+            UpdatedAt     = GETDATE()
+        WHERE OrderID = @OrderID;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+PRINT N'✅ Hoàn tất thêm module Đổi Trả & Hoàn Tiền!';
+GO

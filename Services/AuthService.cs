@@ -29,7 +29,7 @@ public sealed class AuthService : IAuthService
         _logger = logger;
     }
 
-    public async Task<AuthResponse?> GoogleLoginAsync(AuthGoogleLoginRequest request)
+    public async Task<AuthResponseWithRefresh?> GoogleLoginAsync(AuthGoogleLoginRequest request, string? deviceInfo)
     {
         var user = await _auth.GoogleLoginAsync(request);
 
@@ -42,16 +42,20 @@ public sealed class AuthService : IAuthService
             throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
         }
 
-        var token = GenerateToken(user);
+        var (accessToken, refreshToken, accessExpires, refreshExpires) = GenerateTokenPair(user);
 
-        // Note: Để tương thích ngược, method này vẫn trả AuthResponse cũ
-        // Frontend nên chuyển sang dùng endpoint mới trả về AuthResponseWithRefresh
-        return new AuthResponse(
+        // Lưu refresh token vào database
+        await _auth.CreateRefreshTokenAsync(user.UserId, refreshToken, refreshExpires, deviceInfo);
+
+        return new AuthResponseWithRefresh(
             user.UserId,
             user.FullName,
             user.Email,
             user.Role,
-            token
+            accessToken,
+            refreshToken,
+            accessExpires,
+            refreshExpires
         );
     }
 
@@ -60,7 +64,7 @@ public sealed class AuthService : IAuthService
         return _auth.RegisterAsync(request);
     }
 
-    public async Task<AuthResponse?> LoginAsync(AuthLoginRequest request)
+    public async Task<AuthResponseWithRefresh?> LoginAsync(AuthLoginRequest request, string? deviceInfo)
     {
         var user = await _auth.LoginAsync(request);
 
@@ -73,16 +77,20 @@ public sealed class AuthService : IAuthService
             throw new UnauthorizedAccessException("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
         }
 
-        var token = GenerateToken(user);
+        var (accessToken, refreshToken, accessExpires, refreshExpires) = GenerateTokenPair(user);
 
-        // Note: Để tương thích ngược, method này vẫn trả AuthResponse cũ
-        // Frontend nên chuyển sang dùng endpoint mới trả về AuthResponseWithRefresh
-        return new AuthResponse(
+        // Lưu refresh token vào database
+        await _auth.CreateRefreshTokenAsync(user.UserId, refreshToken, refreshExpires, deviceInfo);
+
+        return new AuthResponseWithRefresh(
             user.UserId,
             user.FullName,
             user.Email,
             user.Role,
-            token
+            accessToken,
+            refreshToken,
+            accessExpires,
+            refreshExpires
         );
     }
 

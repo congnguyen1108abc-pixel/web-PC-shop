@@ -40,12 +40,13 @@ public sealed class AuthController : ControllerBase
     [AllowAnonymous]
     [EnableRateLimiting("auth")]   // 5 req / phút / IP — chặn giả mạo Google token
     [HttpPost("google-login")]
-    public async Task<ActionResult<AuthResponse>> GoogleLogin(
+    public async Task<ActionResult<AuthResponseWithRefresh>> GoogleLogin(
         [FromBody] AuthGoogleLoginRequest request)
     {
         try
         {
-            var result = await _auth.GoogleLoginAsync(request);
+            var deviceInfo = Request.Headers["User-Agent"].ToString();
+            var result = await _auth.GoogleLoginAsync(request, deviceInfo);
 
             if (result is null)
                 return Unauthorized(new { message = "Đăng nhập Google thất bại" });
@@ -104,7 +105,7 @@ public sealed class AuthController : ControllerBase
     [AllowAnonymous]
     [EnableRateLimiting("auth")]   // 5 req / phút / IP — chặn brute force mật khẩu
     [HttpPost("login")]
-    public async Task<ActionResult<AuthResponse>> Login(
+    public async Task<ActionResult<AuthResponseWithRefresh>> Login(
         [FromBody] AuthLoginRequest request)
     {
         try
@@ -117,7 +118,8 @@ public sealed class AuthController : ControllerBase
                 passwordHash
             );
 
-            var result = await _auth.LoginAsync(loginRequest);
+            var deviceInfo = Request.Headers["User-Agent"].ToString();
+            var result = await _auth.LoginAsync(loginRequest, deviceInfo);
 
             if (result is null)
                 return Unauthorized(new { message = "Email hoặc mật khẩu không chính xác" });

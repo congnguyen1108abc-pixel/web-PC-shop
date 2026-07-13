@@ -23,7 +23,7 @@ SELECT
     od.UnitPrice
 FROM Orders o
 INNER JOIN OrderDetails od ON od.OrderID = o.OrderID
-WHERE o.Status = N'Completed'
+WHERE o.Status = N'Hoàn tất'
 ORDER BY o.OrderDate, o.OrderID, od.DetailID";
 
         var rows = (await _connection.QueryAsync<TransactionRow>(sql)).ToList();
@@ -55,7 +55,12 @@ SELECT
     p.Price,
     p.DiscountPrice,
     p.StockQuantity,
-    p.SoldCount,
+    COALESCE((
+        SELECT SUM(od.Quantity)
+        FROM OrderDetails od
+        JOIN Orders o ON od.OrderID = o.OrderID
+        WHERE od.ProductID = p.ProductID AND o.Status = N'Hoàn tất'
+    ), 0) AS SoldCount,
     COALESCE(img.ImageUrl, '') AS ImageUrl,
     COALESCE(rv.AvgRating, 0) AS AvgRating,
     COALESCE(rv.ReviewCount, 0) AS ReviewCount
@@ -80,6 +85,55 @@ WHERE p.ProductID IN @ProductIds
   AND p.IsActive = 1";
 
         var rows = await _connection.QueryAsync<RecommendationProductRow>(sql, new { ProductIds = ids });
+        return rows.ToList();
+    }
+
+    public async Task<IReadOnlyList<RecommendationProductRow>> GetPopularProductsAsync(int currentProductId, int limit)
+    {
+        const string sql = @"
+SELECT TOP (@Limit)
+    p.ProductID AS ProductId,
+    p.ProductName,
+    p.Slug,
+    p.Price,
+    p.DiscountPrice,
+    p.StockQuantity,
+    COALESCE((
+        SELECT SUM(od.Quantity)
+        FROM OrderDetails od
+        JOIN Orders o ON od.OrderID = o.OrderID
+        WHERE od.ProductID = p.ProductID AND o.Status = N'Hoàn tất'
+    ), 0) AS SoldCount,
+    COALESCE(img.ImageUrl, '') AS ImageUrl,
+    COALESCE(rv.AvgRating, 0) AS AvgRating,
+    COALESCE(rv.ReviewCount, 0) AS ReviewCount
+FROM Products p
+LEFT JOIN (
+    SELECT
+        ProductID,
+        COALESCE(MAX(CASE WHEN IsDefault = 1 THEN ImageUrl END), MAX(ImageUrl)) AS ImageUrl
+    FROM ProductImages
+    GROUP BY ProductID
+) img ON img.ProductID = p.ProductID
+LEFT JOIN (
+    SELECT
+        ProductID,
+        CAST(AVG(CAST(Rating AS DECIMAL(18, 2))) AS DECIMAL(18, 2)) AS AvgRating,
+        COUNT(1) AS ReviewCount
+    FROM Reviews
+    WHERE IsApproved = 1
+    GROUP BY ProductID
+) rv ON rv.ProductID = p.ProductID
+WHERE p.IsActive = 1
+  AND p.ProductID <> @CurrentProductId
+ORDER BY COALESCE((
+    SELECT SUM(od.Quantity)
+    FROM OrderDetails od
+    JOIN Orders o ON od.OrderID = o.OrderID
+    WHERE od.ProductID = p.ProductID AND o.Status = N'Hoàn tất'
+), 0) DESC, p.ProductID ASC";
+
+        var rows = await _connection.QueryAsync<RecommendationProductRow>(sql, new { CurrentProductId = currentProductId, Limit = limit });
         return rows.ToList();
     }
 
