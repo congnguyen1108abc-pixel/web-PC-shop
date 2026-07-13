@@ -1,4 +1,4 @@
--- 1. Insert Categories if they don't exist
+﻿-- 1. Insert Categories if they don't exist
 SET IDENTITY_INSERT dbo.Categories ON;
 IF NOT EXISTS (SELECT 1 FROM dbo.Categories WHERE CategoryID = 7)
     INSERT INTO dbo.Categories (CategoryID, CategoryName, SortOrder, IsActive) VALUES (7, N'Gaming Gear', 7, 1);

@@ -56,3 +56,11 @@ public sealed record CustomerReviewItem(
     string? Comment,
     string? ImageUrl,
     DateTime CreatedAt);
+
+public sealed record TestimonialItem(
+    int ReviewId,
+    int Rating,
+    string? Comment,
+    DateTime CreatedAt,
+    string? FullName,
+    string? AvatarUrl);

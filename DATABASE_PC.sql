@@ -1,4 +1,4 @@
--- ============================================================
+﻿-- ============================================================
 --   PC STORE - FILE DATABASE ĐÃ SẮP XẾP GỌN
 --   Thứ tự: TABLES -> INDEXES -> TRIGGERS -> STORED PROCEDURES
 --   Lưu ý: Chỉ sắp xếp lại vị trí và thêm comment mô tả SP, không sửa logic code gốc.
@@ -1493,7 +1493,7 @@ GO
 -- ----------------------------------------------------------------------------
 
 -- SP 9: Gửi yêu cầu bảo hành
-CREATE PROCEDURE sp_Customer_CreateWarrantyClaim
+CREATE OR ALTER PROCEDURE sp_Customer_CreateWarrantyClaim
     @WarrantyCode NVARCHAR(50),
     @UserID       INT,
     @Description  NVARCHAR(MAX),
@@ -1501,33 +1501,76 @@ CREATE PROCEDURE sp_Customer_CreateWarrantyClaim
 AS
 BEGIN
     SET NOCOUNT ON;
-    DECLARE @WarrantyID INT;
-    SELECT @WarrantyID = WarrantyID
-    FROM ProductWarranties
-    WHERE WarrantyCode = @WarrantyCode
-      AND UserID = @UserID
-      AND EndDate >= GETDATE()
-      AND Status = N'Đang hiệu lực';
+    SET XACT_ABORT ON;
 
+    DECLARE @WarrantyID INT;
+    DECLARE @CurrentStatus NVARCHAR(50);
+    DECLARE @EndDate DATETIME;
+
+    SELECT 
+        @WarrantyID = WarrantyID, 
+        @CurrentStatus = Status, 
+        @EndDate = EndDate
+    FROM ProductWarranties
+    WHERE WarrantyCode = @WarrantyCode AND UserID = @UserID;
+
+    -- 1. Kiểm tra tồn tại và quyền sở hữu
     IF @WarrantyID IS NULL
     BEGIN
-        RAISERROR(N'Mã bảo hành không tồn tại, không thuộc về bạn, hoặc đã hết hạn!', 16, 1);
+        RAISERROR(N'Mã bảo hành không tồn tại hoặc không thuộc quyền sở hữu của bạn!', 16, 1);
         RETURN;
     END
 
-    INSERT INTO WarrantyClaims (WarrantyID, UserID, Description, ImageURL, Status)
-    VALUES (@WarrantyID, @UserID, @Description, @ImageURL, N'Đang tiếp nhận');
+    -- 2. Kiểm tra thời hạn
+    IF @EndDate < GETDATE()
+    BEGIN
+        RAISERROR(N'Mã bảo hành này đã hết hạn!', 16, 1);
+        RETURN;
+    END
 
-    -- Đổi trạng thái phiếu bảo hành sang Đang xử lý
-    UPDATE ProductWarranties SET Status = N'Đang xử lý'
-    WHERE WarrantyID = @WarrantyID;
+    -- 3. Kiểm tra trạng thái hiện tại của bảo hành
+    IF @CurrentStatus = N'Đang xử lý'
+    BEGIN
+        RAISERROR(N'Mã bảo hành này đang có yêu cầu bảo hành khác được xử lý!', 16, 1);
+        RETURN;
+    END
 
-    -- Gửi thông báo
-    INSERT INTO Notifications (UserID, Title, Message, Type, RelatedID)
-    VALUES (@UserID,
+    IF @CurrentStatus = N'Vô hiệu'
+    BEGIN
+        RAISERROR(N'Mã bảo hành này đã bị vô hiệu hóa!', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRAN;
+    BEGIN TRY
+        -- Ghi nhận yêu cầu claim
+        INSERT INTO WarrantyClaims (WarrantyID, UserID, Description, ImageURL, Status)
+        VALUES (@WarrantyID, @UserID, @Description, @ImageURL, N'Đang tiếp nhận');
+
+        DECLARE @NewClaimID INT = SCOPE_IDENTITY();
+
+        -- Cập nhật trạng thái phiếu bảo hành sang Đang xử lý
+        UPDATE ProductWarranties 
+        SET Status = N'Đang xử lý'
+        WHERE WarrantyID = @WarrantyID;
+
+        -- Gửi thông báo cho khách hàng
+        INSERT INTO Notifications (UserID, Title, Message, Type, RelatedID)
+        VALUES (
+            @UserID,
             N'Yêu cầu bảo hành đã được tiếp nhận',
-            N'Chúng tôi đã nhận yêu cầu bảo hành của bạn và sẽ phản hồi sớm nhất có thể.',
-            'Warranty', SCOPE_IDENTITY());
+            N'Chúng tôi đã nhận yêu cầu bảo hành của bạn và đang tiến hành xử lý.',
+            'Warranty', 
+            @NewClaimID
+        );
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
 END;
 GO
 
@@ -1709,7 +1752,7 @@ GO
 -- ----------------------------------------------------------------------------
 
 -- SP 13: Xử lý yêu cầu bảo hành
-CREATE PROCEDURE sp_Admin_ProcessWarrantyClaim
+CREATE OR ALTER PROCEDURE sp_Admin_ProcessWarrantyClaim
     @ClaimID    INT,
     @NewStatus  NVARCHAR(50),
     @Resolution NVARCHAR(MAX)
@@ -1732,52 +1775,55 @@ BEGIN
 
     IF @WarrantyID IS NULL
     BEGIN
-        RAISERROR(N'Yeu cau bao hanh khong ton tai!', 16, 1);
+        RAISERROR(N'Yêu cầu bảo hành không tồn tại!', 16, 1);
         RETURN;
     END
 
     BEGIN TRAN;
     BEGIN TRY
+        -- Cập nhật trạng thái và kết quả xử lý trong bảng WarrantyClaims
         UPDATE WarrantyClaims
         SET Status     = @NewStatus,
             Resolution = @Resolution,
             ResolvedAt = CASE
-                WHEN @NewStatus IN (N'Da hoan tra', N'Tu choi') THEN GETDATE()
+                WHEN @NewStatus IN (N'Đã hoàn trả', N'Từ chối') THEN GETDATE()
                 ELSE NULL
             END
         WHERE ClaimID = @ClaimID;
 
-        IF @NewStatus IN (N'Da hoan tra', N'Tu choi')
+        -- Cập nhật lại trạng thái của phiếu bảo hành (ProductWarranties) tương ứng
+        IF @NewStatus IN (N'Đã hoàn trả', N'Từ chối')
         BEGIN
             UPDATE ProductWarranties
             SET Status = CASE
-                WHEN @WarrantyEndDate >= GETDATE() THEN N'Dang hieu luc'
-                ELSE N'Da het han'
+                WHEN @WarrantyEndDate >= GETDATE() THEN N'Đang hiệu lực'
+                ELSE N'Đã hết hạn'
             END
             WHERE WarrantyID = @WarrantyID;
         END
         ELSE
         BEGIN
             UPDATE ProductWarranties
-            SET Status = N'Dang xu ly'
+            SET Status = N'Đang xử lý'
             WHERE WarrantyID = @WarrantyID;
         END
 
+        -- Gửi thông báo cho khách hàng
         INSERT INTO Notifications (UserID, Title, Message, Type, RelatedID)
         VALUES
         (
             @UserID,
-            N'Cap nhat yeu cau bao hanh',
-            N'Yeu cau bao hanh cua ban: ' + @NewStatus + N'. ' + ISNULL(@Resolution, N''),
+            N'Cập nhật yêu cầu bảo hành',
+            N'Yêu cầu bảo hành của bạn: ' + @NewStatus + N'. ' + ISNULL(@Resolution, N''),
             'Warranty',
             @ClaimID
         );
 
-        COMMIT;
+        COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0
-            ROLLBACK;
+            ROLLBACK TRANSACTION;
         THROW;
     END CATCH
 END;

@@ -20,5 +20,7 @@ public sealed class ReviewService : IReviewService
 
     public Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl)
         => _repo.UpdateAsync(reviewId, userId, rating, comment, imageUrl);
+
+    public Task<IEnumerable<TestimonialItem>> GetTopTestimonialsAsync() => _repo.GetTopTestimonialsAsync();
 }
 

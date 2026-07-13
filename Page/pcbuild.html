@@ -51,6 +51,17 @@
             opacity: 0.3;
             cursor: not-allowed;
         }
+        .page-ellipsis {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #888888;
+            cursor: default;
+            user-select: none;
+        }
         /* ===== INLINE DROPDOWN STYLE ===== */
         .inline-dropdown-wrapper {
             position: relative;
@@ -185,7 +196,17 @@
                     </div>
                 </div>
             </div>
-            <a href="/order-status">Trạng thái đơn hàng</a>
+            <div class="nav-item-dropdown">
+                <a href="/order-status">Đơn hàng</a>
+                <div class="mega-menu" style="width: 250px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Đơn Hàng & Bảo Hành</h3>
+                        <a href="/order-status">Trạng thái đơn hàng</a>
+                        <a href="/warranty">Chính sách bảo hành</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/contact">Liên hệ</a>
         </nav>
 
         <div class="nav-actions">
@@ -863,7 +884,7 @@
                     <li><a href="#">Liên Hệ</a></li>
                     <li><a href="#">Câu Hỏi FAQs</a></li>
                     <li><a href="#">Tải Driver & Software</a></li>
-                    <li><a href="#">Trung Tâm Bảo Hành</a></li>
+                    <li><a href="/warranty">Trung Tâm Bảo Hành</a></li>
                 </ul>
             </div>
 
@@ -1112,19 +1133,46 @@
             }
 
             let html = '';
-            // Prev button
-            html += `<button class="page-btn ${streamerCurrentPage === 1 ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage - 1})" ${streamerCurrentPage === 1 ? 'disabled' : ''}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            </button>`;
+            
+            // First page button (<<)
+            html += `<button class="page-btn ${streamerCurrentPage === 1 ? 'disabled' : ''}" onclick="changeStreamerPage(1)" ${streamerCurrentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
+            
+            // Prev button (<)
+            html += `<button class="page-btn ${streamerCurrentPage === 1 ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage - 1})" ${streamerCurrentPage === 1 ? 'disabled' : ''}>&lt;</button>`;
 
-            for (let i = 1; i <= totalPages; i++) {
+            // Calculate the window of 5 pages
+            let startPage = streamerCurrentPage - 2;
+            let endPage = streamerCurrentPage + 2;
+
+            if (startPage < 1) {
+                endPage = Math.min(totalPages, endPage + (1 - startPage));
+                startPage = 1;
+            }
+            if (endPage > totalPages) {
+                startPage = Math.max(1, startPage - (endPage - totalPages));
+                endPage = totalPages;
+            }
+
+            // Ellipsis before
+            if (startPage > 1) {
+                html += `<span class="page-ellipsis">...</span>`;
+            }
+
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
                 html += `<button class="page-btn ${i === streamerCurrentPage ? 'active' : ''}" onclick="changeStreamerPage(${i})">${i}</button>`;
             }
 
-            // Next button
-            html += `<button class="page-btn ${streamerCurrentPage === totalPages ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage + 1})" ${streamerCurrentPage === totalPages ? 'disabled' : ''}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </button>`;
+            // Ellipsis after
+            if (endPage < totalPages) {
+                html += `<span class="page-ellipsis">...</span>`;
+            }
+
+            // Next button (>)
+            html += `<button class="page-btn ${streamerCurrentPage === totalPages ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage + 1})" ${streamerCurrentPage === totalPages ? 'disabled' : ''}>&gt;</button>`;
+
+            // Last page button (>>)
+            html += `<button class="page-btn ${streamerCurrentPage === totalPages ? 'disabled' : ''}" onclick="changeStreamerPage(${totalPages})" ${streamerCurrentPage === totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
 
             container.innerHTML = html;
         }

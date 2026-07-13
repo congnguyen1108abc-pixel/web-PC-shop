@@ -333,10 +333,10 @@ app.Use(async (context, next) =>
         relativePath = relativePath.Substring(0, relativePath.Length - 5);
     }
 
-    // Default to Homepage if path is empty
+    // Default to homepage if path is empty
     if (string.IsNullOrEmpty(relativePath))
     {
-        relativePath = "Homepage";
+        relativePath = "homepage";
     }
 
     // Normalize path to prevent directory traversal

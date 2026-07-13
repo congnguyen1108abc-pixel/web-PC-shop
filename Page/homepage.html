@@ -562,7 +562,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0px 80px 60px 80px;
+            padding: 0px 80px 40px 80px;
+            min-height: unset;
         }
 
         .showcase-left,
@@ -2192,6 +2193,344 @@
                 display: none;
             }
         }
+
+        /* Trust Reasons Section Styling */
+        .trust-reasons-section {
+            position: relative;
+            z-index: 10;
+            padding: 20px 24px 80px 24px;
+            background: #ffffff;
+            width: 100%;
+        }
+
+        .trust-reasons-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .trust-reasons-title {
+            font-size: 38px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 70px;
+            text-transform: none;
+            letter-spacing: -0.5px;
+        }
+
+        .trust-reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 64px;
+        }
+
+        .trust-reason-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .trust-icon-wrapper {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background-color: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+            color: #ffffff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .trust-reason-card:hover .trust-icon-wrapper {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .trust-icon-wrapper svg {
+            width: 38px;
+            height: 38px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .trust-reason-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .trust-reason-card p {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 1024px) {
+            .trust-reasons-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .trust-reasons-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .trust-reasons-title {
+                font-size: 26px;
+                margin-bottom: 40px;
+            }
+        }
+
+        /* Testimonials Section Styling */
+        .testimonials-section {
+            position: relative;
+            z-index: 10;
+            padding: 100px 24px;
+            background: #fafafa;
+            width: 100%;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .testimonials-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .testimonials-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-subtitle {
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .testimonials-title {
+            font-size: 38px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        .testimonial-stars {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-stars svg {
+            width: 18px;
+            height: 18px;
+            fill: #fbbf24;
+        }
+
+        .testimonial-card h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0 0 12px 0;
+        }
+
+        .testimonial-card p {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+            flex-grow: 1;
+        }
+
+        .testimonial-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: auto;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 20px;
+        }
+
+        .testimonial-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #111111;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .testimonial-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .testimonial-name-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .testimonial-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .testimonial-tick {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #10b981;
+        }
+
+        .testimonial-tick svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .testimonial-role {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 1024px) {
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .testimonials-title {
+                font-size: 28px;
+            }
+        }
+
+        /* Skeleton Loading Animation */
+        .skeleton {
+            background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .skeleton-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 32px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-height: 280px;
+        }
+
+        .skeleton-stars {
+            width: 100px;
+            height: 18px;
+        }
+
+        .skeleton-title {
+            width: 60%;
+            height: 22px;
+        }
+
+        .skeleton-text {
+            width: 100%;
+            height: 16px;
+        }
+
+        .skeleton-text-short {
+            width: 80%;
+            height: 16px;
+            margin-bottom: 24px;
+        }
+
+        .skeleton-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: auto;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 20px;
+        }
+
+        .skeleton-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+        }
+
+        .skeleton-meta {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .skeleton-name {
+            width: 40%;
+            height: 16px;
+        }
+
+        .skeleton-role {
+            width: 30%;
+            height: 12px;
+        }
     </style>
     <link rel="stylesheet" href="/css/style.css?v=1.0.5">
 </head>
@@ -2324,7 +2663,17 @@
                     </div>
                 </div>
             </div>
-            <a href="/order-status">Trạng thái đơn hàng</a>
+            <div class="nav-item-dropdown">
+                <a href="/order-status">Đơn hàng</a>
+                <div class="mega-menu" style="width: 250px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Đơn Hàng & Bảo Hành</h3>
+                        <a href="/order-status">Trạng thái đơn hàng</a>
+                        <a href="/warranty">Chính sách bảo hành</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/contact">Liên hệ</a>
 
         </nav>
 
@@ -2790,6 +3139,107 @@
 
     </section>
 
+    <!-- TRUST REASONS SECTION -->
+    <section class="trust-reasons-section">
+        <div class="trust-reasons-container">
+            <h2 class="trust-reasons-title reveal">4 lý do bạn có thể tin HYPERCORE</h2>
+            <div class="trust-reasons-grid reveal">
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                        </svg>
+                    </div>
+                    <h3>Tư vấn đúng nhu cầu</h3>
+                    <p>Lắng nghe thói quen sử dụng thực tế để gợi ý cấu hình phù hợp nhất. Chúng tôi giúp bạn chọn đúng sản phẩm ngay từ đầu, tránh lãng phí chi phí thử nghiệm.</p>
+                </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                    </div>
+                    <h3>Kiểm thử nghiêm ngặt</h3>
+                    <p>Mọi sản phẩm đều được kiểm tra kỹ lưỡng về hiệu năng và độ ổn định trước khi lên kệ. Chúng tôi kiên quyết từ chối những thiết bị không đạt chuẩn.</p>
+                </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                    </div>
+                    <h3>Xu hướng mới nhất</h3>
+                    <p>Là đối tác chiến lược của các hãng công nghệ lớn, HYPERCORE luôn mang về những dòng sản phẩm mới nhất và phiên bản giới hạn sớm nhất thị trường.</p>
+                </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="8" width="18" height="4" rx="1"/>
+                            <path d="M12 8V22M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>
+                        </svg>
+                    </div>
+                    <h3>Bảo hành nhanh chóng</h3>
+                    <p>Quy trình xử lý bảo hành rõ ràng, tối ưu thời gian chờ đợi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CUSTOMER TESTIMONIALS SECTION -->
+    <section class="testimonials-section" id="testimonialsSection">
+        <div class="testimonials-container">
+            <div class="testimonials-header">
+                <span class="testimonials-subtitle">MUA RỒI, DÙNG RỒI, NÓI THẬT</span>
+                <h2 class="testimonials-title">Khách hàng nói về HYPERCORE</h2>
+            </div>
+            <div class="testimonials-grid" id="testimonialsGrid">
+                <!-- Skeleton Card 1 -->
+                <div class="skeleton-card">
+                    <div class="skeleton-stars skeleton"></div>
+                    <div class="skeleton-title skeleton"></div>
+                    <div class="skeleton-text skeleton"></div>
+                    <div class="skeleton-text-short skeleton"></div>
+                    <div class="skeleton-profile">
+                        <div class="skeleton-avatar skeleton"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton-name skeleton"></div>
+                            <div class="skeleton-role skeleton"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Skeleton Card 2 -->
+                <div class="skeleton-card">
+                    <div class="skeleton-stars skeleton"></div>
+                    <div class="skeleton-title skeleton"></div>
+                    <div class="skeleton-text skeleton"></div>
+                    <div class="skeleton-text-short skeleton"></div>
+                    <div class="skeleton-profile">
+                        <div class="skeleton-avatar skeleton"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton-name skeleton"></div>
+                            <div class="skeleton-role skeleton"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Skeleton Card 3 -->
+                <div class="skeleton-card">
+                    <div class="skeleton-stars skeleton"></div>
+                    <div class="skeleton-title skeleton"></div>
+                    <div class="skeleton-text skeleton"></div>
+                    <div class="skeleton-text-short skeleton"></div>
+                    <div class="skeleton-profile">
+                        <div class="skeleton-avatar skeleton"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton-name skeleton"></div>
+                            <div class="skeleton-role skeleton"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- PRODUCTS -->
 
     <section class="products page-section">
@@ -3236,7 +3686,7 @@
                     <li><a href="#">Liên Hệ</a></li>
                     <li><a href="#">Câu Hỏi FAQs</a></li>
                     <li><a href="#">Tải Driver & Software</a></li>
-                    <li><a href="#">Trung Tâm Bảo Hành</a></li>
+                    <li><a href="/warranty">Trung Tâm Bảo Hành</a></li>
                 </ul>
             </div>
 
@@ -3670,6 +4120,97 @@
         if (typeof isUserLoggedIn === 'function' && isUserLoggedIn()) {
             syncCartFromDb();
         }
+
+        /* ========================================= */
+        /* CUSTOMER TESTIMONIALS — DYNAMIC FETCH     */
+        /* ========================================= */
+        const STAR_SVG = `<svg viewBox="0 0 20 20" style="width:18px;height:18px;fill:#fbbf24;display:inline-block;flex-shrink:0;"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+        const TICK_SVG = `<svg viewBox="0 0 20 20" style="width:16px;height:16px;fill:#3b82f6;flex-shrink:0;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>`;
+
+        function formatTestimonialDate(isoString) {
+            try {
+                const d = new Date(isoString);
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            } catch {
+                return '';
+            }
+        }
+
+        function truncate(text, maxLen = 150) {
+            if (!text) return '';
+            return text.length > maxLen ? text.substring(0, maxLen).trimEnd() + '...' : text;
+        }
+
+        function getInitials(name) {
+            if (!name) return '?';
+            const parts = name.trim().split(/\s+/);
+            if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+            return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+        }
+
+        function buildTestimonialCard(item) {
+            const stars = STAR_SVG.repeat(item.rating || 5);
+            const initials = getInitials(item.fullName);
+            const name = item.fullName || 'Khách hàng';
+            const comment = truncate(item.comment);
+            const dateStr = formatTestimonialDate(item.createdAt);
+
+            let avatarHtml;
+            if (item.avatarUrl) {
+                avatarHtml = `<img src="${item.avatarUrl}" alt="${name}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;">`;
+            } else {
+                avatarHtml = `<div class="testimonial-avatar">${initials}</div>`;
+            }
+
+            return `
+            <div class="testimonial-card">
+                <div class="testimonial-stars">${stars}</div>
+                <p style="font-size:15px;color:#374151;line-height:1.65;flex-grow:1;margin:0;">"${comment}"</p>
+                ${dateStr ? `<span style="font-size:12px;color:#9ca3af;margin-top:4px;">${dateStr}</span>` : ''}
+                <div class="testimonial-profile">
+                    ${avatarHtml}
+                    <div class="testimonial-meta">
+                        <div class="testimonial-name-row">
+                            <span class="testimonial-name">${name}</span>
+                            <span class="testimonial-tick" title="Verified Buyer">${TICK_SVG}</span>
+                        </div>
+                        <span class="testimonial-role">Khách hàng đã xác thực</span>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        async function loadTestimonials() {
+            const grid = document.getElementById('testimonialsGrid');
+            const section = document.getElementById('testimonialsSection');
+            if (!grid || !section) return;
+
+            try {
+                const res = await fetch('/api/reviews/testimonials');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                const data = await res.json();
+
+                if (!data || data.length === 0) {
+                    // Không đủ data => ẩn section đi, không bị layout lỗi
+                    section.style.display = 'none';
+                    return;
+                }
+
+                // Render thẻ thực từ DB
+                grid.innerHTML = data.map(item => buildTestimonialCard(item)).join('');
+
+            } catch (err) {
+                console.warn('[Testimonials] Fetch failed, hiding section.', err);
+                section.style.display = 'none';
+            }
+        }
+
+        // Kích hoạt khi DOM sẵn sàng
+        loadTestimonials();
     </script>
 
 

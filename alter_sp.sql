@@ -1,4 +1,4 @@
-ALTER PROCEDURE [dbo].[sp_Product_GetAllPaged]
+﻿ALTER PROCEDURE [dbo].[sp_Product_GetAllPaged]
     @CategoryId INT = NULL,
     @BrandId INT = NULL,
     @Keyword NVARCHAR(100) = NULL,

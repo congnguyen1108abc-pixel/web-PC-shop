@@ -19,6 +19,23 @@ public sealed class ReviewsController : ControllerBase
     }
 
     /// <summary>
+    /// Lấy 3 đánh giá 5 sao mới nhất đã duyệt để làm testimonials cho trang chủ.
+    /// </summary>
+    [HttpGet("testimonials")]
+    public async Task<ActionResult<IEnumerable<TestimonialItem>>> GetTestimonials()
+    {
+        try
+        {
+            var result = await _reviews.GetTopTestimonialsAsync();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// Lấy danh sách đánh giá của 1 sản phẩm đã duyệt (có phân trang).
     /// API public: người chưa đăng nhập vẫn xem được review.
     /// </summary>

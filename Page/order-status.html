@@ -1272,7 +1272,17 @@
                     </div>
                 </div>
             </div>
-            <a href="/order-status" class="active">Trạng thái đơn hàng</a>
+            <div class="nav-item-dropdown">
+                <a href="/order-status" class="active">Đơn hàng</a>
+                <div class="mega-menu" style="width: 250px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Đơn Hàng & Bảo Hành</h3>
+                        <a href="/order-status">Trạng thái đơn hàng</a>
+                        <a href="/warranty">Chính sách bảo hành</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/contact">Liên hệ</a>
         </nav>
 
         <div class="nav-actions">
@@ -1805,24 +1815,45 @@
             paginationEl.style.display = 'flex';
             let html = '';
 
-            // Prev
-            html += `<button class="page-btn" ${current <= 1 ? 'disabled' : ''} onclick="goToPage(${current - 1})">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>`;
+            // First page (<<)
+            html += `<button class="page-btn" ${current <= 1 ? 'disabled' : ''} onclick="goToPage(1)">&lt;&lt;</button>`;
+
+            // Prev (<)
+            html += `<button class="page-btn" ${current <= 1 ? 'disabled' : ''} onclick="goToPage(${current - 1})">&lt;</button>`;
+
+            // Calculate the window of 5 pages
+            let startPage = current - 2;
+            let endPage = current + 2;
+
+            if (startPage < 1) {
+                endPage = Math.min(total, endPage + (1 - startPage));
+                startPage = 1;
+            }
+            if (endPage > total) {
+                startPage = Math.max(1, startPage - (endPage - total));
+                endPage = total;
+            }
+
+            // Ellipsis before
+            if (startPage > 1) {
+                html += `<span class="page-ellipsis" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#888; cursor:default; user-select:none;">...</span>`;
+            }
 
             // Page numbers
-            for (let i = 1; i <= total; i++) {
-                if (total > 7 && i > 3 && i < total - 2 && Math.abs(i - current) > 1) {
-                    if (i === 4) html += '<span style="padding: 0 6px; color: #9ca3af;">...</span>';
-                    continue;
-                }
+            for (let i = startPage; i <= endPage; i++) {
                 html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
             }
 
-            // Next
-            html += `<button class="page-btn" ${current >= total ? 'disabled' : ''} onclick="goToPage(${current + 1})">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>`;
+            // Ellipsis after
+            if (endPage < total) {
+                html += `<span class="page-ellipsis" style="width:42px; height:42px; display:flex; align-items:center; justify-content:center; font-size:14px; color:#888; cursor:default; user-select:none;">...</span>`;
+            }
+
+            // Next (>)
+            html += `<button class="page-btn" ${current >= total ? 'disabled' : ''} onclick="goToPage(${current + 1})">&gt;</button>`;
+
+            // Last page (>>)
+            html += `<button class="page-btn" ${current >= total ? 'disabled' : ''} onclick="goToPage(${total})">&gt;&gt;</button>`;
 
             paginationEl.innerHTML = html;
         }

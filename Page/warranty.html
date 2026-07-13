@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trung Tâm Bảo Hành - HYPER CORE</title>
+
+    <!-- Style Link -->
+    <link rel="stylesheet" href="/css/style.css?v=1.1.8">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css">
+    <style>
+        /* Warranty Page Layout styling */
+        .warranty-page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 24px 80px 24px; /* Space below sticky header */
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #1f2937;
+        }
+
+        /* Hero Lookup styling */
+        .hero-lookup-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: #fafafa;
+            border-radius: 24px;
+            margin-bottom: 50px;
+            border: 1px solid #f3f4f6;
+        }
+        .hero-lookup-section h1 {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+        .hero-lookup-section .hero-subtitle {
+            font-size: 15px;
+            color: #6b7280;
+            margin-bottom: 35px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        .lookup-search-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .lookup-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+        .lookup-input-wrapper .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: #9ca3af;
+        }
+        .lookup-input-wrapper input {
+            width: 100%;
+            padding: 16px 20px 16px 54px;
+            font-size: 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 999px;
+            background: #ffffff;
+            color: #111827;
+            transition: all 0.3s ease;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .lookup-input-wrapper input:focus {
+            border-color: #111827;
+            box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.05);
+        }
+        .btn-check-warranty {
+            padding: 16px 36px;
+            font-size: 15px;
+            font-weight: 600;
+            background: #111827;
+            color: #ffffff;
+            border: 1px solid #111827;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .btn-check-warranty:hover {
+            background: #1f2937;
+            border-color: #1f2937;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.15);
+        }
+        .btn-check-warranty:active {
+            transform: translateY(0);
+        }
+        .lookup-help-text {
+            font-size: 13.5px;
+            color: #9ca3af;
+            margin-top: 14px;
+        }
+        .suggestion-tag {
+            color: #4b5563;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .suggestion-tag:hover {
+            color: #111827;
+        }
+        .warranty-error-msg {
+            color: #ef4444;
+            font-size: 14.5px;
+            margin-top: 18px;
+            font-weight: 500;
+        }
+
+        /* Result Section styling */
+        .result-section {
+            margin-bottom: 60px;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .result-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .result-card-inner {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+        .result-card-left {
+            width: 180px;
+            height: 180px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #f3f4f6;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .result-card-left img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .result-card-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .result-card-right h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 4px 0;
+            line-height: 1.4;
+        }
+        .status-badge-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .status-badge-wrapper .status-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .status-badge {
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #f0fdf4;
+            color: #166534;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .status-badge.expired {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 8px 0;
+            border-bottom: 1px dashed #f3f4f6;
+        }
+        .info-row:last-of-type {
+            border-bottom: none;
+            margin-bottom: 12px;
+        }
+        .info-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .info-value {
+            color: #111827;
+            font-weight: 600;
+        }
+        .btn-warranty-request {
+            align-self: flex-start;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            background: #f3f4f6;
+            color: #111827;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-warranty-request:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+        .btn-warranty-request:active {
+            transform: translateY(0);
+        }
+
+        /* Terms Grid styling */
+        .terms-grid-section {
+            margin-top: 60px;
+        }
+        .terms-grid-section .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #111827;
+            text-align: center;
+            margin-bottom: 35px;
+            letter-spacing: -0.5px;
+        }
+        .terms-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .term-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .term-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.04);
+            border-color: #d1d5db;
+        }
+        .term-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9fafb;
+            border-radius: 12px;
+            color: #4b5563;
+        }
+        .term-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+        .term-card h3 {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: #374151;
+            margin: 0;
+        }
+        .term-duration {
+            font-size: 18px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0;
+        }
+
+        /* FadeIn Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 1024px) {
+            .terms-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .terms-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .result-card-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            .result-card-left {
+                width: 100%;
+                height: 200px;
+            }
+            .btn-warranty-request {
+                align-self: stretch;
+                text-align: center;
+            }
+            .lookup-search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn-check-warranty {
+                width: 100%;
+            }
+            .hero-lookup-section h1 {
+                font-size: 28px;
+            }
+        }
+        @media (max-width: 480px) {
+            .terms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header id="header">
+        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                style="height: 38px; display: block; object-fit: contain;">
+        </div>
+
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <div class="nav-item-dropdown">
+                <a href="/Products" id="nav-products">Sản Phẩm</a>
+                <div class="mega-menu">
+                    <div class="mega-col">
+                        <h3>Linh Kiện PC</h3>
+                        <a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+                        <a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+                        <a href="/Products?category=vga">VGA - Card màn hình</a>
+                        <a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+                        <a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+                        <a href="/Products?category=psu">Nguồn máy tính</a>
+                        <a href="/Products?category=case">Case - Vỏ máy tính</a>
+                        <a href="/Products?category=cooling">Tản nhiệt PC</a>
+                    </div>
+                    <div class="mega-col">
+                        <h3>Thương Hiệu</h3>
+                        <a href="/Products?brand=asus">Asus</a>
+                        <a href="/Products?brand=msi">MSI</a>
+                        <a href="/Products?brand=gigabyte">Gigabyte</a>
+                        <a href="/Products?brand=intel">Intel</a>
+                        <a href="/Products?brand=amd">AMD</a>
+                        <a href="/Products?brand=corsair">Corsair</a>
+                        <a href="/Products?brand=kingston">Kingston</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-item-dropdown">
+                <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Gaming Gear</h3>
+                        <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+                        <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+                        <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+                        <a href="/gaminggear?category=mic-studio">Mic Studio</a>
+                        <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+                        <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+                        <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>PC Build</h3>
+                        <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+                        <a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/order-status">Đơn hàng</a>
+                <div class="mega-menu" style="width: 250px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Đơn Hàng & Bảo Hành</h3>
+                        <a href="/order-status">Trạng thái đơn hàng</a>
+                        <a href="/warranty">Chính sách bảo hành</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/contact">Liên hệ</a>
+        </nav>
+
+        <div class="nav-actions">
+            <!-- SEARCH -->
+            <div class="header-search-container" id="headerSearchWrap">
+                <input
+                    type="text"
+                    id="headerSearchInput"
+                    class="header-search-input"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+                <button
+                    class="header-icon-btn search-toggle-btn"
+                    onclick="toggleHeaderSearch(this)"
+                    title="Tìm kiếm"
+                    aria-label="Tìm kiếm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
+            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                </svg>
+            </a>
+
+            <!-- USER GREETING (hiện khi đã đăng nhập) -->
+            <div class="user-greeting-wrap" id="userGreetingWrap">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-greeting-name">
+                        <em>Xin chào,</em>
+                        <span id="userDisplayName">Người dùng</span>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <span id="dropdownFullName">Người dùng</span>
+                        <small id="dropdownEmail">email@example.com</small>
+                    </div>
+                    <a href="#" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Hồ sơ của tôi
+                    </a>
+                    <a href="/shoppingcart" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        Giỏ hàng
+                    </a>
+                    <a href="/checkout" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        Đơn hàng
+                    </a>
+                    <button class="dropdown-item logout" onclick="handleLogout()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
+
+            <!-- CART -->
+            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="warranty-page-container">
+        <!-- Hero Lookup Section -->
+        <section class="hero-lookup-section">
+            <div class="hero-lookup-content">
+                <h1>Kiểm tra trạng thái bảo hành</h1>
+                <p class="hero-subtitle">Tra cứu nhanh chóng thời hạn bảo hành của sản phẩm bằng Serial Number (S/N) hoặc Số điện thoại mua hàng.</p>
+                
+                <div class="lookup-search-container">
+                    <div class="lookup-input-wrapper">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="warrantyInput" placeholder="Nhập Serial Number hoặc Số điện thoại...">
+                    </div>
+                    <button class="btn-check-warranty" onclick="checkWarranty()">Kiểm tra</button>
+                </div>
+                <p class="lookup-help-text">Gợi ý thử: <span class="suggestion-tag" onclick="useSuggestion('0987654321')">0987654321</span> hoặc <span class="suggestion-tag" onclick="useSuggestion('SN-GPRO-OUT')">SN-GPRO-OUT</span></p>
+                <div id="warrantyError" class="warranty-error-msg" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- Result Card Section -->
+        <section class="result-section" id="resultSection" style="display:none;">
+            <div class="result-card">
+                <div class="result-card-inner">
+                    <div class="result-card-left">
+                        <img id="resultImage" src="/images/default_product.png" alt="Component Thumbnail" onerror="this.src='/images/default_product.png'">
+                    </div>
+                    <div class="result-card-right">
+                        <h2 id="resultName">Tên linh kiện sản phẩm</h2>
+                        <div class="status-badge-wrapper">
+                            <span class="status-label">Trạng thái:</span>
+                            <span id="resultStatus" class="status-badge">🟢 Còn bảo hành</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Serial Number:</span>
+                            <span id="resultSerial" class="info-value">SN-12345</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Ngày mua hàng:</span>
+                            <span id="resultPurchaseDate" class="info-value">01/01/2024</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Ngày hết hạn:</span>
+                            <span id="resultExpiryDate" class="info-value">01/01/2027</span>
+                        </div>
+                        <button class="btn-warranty-request" onclick="requestWarrantySupport()">Yêu cầu bảo hành linh kiện này</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Warranty Terms Grid -->
+        <section class="terms-grid-section">
+            <h2 class="section-title">Thời hạn bảo hành tiêu chuẩn</h2>
+            <div class="terms-grid">
+                <!-- Card 1: CPU -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+                            <rect x="9" y="9" width="6" height="6"></rect>
+                            <line x1="9" y1="1" x2="9" y2="4"></line>
+                            <line x1="15" y1="1" x2="15" y2="4"></line>
+                            <line x1="9" y1="20" x2="9" y2="23"></line>
+                            <line x1="15" y1="20" x2="15" y2="23"></line>
+                            <line x1="20" y1="9" x2="23" y2="9"></line>
+                            <line x1="20" y1="15" x2="23" y2="15"></line>
+                            <line x1="1" y1="9" x2="4" y2="9"></line>
+                            <line x1="1" y1="15" x2="4" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3>Bộ Vi Xử Lý (CPU)</h3>
+                    <p class="term-duration">36 Tháng</p>
+                </div>
+                <!-- Card 2: VGA -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="5" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="6" y1="19" x2="6" y2="21"></line>
+                            <line x1="18" y1="19" x2="18" y2="21"></line>
+                            <circle cx="10" cy="12" r="3"></circle>
+                            <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h3>Card Màn Hình (VGA)</h3>
+                    <p class="term-duration">36 Tháng</p>
+                </div>
+                <!-- Card 3: Mainboard -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <path d="M7 7h4v4H7z"></path>
+                            <rect x="7" y="13" width="10" height="4"></rect>
+                            <circle cx="15" cy="9" r="1"></circle>
+                        </svg>
+                    </div>
+                    <h3>Bo Mạch Chủ (Mainboard)</h3>
+                    <p class="term-duration">36 Tháng</p>
+                </div>
+                <!-- Card 4: RAM -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="9" width="20" height="6" rx="1"></rect>
+                            <line x1="6" y1="9" x2="6" y2="15"></line>
+                            <line x1="10" y1="9" x2="10" y2="15"></line>
+                            <line x1="14" y1="9" x2="14" y2="15"></line>
+                            <line x1="18" y1="9" x2="18" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3>Bộ Nhớ Trong (RAM)</h3>
+                    <p class="term-duration">36 Tháng</p>
+                </div>
+                <!-- Card 5: SSD -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="3" y1="15" x2="21" y2="15"></line>
+                            <circle cx="17" cy="6" r="1"></circle>
+                            <circle cx="17" cy="12" r="1"></circle>
+                            <circle cx="17" cy="18" r="1"></circle>
+                        </svg>
+                    </div>
+                    <h3>Ổ Cứng SSD / HDD</h3>
+                    <p class="term-duration">36 - 60 Tháng</p>
+                </div>
+                <!-- Card 6: PSU -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
+                        </svg>
+                    </div>
+                    <h3>Nguồn Máy Tính (PSU)</h3>
+                    <p class="term-duration">36 - 120 Tháng</p>
+                </div>
+                <!-- Card 7: Gaming Gear -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 7.5a4.5 4.5 0 0 0-4.5-4.5H7.5A4.5 4.5 0 0 0 3 7.5v9a4.5 4.5 0 0 0 4.5 4.5h9a4.5 4.5 0 0 0 4.5-4.5v-9Z"></path>
+                            <circle cx="8" cy="12" r="1.5"></circle>
+                            <circle cx="16" cy="10" r="1"></circle>
+                            <circle cx="16" cy="14" r="1"></circle>
+                            <circle cx="14" cy="12" r="1"></circle>
+                            <circle cx="18" cy="12" r="1"></circle>
+                        </svg>
+                    </div>
+                    <h3>Thiết Bị Gaming Gear</h3>
+                    <p class="term-duration">24 Tháng</p>
+                </div>
+                <!-- Card 8: Cooling/Monitor -->
+                <div class="term-card">
+                    <div class="term-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 12A4 4 0 0 1 8 8M12 12a4 4 0 0 1 4 4M12 12a4 4 0 0 1-4 4M12 12a4 4 0 0 1 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3>Tản Nhiệt & Phụ Kiện</h3>
+                    <p class="term-duration">12 - 36 Tháng</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <!-- Left Info Column -->
+            <div class="footer-info-col">
+                <div class="footer-logo">
+                    <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                        style="height: 55px; display: block; object-fit: contain; filter: invert(1);">
+                </div>
+            </div>
+
+            <!-- Links Columns -->
+            <div class="footer-links-col">
+                <h4>Linh Kiện</h4>
+                <ul>
+                    <li><a href="/Products?cat=vga">Card Màn Hình (VGA)</a></li>
+                    <li><a href="/Products?cat=cpu">Bộ Vi Xử Lý (CPU)</a></li>
+                    <li><a href="/Products?cat=main">Bo Mạch Chủ (Main)</a></li>
+                    <li><a href="/Products?cat=ram">Bộ Nhớ Trong (RAM)</a></li>
+                    <li><a href="/Products?cat=ssd">SSD / Ổ Cứng</a></li>
+                    <li><a href="/Products?cat=psu">Nguồn / PSU</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Hỗ Trợ</h4>
+                <ul>
+                    <li><a href="#">Liên Hệ</a></li>
+                    <li><a href="#">Câu Hỏi FAQs</a></li>
+                    <li><a href="#">Tải Driver & Software</a></li>
+                    <li><a href="/warranty">Trung Tâm Bảo Hành</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Khám Phá</h4>
+                <ul>
+                    <li><a href="#">Về Chúng Tôi</a></li>
+                    <li><a href="https://discord.gg/QBbHeKc2Sy" target="_blank">Cộng Đồng Discord</a></li>
+                    <li><a href="#">Tin Tức Công Nghệ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Chính Sách</h4>
+                <ul>
+                    <li><a href="#">Chính Sách Giao Hàng</a></li>
+                    <li><a href="#">Chính Sách Giao Hàng</a></li>
+                    <li><a href="#">Chính Sách Đổi Trả</a></li>
+                    <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+                    <li><a href="#">Chính Sách Bảo Mật</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+    <script src="/assets/js/cart-drawer-global.js"></script>
+    <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
+    <script>
+        // Mock Warranty Database for demonstration
+        const mockWarrantyDB = [
+            {
+                serial: "SN-RTX4090-9982",
+                phone: "0987654321",
+                name: "Card màn hình ASUS ROG Strix GeForce RTX 4090 OC Edition 24GB",
+                status: "🟢 Còn bảo hành",
+                expired: false,
+                purchaseDate: "12/08/2024",
+                expiryDate: "12/08/2027",
+                img: "https://dlcdnwebobs.asus.com/webobs/images/model/rog-strix-rtx4090-o24g-gaming/1000.png"
+            },
+            {
+                serial: "SN-I914900-5521",
+                phone: "0912345678",
+                name: "Bộ vi xử lý Intel Core i9-14900K",
+                status: "🟢 Còn bảo hành",
+                expired: false,
+                purchaseDate: "15/01/2024",
+                expiryDate: "15/01/2027",
+                img: "https://www.intel.com/content/dam/www/central-brands/image-templates/cool-grey/cool-grey-processor-badge.png"
+            },
+            {
+                serial: "SN-RAMDOM-1122",
+                phone: "0933445566",
+                name: "RAM Corsair Vengeance RGB 32GB (2x16GB) DDR5 6000MHz",
+                status: "🟢 Còn bảo hành",
+                expired: false,
+                purchaseDate: "05/05/2025",
+                expiryDate: "05/05/2028",
+                img: "https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Memory/VENGEANCE-RGB-DDR5-Black/VENGEANCE-RGB-DDR5-Black-01.png"
+            },
+            {
+                serial: "SN-GPRO-OUT",
+                phone: "0900000000",
+                name: "Chuột Gaming Không Dây Logitech G Pro X Superlight Black",
+                status: "🔴 Hết bảo hành",
+                expired: true,
+                purchaseDate: "10/10/2022",
+                expiryDate: "10/10/2024",
+                img: "https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight/pro-x-superlight-black-gallery-1.png?v=1"
+            }
+        ];
+
+        function checkWarranty() {
+            const inputVal = document.getElementById("warrantyInput").value.trim();
+            const errorEl = document.getElementById("warrantyError");
+            const resultSection = document.getElementById("resultSection");
+
+            errorEl.style.display = "none";
+            resultSection.style.display = "none";
+
+            if (!inputVal) {
+                errorEl.textContent = "Vui lòng nhập Serial Number hoặc Số điện thoại mua hàng.";
+                errorEl.style.display = "block";
+                return;
+            }
+
+            // Find matching product
+            const match = mockWarrantyDB.find(item => 
+                item.serial.toLowerCase() === inputVal.toLowerCase() || 
+                item.phone === inputVal
+            );
+
+            if (match) {
+                // Populate details
+                document.getElementById("resultName").textContent = match.name;
+                document.getElementById("resultSerial").textContent = match.serial;
+                document.getElementById("resultPurchaseDate").textContent = match.purchaseDate;
+                document.getElementById("resultExpiryDate").textContent = match.expiryDate;
+                
+                const statusBadge = document.getElementById("resultStatus");
+                statusBadge.textContent = match.status;
+                if (match.expired) {
+                    statusBadge.className = "status-badge expired";
+                } else {
+                    statusBadge.className = "status-badge";
+                }
+
+                // Handle Image
+                const imgEl = document.getElementById("resultImage");
+                imgEl.src = match.img;
+                imgEl.onerror = function() {
+                    this.src = "/images/default_product.png";
+                };
+
+                // Show result
+                resultSection.style.display = "block";
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                errorEl.textContent = "Không tìm thấy thông tin bảo hành cho Serial Number hoặc Số điện thoại này. Vui lòng kiểm tra lại.";
+                errorEl.style.display = "block";
+            }
+        }
+
+        function useSuggestion(val) {
+            document.getElementById("warrantyInput").value = val;
+            checkWarranty();
+        }
+
+        function requestWarrantySupport() {
+            alert("Yêu cầu bảo hành đã được ghi nhận thành công! Nhân viên CSKH của HYPER CORE sẽ liên hệ với quý khách qua Số điện thoại đăng ký trong vòng 24 giờ làm việc.");
+        }
+
+        // Auto sync user and cart on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof updateCartBadge === "function") {
+                updateCartBadge();
+            }
+
+            // Autodetect file protocol
+            if (window.location.protocol === 'file:') {
+                document.querySelectorAll("a").forEach(a => {
+                    const href = a.getAttribute("href");
+                    if (href && href.startsWith("/")) {
+                        const path = href.toLowerCase();
+                        const search = href.includes('?') ? href.substring(href.indexOf('?')) : '';
+                        if (path === '/homepage' || path.startsWith('/homepage?')) a.href = 'homepage.html' + search;
+                        else if (path.startsWith('/products')) a.href = 'products.html' + search;
+                        else if (path.startsWith('/gaminggear')) a.href = 'gaminggear.html' + search;
+                        else if (path.startsWith('/pcbuild')) a.href = 'pcbuild.html' + search;
+                        else if (path.startsWith('/login')) a.href = 'login.html' + search;
+                        else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
+                        else if (path.startsWith('/warranty')) a.href = 'warranty.html' + search;
+                    }
+                });
+                document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href.startsWith("/")) {
+                        link.href = "../wwwroot" + href;
+                    }
+                });
+                document.querySelectorAll("img").forEach(img => {
+                    const src = img.getAttribute("src");
+                    if (src && src.startsWith("/")) {
+                        img.src = "../wwwroot" + src;
+                    }
+                });
+            }
+        });
+    </script>
+    <!-- Chatbot Global -->
+    <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>
+</body>
+
+</html>

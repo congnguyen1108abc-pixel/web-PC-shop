@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liên Hệ - HYPER CORE</title>
+
+    <!-- Style Link -->
+    <link rel="stylesheet" href="/css/style.css?v=1.1.8">
+    <link rel="stylesheet" href="/assets/css/auth-ui.css">
+    <style>
+        /* Contact Page Container */
+        .contact-page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 24px 80px 24px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #1f2937;
+        }
+
+        /* Title styling */
+        .contact-title-section {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .contact-title-section h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .contact-title-section p {
+            font-size: 16px;
+            color: #6b7280;
+        }
+
+        /* Banner Dark Section */
+        .brand-banner-card {
+            background: linear-gradient(135deg, #090d16, #111827);
+            border-radius: 24px;
+            padding: 48px 32px;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .brand-banner-card::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .brand-banner-card::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            right: -10%;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .banner-logo {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .banner-logo span {
+            background: #ffffff;
+            color: #111827;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 900;
+        }
+
+        .banner-address {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 32px;
+        }
+
+        /* Partner Brands Grid inside Banner */
+        .banner-brands-title {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0.8;
+        }
+
+        .brands-flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 8px 18px;
+            border-radius: 99px;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .brand-badge:hover {
+            background: #ffffff;
+            color: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Brand list intro text section */
+        .brand-intro-section {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 48px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+
+        .brand-intro-section h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 12px;
+        }
+
+        .brand-intro-section p {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .brands-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .brand-item-card {
+            background: #fafafa;
+            border: 1px solid #f3f4f6;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .brand-item-card:hover {
+            background: #ffffff;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+
+        .brand-flag {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-name {
+            font-weight: 600;
+            color: #111827;
+            font-size: 14.5px;
+        }
+
+        .brand-country {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Info & Map Column Layout */
+        .info-map-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        @media (max-width: 968px) {
+            .info-map-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .contact-info-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .info-block-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .info-content label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .info-content span, .info-content a {
+            font-size: 14.5px;
+            color: #111827;
+            font-weight: 500;
+            line-height: 1.5;
+            text-decoration: none;
+        }
+
+        .info-content a:hover {
+            text-decoration: underline;
+            color: #1d4ed8;
+        }
+
+        /* Business License Card */
+        .business-license-block {
+            background: #fafafa;
+            border: 1px solid #f3f4f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 8px;
+        }
+
+        .business-license-block h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .license-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .license-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .license-item label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+
+        .license-item span {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        /* Map Card */
+        .map-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .map-header {
+            padding: 12px 16px 20px 16px;
+        }
+
+        .map-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .map-header p {
+            font-size: 13.5px;
+            color: #6b7280;
+        }
+
+        .map-wrapper {
+            flex: 1;
+            min-height: 400px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Working Hours style */
+        .working-hours-card {
+            background: #fdf2f8;
+            border: 1px solid #fbcfe8;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: #9d174d;
+        }
+
+        .working-hours-card svg {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .working-hours-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .working-hours-info strong {
+            font-size: 14.5px;
+        }
+
+        .working-hours-info span {
+            font-size: 13.5px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header id="header">
+        <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                style="height: 38px; display: block; object-fit: contain;">
+        </div>
+
+        <nav>
+            <a href="/Homepage">Trang Chủ</a>
+            <div class="nav-item-dropdown">
+                <a href="/Products" id="nav-products">Sản Phẩm</a>
+                <div class="mega-menu">
+                    <div class="mega-col">
+                        <h3>Linh Kiện PC</h3>
+                        <a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+                        <a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+                        <a href="/Products?category=vga">VGA - Card màn hình</a>
+                        <a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+                        <a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+                        <a href="/Products?category=psu">Nguồn máy tính</a>
+                        <a href="/Products?category=case">Case - Vỏ máy tính</a>
+                        <a href="/Products?category=cooling">Tản nhiệt PC</a>
+                    </div>
+                    <div class="mega-col">
+                        <h3>Thương Hiệu</h3>
+                        <a href="/Products?brand=asus">Asus</a>
+                        <a href="/Products?brand=msi">MSI</a>
+                        <a href="/Products?brand=gigabyte">Gigabyte</a>
+                        <a href="/Products?brand=intel">Intel</a>
+                        <a href="/Products?brand=amd">AMD</a>
+                        <a href="/Products?brand=corsair">Corsair</a>
+                        <a href="/Products?brand=kingston">Kingston</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Gaming Gear</h3>
+                        <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+                        <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+                        <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+                        <a href="/gaminggear?category=mic-studio">Mic Studio</a>
+                        <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+                        <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+                        <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/pcbuild" id="nav-pcbuild">PC Build</a>
+                <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>PC Build</h3>
+                        <a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+                        <a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item-dropdown">
+                <a href="/order-status">Đơn hàng</a>
+                <div class="mega-menu" style="width: 250px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Đơn Hàng & Bảo Hành</h3>
+                        <a href="/order-status">Trạng thái đơn hàng</a>
+                        <a href="/warranty">Chính sách bảo hành</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/contact" class="active">Liên hệ</a>
+        </nav>
+
+        <div class="nav-actions">
+            <!-- SEARCH -->
+            <div class="header-search-container" id="headerSearchWrap">
+                <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Tìm kiếm sản phẩm..."
+                    onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+                <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)" title="Tìm kiếm"
+                    aria-label="Tìm kiếm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ACCOUNT -->
+            <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;"
+                class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+            </a>
+
+            <!-- USER GREETING -->
+            <div class="user-greeting-wrap" id="userGreetingWrap">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()"
+                    aria-label="Tài khoản">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-greeting-name">
+                        <em>Xin chào,</em>
+                        <span id="userDisplayName">Người dùng</span>
+                    </div>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </button>
+
+                <!-- DROPDOWN -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-header">
+                        <span id="dropdownFullName">Người dùng</span>
+                        <small id="dropdownEmail">email@example.com</small>
+                    </div>
+                    <a href="#" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Hồ sơ của tôi
+                    </a>
+                    <a href="/shoppingcart" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
+                        Giỏ hàng
+                    </a>
+                    <a href="/checkout" class="dropdown-item">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                        Đơn hàng
+                    </a>
+                    <button class="dropdown-item logout" onclick="handleLogout()">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Đăng xuất
+                    </button>
+                </div>
+            </div>
+
+            <!-- CART -->
+            <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link"
+                title="Giỏ hàng" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+                <span class="cart-badge" id="cartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="contact-page-container">
+        <!-- Title section -->
+        <section class="contact-title-section">
+            <h1>Liên hệ với chúng tôi</h1>
+            <p>Thông tin chi tiết về nhà phân phối HYPERCORE & Các kênh hỗ trợ khách hàng</p>
+        </section>
+
+        <!-- Brand Banner Card representing image 1 -->
+        <div class="brand-banner-card">
+            <div class="banner-logo" style="display: inline-flex; align-items: center; gap: 8px;">
+                <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" style="height: 38px; background: #ffffff; padding: 4px 16px; border-radius: 8px; object-fit: contain; display: block;">
+            </div>
+            <div class="banner-address">
+                10/4 Lê Quang Đạo, Hóc Môn, HCMC
+            </div>
+
+            <div class="banner-brands-title">Thương hiệu phân phối nổi bật</div>
+            <div class="brands-flex-container">
+                <div class="brand-badge">AMD</div>
+                <div class="brand-badge">NVIDIA</div>
+                <div class="brand-badge">Artisan</div>
+                <div class="brand-badge">Realforce</div>
+                <div class="brand-badge">Finalmouse</div>
+                <div class="brand-badge">Pulsar</div>
+                <div class="brand-badge">Yuki Aim</div>
+                <div class="brand-badge">Lamzu</div>
+                <div class="brand-badge">Filco</div>
+                <div class="brand-badge">Wooting</div>
+                <div class="brand-badge">Corepad</div>
+                <div class="brand-badge">Rawm</div>
+                <div class="brand-badge">WL.Mouse</div>
+                <div class="brand-badge">MelGeek</div>
+                <div class="brand-badge">Esptiger</div>
+                <div class="brand-badge">Teevolution</div>
+                <div class="brand-badge">Gamesense</div>
+                <div class="brand-badge">Datacolor</div>
+            </div>
+        </div>
+
+        <!-- Detailed Brands Distribution List -->
+        <section class="brand-intro-section">
+            <h2>Nhà phân phối Gaming Gear hàng đầu</h2>
+            <p>
+                <strong>HYPERCORE</strong> là đơn vị chuyên phân phối và kinh doanh các thương hiệu gaming gear hàng đầu trên thế giới, bao gồm các sản phẩm bàn phím cơ cao cấp, chuột siêu nhẹ, feet chuột, lót chuột chuyên nghiệp và các công cụ quản lý màu sắc chính xác.
+            </p>
+            <div class="brands-detail-grid">
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇯🇵</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Bàn phím cơ Filco</span>
+                        <span class="brand-country">Nhật Bản</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇯🇵</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Realforce</span>
+                        <span class="brand-country">Nhật Bản</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇳🇱</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Wooting</span>
+                        <span class="brand-country">Hà Lan</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇩🇪</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Corepad</span>
+                        <span class="brand-country">Đức</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇺🇸</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Finalmouse</span>
+                        <span class="brand-country">Mỹ</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇺🇸</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Lethal Gaming Gear</span>
+                        <span class="brand-country">Mỹ</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇺🇸</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Cân màu Spyder</span>
+                        <span class="brand-country">Mỹ - Thụy Sĩ</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇨🇳</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Lamzu</span>
+                        <span class="brand-country">Trung Quốc</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇨🇳</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Ninjutso</span>
+                        <span class="brand-country">Trung Quốc</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇰🇷</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Pulsar</span>
+                        <span class="brand-country">Hàn Quốc</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇺🇸</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Pwnage</span>
+                        <span class="brand-country">Mỹ</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇺🇸</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Gamesense</span>
+                        <span class="brand-country">Mỹ</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇬🇧</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Fnatic Gear</span>
+                        <span class="brand-country">Anh</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇺🇸</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Yuki Aim</span>
+                        <span class="brand-country">Mỹ</span>
+                    </div>
+                </div>
+                <div class="brand-item-card">
+                    <span class="brand-flag">🇺🇸</span>
+                    <div class="brand-info">
+                        <span class="brand-name">Arbiter Studio</span>
+                        <span class="brand-country">Mỹ</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Columns for Info and Google Map -->
+        <div class="info-map-grid">
+            <!-- Left Info column -->
+            <div class="contact-info-card">
+                <div>
+                    <h2 class="info-block-title">Thông tin liên hệ</h2>
+                    <p style="font-size: 14px; color: #6b7280; margin-bottom: 8px;">
+                        Quý khách hàng có thể liên hệ trực tiếp với chúng tôi qua các kênh sau:
+                    </p>
+                </div>
+
+                <div class="info-list">
+                    <!-- Address -->
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <label>Địa chỉ</label>
+                            <span>10/4 Lê Quang Đạo, Hóc Môn, TP. Hồ Chí Minh, Việt Nam</span>
+                        </div>
+                    </div>
+
+                    <!-- Hotline -->
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <label>Điện thoại & Hotline</label>
+                            <span>Hotline hỗ trợ: 0364885351</span>
+                        </div>
+                    </div>
+
+                    <!-- Zalo & Email -->
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <label>Zalo & Email</label>
+                            <span>Zalo hỗ trợ: 0364885351</span>
+                            <a href="mailto:info@hypercore.vn">info@hypercore.vn</a>
+                        </div>
+                    </div>
+
+                    <!-- Social / Channels -->
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                        <div class="info-content">
+                            <label>Kênh chính thức & Mạng xã hội</label>
+                            <a href="https://www.tiktok.com/@hypercore1234?lang=en" target="_blank">Tiktok: @hypercore1234</a>
+                            <a href="https://www.youtube.com/channel/UCaYgBUfFPI3YldZeRfbfitA" target="_blank">Youtube: HYPERCORE</a>
+                            <a href="https://discord.gg/QBbHeKc2Sy" target="_blank">Discord: Cộng Đồng Discord</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business License detail representing image 3 -->
+                <div class="business-license-block">
+                    <h4>Thông tin doanh nghiệp</h4>
+                    <div class="license-grid">
+                        <div class="license-item">
+                            <label>Giấy phép ĐKKD</label>
+                            <span>0318492065</span>
+                        </div>
+                        <div class="license-item">
+                            <label>Ngày cấp</label>
+                            <span>13/05/2026</span>
+                        </div>
+                        <div class="license-item" style="grid-column: span 2; margin-top: 4px;">
+                            <label>Nơi cấp</label>
+                            <span>Sở KH&ĐT TP. Hồ Chí Minh</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Working hours section -->
+                <div class="working-hours-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <div class="working-hours-info">
+                        <strong>Thời gian làm việc:</strong>
+                        <span>Hằng ngày (Kể cả Chủ Nhật & Ngày lễ): 8h30 - 20h00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Map Column -->
+            <div class="map-card">
+                <div class="map-header">
+                    <h3>Bản đồ đường đi</h3>
+                    <p>Bấm vào chỉ đường để tìm đường đi ngắn nhất đến showroom của chúng tôi.</p>
+                </div>
+                <div class="map-wrapper">
+                    <!-- Google Maps Iframe -->
+                    <iframe src="https://maps.google.com/maps?q=10/4%20L%C3%AA%20Quang%20%C4%90%E1%BA%A1o,%20H%C3%B3c%20M%C3%B4n,%20HCMC&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-info-col">
+                <div class="footer-logo">
+                    <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                        style="height: 55px; display: block; object-fit: contain; filter: invert(1);">
+                </div>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Linh Kiện</h4>
+                <ul>
+                    <li><a href="/Products?cat=vga">Card Màn Hình (VGA)</a></li>
+                    <li><a href="/Products?cat=cpu">Bộ Vi Xử Lý (CPU)</a></li>
+                    <li><a href="/Products?cat=main">Bo Mạch Chủ (Main)</a></li>
+                    <li><a href="/Products?cat=ram">Bộ Nhớ Trong (RAM)</a></li>
+                    <li><a href="/Products?cat=ssd">SSD / Ổ Cứng</a></li>
+                    <li><a href="/Products?cat=psu">Nguồn / PSU</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Hỗ Trợ</h4>
+                <ul>
+                    <li><a href="/contact">Liên Hệ</a></li>
+                    <li><a href="#">Câu Hỏi FAQs</a></li>
+                    <li><a href="#">Tải Driver & Software</a></li>
+                    <li><a href="/warranty">Trung Tâm Bảo Hành</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Khám Phá</h4>
+                <ul>
+                    <li><a href="#">Về Chúng Tôi</a></li>
+                    <li><a href="https://discord.gg/QBbHeKc2Sy" target="_blank">Cộng Đồng Discord</a></li>
+                    <li><a href="#">Tin Tức Công Nghệ</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-col">
+                <h4>Chính Sách</h4>
+                <ul>
+                    <li><a href="#">Chính Sách Giao Hàng</a></li>
+                    <li><a href="#">Chính Sách Đổi Trả</a></li>
+                    <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+                    <li><a href="#">Chính Sách Bảo Mật</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 HYPER CORE - PREMIUM ELECTRONICS EXPERIENCE
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+    <script src="/assets/js/cart-drawer-global.js"></script>
+    <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof updateCartBadge === "function") {
+                updateCartBadge();
+            }
+
+            // Autodetect file protocol
+            if (window.location.protocol === 'file:') {
+                document.querySelectorAll("a").forEach(a => {
+                    const href = a.getAttribute("href");
+                    if (href && href.startsWith("/")) {
+                        const path = href.toLowerCase();
+                        const search = href.includes('?') ? href.substring(href.indexOf('?')) : '';
+                        if (path === '/homepage' || path.startsWith('/homepage?')) a.href = 'homepage.html' + search;
+                        else if (path.startsWith('/products')) a.href = 'products.html' + search;
+                        else if (path.startsWith('/gaminggear')) a.href = 'gaminggear.html' + search;
+                        else if (path.startsWith('/pcbuild')) a.href = 'pcbuild.html' + search;
+                        else if (path.startsWith('/login')) a.href = 'login.html' + search;
+                        else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
+                        else if (path.startsWith('/warranty')) a.href = 'warranty.html' + search;
+                        else if (path.startsWith('/contact')) a.href = 'contact.html' + search;
+                    }
+                });
+                document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (href && href.startsWith("/")) {
+                        link.href = "../wwwroot" + href;
+                    }
+                });
+                document.querySelectorAll("img").forEach(img => {
+                    const src = img.getAttribute("src");
+                    if (src && src.startsWith("/")) {
+                        img.src = "../wwwroot" + src;
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>
+</body>
+
+</html>

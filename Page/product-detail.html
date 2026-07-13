@@ -1634,7 +1634,17 @@
                     </div>
                 </div>
             </div>
-            <a href="/order-status">Trạng thái đơn hàng</a>
+            <div class="nav-item-dropdown">
+                <a href="/order-status">Đơn hàng</a>
+                <div class="mega-menu" style="width: 250px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+                    <div class="mega-col">
+                        <h3>Đơn Hàng & Bảo Hành</h3>
+                        <a href="/order-status">Trạng thái đơn hàng</a>
+                        <a href="/warranty">Chính sách bảo hành</a>
+                    </div>
+                </div>
+            </div>
+            <a href="/contact">Liên hệ</a>
         </nav>
 
         <div class="nav-actions">
@@ -1994,7 +2004,7 @@
           <li><a href="#">Liên Hệ</a></li>
           <li><a href="#">Câu Hỏi FAQs</a></li>
           <li><a href="#">Tải Driver & Software</a></li>
-          <li><a href="#">Trung Tâm Bảo Hành</a></li>
+          <li><a href="/warranty">Trung Tâm Bảo Hành</a></li>
         </ul>
       </div>
 
@@ -2800,72 +2810,75 @@
       }
       wrap.style.display = 'flex';
 
-      // 1. Previous button
-      const prevBtn = document.createElement('button');
-      prevBtn.className = 'pagination-btn' + (currentPaginationPage === 1 ? ' disabled' : '');
-      prevBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      `;
-      prevBtn.disabled = currentPaginationPage === 1;
-      prevBtn.addEventListener('click', () => {
-        if (currentPaginationPage > 1) {
-          currentPaginationPage--;
-          renderReviewsPage();
-          wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      });
-      wrap.appendChild(prevBtn);
-
-      // 2. Page Numbers with Ellipsis
-      const range = 2;
-      let pages = [];
-
-      for (let i = 1; i <= totalPages; i++) {
-        if (i === 1 || i === totalPages || (i >= currentPaginationPage - range && i <= currentPaginationPage + range)) {
-          pages.push(i);
-        } else if (pages[pages.length - 1] !== '...') {
-          pages.push('...');
-        }
-      }
-
-      pages.forEach(p => {
-        if (p === '...') {
-          const span = document.createElement('span');
-          span.className = 'pagination-ellipsis';
-          span.textContent = '...';
-          wrap.appendChild(span);
-        } else {
-          const btn = document.createElement('button');
-          btn.className = 'pagination-btn' + (p === currentPaginationPage ? ' active' : '');
-          btn.textContent = p;
+      // Helper function to append button
+      const appendButton = (text, targetPage, disabled) => {
+        const btn = document.createElement('button');
+        btn.className = 'pagination-btn' + (disabled ? ' disabled' : '');
+        btn.textContent = text;
+        btn.disabled = disabled;
+        if (!disabled) {
           btn.addEventListener('click', () => {
-            currentPaginationPage = p;
+            currentPaginationPage = targetPage;
             renderReviewsPage();
             wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           });
-          wrap.appendChild(btn);
         }
-      });
+        wrap.appendChild(btn);
+      };
 
-      // 3. Next button
-      const nextBtn = document.createElement('button');
-      nextBtn.className = 'pagination-btn' + (currentPaginationPage === totalPages ? ' disabled' : '');
-      nextBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      `;
-      nextBtn.disabled = currentPaginationPage === totalPages;
-      nextBtn.addEventListener('click', () => {
-        if (currentPaginationPage < totalPages) {
-          currentPaginationPage++;
+      // 1. First Page (<<)
+      appendButton('<<', 1, currentPaginationPage === 1);
+
+      // 2. Previous button (<)
+      appendButton('<', currentPaginationPage - 1, currentPaginationPage === 1);
+
+      // Calculate the window of 5 pages
+      let startPage = currentPaginationPage - 2;
+      let endPage = currentPaginationPage + 2;
+
+      if (startPage < 1) {
+        endPage = Math.min(totalPages, endPage + (1 - startPage));
+        startPage = 1;
+      }
+      if (endPage > totalPages) {
+        startPage = Math.max(1, startPage - (endPage - totalPages));
+        endPage = totalPages;
+      }
+
+      // Ellipsis before
+      if (startPage > 1) {
+        const span = document.createElement('span');
+        span.className = 'pagination-ellipsis';
+        span.textContent = '...';
+        wrap.appendChild(span);
+      }
+
+      // Page numbers
+      for (let i = startPage; i <= endPage; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'pagination-btn' + (i === currentPaginationPage ? ' active' : '');
+        btn.textContent = i;
+        btn.addEventListener('click', () => {
+          currentPaginationPage = i;
           renderReviewsPage();
           wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      });
-      wrap.appendChild(nextBtn);
+        });
+        wrap.appendChild(btn);
+      }
+
+      // Ellipsis after
+      if (endPage < totalPages) {
+        const span = document.createElement('span');
+        span.className = 'pagination-ellipsis';
+        span.textContent = '...';
+        wrap.appendChild(span);
+      }
+
+      // 3. Next button (>)
+      appendButton('>', currentPaginationPage + 1, currentPaginationPage === totalPages);
+
+      // 4. Last Page (>>)
+      appendButton('>>', totalPages, currentPaginationPage === totalPages);
     }
 
     async function deleteUserReview(reviewId) {

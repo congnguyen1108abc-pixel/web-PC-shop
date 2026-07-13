@@ -14,4 +14,5 @@ public interface IDbRepository
     // Raw SQL (không qua Stored Procedure)
     Task<int> ExecuteRawAsync(string sql, object? parameters = null);
     Task<T?> QuerySingleOrDefaultAsync<T>(string sql, object? parameters = null);
+    Task<IEnumerable<T>> QueryRawAsync<T>(string sql, object? parameters = null);
 }

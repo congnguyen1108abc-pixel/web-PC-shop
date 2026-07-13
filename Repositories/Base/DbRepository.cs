@@ -33,4 +33,7 @@ public sealed class DbRepository : IDbRepository
 
     public Task<T?> QuerySingleOrDefaultAsync<T>(string sql, object? parameters = null)
         => _connection.QueryFirstOrDefaultAsync<T>(sql, parameters, commandType: CommandType.Text);
+
+    public Task<IEnumerable<T>> QueryRawAsync<T>(string sql, object? parameters = null)
+        => _connection.QueryAsync<T>(sql, parameters, commandType: CommandType.Text);
 }

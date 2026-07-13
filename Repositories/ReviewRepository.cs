@@ -84,6 +84,23 @@ public sealed class ReviewRepository : IReviewRepository
         );
     }
 
+    public Task<IEnumerable<TestimonialItem>> GetTopTestimonialsAsync()
+    {
+        const string sql = @"
+            SELECT TOP 3 
+                r.ReviewID, 
+                r.Rating, 
+                r.Comment, 
+                r.CreatedAt,
+                u.FullName,
+                u.AvatarURL
+            FROM [dbo].[Reviews] r
+            INNER JOIN [dbo].[Users] u ON r.UserID = u.UserID
+            WHERE r.Rating = 5 AND r.IsApproved = 1
+            ORDER BY r.CreatedAt DESC;";
+        return _db.QueryRawAsync<TestimonialItem>(sql);
+    }
+
     private sealed record AdminReviewItemWithTotal(
         int ReviewId, int ProductId, string ProductName, string SKU, int UserId,
         string FullName, int Rating, string? Comment, string? ImageURL, bool IsApproved,
