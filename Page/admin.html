@@ -1233,25 +1233,15 @@
                     </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="admin-form-group">
-                        <label for="bannerDisplayOrder">Thứ Tự Hiển Thị *</label>
-                        <input type="number" id="bannerDisplayOrder" required min="1" value="1" />
-                    </div>
-                    <div class="admin-form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 24px;">
+                <div class="form-row" style="margin-bottom: 0;">
+                    <!-- Hidden inputs to preserve JS compatibility -->
+                    <input type="hidden" id="bannerDisplayOrder" value="1" />
+                    <input type="hidden" id="bannerStartDate" />
+                    <input type="hidden" id="bannerEndDate" />
+
+                    <div class="admin-form-group" style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
                         <input type="checkbox" id="bannerIsActive" checked style="width: 20px; height: 20px;" />
                         <label for="bannerIsActive" style="margin-bottom: 0; cursor: pointer; font-weight: 600;">Kích hoạt (Active)</label>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="admin-form-group">
-                        <label for="bannerStartDate">Ngày Bắt Đầu</label>
-                        <input type="datetime-local" id="bannerStartDate" />
-                    </div>
-                    <div class="admin-form-group">
-                        <label for="bannerEndDate">Ngày Kết Thúc</label>
-                        <input type="datetime-local" id="bannerEndDate" />
                     </div>
                 </div>
 
