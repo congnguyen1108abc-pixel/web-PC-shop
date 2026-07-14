@@ -104,6 +104,9 @@
             <li class="menu-item" data-tab="returns">
                 <a href="#" title="Trả Hàng & Hoàn Tiền"><span class="menu-icon">↩️</span> <span class="menu-text">Trả Hàng & Hoàn Tiền</span></a>
             </li>
+            <li class="menu-item" data-tab="banners">
+                <a href="#" title="Quản Lý Banner"><span class="menu-icon">🖼️</span> <span class="menu-text">Quản Lý Banner</span></a>
+            </li>
         </ul>
 
         <div class="logout-section">
@@ -729,6 +732,41 @@
         </div>
         </div>
     </div>
+
+        <!-- SECTION 10: BANNER MANAGEMENT -->
+        <div id="banners-section" class="section-container">
+            <div class="glass-card">
+                <div class="management-title-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <h2>Quản Lý Banner Trang Chủ</h2>
+                    <button class="btn-submit" onclick="openBannerModal(null)" style="padding:10px 16px; font-size:12px; font-weight:700; border-radius:8px; display:flex; align-items:center; gap:6px; background:var(--success); border:none; color:white; cursor:pointer;">
+                        <span>➕</span> THÊM BANNER MỚI
+                    </button>
+                </div>
+
+                <div style="overflow-x:auto; margin-top:16px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th style="width:60px;">ID</th>
+                                <th style="width:140px;">Ảnh Preview</th>
+                                <th>Tiêu Đề</th>
+                                <th>Đường Dẫn (Link)</th>
+                                <th style="width:80px; text-align:center;">Thứ Tự</th>
+                                <th style="width:110px; text-align:center;">Trạng Thái</th>
+                                <th style="width:110px; text-align:center;">Bắt Đầu</th>
+                                <th style="width:110px; text-align:center;">Kết Thúc</th>
+                                <th style="width:120px; text-align:center;">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bannersTableBody">
+                            <tr>
+                                <td colspan="9" style="text-align:center; color:var(--text-muted-light); padding:40px 0;">Đang tải danh sách banner...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
     <!-- MODAL: ORDER DETAILS & STATUS UPDATE -->
     <div class="modal-overlay" id="orderModal">
@@ -1455,7 +1493,8 @@
             mining: { title: "Khai Thác Dữ Liệu Khách Hàng " },
             banners: { title: "Quản Lý Banner Quảng Cáo", subtitle: "Xem, thêm, sửa, xóa banner quảng cáo trên trang chủ" },
             notifications: { title: "Thông Báo Hệ Thống", subtitle: "Gửi thông báo đẩy SignalR thời gian thực đến người dùng" },
-            returns: { title: "Đổi Trả & Hoàn Tiền", subtitle: "Phê duyệt đổi trả và thực hiện thủ tục hoàn tiền cho khách hàng" }
+            returns: { title: "Đổi Trả & Hoàn Tiền", subtitle: "Phê duyệt đổi trả và thực hiện thủ tục hoàn tiền cho khách hàng" },
+            banners: { title: "Quản Lý Banner", subtitle: "Thêm, sửa, xóa và sắp xếp thứ tự banner hiển thị trên trang chủ" }
         };
 
         document.querySelectorAll('.menu-item:not(.client-link)').forEach(item => {
@@ -1489,6 +1528,7 @@
             else if (tab === 'banners') loadBannersData();
             else if (tab === 'notifications') populateNotificationUsers();
             else if (tab === 'returns') loadReturnRequests();
+            else if (tab === 'banners') loadBanners();
         }
 
         // ==========================================
@@ -3450,6 +3490,235 @@
                 minUtilInput.value = formatInput(minUtilInput.value);
             }
         })();
+    </script>
+
+    <!-- MODAL: BANNER ADD / EDIT -->
+    <div class="modal-overlay" id="bannerModal">
+        <div class="modal-card" style="max-width:560px; width:96vw;">
+            <div class="modal-header">
+                <h3 id="bannerModalTitle">Thêm Banner Mới</h3>
+                <button class="modal-close" onclick="closeBannerModal()">✕</button>
+            </div>
+            <form id="bannerForm" onsubmit="submitBanner(event)">
+                <input type="hidden" id="bannerIdInput" />
+                <div class="admin-form-group">
+                    <label for="bannerTitle">Tiêu Đề Banner <span style="color:red">*</span></label>
+                    <input type="text" id="bannerTitle" required placeholder="Ví dụ: Summer Sale 2026" />
+                </div>
+                <div class="admin-form-group">
+                    <label for="bannerImageUrl">URL Ảnh Banner <span style="color:red">*</span></label>
+                    <input type="text" id="bannerImageUrl" required placeholder="/images/banner1.png hoặc https://..." oninput="previewBannerImg()" />
+                    <div id="bannerImgPreview" style="margin-top:10px; display:none;">
+                        <img id="bannerPreviewTag" src="" alt="Preview" style="max-width:100%; max-height:180px; border-radius:8px; object-fit:cover; border:1px solid var(--border-color);" />
+                    </div>
+                </div>
+                <div class="admin-form-group">
+                    <label for="bannerLinkUrl">Đường Dẫn Khi Click (Link)</label>
+                    <input type="text" id="bannerLinkUrl" placeholder="/products hoặc để trống" />
+                </div>
+                <div class="form-row">
+                    <div class="admin-form-group">
+                        <label for="bannerDisplayOrder">Thứ Tự Hiển Thị</label>
+                        <input type="number" id="bannerDisplayOrder" value="0" min="0" />
+                    </div>
+                    <div class="admin-form-group">
+                        <label for="bannerIsActive">Trạng Thái</label>
+                        <select id="bannerIsActive">
+                            <option value="true">✅ Đang hoạt động</option>
+                            <option value="false">⏸️ Tạm ẩn</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="admin-form-group">
+                        <label for="bannerStartDate">Ngày Bắt Đầu</label>
+                        <input type="date" id="bannerStartDate" />
+                    </div>
+                    <div class="admin-form-group">
+                        <label for="bannerEndDate">Ngày Kết Thúc</label>
+                        <input type="date" id="bannerEndDate" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="closeBannerModal()">Hủy</button>
+                    <button type="submit" class="btn-submit" id="bannerSubmitBtn">LƯU BANNER</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* ========================================= */
+        /* BANNER MANAGEMENT — FULL SQL-CONNECTED    */
+        /* ========================================= */
+
+        let _allBanners = [];
+
+        async function loadBanners() {
+            const tbody = document.getElementById('bannersTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:40px 0; color:var(--text-muted-light);">Đang tải...</td></tr>';
+
+            try {
+                const res = await authFetch('/api/banners/admin');
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                _allBanners = await res.json();
+                renderBannersTable(_allBanners);
+            } catch (err) {
+                console.error('[Banners] Load failed:', err);
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:40px 0; color:#ef4444;">❌ Không tải được danh sách banner. Kiểm tra quyền Admin.</td></tr>';
+            }
+        }
+
+        function renderBannersTable(banners) {
+            const tbody = document.getElementById('bannersTableBody');
+            if (!tbody) return;
+
+            if (!banners || banners.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:40px 0; color:var(--text-muted-light);">Chưa có banner nào. Hãy thêm banner đầu tiên.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = banners.map(b => {
+                const statusBadge = b.isActive
+                    ? '<span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">ACTIVE</span>'
+                    : '<span style="background:#f1f5f9;color:#64748b;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">ẨN</span>';
+
+                const fmt = (dt) => dt ? new Date(dt).toLocaleDateString('vi-VN') : '—';
+
+                return `
+                <tr>
+                    <td style="font-weight:700;">#${b.bannerId}</td>
+                    <td>
+                        <img src="${b.imageUrl}" alt="${b.title}"
+                            style="width:120px; height:60px; object-fit:cover; border-radius:6px; border:1px solid var(--border-color);"
+                            onerror="this.src='https://placehold.co/120x60/1e293b/94a3b8?text=No+Image'" />
+                    </td>
+                    <td style="font-weight:600; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${b.title}</td>
+                    <td style="font-size:12px; color:var(--text-muted); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${b.linkUrl || '—'}</td>
+                    <td style="text-align:center; font-weight:700;">${b.displayOrder}</td>
+                    <td style="text-align:center;">${statusBadge}</td>
+                    <td style="text-align:center; font-size:12px;">${fmt(b.startDate)}</td>
+                    <td style="text-align:center; font-size:12px;">${fmt(b.endDate)}</td>
+                    <td style="text-align:center;">
+                        <div style="display:flex; gap:6px; justify-content:center;">
+                            <button onclick="openBannerModal(${b.bannerId})" style="background:var(--primary); color:#fff; border:none; border-radius:6px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer;">✏️ Sửa</button>
+                            <button onclick="deleteBanner(${b.bannerId}, '${b.title.replace(/'/g, "\\'")}')"
+                                style="background:#ef4444; color:#fff; border:none; border-radius:6px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer;">🗑️ Xóa</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function openBannerModal(bannerId) {
+            const modal = document.getElementById('bannerModal');
+            const form  = document.getElementById('bannerForm');
+            form.reset();
+            document.getElementById('bannerImgPreview').style.display = 'none';
+
+            if (bannerId === null) {
+                // ADD mode
+                document.getElementById('bannerModalTitle').textContent = 'Thêm Banner Mới';
+                document.getElementById('bannerIdInput').value = '';
+                document.getElementById('bannerIsActive').value = 'true';
+            } else {
+                // EDIT mode — populate from cache
+                const b = _allBanners.find(x => x.bannerId === bannerId);
+                if (!b) return;
+                document.getElementById('bannerModalTitle').textContent = 'Chỉnh Sửa Banner #' + bannerId;
+                document.getElementById('bannerIdInput').value = bannerId;
+                document.getElementById('bannerTitle').value = b.title || '';
+                document.getElementById('bannerImageUrl').value = b.imageUrl || '';
+                document.getElementById('bannerLinkUrl').value = b.linkUrl || '';
+                document.getElementById('bannerDisplayOrder').value = b.displayOrder ?? 0;
+                document.getElementById('bannerIsActive').value = b.isActive ? 'true' : 'false';
+                if (b.startDate) document.getElementById('bannerStartDate').value = b.startDate.substring(0, 10);
+                if (b.endDate)   document.getElementById('bannerEndDate').value = b.endDate.substring(0, 10);
+                previewBannerImg();
+            }
+            modal.classList.add('active');
+        }
+
+        function closeBannerModal() {
+            document.getElementById('bannerModal').classList.remove('active');
+        }
+
+        function previewBannerImg() {
+            const url = document.getElementById('bannerImageUrl').value.trim();
+            const previewWrap = document.getElementById('bannerImgPreview');
+            const img = document.getElementById('bannerPreviewTag');
+            if (url) {
+                img.src = url;
+                previewWrap.style.display = 'block';
+            } else {
+                previewWrap.style.display = 'none';
+            }
+        }
+
+        async function submitBanner(e) {
+            e.preventDefault();
+            const btn = document.getElementById('bannerSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Đang lưu...';
+
+            const idVal = document.getElementById('bannerIdInput').value;
+            const payload = {
+                bannerId:     idVal ? parseInt(idVal) : null,
+                title:        document.getElementById('bannerTitle').value.trim(),
+                imageUrl:     document.getElementById('bannerImageUrl').value.trim(),
+                linkUrl:      document.getElementById('bannerLinkUrl').value.trim() || null,
+                displayOrder: parseInt(document.getElementById('bannerDisplayOrder').value) || 0,
+                isActive:     document.getElementById('bannerIsActive').value === 'true',
+                startDate:    document.getElementById('bannerStartDate').value || null,
+                endDate:      document.getElementById('bannerEndDate').value || null
+            };
+
+            try {
+                const res = await authFetch('/api/banners', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Lỗi lưu banner');
+
+                showToast(data.message || 'Lưu banner thành công!', 'success');
+                closeBannerModal();
+                loadBanners();
+            } catch (err) {
+                showToast('❌ ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'LƯU BANNER';
+            }
+        }
+
+        async function deleteBanner(bannerId, title) {
+            if (!confirm(`Bạn có chắc muốn XÓA banner "${title}" không? Hành động này không thể hoàn tác.`)) return;
+
+            try {
+                const res = await authFetch(`/api/banners/${bannerId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'Lỗi xóa banner');
+
+                showToast(data.message || 'Xóa banner thành công!', 'success');
+                loadBanners();
+            } catch (err) {
+                showToast('❌ ' + err.message, 'error');
+            }
+        }
+
+        // Hook into existing tab switching: load banners when tab opens
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.menu-item[data-tab]').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (item.dataset.tab === 'banners') {
+                        loadBanners();
+                    }
+                });
+            });
+        });
     </script>
 </body>
 
