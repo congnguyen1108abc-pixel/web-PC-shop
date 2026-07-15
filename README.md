@@ -32,21 +32,23 @@ Mở **SSMS**, kết nối vào SQL Server và chạy lần lượt các file SQ
 
 ### 3. Cấu hình appsettings.json
 
-Kiểm tra và cập nhật connection string phù hợp với SQL Server của bạn:
+> ⚠️ **File `appsettings.json` không được push lên GitHub** (chứa API keys/secrets). Bạn cần tạo từ template:
 
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=PC_Store;Trusted_Connection=True;TrustServerCertificate=True"
-  }
-}
+```bash
+copy appsettings.example.json appsettings.json
 ```
 
-**Các cấu hình khác** (tùy chọn, có thể bỏ qua nếu chỉ test local):
-- `Gemini:ApiKey` — API key Google Gemini cho chatbot AI
-- `Brevo` / `Smtp` — Gửi email (quên mật khẩu, thông báo)
-- `SePay` — Thanh toán online
-- `GHN` — Giao hàng nhanh
+Sau đó mở `appsettings.json` và cập nhật:
+
+- **ConnectionStrings** — Sửa connection string phù hợp SQL Server của bạn:
+  ```json
+  "DefaultConnection": "Server=localhost\\SQLEXPRESS;Database=PC_Store;Trusted_Connection=True;TrustServerCertificate=True"
+  ```
+- **Jwt:Key** — Thay bằng chuỗi bí mật ít nhất 64 ký tự
+- **Gemini:ApiKey** — Lấy từ [Google AI Studio](https://aistudio.google.com/app/apikeys) (cho chatbot AI)
+- **Brevo / Smtp** — Cấu hình email (tùy chọn, cho chức năng quên mật khẩu)
+- **SePay** — Cấu hình thanh toán online (tùy chọn)
+- **GHN** — Cấu hình giao hàng (tùy chọn)
 
 ### 4. Restore NuGet packages & chạy project
 
