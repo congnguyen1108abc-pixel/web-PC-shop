@@ -379,3 +379,6 @@ user-secrets/
 # Large video files (chặn push clip nặng lên GitHub)
 wwwroot/images/*.mp4
 wwwroot/assets/image/*.mp4
+
+# Scratch / temporary files
+scratch/
