@@ -33,151 +33,6 @@
             --text: #555555;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            color: #000000;
-            background-color: #FFFFFF;
-        }
-
-        button,
-        input,
-        select,
-        textarea {
-            font-family: inherit;
-        }
-
-        /* ================================= */
-        /* PAGE SECTION */
-        /* ================================= */
-
-        .page-section {
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* ================================= */
-        /* BACKGROUND */
-        /* ================================= */
-
-        .bg-wrapper {
-            display: none;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: .25;
-            animation: floatOrb 12s ease-in-out infinite;
-        }
-
-        .orb1 {
-            width: 550px;
-            height: 550px;
-            background: #000000;
-            top: -220px;
-            left: -120px;
-        }
-
-        .orb2 {
-            width: 450px;
-            height: 450px;
-            background: #000000;
-            right: -100px;
-            bottom: -150px;
-            animation-delay: 3s;
-        }
-
-        .orb3 {
-            width: 350px;
-            height: 350px;
-            background: #000000;
-            top: 45%;
-            left: 40%;
-            opacity: .15;
-            animation-delay: 5s;
-        }
-
-        .grid-bg {
-            display: none;
-        }
-
-        .particles span {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: #555555;
-            animation: particleMove linear infinite;
-        }
-
-        .particles span:nth-child(1) {
-            left: 10%;
-            animation-duration: 12s;
-        }
-
-        .particles span:nth-child(2) {
-            left: 25%;
-            animation-duration: 16s;
-        }
-
-        .particles span:nth-child(3) {
-            left: 50%;
-            animation-duration: 20s;
-        }
-
-        .particles span:nth-child(4) {
-            left: 70%;
-            animation-duration: 14s;
-        }
-
-        .particles span:nth-child(5) {
-            left: 90%;
-            animation-duration: 18s;
-        }
-
-        /* ================================= */
-        /* HEADER */
-        /* ================================= */
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            transform: none;
-            width: 100%;
-            height: 78px;
-            padding: 0 45px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 999;
-            border-radius: 0 0 20px 20px;
-            background: #FFFFFF;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
-            transition: .4s ease;
-        }
-
-        header.scrolled {
-            background: #FFFFFF;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, .12);
-        }
-
-        .logo {
-            font-size: 32px;
-            font-weight: 800;
-            letter-spacing: 4px;
-            color: #000000;
-        }
-
         nav {
             position: absolute;
             left: 50%;
@@ -491,6 +346,7 @@
             font-weight: 900;
             text-transform: uppercase;
             background: linear-gradient(90deg, #000000, #555555);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -598,6 +454,7 @@
             line-height: 1.15;
             margin-bottom: 25px;
             background: linear-gradient(90deg, #000000, #4f4f4f);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -655,8 +512,9 @@
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
+            align-items: stretch;
         }
 
         .product-card {
@@ -665,31 +523,46 @@
             backdrop-filter: blur(20px);
             border-radius: 30px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-width: 0;
             transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1), background 120ms cubic-bezier(.22, 1, .36, 1), border-color 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
         .product-image {
             width: 100%;
-            height: 300px;
-            object-fit: cover;
+            height: 260px;
+            object-fit: contain;
+            object-position: center;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.28);
         }
 
         .product-info {
             padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
         }
 
         .product-info h3 {
             font-size: 28px;
             margin-bottom: 12px;
+            line-height: 1.2;
+            min-height: 2.4em;
+            margin-bottom: 0;
         }
 
         .product-info p {
             color: var(--text);
             line-height: 1.7;
+            min-height: 3.4em;
         }
 
         .price {
-            margin-top: 18px;
+            margin-top: auto;
             font-size: 24px;
             color: var(--blue-light);
             font-weight: bold;
@@ -1084,6 +957,7 @@
             line-height: 1;
             margin-bottom: 25px;
             background: linear-gradient(90deg, #fff, #000000);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -1227,15 +1101,228 @@
             position: relative;
             z-index: 10;
             background-color: #FFFFFF;
-            padding: 78px 80px;
+            padding: 40px 0;
             min-height: unset;
         }
 
         .laptop-container {
+            width: 100%;
+            max-width: 1450px;
+            margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            grid-template-columns: 1fr minmax(340px, 400px);
+            gap: 40px;
+            align-items: stretch;
+            padding: 0 20px;
+        }
+
+        .laptop-left {
+            position: relative;
+            height: 460px;
+            min-height: 460px;
+            max-height: 460px;
+            width: 100%;
+            border-radius: 30px;
+            overflow: hidden;
+            background: #0b1018;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+        }
+
+        .banner-carousel {
+            position: relative;
+            width: 100%;
+            height: 460px;
+            min-height: 460px;
+            max-height: 460px;
+            overflow: hidden;
+        }
+
+        .banner-slide {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 40% 60%;
+            gap: 40px;
             align-items: center;
+            padding: 0 48px 50px 48px;
+            opacity: 0;
+            transform: translateX(22px);
+            transition: opacity 0.55s ease, transform 0.55s ease;
+            pointer-events: none;
+        }
+
+        .banner-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .banner-slide::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--banner-bg, linear-gradient(135deg, #111827 0%, #06080f 100%));
+            z-index: 0;
+        }
+
+        .banner-slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.08), transparent 28%), radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.07), transparent 24%);
+            z-index: 0;
+        }
+
+        .banner-slide>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .laptop-copy {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+            color: #ffffff;
+        }
+
+        .laptop-copy .gear-tag {
+            margin-bottom: 0;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.16);
+            color: #f9fafb;
+        }
+
+        .laptop-copy .laptop-title {
+            font-size: 60px;
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 0;
+            background: none;
+            -webkit-text-fill-color: #ffffff;
+            color: #ffffff;
+        }
+
+        .laptop-copy .laptop-text {
+            max-width: 420px;
+            margin: 0;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.75;
+        }
+
+        .laptop-copy .gear-btn {
+            margin-top: 4px;
+        }
+
+        .laptop-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            position: relative;
+        }
+
+        .laptop-visual::before {
+            content: "";
+            position: absolute;
+            inset: 18% 8% 14% 8%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 28%, transparent 72%);
+            filter: blur(18px);
+            opacity: 0.9;
+            pointer-events: none;
+            transform: scale(1.05);
+        }
+
+        .laptop-visual::after {
+            content: "";
+            position: absolute;
+            left: 16%;
+            right: 16%;
+            bottom: 12%;
+            height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(closest-side, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06) 45%, transparent 100%);
+            filter: blur(8px);
+            opacity: 0.75;
+            pointer-events: none;
+        }
+
+        .laptop-visual img {
+            max-width: 480px;
+            max-height: 340px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            background: transparent;
+            filter: drop-shadow(0 22px 38px rgba(0, 0, 0, 0.26)) drop-shadow(0 0 22px rgba(255, 255, 255, 0.12));
+            animation: bannerImageFloat 5.4s ease-in-out infinite;
+            transition: filter 180ms cubic-bezier(.22, 1, .36, 1);
+            will-change: filter;
+        }
+
+        .laptop-visual:hover img {
+            filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.28)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.14));
+        }
+
+        .laptop-slider-controls {
+            position: absolute;
+            left: 30px;
+            right: 30px;
+            bottom: 28px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .laptop-nav-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            line-height: 1;
+            backdrop-filter: blur(16px);
+            transition: background 120ms cubic-bezier(.22, 1, .36, 1), transform 120ms cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .laptop-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-1px);
+        }
+
+        .laptop-dots {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .laptop-dot {
+            width: 8px;
+            height: 8px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.36);
+            padding: 0;
+            cursor: pointer;
+            transition: width 120ms cubic-bezier(.22, 1, .36, 1), background 120ms cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .laptop-dot.active {
+            width: 24px;
+            background: #ffffff;
         }
 
         .laptop-right {
@@ -1245,9 +1332,10 @@
         }
 
         .laptop-card {
-            display: flex;
+            display: grid;
+            grid-template-columns: 220px 1fr;
             align-items: center;
-            gap: 30px;
+            gap: 28px;
             padding: 30px;
             border-radius: 35px;
             background: rgba(0, 0, 0, .05);
@@ -1256,13 +1344,19 @@
             transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1);
         }
 
+        .laptop-card.banner-highlight {
+            transform: translateY(-3px) scale(1.01);
+            border-color: rgba(17, 24, 39, 0.16);
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.10);
+        }
+
         .laptop-card:hover {
-            transform: translateX(15px);
-            box-shadow: 0 20px 40px #555555;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
         }
 
         .laptop-card img {
-            width: 280px;
+            width: 220px;
             border-radius: 20px;
             transition: transform 120ms cubic-bezier(.22, 1, .36, 1);
         }
@@ -1274,6 +1368,95 @@
         .laptop-info h3 {
             font-size: 32px;
             margin-bottom: 15px;
+        }
+
+        @media(max-width:1000px) {
+
+            .gear-layout,
+            .laptop-container,
+            .audio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gear-title,
+            .laptop-title,
+            .audio-title {
+                font-size: 48px;
+            }
+
+            .gear-section,
+            .laptop-section,
+            .audio-section {
+                padding: 65px 20px;
+            }
+
+            .banner-slide {
+                grid-template-columns: 1fr;
+                padding: 28px 24px 104px;
+            }
+
+            .laptop-visual {
+                justify-content: flex-start;
+            }
+
+            .laptop-visual img {
+                width: min(100%, 350px);
+                max-height: 252px;
+                transform: translateY(0);
+            }
+
+            .laptop-card {
+                grid-template-columns: 180px 1fr;
+            }
+
+            .laptop-card img {
+                width: 100%;
+            }
+
+            .laptop-slider-controls {
+                left: 24px;
+                right: 24px;
+            }
+        }
+
+        @media(max-width:640px) {
+            .laptop-left {
+                min-height: 500px;
+            }
+
+            .banner-slide {
+                padding: 22px 18px 110px;
+            }
+
+            .laptop-copy .laptop-title {
+                font-size: clamp(1.9rem, 9vw, 2.8rem);
+            }
+
+            .laptop-copy .laptop-text {
+                max-width: 100%;
+            }
+
+            .laptop-visual img {
+                width: min(100%, 310px);
+                max-height: 225px;
+                transform: translateY(0);
+            }
+
+            .laptop-slider-controls {
+                left: 18px;
+                right: 18px;
+                bottom: 18px;
+            }
+
+            .laptop-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                justify-items: center;
+            }
+
+            .laptop-info h3 {
+                font-size: 26px;
+            }
         }
 
         /* ================================================= */
@@ -2285,6 +2468,7 @@
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
+
             .trust-reasons-title {
                 font-size: 26px;
                 margin-bottom: 40px;
@@ -2446,6 +2630,7 @@
             .testimonials-grid {
                 grid-template-columns: 1fr;
             }
+
             .testimonials-title {
                 font-size: 28px;
             }
@@ -2463,6 +2648,7 @@
             0% {
                 background-position: 200% 0;
             }
+
             100% {
                 background-position: -200% 0;
             }
@@ -2725,23 +2911,46 @@
                         <small id="dropdownEmail">email@example.com</small>
                     </div>
                     <a href="/profile/info" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
                         Hồ sơ của tôi
                     </a>
                     <a href="/shoppingcart" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
                         Giỏ hàng
                     </a>
                     <a href="/order-status" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
                         Đơn hàng
                     </a>
                     <a href="/customer-returns" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5" />
+                        </svg>
                         Đổi trả / Hoàn tiền
                     </a>
                     <button class="dropdown-item logout" onclick="handleLogout()">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
                         Đăng xuất
                     </button>
                 </div>
@@ -2772,7 +2981,8 @@
     </section>
 
     <!-- RECOMMENDATIONS / FEATURED PRODUCTS (APRIORI) -->
-    <section class="products page-section reveal" id="homeRecommendationsSection" style="background-color: #ffffff; position: relative; z-index: 2; margin: 0; padding: 40px 0 60px 0;">
+    <section class="products page-section reveal" id="homeRecommendationsSection"
+        style="background-color: #ffffff; position: relative; z-index: 2; margin: 0; padding: 40px 0 60px 0;">
         <style>
             .home-rec-container {
                 background: #ffffff;
@@ -2923,6 +3133,7 @@
                 line-height: 1.5;
                 height: 40px;
                 display: -webkit-box;
+                line-clamp: 2;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
@@ -3022,7 +3233,7 @@
                 background: #1e293b;
                 color: #ffffff;
                 border-color: #1e293b;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
             }
 
             .slider-nav-btn.prev {
@@ -3038,11 +3249,15 @@
                     flex: 0 0 calc(50% - 8px);
                 }
             }
+
             @media (max-width: 640px) {
                 .home-rec-card {
                     flex: 0 0 100%;
                 }
-                .home-rec-container { padding: 16px; }
+
+                .home-rec-container {
+                    padding: 16px;
+                }
             }
         </style>
         <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
@@ -3051,7 +3266,7 @@
                 <div class="home-rec-header-row">
                     <div class="home-rec-title">Gợi Ý Cho Bạn</div>
                 </div>
-                
+
                 <!-- Pills: filter within recommendation grid -->
                 <div class="home-rec-pills" id="homeRecPills">
                     <span class="home-rec-pill active" data-filter="all">Tất cả</span>
@@ -3069,19 +3284,130 @@
                 <div class="home-rec-slider-wrapper">
                     <!-- Prev button -->
                     <button class="slider-nav-btn prev" id="homeSlidePrevBtn" type="button">&#8249;</button>
-                    
+
                     <!-- Horizontal scrollable product grid -->
                     <div class="home-rec-grid" id="homeRecommendationsGrid">
                         <div style="text-align: center; width: 100%; padding: 40px; color: #94a3b8; font-weight: 500;">
                             Đang tải danh sách sản phẩm đề xuất...
                         </div>
                     </div>
-                    
+
                     <!-- Next button -->
                     <button class="slider-nav-btn next" id="homeSlideNextBtn" type="button">&#8250;</button>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- HERO BANNER SECTION MOVED HERE -->
+    <section class="laptop-section page-section">
+        <div class="laptop-container">
+            <div class="laptop-left reveal">
+                <div class="banner-carousel" id="bannerCarousel" aria-roledescription="carousel"
+                    aria-label="Hero Banner Slider">
+
+                    <article class="banner-slide active" data-banner-target="rtx5080"
+                        style="--banner-bg: linear-gradient(135deg, #111827 0%, #06080f 55%, #1f2937 100%);">
+                        <div class="laptop-copy">
+                            <span class="gear-tag">RTX 5080 SERIES</span>
+                            <h2 class="laptop-title">Thế hệ AI Gaming</h2>
+                            <p class="laptop-text">Thiết bị tối ưu cho ray tracing, AI frame generation và trải nghiệm
+                                mượt ở mọi tựa game.</p>
+                            <button class="gear-btn" onclick="window.location.href='/pcbuild'">Xem bộ sưu tập</button>
+                        </div>
+                        <div class="laptop-visual">
+                            <img src="/images/laptop.png" alt="RTX 5080 Series" />
+                        </div>
+                    </article>
+
+                    <article class="banner-slide" data-banner-target="rtx5070"
+                        style="--banner-bg: linear-gradient(135deg, #0b1220 0%, #111827 52%, #1d4ed8 100%);">
+                        <div class="laptop-copy">
+                            <span class="gear-tag">GAMING FESTIVAL</span>
+                            <h2 class="laptop-title">RTX 5070 Pro</h2>
+                            <p class="laptop-text">Tối ưu hiệu năng, cân bằng giá trị, phù hợp cho những bộ máy gaming
+                                cao cấp thế hệ mới.</p>
+                            <button class="gear-btn" onclick="window.location.href='/Products'">Xem ưu đãi</button>
+                        </div>
+                        <div class="laptop-visual">
+                            <img src="/images/laptop2.png" alt="RTX 5070 Pro" />
+                        </div>
+                    </article>
+
+                    <article class="banner-slide" data-banner-target="none"
+                        style="--banner-bg: linear-gradient(135deg, #111827 0%, #3f1d1d 48%, #7f1d1d 100%);">
+                        <div class="laptop-copy">
+                            <span class="gear-tag">FLASH SALE</span>
+                            <h2 class="laptop-title">Giảm giá trong ngày</h2>
+                            <p class="laptop-text">Khuyến mãi giới hạn cho các cấu hình gaming và phụ kiện chọn lọc với
+                                số lượng có hạn.</p>
+                            <button class="gear-btn" onclick="window.location.href='/voucher'">Săn deal ngay</button>
+                        </div>
+                        <div class="laptop-visual">
+                            <img src="/images/pc_streamer_pc.png" alt="Flash Sale" />
+                        </div>
+                    </article>
+
+                    <article class="banner-slide" data-banner-target="none"
+                        style="--banner-bg: linear-gradient(135deg, #0f172a 0%, #312e81 50%, #0ea5e9 100%);">
+                        <div class="laptop-copy">
+                            <span class="gear-tag">DIAMOND MEMBER</span>
+                            <h2 class="laptop-title">Ưu đãi thành viên</h2>
+                            <p class="laptop-text">Quyền lợi riêng, điểm thưởng nâng cấp và các bộ máy cao cấp dành cho
+                                khách hàng thân thiết.</p>
+                            <button class="gear-btn" onclick="window.location.href='/profile/loyalty'">Khám phá quyền
+                                lợi</button>
+                        </div>
+                        <div class="laptop-visual">
+                            <img src="/images/pc_valorant_pc.png" alt="Diamond Member" />
+                        </div>
+                    </article>
+
+                    <div class="laptop-slider-controls">
+                        <button class="laptop-nav-btn" type="button" id="bannerPrevBtn"
+                            aria-label="Previous slide">‹</button>
+                        <div class="laptop-dots" id="bannerDots" aria-label="Banner pagination">
+                            <button class="laptop-dot active" type="button" aria-label="Go to slide 1"
+                                data-banner-dot="0"></button>
+                            <button class="laptop-dot" type="button" aria-label="Go to slide 2"
+                                data-banner-dot="1"></button>
+                            <button class="laptop-dot" type="button" aria-label="Go to slide 3"
+                                data-banner-dot="2"></button>
+                            <button class="laptop-dot" type="button" aria-label="Go to slide 4"
+                                data-banner-dot="3"></button>
+                        </div>
+                        <button class="laptop-nav-btn" type="button" id="bannerNextBtn"
+                            aria-label="Next slide">›</button>
+                    </div>
+
+                </div>
+
+                <div class="laptop-right">
+                    <div class="laptop-card reveal" data-banner-target="rtx5080">
+                        <img src="/images/laptop.png" alt="Laptop" />
+                        <div class="laptop-info">
+                            <h3>RTX 5080 ULTRA</h3>
+                            <p>Intel Core Ultra 9</p>
+                            <div class="gear-price">
+                                42.990.000đ
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="laptop-card reveal" data-banner-target="rtx5070">
+                        <img src="/images/laptop2.png" alt="Laptop" />
+                        <div class="laptop-info">
+                            <h3>RTX 5070 PRO</h3>
+                            <p>Ryzen 9 AI Edition</p>
+                            <div class="gear-price">
+                                36.990.000đ
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
     </section>
 
     <!-- SHOWCASE -->
@@ -3093,7 +3419,7 @@
             <div class="showcase-text-content reveal">
 
                 <h2
-                    style="font-size: clamp(2.2rem, 4.2vw, 4.2rem); line-height: 1.15; margin-bottom: 25px; background: linear-gradient(90deg, #000000, #4f4f4f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; text-transform: uppercase;">
+                    style="font-size: clamp(2.2rem, 4.2vw, 4.2rem); line-height: 1.15; margin-bottom: 25px; background: linear-gradient(90deg, #000000, #4f4f4f); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; text-transform: uppercase;">
                     CHINH PHỤC MỌI GIỚI HẠN CẤU HÌNH
                 </h2>
 
@@ -3106,8 +3432,10 @@
                 </p>
 
                 <div class="hero-buttons" style="justify-content: flex-start;">
-                    <button class="hero-btn hero-primary" onclick="window.location.href='/pcbuild'">Khám Phá Ngay</button>
-                    <button class="hero-btn hero-secondary" onclick="window.location.href='/Products'">Xem Sản Phẩm</button>
+                    <button class="hero-btn hero-primary" onclick="window.location.href='/pcbuild'">Khám Phá
+                        Ngay</button>
+                    <button class="hero-btn hero-secondary" onclick="window.location.href='/Products'">Xem Sản
+                        Phẩm</button>
                 </div>
 
             </div>
@@ -3139,54 +3467,11 @@
 
     </section>
 
-    <!-- TRUST REASONS SECTION -->
-    <section class="trust-reasons-section">
-        <div class="trust-reasons-container">
-            <h2 class="trust-reasons-title reveal">4 lý do bạn có thể tin HYPERCORE</h2>
-            <div class="trust-reasons-grid reveal">
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
-                            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
-                        </svg>
-                    </div>
-                    <h3>Tư vấn đúng nhu cầu</h3>
-                    <p>Lắng nghe thói quen sử dụng thực tế để gợi ý cấu hình phù hợp nhất. Chúng tôi giúp bạn chọn đúng sản phẩm ngay từ đầu, tránh lãng phí chi phí thử nghiệm.</p>
-                </div>
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                        </svg>
-                    </div>
-                    <h3>Kiểm thử nghiêm ngặt</h3>
-                    <p>Mọi sản phẩm đều được kiểm tra kỹ lưỡng về hiệu năng và độ ổn định trước khi lên kệ. Chúng tôi kiên quyết từ chối những thiết bị không đạt chuẩn.</p>
-                </div>
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                        </svg>
-                    </div>
-                    <h3>Xu hướng mới nhất</h3>
-                    <p>Là đối tác chiến lược của các hãng công nghệ lớn, HYPERCORE luôn mang về những dòng sản phẩm mới nhất và phiên bản giới hạn sớm nhất thị trường.</p>
-                </div>
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="8" width="18" height="4" rx="1"/>
-                            <path d="M12 8V22M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>
-                        </svg>
-                    </div>
-                    <h3>Bảo hành nhanh chóng</h3>
-                    <p>Quy trình xử lý bảo hành rõ ràng, tối ưu thời gian chờ đợi.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
+
+    <!-- ================================================= -->
     <!-- CUSTOMER TESTIMONIALS SECTION -->
+    <!-- ================================================= -->
     <section class="testimonials-section" id="testimonialsSection">
         <div class="testimonials-container">
             <div class="testimonials-header">
@@ -3241,7 +3526,6 @@
     </section>
 
     <!-- PRODUCTS -->
-
     <section class="products page-section">
 
         <h2 class="section-title reveal">
@@ -3254,7 +3538,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/pc1.jpg" class="product-image" alt="Gaming PC" />
+                <img src="/images/pc_creator_pc.png" class="product-image" alt="Gaming PC" />
 
                 <div class="product-info">
 
@@ -3274,7 +3558,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/keyboard.jpg" class="product-image" alt="Keyboard" />
+                <img src="/images/mechanicalKeyboard.png" class="product-image" alt="Keyboard" />
 
                 <div class="product-info">
 
@@ -3294,7 +3578,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/mouse.jpg" class="product-image" alt="Mouse" />
+                <img src="/images/wirelessMouse.png" class="product-image" alt="Mouse" />
 
                 <div class="product-info">
 
@@ -3314,7 +3598,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/headphone.jpg" class="product-image" alt="Headphone" />
+                <img src="/images/GamingHeadset.png" class="product-image" alt="Headphone" />
 
                 <div class="product-info">
 
@@ -3334,7 +3618,7 @@
 
             <div class="product-card reveal floating">
 
-                <img src="/images/monitor.jpg" class="product-image" alt="Monitor" />
+                <img src="/images/pc_creator_setup.png" class="product-image" alt="Monitor" />
 
                 <div class="product-info">
 
@@ -3353,6 +3637,8 @@
             </div>
 
             <div class="product-card reveal floating">
+
+                <img src="/images/pc_giatoc_pc.png" class="product-image" alt="Gaming Laptop" />
 
                 <div class="product-info">
 
@@ -3410,7 +3696,7 @@
 
                 <div class="gear-overlay"></div>
 
-                <img src="/images/controller.png" class="gear-big-image" alt="Gaming Controller" />
+                <img src="/images/tayCam.jpg" class="gear-big-image" alt="Gaming Controller" />
 
                 <div class="gear-content">
 
@@ -3438,7 +3724,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/headphone.jpg" alt="Headphone" />
+                    <img src="/images/GamingHeadset.png" alt="Headphone" />
 
                     <div class="small-info">
 
@@ -3452,7 +3738,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/mouse.jpg" alt="Mouse" />
+                    <img src="/images/wirelessMouse.png" alt="Mouse" />
 
                     <div class="small-info">
 
@@ -3466,7 +3752,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/keyboard.jpg" alt="Keyboard" />
+                    <img src="/images/mechanicalKeyboard.png" alt="Keyboard" />
 
                     <div class="small-info">
 
@@ -3480,7 +3766,7 @@
 
                 <div class="gear-small-card reveal">
 
-                    <img src="/images/gamepad.jpg" alt="Gamepad" />
+                    <img src="/images/RGBGamePad.png" alt="Gamepad" />
 
                     <div class="small-info">
 
@@ -3498,87 +3784,7 @@
 
     </section>
 
-    <!-- ================================================= -->
-    <!-- LAPTOP SECTION -->
-    <!-- ================================================= -->
 
-    <section class="laptop-section page-section">
-
-        <div class="laptop-container">
-
-            <div class="laptop-left reveal">
-
-                <span class="gear-tag">
-                    Voucher khuyến mãi
-                </span>
-
-                <h2 class="laptop-title">
-                    <span class="reveal-text-container" style="display: block;">
-                        <span class="reveal-text-line">GAMING</span>
-                    </span>
-                    <span class="reveal-text-container" style="display: block;">
-                        <span class="reveal-text-line">LAPTOPS</span>
-                    </span>
-                </h2>
-
-                <p class="laptop-text">
-
-                    SĂN VOUCHER ESPORTS – CHIẾN GAME NHẬN QUÀ!
-                    Vào game săn mã, hạ giá cực sâu siêu phẩm gaming thế hệ mới: Sức mạnh RTX AI, 
-                    màn hình 240Hz xé gió và tản nhiệt Vapor Chamber cao cấp. 
-                    Click chơi ngay, voucher về tay!
-
-                </p>
-
-                <button class="gear-btn" onclick="window.location.href='/voucher'">
-                    SĂN MÃ VOUCHER NGAY
-                </button>
-
-            </div>
-
-            <div class="laptop-right">
-
-                <div class="laptop-card reveal">
-
-                    <img src="/images/laptop.jpg" alt="Laptop" />
-
-                    <div class="laptop-info">
-
-                        <h3>RTX 5080 ULTRA</h3>
-
-                        <p>Intel Core Ultra 9</p>
-
-                        <div class="gear-price">
-                            42.990.000đ
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="laptop-card reveal">
-
-                    <img src="/images/laptop2.jpg" alt="Laptop" />
-
-                    <div class="laptop-info">
-
-                        <h3>RTX 5070 PRO</h3>
-
-                        <p>Ryzen 9 AI Edition</p>
-
-                        <div class="gear-price">
-                            36.990.000đ
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
 
     <!-- ================================================= -->
     <!-- AUDIO SECTION -->
@@ -3604,7 +3810,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/images/headphone.jpg" alt="Audio" />
+                <img src="/images/GamingHeadset.png" alt="Audio" />
 
                 <div class="audio-content">
 
@@ -3620,7 +3826,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/images/speaker.jpg" alt="Speaker" />
+                <img src="/images/pc_streamer_setup.png" alt="Speaker" />
 
                 <div class="audio-content">
 
@@ -3636,7 +3842,7 @@
 
             <div class="audio-card reveal">
 
-                <img src="/images/mic.jpg" alt="Microphone" />
+                <img src="/images/pc_valorant_setup.png" alt="Microphone" />
 
                 <div class="audio-content">
 
@@ -3652,6 +3858,63 @@
 
         </div>
 
+    </section>
+
+
+
+    <!-- ================================================= -->
+    <!-- TRUST REASONS SECTION -->
+    <!-- ================================================= -->
+    <section class="trust-reasons-section page-section">
+        <div class="trust-reasons-container">
+            <h2 class="trust-reasons-title reveal">4 lý do bạn có thể tin HYPERCORE</h2>
+            <div class="trust-reasons-grid reveal">
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                            <path
+                                d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                        </svg>
+                    </div>
+                    <h3>Tư vấn đúng nhu cầu</h3>
+                    <p>Lắng nghe thói quen sử dụng thực tế để gợi ý cấu hình phù hợp nhất. Chúng tôi giúp bạn chọn đúng
+                        sản phẩm ngay từ đầu, tránh lãng phí chi phí thử nghiệm.</p>
+                </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                    </div>
+                    <h3>Kiểm thử nghiêm ngặt</h3>
+                    <p>Mọi sản phẩm đều được kiểm tra kỹ lưỡng về hiệu năng và độ ổn định trước khi lên kệ. Chúng tôi
+                        kiên quyết từ chối những thiết bị không đạt chuẩn.</p>
+                </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                        </svg>
+                    </div>
+                    <h3>Xu hướng mới nhất</h3>
+                    <p>Là đối tác chiến lược của các hãng công nghệ lớn, HYPERCORE luôn mang về những dòng sản phẩm mới
+                        nhất và phiên bản giới hạn sớm nhất thị trường.</p>
+                </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="8" width="18" height="4" rx="1" />
+                            <path
+                                d="M12 8V22M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />
+                        </svg>
+                    </div>
+                    <h3>Bảo hành nhanh chóng</h3>
+                    <p>Quy trình xử lý bảo hành rõ ràng, tối ưu thời gian chờ đợi.</p>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- CHATBOT UI (Moved to global injection in chatbot-global.js) -->
@@ -3789,6 +4052,122 @@
         );
 
         document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+        /* BANNER PROMOTION SLIDER */
+        (function () {
+            const bannerCarousel = document.getElementById('bannerCarousel');
+            const bannerSlides = bannerCarousel ? Array.from(bannerCarousel.querySelectorAll('.banner-slide')) : [];
+            const bannerDots = bannerCarousel ? Array.from(bannerCarousel.querySelectorAll('[data-banner-dot]')) : [];
+            const bannerPrevBtn = document.getElementById('bannerPrevBtn');
+            const bannerNextBtn = document.getElementById('bannerNextBtn');
+            const bannerHighlightCards = Array.from(document.querySelectorAll('.laptop-card[data-banner-target]'));
+
+            if (!bannerCarousel || bannerSlides.length === 0) {
+                return;
+            }
+
+            let bannerIndex = 0;
+            let bannerTimer = null;
+            let bannerPaused = false;
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            function syncBannerHighlights() {
+                const activeTarget = bannerSlides[bannerIndex] ? bannerSlides[bannerIndex].dataset.bannerTarget : 'none';
+                bannerHighlightCards.forEach((card) => {
+                    card.classList.toggle('banner-highlight', card.dataset.bannerTarget === activeTarget);
+                });
+            }
+
+            function renderBanner(nextIndex) {
+                bannerIndex = (nextIndex + bannerSlides.length) % bannerSlides.length;
+                bannerSlides.forEach((slide, index) => {
+                    slide.classList.toggle('active', index === bannerIndex);
+                });
+                bannerDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === bannerIndex);
+                });
+                syncBannerHighlights();
+            }
+
+            function stopBannerAutoplay() {
+                if (bannerTimer !== null) {
+                    window.clearInterval(bannerTimer);
+                    bannerTimer = null;
+                }
+            }
+
+            function startBannerAutoplay() {
+                stopBannerAutoplay();
+                bannerTimer = window.setInterval(() => {
+                    if (!bannerPaused) {
+                        renderBanner(bannerIndex + 1);
+                    }
+                }, 5000);
+            }
+
+            function gotoBanner(index) {
+                renderBanner(index);
+                startBannerAutoplay();
+            }
+
+            if (bannerPrevBtn) {
+                bannerPrevBtn.addEventListener('click', () => gotoBanner(bannerIndex - 1));
+            }
+
+            if (bannerNextBtn) {
+                bannerNextBtn.addEventListener('click', () => gotoBanner(bannerIndex + 1));
+            }
+
+            bannerDots.forEach((dot) => {
+                dot.addEventListener('click', () => {
+                    const targetIndex = Number(dot.dataset.bannerDot) || 0;
+                    gotoBanner(targetIndex);
+                });
+            });
+
+            bannerCarousel.addEventListener('mouseenter', () => {
+                bannerPaused = true;
+            });
+
+            bannerCarousel.addEventListener('mouseleave', () => {
+                bannerPaused = false;
+            });
+
+            bannerCarousel.addEventListener('pointerdown', (event) => {
+                touchStartX = event.clientX;
+                touchEndX = event.clientX;
+            });
+
+            bannerCarousel.addEventListener('pointermove', (event) => {
+                touchEndX = event.clientX;
+            });
+
+            bannerCarousel.addEventListener('pointerup', () => {
+                const deltaX = touchEndX - touchStartX;
+                if (Math.abs(deltaX) > 50) {
+                    gotoBanner(deltaX > 0 ? bannerIndex - 1 : bannerIndex + 1);
+                }
+            });
+
+            window.addEventListener('keydown', (event) => {
+                const tagName = event.target && event.target.tagName;
+                if (tagName === 'INPUT' || tagName === 'TEXTAREA' || event.defaultPrevented) {
+                    return;
+                }
+
+                if (event.key === 'ArrowLeft') {
+                    gotoBanner(bannerIndex - 1);
+                }
+
+                if (event.key === 'ArrowRight') {
+                    gotoBanner(bannerIndex + 1);
+                }
+            });
+
+            renderBanner(0);
+            startBannerAutoplay();
+        }());
 
 
 
@@ -4055,6 +4434,16 @@
             });
         }
 
+        function renderHomeRecFallback(message) {
+            const grid = document.getElementById('homeRecommendationsGrid');
+            if (!grid) return;
+            grid.innerHTML = `
+                <div style="width:100%;padding:44px 24px;text-align:center;color:#64748b;font-size:14px;background:#f8fafc;border:1px dashed #e2e8f0;border-radius:14px;">
+                    ${message}
+                </div>
+            `;
+        }
+
         async function loadHomeRecommendations() {
             const grid = document.getElementById('homeRecommendationsGrid');
             if (!grid) return;
@@ -4065,8 +4454,7 @@
                 const items = await res.json();
 
                 if (!items || items.length === 0) {
-                    const section = document.getElementById('homeRecommendationsSection');
-                    if (section) section.style.display = 'none';
+                    renderHomeRecFallback('Hiện chưa có sản phẩm đề xuất phù hợp để hiển thị.');
                     return;
                 }
 
@@ -4074,8 +4462,7 @@
                 renderHomeRecCards(_homeRecAllItems);
             } catch (err) {
                 console.error('Error loading home recommendations:', err);
-                const section = document.getElementById('homeRecommendationsSection');
-                if (section) section.style.display = 'none';
+                renderHomeRecFallback('Không tải được danh sách gợi ý, nhưng phần bố cục vẫn được giữ nguyên.');
             }
         }
 
@@ -4183,6 +4570,34 @@
             </div>`;
         }
 
+        function renderTestimonialFallback() {
+            const grid = document.getElementById('testimonialsGrid');
+            if (!grid) return;
+
+            const fallbackItems = [
+                {
+                    fullName: 'Nguyễn Minh Anh',
+                    rating: 5,
+                    comment: 'Trang hiển thị ổn định, bố cục rõ ràng và dễ xem trên cả máy tính lẫn điện thoại.',
+                    createdAt: '2026-07-01T10:00:00Z'
+                },
+                {
+                    fullName: 'Trần Quốc Huy',
+                    rating: 5,
+                    comment: 'Phần gợi ý và các khối nội dung được giữ nguyên nên nhìn rất đầy đủ, không bị hụt layout khi tải xong.',
+                    createdAt: '2026-07-03T10:00:00Z'
+                },
+                {
+                    fullName: 'Lê Thảo Vy',
+                    rating: 5,
+                    comment: 'Giao diện sạch và mạch nội dung tốt, kể cả lúc dữ liệu review chưa sẵn sàng vẫn không bị trống khung.',
+                    createdAt: '2026-07-05T10:00:00Z'
+                }
+            ];
+
+            grid.innerHTML = fallbackItems.map(item => buildTestimonialCard(item)).join('');
+        }
+
         async function loadTestimonials() {
             const grid = document.getElementById('testimonialsGrid');
             const section = document.getElementById('testimonialsSection');
@@ -4195,8 +4610,7 @@
                 const data = await res.json();
 
                 if (!data || data.length === 0) {
-                    // Không đủ data => ẩn section đi, không bị layout lỗi
-                    section.style.display = 'none';
+                    renderTestimonialFallback();
                     return;
                 }
 
@@ -4204,8 +4618,8 @@
                 grid.innerHTML = data.map(item => buildTestimonialCard(item)).join('');
 
             } catch (err) {
-                console.warn('[Testimonials] Fetch failed, hiding section.', err);
-                section.style.display = 'none';
+                console.warn('[Testimonials] Fetch failed, using fallback cards.', err);
+                renderTestimonialFallback();
             }
         }
 

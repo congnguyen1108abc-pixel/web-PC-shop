@@ -9,7 +9,8 @@ console.log('[Checkout] ============ PAGE LOAD ============');
 // 0. CONFIGURATION
 // ==========================================
 const API_BASE = '';
-const DISCOUNT = 0; // Chưa hỗ trợ voucher
+let appliedVoucherCode = null;
+let voucherDiscount = 0;
 let totalAmount = 0;
 let currentShippingFee = 25000;
 let currentOrderId = null;
@@ -535,8 +536,8 @@ async function loadAndRenderCart() {
         currentShippingFee = 25000;
     }
 
-    const discount = DISCOUNT;
-    totalAmount = subtotal + currentShippingFee - discount;
+    const discount = voucherDiscount;
+    totalAmount = Math.max(0, subtotal + currentShippingFee - discount);
 
     console.log('[Checkout] 💰 Order Summary (GHN Sandbox):');
     console.log('[Checkout] - Subtotal:', subtotal);
@@ -689,6 +690,115 @@ async function confirmShippingOption() {
     await loadAndRenderCart();
 }
 
+// ==========================================
+// 4C. VOUCHER / DISCOUNT LOGIC
+// ==========================================
+async function applyVoucher() {
+    const inputEl = document.getElementById('voucher-code-input');
+    const msgEl = document.getElementById('voucher-message');
+    if (!inputEl || !msgEl) return;
+
+    const inputCode = inputEl.value.trim();
+    if (!inputCode) {
+        msgEl.textContent = 'Vui lòng nhập mã giảm giá!';
+        msgEl.className = 'voucher-message error';
+        msgEl.style.display = 'block';
+        return;
+    }
+
+    const token = localStorage.getItem('pc_store_token');
+    const userRaw = localStorage.getItem('pc_store_user');
+    if (!token || !userRaw) {
+        msgEl.textContent = 'Vui lòng đăng nhập để áp dụng mã giảm giá!';
+        msgEl.className = 'voucher-message error';
+        msgEl.style.display = 'block';
+        return;
+    }
+
+    let userId = 0;
+    try {
+        userId = JSON.parse(userRaw).userId;
+    } catch (e) {
+        console.error(e);
+    }
+
+    // Get subtotal
+    let rawItems = [];
+    try {
+        const cartStr = localStorage.getItem('hyper_core_cart');
+        rawItems = JSON.parse(cartStr) || [];
+    } catch (e) {}
+
+    let subtotal = 0;
+    rawItems.forEach(item => {
+        const price = item.price || 0;
+        const qty = item.qty || item.quantity || 1;
+        subtotal += price * qty;
+    });
+
+    if (subtotal === 0) {
+        msgEl.textContent = 'Không có sản phẩm trong giỏ hàng để áp dụng mã!';
+        msgEl.className = 'voucher-message error';
+        msgEl.style.display = 'block';
+        return;
+    }
+
+    try {
+        msgEl.textContent = 'Đang kiểm tra mã...';
+        msgEl.className = 'voucher-message';
+        msgEl.style.display = 'block';
+
+        const response = await fetch(`/api/Vouchers/available?userId=${userId}&orderValue=${subtotal}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Lỗi kiểm tra mã giảm giá');
+        }
+
+        const vouchers = await response.json();
+        const voucher = vouchers.find(v => v.voucherCode.toLowerCase() === inputCode.toLowerCase());
+
+        if (voucher) {
+            let discount = 0;
+            if (voucher.isPercent) {
+                discount = subtotal * (voucher.discountAmount / 100);
+                if (voucher.maxDiscount && discount > voucher.maxDiscount) {
+                    discount = voucher.maxDiscount;
+                }
+            } else {
+                discount = voucher.discountAmount;
+            }
+
+            appliedVoucherCode = voucher.voucherCode;
+            voucherDiscount = discount;
+
+            msgEl.textContent = `Áp dụng mã "${voucher.voucherCode}" thành công: Giảm ${formatCurrency(discount)}`;
+            msgEl.className = 'voucher-message success';
+            msgEl.style.display = 'block';
+
+            await loadAndRenderCart();
+        } else {
+            appliedVoucherCode = null;
+            voucherDiscount = 0;
+            
+            msgEl.textContent = 'Mã giảm giá không hợp lệ, đã hết hạn hoặc không đủ điều kiện!';
+            msgEl.className = 'voucher-message error';
+            msgEl.style.display = 'block';
+            
+            await loadAndRenderCart();
+        }
+    } catch (err) {
+        console.error('[Voucher] Error applying voucher:', err);
+        msgEl.textContent = 'Không thể áp dụng mã giảm giá. Vui lòng thử lại sau!';
+        msgEl.className = 'voucher-message error';
+        msgEl.style.display = 'block';
+    }
+}
+
 // Close modal when clicking on overlay background
 document.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('shippingModalOverlay');
@@ -696,6 +806,21 @@ document.addEventListener('DOMContentLoaded', () => {
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
                 closeShippingModal();
+            }
+        });
+    }
+
+    // Voucher Event Listeners
+    const applyVoucherBtn = document.getElementById('apply-voucher-btn');
+    const voucherInput = document.getElementById('voucher-code-input');
+    if (applyVoucherBtn) {
+        applyVoucherBtn.addEventListener('click', applyVoucher);
+    }
+    if (voucherInput) {
+        voucherInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyVoucher();
             }
         });
     }
@@ -989,7 +1114,7 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
             userId: userId,
             shippingAddress: fullAddress,
             paymentMethod: paymentMethod,
-            voucherCode: null, // TODO: Add voucher support later
+            voucherCode: appliedVoucherCode,
             shippingFee: currentShippingFee,
             toWardCode: wardCode,
             toDistrictId: districtId

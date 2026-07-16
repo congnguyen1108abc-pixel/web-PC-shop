@@ -594,6 +594,72 @@ body {
     font-size: 15px;
 }
 
+/* VOUCHER INPUT */
+.voucher-container {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.voucher-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.voucher-input {
+    flex: 1;
+    height: 46px;
+    border: 1px solid #d1d5db;
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 0 16px;
+    font-size: 14px;
+    color: var(--text-primary);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.voucher-input:focus {
+    border-color: var(--primary);
+    background: var(--bg-white);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.voucher-btn {
+    height: 46px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary);
+    color: var(--bg-white);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.voucher-btn:hover {
+    background: var(--primary-light);
+}
+
+.voucher-message {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+}
+
+.voucher-message.success {
+    display: block;
+    color: #16a34a;
+}
+
+.voucher-message.error {
+    display: block;
+    color: #dc2626;
+}
+
 /* SUMMARY ROWS */
 .summary-row {
     display: flex;

@@ -61,9 +61,17 @@
         }
 
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-25px); }
-            100% { transform: translateY(0px); }
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-25px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
         }
 
         /* CARD */
@@ -83,8 +91,15 @@
         }
 
         @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .success-card::before {
@@ -114,14 +129,37 @@
             background: #fff;
         }
 
-        .status-icon.success { border-color: var(--success); color: var(--success); }
-        .status-icon.failed  { border-color: var(--error);   color: var(--error);   }
-        .status-icon.cancelled { border-color: var(--warning); color: var(--warning); }
-        .status-icon.loading { border-color: #9ca3af; color: #9ca3af; font-size: 32px; }
+        .status-icon.success {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .status-icon.failed {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .status-icon.cancelled {
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .status-icon.loading {
+            border-color: #9ca3af;
+            color: #9ca3af;
+            font-size: 32px;
+        }
 
         @keyframes pop {
-            0%   { transform: scale(.5); opacity: 0; }
-            100% { transform: scale(1);  opacity: 1; }
+            0% {
+                transform: scale(.5);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         /* TEXT */
@@ -189,10 +227,25 @@
             letter-spacing: .4px;
         }
 
-        .badge-success  { background: #dcfce7; color: #15803d; }
-        .badge-pending  { background: #fef9c3; color: #854d0e; }
-        .badge-failed   { background: #fee2e2; color: #b91c1c; }
-        .badge-cancelled{ background: #f3f4f6; color: #374151; }
+        .badge-success {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .badge-failed {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .badge-cancelled {
+            background: #f3f4f6;
+            color: #374151;
+        }
 
         /* BUTTONS */
         .btn-group {
@@ -257,13 +310,25 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         @media (max-width: 600px) {
-            .success-card { padding: 40px 22px; }
-            .status-title { font-size: 28px; }
-            .status-icon  { width: 80px; height: 80px; font-size: 40px; }
+            .success-card {
+                padding: 40px 22px;
+            }
+
+            .status-title {
+                font-size: 28px;
+            }
+
+            .status-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 40px;
+            }
         }
     </style>
 </head>
@@ -307,7 +372,8 @@
             <button class="home-btn" onclick="window.location.href='/Homepage'">
                 🏠 QUAY VỀ TRANG CHỦ
             </button>
-            <button class="secondary-btn" id="orderStatusBtn" onclick="window.location.href='/order-status'" style="display:none;">
+            <button class="secondary-btn" id="orderStatusBtn" onclick="window.location.href='/order-status'"
+                style="display:none;">
                 📦 XEM TRẠNG THÁI ĐƠN HÀNG
             </button>
             <button class="secondary-btn" id="shopMoreBtn" onclick="window.location.href='/Products'">
@@ -320,37 +386,278 @@
 
     <script>
         // ==========================================
+        // LUCKY SPIN REWARDS POPUP SYSTEM
+        // ==========================================
+        function injectLuckyPopupStyles() {
+            if (document.getElementById('lucky-popup-styles')) return;
+            const style = document.createElement('style');
+            style.id = 'lucky-popup-styles';
+            style.textContent = `
+                .lucky-popup-overlay {
+                    position: fixed;
+                    inset: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    backdrop-filter: blur(8px);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                }
+                .lucky-popup-overlay.active {
+                    opacity: 1;
+                }
+                .lucky-popup-card {
+                    background: rgba(255, 255, 255, 0.98);
+                    border: 1px solid rgba(0, 0, 0, 0.08);
+                    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+                    border-radius: 28px;
+                    padding: 40px 30px;
+                    width: min(480px, 90vw);
+                    text-align: center;
+                    transform: scale(0.9);
+                    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                }
+                .lucky-popup-overlay.active .lucky-popup-card {
+                    transform: scale(1);
+                }
+                .lucky-popup-icon {
+                    font-size: 64px;
+                    margin-bottom: 16px;
+                    display: inline-block;
+                    animation: popIcon 0.6s ease;
+                }
+                .lucky-popup-title {
+                    font-size: 28px;
+                    font-weight: 900;
+                    margin-bottom: 12px;
+                    color: #111;
+                    letter-spacing: -0.5px;
+                }
+                .lucky-popup-subtitle {
+                    font-size: 18px;
+                    font-weight: 750;
+                    color: #059669;
+                    margin-bottom: 20px;
+                    line-height: 1.4;
+                }
+                .lucky-popup-content {
+                    background: #f3f4f6;
+                    border-radius: 16px;
+                    padding: 18px;
+                    margin-bottom: 24px;
+                    font-size: 14.5px;
+                    color: #4b5563;
+                    text-align: left;
+                    line-height: 1.6;
+                }
+                .lucky-popup-buttons {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                .lucky-popup-btn-primary {
+                    background: #111;
+                    color: #fff;
+                    border: none;
+                    border-radius: 14px;
+                    padding: 14px;
+                    font-weight: 700;
+                    font-size: 15px;
+                    cursor: pointer;
+                    transition: background 0.2s, transform 0.2s;
+                }
+                .lucky-popup-btn-primary:hover {
+                    background: #222;
+                    transform: translateY(-2px);
+                }
+                .lucky-popup-btn-secondary {
+                    background: transparent;
+                    color: #4b5563;
+                    border: 1.5px solid #e5e7eb;
+                    border-radius: 14px;
+                    padding: 12px;
+                    font-weight: 600;
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+                .lucky-popup-btn-secondary:hover {
+                    background: #f9fafb;
+                    color: #111;
+                    border-color: #111;
+                }
+                .payment-confetti {
+                    position: fixed;
+                    width: 10px;
+                    height: 16px;
+                    top: -20px;
+                    left: 50%;
+                    z-index: 99999;
+                    pointer-events: none;
+                    border-radius: 3px;
+                    animation: paymentConfettiFall 1.8s linear forwards;
+                }
+                @keyframes paymentConfettiFall {
+                    to {
+                        transform: translateY(120vh) rotate(720deg);
+                        opacity: 0;
+                    }
+                }
+                @keyframes popIcon {
+                    0% { transform: scale(0.5); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        function launchPaymentConfetti(count = 50) {
+            const colors = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
+            const centerX = window.innerWidth / 2;
+            for (let i = 0; i < count; i++) {
+                const piece = document.createElement('span');
+                piece.className = 'payment-confetti';
+                piece.style.left = `${centerX + (Math.random() * 300 - 150)}px`;
+                piece.style.top = `${Math.random() * -100 - 20}px`;
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.width = `${6 + Math.random() * 8}px`;
+                piece.style.height = `${10 + Math.random() * 14}px`;
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                piece.style.animationDuration = `${1200 + Math.random() * 800}ms`;
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 2000);
+            }
+        }
+
+        function showEligiblePopup(amount, spins) {
+            const rank = amount < 15000000 ? 'Silver' : (amount < 20000000 ? 'Gold' : (amount < 30000000 ? 'Platinum' : 'VIP'));
+
+            // Save state to localStorage as required
+            localStorage.setItem('orderAmount', amount);
+            let currentSpins = parseInt(localStorage.getItem('availableSpins') || '0');
+            localStorage.setItem('availableSpins', currentSpins + spins);
+            localStorage.setItem('customerRank', rank);
+
+            if (!localStorage.getItem('spinHistory')) localStorage.setItem('spinHistory', '[]');
+            if (!localStorage.getItem('voucherWallet')) localStorage.setItem('voucherWallet', '[]');
+
+            const overlay = document.createElement('div');
+            overlay.className = 'lucky-popup-overlay';
+            overlay.innerHTML = `
+                <div class="lucky-popup-card">
+                    <span class="lucky-popup-icon">🎁</span>
+                    <h2 class="lucky-popup-title">🎉 CHÚC MỪNG!</h2>
+                    <div class="lucky-popup-subtitle">Bạn đã nhận được ${String(spins).padStart(2, '0')} LƯỢT QUAY MAY MẮN</div>
+                    <div class="lucky-popup-content">
+                        <div>• Giá trị đơn hàng: <strong>${amount.toLocaleString('vi-VN')}đ</strong></div>
+                        <div>• Hạng thành viên: <strong>${rank}</strong></div>
+                        <div>• Nhận được: <strong>🎁 ${spins} lượt quay tự do</strong></div>
+                        <div style="margin-top: 10px; font-weight: 500; text-align: center; color: #111;">Bấm nút bên dưới để quay thưởng ngay!</div>
+                    </div>
+                    <div class="lucky-popup-buttons">
+                        <button class="lucky-popup-btn-primary" onclick="window.location.href='/voucher'">Đến vòng quay</button>
+                        <button class="lucky-popup-btn-secondary" onclick="closeLuckyPopup(this)">Để sau</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            setTimeout(() => {
+                overlay.classList.add('active');
+                launchPaymentConfetti();
+            }, 100);
+        }
+
+        function showNotEligiblePopup(amount) {
+            const overlay = document.createElement('div');
+            overlay.className = 'lucky-popup-overlay';
+            overlay.innerHTML = `
+                <div class="lucky-popup-card">
+                    <span class="lucky-popup-icon" style="filter: grayscale(1);">ℹ️</span>
+                    <h2 class="lucky-popup-title" style="font-size: 24px;">Thông Báo</h2>
+                    <p style="color: #4b5563; margin-bottom: 20px; font-size: 15px; line-height: 1.6; text-align: left;">
+                        Đơn hàng của bạn chưa đạt điều kiện nhận lượt quay may mắn. Mua thêm để đạt mốc 10.000.000đ.
+                    </p>
+                    <div class="lucky-popup-content" style="text-align: center;">
+                        Giá trị đơn hàng hiện tại: <strong>${amount.toLocaleString('vi-VN')}đ</strong>
+                    </div>
+                    <div class="lucky-popup-buttons">
+                        <button class="lucky-popup-btn-primary" onclick="window.location.href='/Products'">Tiếp tục mua sắm</button>
+                        <button class="lucky-popup-btn-secondary" onclick="closeLuckyPopup(this)">Đóng</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 100);
+        }
+
+        function closeLuckyPopup(btn) {
+            const overlay = btn.closest('.lucky-popup-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.remove(), 300);
+            }
+        }
+
+        function handleLuckySpinRewards(finalAmount, orderId) {
+            let processed = [];
+            try {
+                processed = JSON.parse(localStorage.getItem('processedOrdersForSpin') || '[]');
+            } catch (e) { }
+
+            if (processed.includes(orderId)) {
+                console.log('[LuckySpin] Order already processed for spins:', orderId);
+                return;
+            }
+
+            processed.push(orderId);
+            localStorage.setItem('processedOrdersForSpin', JSON.stringify(processed));
+
+            if (finalAmount < 10000000) {
+                showNotEligiblePopup(finalAmount);
+            } else {
+                const spins = Math.floor(finalAmount / 10000000);
+                showEligiblePopup(finalAmount, spins);
+            }
+        }
+
+        // ==========================================
         // ĐỌC TRẠNG THÁI TỪ QUERY PARAMS (VNPay return) VÀ sessionStorage
         // ==========================================
         (function () {
-            const params    = new URLSearchParams(window.location.search);
-            const status    = params.get('status') || '';     // success | failed | cancelled | invalid | error
-            const orderId   = params.get('orderId') || sessionStorage.getItem('current_orderId') || '';
-            const method    = params.get('method') || '';     // COD, MoMo, Visa, ATM, VNPay
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status') || '';     // success | failed | cancelled | invalid | error
+            const orderId = params.get('orderId') || sessionStorage.getItem('current_orderId') || '';
+            const method = params.get('method') || '';     // COD, MoMo, Visa, ATM, VNPay
 
             // Lấy thêm từ sessionStorage nếu có
             const storedOrderId = sessionStorage.getItem('current_orderId') || orderId;
 
             // Map method names
             const methodMap = {
-                cod:   'Thanh toán khi nhận hàng (COD)',
-                momo:  'Ví điện tử MoMo',
-                visa:  'Thẻ Visa / MasterCard',
-                atm:   'ATM nội địa',
+                cod: 'Thanh toán khi nhận hàng (COD)',
+                momo: 'Ví điện tử MoMo',
+                visa: 'Thẻ Visa / MasterCard',
+                atm: 'ATM nội địa',
                 vnpay: 'Cổng thanh toán VNPay',
-                bank:  'Chuyển khoản ngân hàng',
+                bank: 'Chuyển khoản ngân hàng',
                 qrpay: 'QR Pay (VNPay)',
                 sepay: 'Chuyển khoản SePay (QR)'
             };
 
-            const iconEl    = document.getElementById('statusIcon');
-            const titleEl   = document.getElementById('statusTitle');
-            const descEl    = document.getElementById('statusDesc');
-            const orderBox  = document.getElementById('orderBox');
-            const btnGroup  = document.getElementById('btnGroup');
-            const badgeEl   = document.getElementById('statusBadge');
+            const iconEl = document.getElementById('statusIcon');
+            const titleEl = document.getElementById('statusTitle');
+            const descEl = document.getElementById('statusDesc');
+            const orderBox = document.getElementById('orderBox');
+            const btnGroup = document.getElementById('btnGroup');
+            const badgeEl = document.getElementById('statusBadge');
             const orderIdEl = document.getElementById('orderIdDisplay');
-            const methodEl  = document.getElementById('methodDisplay');
+            const methodEl = document.getElementById('methodDisplay');
 
             // Xác định trạng thái hiển thị
             let iconContent, iconClass, title, desc, badgeClass, badgeText;
@@ -361,11 +668,11 @@
             switch (effectiveStatus.toLowerCase()) {
                 case 'success':
                     iconContent = '✓';
-                    iconClass   = 'success';
-                    title       = '🎉 Đặt Hàng Thành Công!';
-                    desc        = 'Cảm ơn bạn đã mua sắm tại HYPER CORE! Đơn hàng của bạn đã được tiếp nhận và đang được xử lý. Chúng tôi sẽ liên hệ xác nhận sớm.';
-                    badgeClass  = 'badge-success';
-                    badgeText   = '✓ Thành công';
+                    iconClass = 'success';
+                    title = '🎉 Đặt Hàng Thành Công!';
+                    desc = 'Cảm ơn bạn đã mua sắm tại HYPER CORE! Đơn hàng của bạn đã được tiếp nhận và đang được xử lý. Chúng tôi sẽ liên hệ xác nhận sớm.';
+                    badgeClass = 'badge-success';
+                    badgeText = '✓ Thành công';
                     // Xóa giỏ hàng sau khi đặt thành công
                     localStorage.setItem('hyper_core_cart', '[]');
                     localStorage.setItem('hypercore_cart_items', '[]');
@@ -375,41 +682,41 @@
 
                 case 'cancelled':
                     iconContent = '×';
-                    iconClass   = 'cancelled';
-                    title       = 'Giao Dịch Đã Hủy';
-                    desc        = 'Bạn đã hủy giao dịch thanh toán. Đơn hàng vẫn được giữ lại — bạn có thể thử lại hoặc chọn phương thức thanh toán khác.';
-                    badgeClass  = 'badge-cancelled';
-                    badgeText   = '✕ Đã hủy';
+                    iconClass = 'cancelled';
+                    title = 'Giao Dịch Đã Hủy';
+                    desc = 'Bạn đã hủy giao dịch thanh toán. Đơn hàng vẫn được giữ lại — bạn có thể thử lại hoặc chọn phương thức thanh toán khác.';
+                    badgeClass = 'badge-cancelled';
+                    badgeText = '✕ Đã hủy';
                     break;
 
                 case 'expired':
                     iconContent = '⏱';
-                    iconClass   = 'cancelled';
-                    title       = 'Phiên Thanh Toán Hết Hạn';
-                    desc        = 'Thời gian thanh toán đã hết hạn. Vui lòng quay lại và thử thanh toán lại.';
-                    badgeClass  = 'badge-cancelled';
-                    badgeText   = '⏱ Hết hạn';
+                    iconClass = 'cancelled';
+                    title = 'Phiên Thanh Toán Hết Hạn';
+                    desc = 'Thời gian thanh toán đã hết hạn. Vui lòng quay lại và thử thanh toán lại.';
+                    badgeClass = 'badge-cancelled';
+                    badgeText = '⏱ Hết hạn';
                     break;
 
                 case 'failed':
                 case 'error':
                 case 'invalid':
                     iconContent = '!';
-                    iconClass   = 'failed';
-                    title       = 'Thanh Toán Thất Bại';
-                    desc        = 'Giao dịch không thành công. Đơn hàng của bạn chưa được xử lý. Vui lòng thử lại hoặc liên hệ hỗ trợ.';
-                    badgeClass  = 'badge-failed';
-                    badgeText   = '✕ Thất bại';
+                    iconClass = 'failed';
+                    title = 'Thanh Toán Thất Bại';
+                    desc = 'Giao dịch không thành công. Đơn hàng của bạn chưa được xử lý. Vui lòng thử lại hoặc liên hệ hỗ trợ.';
+                    badgeClass = 'badge-failed';
+                    badgeText = '✕ Thất bại';
                     break;
 
                 default:
                     // Không có status - trạng thái chờ
                     iconContent = '⏳';
-                    iconClass   = 'loading';
-                    title       = 'Đang Chờ Xác Nhận';
-                    desc        = 'Đơn hàng đang chờ xác nhận thanh toán. Chúng tôi sẽ cập nhật trạng thái sớm nhất.';
-                    badgeClass  = 'badge-pending';
-                    badgeText   = '⏳ Đang chờ';
+                    iconClass = 'loading';
+                    title = 'Đang Chờ Xác Nhận';
+                    desc = 'Đơn hàng đang chờ xác nhận thanh toán. Chúng tôi sẽ cập nhật trạng thái sớm nhất.';
+                    badgeClass = 'badge-pending';
+                    badgeText = '⏳ Đang chờ';
             }
 
             // Render icon
@@ -417,7 +724,7 @@
             iconEl.className = `status-icon ${iconClass}`;
 
             titleEl.textContent = title;
-            descEl.textContent  = desc;
+            descEl.textContent = desc;
 
             // Render order box
             orderBox.style.display = 'block';
@@ -431,13 +738,39 @@
             methodEl.textContent = displayMethod;
 
             // Xử lý badge
-            badgeEl.className   = `status-badge ${badgeClass}`;
+            badgeEl.className = `status-badge ${badgeClass}`;
             badgeEl.textContent = badgeText;
 
-            // Nếu thành công → hiển thị nút xem trạng thái đơn hàng
+            // Nếu thành công → hiển thị nút xem trạng thái đơn hàng và xử lý phần thưởng lượt quay may mắn
             if (effectiveStatus.toLowerCase() === 'success') {
                 const orderStatusBtn = document.getElementById('orderStatusBtn');
                 if (orderStatusBtn) orderStatusBtn.style.display = 'block';
+
+                // --- Xử lý Vòng Quay May Mắn (Lucky Spin Rewards) ---
+                injectLuckyPopupStyles();
+                const userId = parseInt(localStorage.getItem('userId') || '0');
+                const authToken = localStorage.getItem('pc_store_token');
+
+                if (storedOrderId && userId && authToken) {
+                    console.log('[LuckySpin] Đơn hàng thành công, đang kiểm tra điều kiện nhận lượt quay cho đơn hàng #' + storedOrderId);
+                    fetch(`/api/orders/detail/${storedOrderId}/user/${userId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`
+                        }
+                    })
+                        .then(res => {
+                            if (!res.ok) throw new Error('Không thể tải thông tin đơn hàng');
+                            return res.json();
+                        })
+                        .then(data => {
+                            const finalAmount = data.header ? data.header.finalAmount : 0;
+                            console.log('[LuckySpin] Giá trị đơn hàng tải từ API:', finalAmount);
+                            handleLuckySpinRewards(finalAmount, storedOrderId);
+                        })
+                        .catch(err => {
+                            console.error('[LuckySpin] Lỗi khi truy vấn thông tin đơn hàng:', err);
+                        });
+                }
             }
 
             // Nếu thất bại/hủy → đổi text nút
