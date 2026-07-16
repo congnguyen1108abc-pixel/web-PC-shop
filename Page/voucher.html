@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -573,7 +573,7 @@
 		/* Wallet / History */
 		.wallet-grid {
 			display: grid;
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			grid-template-columns: repeat(5, minmax(0, 1fr));
 			gap: 14px;
 		}
 
@@ -916,7 +916,7 @@
 			}
 
 			.wallet-grid {
-				grid-template-columns: repeat(2, minmax(0, 1fr));
+				grid-template-columns: repeat(3, minmax(0, 1fr));
 			}
 		}
 
@@ -2224,25 +2224,96 @@
 
 		function renderWallet() {
 			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
-			$('voucherWallet').innerHTML = wallet.length ? wallet.map(voucher => `
-				<article class="voucher-card">
-					<h4>${voucher.name}</h4>
-					<div class="voucher-code">${voucher.code}</div>
-					<div class="voucher-meta">
-						<div>Ngày nhận: ${formatDateTime(voucher.receivedAt)}</div>
-						<div>Ngày hết hạn: ${formatDateOnly(voucher.expiryAt)}</div>
-						<div>Mô tả: ${voucher.description}</div>
-					</div>
-					<div class="voucher-actions">
-						<button class="btn btn-dark" type="button" data-copy="${voucher.code}">Sao chép</button>
-					</div>
-				</article>
-			`).join('') : '<div class="voucher-card" style="grid-column:1/-1; text-align:center;">Chưa có voucher nào. Hãy thử quay số.</div>';
+			
+			// Define the 5 target voucher types and their display info
+			const targetTiers = [
+				{ keys: ['PC50K'], name: 'Voucher 50.000 VNĐ', val: '50.000đ', amount: 50000 },
+				{ keys: ['PC100K'], name: 'Voucher 100.000 VNĐ', val: '100.000đ', amount: 100000 },
+				{ keys: ['PC200K'], name: 'Voucher 200.000 VNĐ', val: '200.000đ', amount: 200000 },
+				{ keys: ['PC500K'], name: 'Voucher 500.000 VNĐ', val: '500.000đ', amount: 500000 },
+				{ keys: ['PC1M', 'PC1000K'], name: 'Voucher 1.000.000 VNĐ', val: '1.000.000đ', amount: 1000000 }
+			];
+
+			// 1. Get owned vouchers of these tiers
+			const ownedVouchers = wallet.filter(v => targetTiers.some(t => t.keys.includes(v.baseReward)));
+			
+			// Map each to include metadata for sorting
+			const mappedOwned = ownedVouchers.map(v => {
+				const tier = targetTiers.find(t => t.keys.includes(v.baseReward));
+				return {
+					isPlaceholder: false,
+					voucher: v,
+					amount: tier ? tier.amount : 0,
+					name: tier ? tier.name : v.name,
+					val: tier ? tier.val : '-'
+				};
+			});
+
+			// Sort owned by amount ascending
+			mappedOwned.sort((a, b) => a.amount - b.amount);
+
+			let finalItems = [];
+			if (mappedOwned.length >= 5) {
+				finalItems = mappedOwned.slice(0, 5);
+			} else {
+				// We have N < 5 owned items.
+				finalItems = [...mappedOwned];
+				
+				// Find which tiers are NOT present in the owned list
+				const ownedKeys = mappedOwned.map(item => item.voucher.baseReward);
+				const missingTiers = targetTiers.filter(t => !t.keys.some(k => ownedKeys.includes(k)));
+				
+				// Create placeholders for the missing tiers
+				const placeholders = missingTiers.map(t => ({
+					isPlaceholder: true,
+					amount: t.amount,
+					name: t.name,
+					val: t.val
+				}));
+
+				// Add placeholders to reach exactly 5 items
+				const needed = 5 - finalItems.length;
+				finalItems = finalItems.concat(placeholders.slice(0, needed));
+				
+				// Sort the combined list by amount ascending
+				finalItems.sort((a, b) => a.amount - b.amount);
+			}
+
+			// Render the items
+			const html = finalItems.map(item => {
+				if (!item.isPlaceholder) {
+					const v = item.voucher;
+					return `
+						<article class="voucher-card unlocked" style="border: 1px solid rgba(17,17,17,0.1); background: #ffffff;">
+							<h4 class="voucher-title" style="margin: 0; font-size: 0.95rem; font-weight: 800;">🎁 ${item.name}</h4>
+							<div class="voucher-code" style="margin-top: 4px; font-size: 0.8rem; padding: 4px 10px; background: #111111; color: #ffffff; border-radius: 999px; width: fit-content; font-weight: 800;">${v.code}</div>
+							<div class="voucher-value" style="font-weight: 700; color: #111111; font-size: 0.88rem; margin-top: 6px;">Giảm: ${item.val}</div>
+							<div class="voucher-expiry" style="color: var(--ink-soft); font-size: 0.8rem; margin-top: 2px;">Hạn dùng: ${formatDateOnly(v.expiryAt)}</div>
+							<div class="voucher-actions" style="margin-top: 10px;">
+								<button class="btn btn-dark btn-full" type="button" data-copy="${v.code}" style="padding: 10px 12px; font-size: 0.85rem; border-radius: 12px; width: 100%;">Sao chép mã</button>
+							</div>
+						</article>
+					`;
+				} else {
+					return `
+						<article class="voucher-card locked-card" style="border: 1px dashed rgba(17,17,17,0.12); background: rgba(245, 245, 245, 0.75); box-shadow: none; opacity: 0.65; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px; text-align: center; min-height: 188px;">
+							<div class="lock-icon" style="font-size: 1.4rem; color: #888; margin-bottom: 6px;">🔒</div>
+							<h4 style="margin: 0; font-size: 0.9rem; font-weight: 800; color: #666;">Chưa mở khóa</h4>
+							<p style="margin: 4px 0 0 0; font-size: 0.75rem; color: #888; line-height: 1.4;">Nhận voucher bằng cách mua hàng và quay Lucky Spin.</p>
+							<div style="margin-top: 8px; font-size: 0.78rem; font-weight: 700; color: #999;">Trị giá: ${item.val}</div>
+						</article>
+					`;
+				}
+			}).join('');
+
+			$('voucherWallet').innerHTML = html;
 
 			$('voucherWallet').querySelectorAll('[data-copy]').forEach(btn => {
 				btn.addEventListener('click', () => copyVoucherCode(btn.getAttribute('data-copy')));
 			});
-			$('statVoucherCount').textContent = wallet.length;
+			
+			// Total count of owned target vouchers
+			$('statVoucherCount').textContent = ownedVouchers.length;
 		}
 
 		function renderHistory() {
