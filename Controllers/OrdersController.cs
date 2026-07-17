@@ -34,10 +34,22 @@ public sealed class OrdersController : ControllerBase
         [FromServices] IGhnService ghn,
         [FromServices] IServiceScopeFactory scopeFactory)
     {
-        var id = await _orders.PlaceOrderAsync(request);
+        int? id;
+        try
+        {
+            id = await _orders.PlaceOrderAsync(request);
+        }
+        catch (Exception ex)
+        {
+            // Bắt lỗi từ SQL RAISERROR / THROW và trả về message rõ ràng
+            var sqlMsg = ex.Message;
+            // Lấy inner message nếu có (Dapper wrap trong SqlException)
+            if (ex.InnerException != null) sqlMsg = ex.InnerException.Message;
+            return BadRequest(new { message = sqlMsg });
+        }
 
         if (id is null)
-            return BadRequest(new { message = "Đặt hàng thất bại" });
+            return BadRequest(new { message = "Đặt hàng thất bại. Giỏ hàng có thể đã trống hoặc sản phẩm không còn hàng." });
 
         var orderId = id.Value;
 

@@ -1,4 +1,4 @@
-﻿-- ============================================================
+-- ============================================================
 --   PC STORE - FILE DATABASE ĐÃ SẮP XẾP GỌN
 --   Thứ tự: TABLES -> INDEXES -> TRIGGERS -> STORED PROCEDURES
 --   Lưu ý: Chỉ sắp xếp lại vị trí và thêm comment mô tả SP, không sửa logic code gốc.
@@ -1207,7 +1207,9 @@ CREATE OR ALTER PROCEDURE sp_Customer_PlaceOrder
     @ShippingAddress NVARCHAR(500),
     @PaymentMethod   NVARCHAR(50),
     @VoucherCode     NVARCHAR(20) = NULL,
-    @ShippingFee     DECIMAL(18, 2) = 0
+    @ShippingFee     DECIMAL(18, 2) = 0,
+    @ToWardCode      NVARCHAR(50) = NULL,
+    @ToDistrictId    INT = 0
 AS
 BEGIN
     SET NOCOUNT ON;

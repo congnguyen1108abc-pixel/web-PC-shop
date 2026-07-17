@@ -550,11 +550,12 @@
                     <span class="lucky-popup-icon">🎁</span>
                     <h2 class="lucky-popup-title">🎉 CHÚC MỪNG!</h2>
                     <div class="lucky-popup-subtitle">Bạn đã nhận được ${String(spins).padStart(2, '0')} LƯỢT QUAY MAY MẮN</div>
-                    <div class="lucky-popup-content">
-                        <div>• Giá trị đơn hàng: <strong>${amount.toLocaleString('vi-VN')}đ</strong></div>
-                        <div>• Hạng thành viên: <strong>${rank}</strong></div>
-                        <div>• Nhận được: <strong>🎁 ${spins} lượt quay tự do</strong></div>
-                        <div style="margin-top: 10px; font-weight: 500; text-align: center; color: #111;">Bấm nút bên dưới để quay thưởng ngay!</div>
+                    <div class="lucky-popup-content" style="text-align: center; font-size: 16px;">
+                        Đơn hàng của bạn đạt:<br>
+                        <strong style="font-size: 18px; color: #111;">${amount.toLocaleString('vi-VN')}đ</strong><br><br>
+                        Bạn đã được tặng:<br>
+                        <strong style="font-size: 18px; color: #059669;">🎁 ${spins} Lucky Spin</strong><br><br>
+                        Bấm nút bên dưới để quay ngay.
                     </div>
                     <div class="lucky-popup-buttons">
                         <button class="lucky-popup-btn-primary" onclick="window.location.href='/voucher'">Đến vòng quay</button>
@@ -748,7 +749,18 @@
 
                 // --- Xử lý Vòng Quay May Mắn (Lucky Spin Rewards) ---
                 injectLuckyPopupStyles();
-                const userId = parseInt(localStorage.getItem('userId') || '0');
+
+                let userId = 0;
+                try {
+                    const userRaw = localStorage.getItem('pc_store_user');
+                    if (userRaw) {
+                        const user = JSON.parse(userRaw);
+                        userId = parseInt(user.userId || '0');
+                    }
+                } catch (e) {
+                    console.error('[LuckySpin] Lỗi parse user:', e);
+                }
+
                 const authToken = localStorage.getItem('pc_store_token');
 
                 if (storedOrderId && userId && authToken) {

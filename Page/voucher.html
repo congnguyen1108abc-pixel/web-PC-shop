@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -972,6 +972,369 @@
 				bottom: auto;
 			}
 		}
+
+		/* Đóng @media (max-width: 760px) */
+
+		/* ==================================================
+		   FIX BỐ CỤC & GIAO DIỆN MỚI
+		   ================================================== */
+		:root {
+			--primary: #FF5722;
+			--secondary: #111827;
+			--bg-color: #F5F7FA;
+		}
+
+		body {
+			background: var(--bg-color) !important;
+		}
+
+		.container {
+			max-width: 1280px !important;
+			width: 100% !important;
+			margin: 0 auto !important;
+			padding: 0 24px !important;
+		}
+
+		.section {
+			margin-bottom: 60px !important;
+			background: #ffffff !important;
+			border: none !important;
+		}
+
+		/* Typography */
+		.section-title,
+		.hero-slide-title {
+			font-size: 40px !important;
+			color: var(--secondary) !important;
+			font-weight: 900 !important;
+		}
+
+		.section-subtitle,
+		.hero-slide-desc {
+			font-size: 18px !important;
+			color: #6b7280 !important;
+		}
+
+		/* Hero Banner */
+		.hero-banner-section {
+			position: relative;
+			margin-top: 24px;
+			margin-bottom: 60px;
+			border-radius: 24px;
+			overflow: hidden;
+			box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+			background: #000;
+		}
+
+		.hero-slider {
+			position: relative;
+			width: 100%;
+			height: 500px;
+			/* Desktop */
+			overflow: hidden;
+		}
+
+		.hero-track {
+			display: flex;
+			width: 100%;
+			height: 100%;
+			transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+		}
+
+		.hero-slide {
+			flex: 0 0 100%;
+			width: 100%;
+			height: 100%;
+			position: relative;
+			cursor: pointer;
+			background-size: cover;
+			background-position: center;
+		}
+
+		.hero-slide-content {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding: 40px 60px;
+			background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
+			color: #fff;
+		}
+
+		.hero-slide-title {
+			margin: 0 0 12px;
+			text-transform: uppercase;
+			color: #fff !important;
+		}
+
+		.hero-slide-desc {
+			margin: 0 0 24px;
+			max-width: 500px;
+			line-height: 1.5;
+			color: #e5e7eb !important;
+		}
+
+		.hero-btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 14px 32px;
+			background: var(--primary);
+			color: #fff;
+			font-weight: 700;
+			font-size: 16px;
+			border-radius: 12px;
+			width: fit-content;
+			text-transform: uppercase;
+			border: none;
+			transition: all 0.3s;
+			cursor: pointer;
+		}
+
+		.hero-btn:hover {
+			background: #e64a19;
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px rgba(255, 87, 34, 0.3);
+		}
+
+		/* Nav arrows */
+		.hero-nav {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 48px;
+			height: 48px;
+			background: rgba(255, 255, 255, 0.2);
+			backdrop-filter: blur(8px);
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #fff;
+			font-size: 1.2rem;
+			cursor: pointer;
+			transition: all 0.3s;
+			z-index: 10;
+		}
+
+		.hero-nav:hover {
+			background: rgba(255, 255, 255, 0.9);
+			color: var(--secondary);
+		}
+
+		.hero-prev {
+			left: 20px;
+		}
+
+		.hero-next {
+			right: 20px;
+		}
+
+		/* Dots */
+		.hero-dots {
+			position: absolute;
+			bottom: 24px;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			gap: 10px;
+			z-index: 10;
+		}
+
+		.hero-dot {
+			width: 12px;
+			height: 12px;
+			background: rgba(255, 255, 255, 0.4);
+			border-radius: 50%;
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.hero-dot.active {
+			background: var(--primary);
+			width: 32px;
+			border-radius: 6px;
+		}
+
+		/* Voucher Hot Grid */
+		.voucher-hot-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 24px;
+			margin-top: 24px;
+		}
+
+		.vh-card {
+			display: flex;
+			flex-direction: column;
+			background: #ffffff;
+			border-radius: 20px;
+			border: 1px solid rgba(0, 0, 0, 0.06);
+			overflow: hidden;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+			transition: all 0.3s ease;
+			min-height: 230px;
+			position: relative;
+			text-align: center;
+		}
+
+		.vh-card:hover {
+			transform: translateY(-8px);
+			box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+			border-color: rgba(0, 0, 0, 0.15);
+		}
+
+		.vh-top {
+			background: linear-gradient(135deg, var(--secondary) 0%, #1f2937 100%);
+			color: #fff;
+			padding: 24px 16px;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+			border-bottom: 2px dashed rgba(0, 0, 0, 0.1);
+		}
+
+		.vh-icon {
+			font-size: 2.5rem;
+			margin-bottom: 8px;
+			line-height: 1;
+		}
+
+		.vh-title {
+			font-weight: 800;
+			font-size: 1.1rem;
+			margin: 0;
+			color: #fff;
+		}
+
+		.vh-badge {
+			background: var(--primary);
+			color: #fff;
+			font-size: 0.75rem;
+			font-weight: 800;
+			padding: 4px 10px;
+			border-radius: 6px;
+			position: absolute;
+			top: 12px;
+			left: 12px;
+			text-transform: uppercase;
+			box-shadow: 0 2px 6px rgba(255, 87, 34, 0.3);
+		}
+
+		.vh-bottom {
+			padding: 20px;
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			background: #fff;
+		}
+
+		.vh-cond {
+			font-size: 14px;
+			color: #4b5563;
+			margin: 0 0 16px;
+		}
+
+		.vh-info-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 16px;
+			font-size: 13px;
+		}
+
+		.vh-exp {
+			color: #9ca3af;
+		}
+
+		.vh-code {
+			font-family: monospace;
+			font-size: 14px;
+			font-weight: 800;
+			color: var(--primary);
+			background: rgba(255, 87, 34, 0.1);
+			padding: 6px 12px;
+			border-radius: 8px;
+		}
+
+		.vh-btn {
+			background: var(--secondary);
+			color: #fff;
+			border: none;
+			padding: 12px;
+			border-radius: 10px;
+			font-size: 16px;
+			font-weight: 700;
+			cursor: pointer;
+			transition: background 0.2s;
+			width: 100%;
+		}
+
+		.vh-btn:hover {
+			background: var(--primary);
+		}
+
+		/* Responsive */
+		@media (max-width: 1200px) {
+			.voucher-hot-grid {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		@media (max-width: 992px) {
+			.hero-slider {
+				height: 420px;
+			}
+
+			.voucher-hot-grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.hero-slide-title {
+				font-size: 32px !important;
+			}
+
+			.section-title {
+				font-size: 32px !important;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.hero-slider {
+				height: 300px;
+			}
+
+			.hero-slide-content {
+				padding: 24px;
+			}
+
+			.hero-slide-title {
+				font-size: 24px !important;
+			}
+
+			.section-title {
+				font-size: 26px !important;
+			}
+
+			.hero-slide-desc {
+				font-size: 15px !important;
+			}
+		}
+
+		@media (max-width: 576px) {
+			.voucher-hot-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.vh-card {
+				min-height: auto;
+			}
+		}
 	</style>
 </head>
 
@@ -991,410 +1354,30 @@
 		</div>
 
 		<main class="container">
-			<section class="hero slide-up">
-				<div class="hero-topbar">
-					<div class="hero-brand">
-						<div class="eyebrow">Premium Voucher Hub</div>
-						<div class="hero-tagline">Hyper Core Reward Center</div>
-					</div>
-					<a class="home-btn ripple" href="homepage.html"><span class="home-icon">🏠</span> Quay về
-						Homepage</a>
-				</div>
-				<div class="hero-inner">
-					<div class="hero-slider">
-						<div class="slides-track">
-							<!-- Slide 1 -->
-							<div class="slide slide1">
-								<div class="slide-content">
-									<h1>SĂN VOUCHER SIÊU HOT</h1>
-									<p class="subtitle">Quay vòng quay may mắn để nhận Voucher giảm giá lên đến 70%.</p>
-									<a class="hero-btn btn-primary" href="#wheelPlate"><span>🎁 Nhận Voucher
-											Ngay</span></a>
-									<div class="floating-icons">
-										<span class="icon">🎁</span>
-										<span class="icon">💎</span>
-										<span class="icon">⭐</span>
-										<span class="icon">🎉</span>
-									</div>
-									<div class="hero-meta">
-										<div class="hero-stat">
-											<strong id="statVoucherCount">0</strong>
-											<span>Voucher đã nhận</span>
-										</div>
-										<div class="hero-stat">
-											<strong id="statHistoryCount">0</strong>
-											<span>Lịch sử trò chơi</span>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- Slide 2 -->
-							<div class="slide slide2">
-								<div class="slide-content">
-									<h1>FLASH SALE HÔM NAY</h1>
-									<p class="subtitle">Voucher độc quyền chỉ dành cho thành viên.</p>
-									<a class="hero-btn btn-primary" href="#wheelPlate"><span>🔥 Khám phá ngay</span></a>
-									<div class="voucher-cards-demo-container">
-										<div class="voucher-card-demo">70% OFF</div>
-										<div class="voucher-card-demo">50% OFF</div>
-									</div>
-								</div>
-							</div>
-							<!-- Slide 3 -->
-							<div class="slide slide3">
-								<div class="slide-content">
-									<h1>PREMIUM MEMBER REWARDS</h1>
-									<p class="subtitle">Tích lũy điểm và mở khóa nhiều ưu đãi hấp dẫn.</p>
-									<a class="hero-btn btn-primary" href="#wheelPlate"><span>💎 Xem ưu đãi</span></a>
-								</div>
-							</div>
-						</div>
-						<!-- Indicators -->
-						<div class="hero-indicators">
-							<span class="dot active" data-index="0"></span>
-							<span class="dot" data-index="1"></span>
-							<span class="dot" data-index="2"></span>
-						</div>
-					</div>
-					<style>
-						/* Slider Container */
-						.hero-slider {
-							position: relative;
-							overflow: hidden;
-							width: 100%;
-							height: 100%;
-							min-height: 380px;
-							border-radius: 24px;
-							background: rgba(255, 255, 255, 0.05);
-							backdrop-filter: blur(20px);
-							border: 1px solid rgba(255, 255, 255, 0.1);
-							box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-						}
-
-						/* Slides Track */
-						.slides-track {
-							display: flex;
-							width: 300%;
-							height: 100%;
-							transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-						}
-
-						/* Individual Slides */
-						.slide {
-							width: 33.3333%;
-							height: 100%;
-							flex-shrink: 0;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							padding: 40px;
-							box-sizing: border-box;
-						}
-
-						/* Slide Content */
-						.slide-content {
-							text-align: center;
-							max-width: 700px;
-							display: flex;
-							flex-direction: column;
-							align-items: center;
-							gap: 16px;
-							color: #111;
-						}
-
-						.slide-content h1 {
-							font-size: 2.8rem;
-							font-weight: 900;
-							background: linear-gradient(135deg, #111 0%, #3a3a3a 100%);
-							-webkit-background-clip: text;
-							-webkit-text-fill-color: transparent;
-							margin: 0;
-							letter-spacing: -0.5px;
-							text-transform: uppercase;
-						}
-
-						.slide-content .subtitle {
-							font-size: 1.15rem;
-							color: #555;
-							margin: 0;
-							line-height: 1.6;
-						}
-
-						/* Hero Button */
-						.hero-btn {
-							position: relative;
-							display: inline-flex;
-							align-items: center;
-							justify-content: center;
-							padding: 14px 32px;
-							border-radius: 999px;
-							font-weight: 800;
-							font-size: 1rem;
-							color: #fff;
-							background: #111;
-							border: none;
-							cursor: pointer;
-							text-decoration: none;
-							overflow: hidden;
-							box-shadow: 0 8px 24px rgba(17, 17, 17, 0.2);
-							transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-						}
-
-						.hero-btn::before {
-							content: '';
-							position: absolute;
-							top: 0;
-							left: 0;
-							width: 100%;
-							height: 100%;
-							background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-							transform: translateX(-100%);
-							transition: transform 0.6s ease;
-						}
-
-						.hero-btn:hover {
-							transform: translateY(-2px);
-							box-shadow: 0 12px 30px rgba(17, 17, 17, 0.3);
-							background: #333;
-						}
-
-						.hero-btn:hover::before {
-							transform: translateX(100%);
-						}
-
-						.hero-btn span {
-							position: relative;
-							z-index: 1;
-						}
-
-						/* Floating Icons */
-						.floating-icons {
-							display: flex;
-							gap: 20px;
-							margin-top: 10px;
-						}
-
-						.floating-icons .icon {
-							font-size: 2rem;
-							filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-							animation: floatIcon 4s ease-in-out infinite;
-						}
-
-						.floating-icons .icon:nth-child(2) {
-							animation-delay: 0.8s;
-						}
-
-						.floating-icons .icon:nth-child(3) {
-							animation-delay: 1.6s;
-						}
-
-						.floating-icons .icon:nth-child(4) {
-							animation-delay: 2.4s;
-						}
-
-						@keyframes floatIcon {
-
-							0%,
-							100% {
-								transform: translateY(0) rotate(0deg);
-							}
-
-							50% {
-								transform: translateY(-12px) rotate(8deg);
-							}
-						}
-
-						/* Voucher Demo Cards */
-						.voucher-cards-demo-container {
-							display: flex;
-							gap: 16px;
-							margin-top: 12px;
-						}
-
-						.voucher-card-demo {
-							padding: 16px 28px;
-							background: linear-gradient(135deg, #ff416c, #ff4b2b);
-							color: #fff;
-							font-weight: 900;
-							font-size: 1.4rem;
-							border-radius: 16px;
-							box-shadow: 0 10px 25px rgba(255, 65, 108, 0.3);
-							position: relative;
-							overflow: hidden;
-							transform: rotate(-3deg);
-							transition: transform 0.3s ease;
-						}
-
-						.voucher-card-demo:nth-child(2) {
-							background: linear-gradient(135deg, #11998e, #38ef7d);
-							box-shadow: 0 10px 25px rgba(56, 239, 125, 0.3);
-							transform: rotate(3deg);
-						}
-
-						.voucher-card-demo:hover {
-							transform: scale(1.08) rotate(0deg);
-						}
-
-						/* Indicators */
-						.hero-indicators {
-							position: absolute;
-							bottom: 24px;
-							left: 50%;
-							transform: translateX(-50%);
-							display: flex;
-							gap: 10px;
-							z-index: 10;
-						}
-
-						.hero-indicators .dot {
-							width: 12px;
-							height: 12px;
-							border-radius: 50%;
-							background: rgba(17, 17, 17, 0.2);
-							cursor: pointer;
-							transition: all 0.3s ease;
-							border: 2px solid transparent;
-						}
-
-						.hero-indicators .dot.active {
-							background: #111;
-							transform: scale(1.2);
-							border-color: rgba(255, 255, 255, 0.8);
-						}
-
-						/* Dark Mode Compatibility / Refinement */
-						body.dark-mode .slide-content h1 {
-							background: linear-gradient(135deg, #fff 0%, #aaa 100%);
-							-webkit-background-clip: text;
-							-webkit-text-fill-color: transparent;
-						}
-
-						body.dark-mode .slide-content .subtitle {
-							color: #ccc;
-						}
-
-						body.dark-mode .hero-indicators .dot {
-							background: rgba(255, 255, 255, 0.3);
-						}
-
-						body.dark-mode .hero-indicators .dot.active {
-							background: #fff;
-							border-color: rgba(17, 17, 17, 0.8);
-						}
-
-						body.dark-mode .hero-btn {
-							background: #fff;
-							color: #111;
-						}
-
-						body.dark-mode .hero-btn:hover {
-							background: #eee;
-						}
-
-						/* Responsive */
-						@media (max-width: 768px) {
-							.slide {
-								padding: 20px 16px;
-							}
-
-							.slide-content {
-								padding-bottom: 40px;
-							}
-
-							.slide-content h1 {
-								font-size: 1.8rem;
-							}
-
-							.slide-content .subtitle {
-								font-size: 0.95rem;
-							}
-
-							.hero-slider {
-								min-height: 460px;
-							}
-
-							.hero-meta {
-								grid-template-columns: 1fr;
-								width: 100%;
-								margin-top: 12px;
-							}
-
-							.hero-stat {
-								padding: 10px;
-							}
-
-							.floating-icons {
-								gap: 12px;
-							}
-
-							.floating-icons .icon {
-								font-size: 1.5rem;
-							}
-						}
-					</style>
-					<script>
-						(function () {
-							let currentIdx = 0;
-							const dots = document.querySelectorAll('.hero-indicators .dot');
-							const track = document.querySelector('.slides-track');
-							let sliderInterval = null;
-							let isHovered = false;
-
-							function showSlide(idx) {
-								if (track) {
-									track.style.transform = `translateX(-${(idx * 100) / 3}%)`;
-								}
-								dots.forEach((dot, i) => {
-									dot.classList.toggle('active', i === idx);
-								});
-								currentIdx = idx;
-							}
-
-							function nextSlide() {
-								let nextIdx = (currentIdx + 1) % 3;
-								showSlide(nextIdx);
-							}
-
-							function startAutoSlide() {
-								stopAutoSlide();
-								if (!isHovered) {
-									sliderInterval = setInterval(nextSlide, 4500);
-								}
-							}
-
-							function stopAutoSlide() {
-								if (sliderInterval) {
-									clearInterval(sliderInterval);
-									sliderInterval = null;
-								}
-							}
-
-							dots.forEach((dot, i) => {
-								dot.addEventListener('click', () => {
-									showSlide(i);
-									startAutoSlide();
-								});
-							});
-
-							const sliderContainer = document.querySelector('.hero-slider');
-							if (sliderContainer) {
-								sliderContainer.addEventListener('mouseenter', () => {
-									console.log('Slider hovered: pausing auto-slide');
-									isHovered = true;
-									stopAutoSlide();
-								});
-								sliderContainer.addEventListener('mouseleave', () => {
-									console.log('Slider left: resuming auto-slide');
-									isHovered = false;
-									startAutoSlide();
-								});
-							}
-
-							startAutoSlide();
-						})();
-					</script>
+			<!-- SECTION 1: HERO BANNER -->
+			<section class="hero-banner-section slide-up" id="heroBannerSection">
+				<div class="hero-slider" id="heroSlider">
+					<div class="hero-track" id="heroTrack"></div>
+					<div class="hero-nav hero-prev" id="heroPrev">&#10094;</div>
+					<div class="hero-nav hero-next" id="heroNext">&#10095;</div>
+					<div class="hero-dots" id="heroDots"></div>
 				</div>
 			</section>
+
+			<!-- SECTION 2: VOUCHER HOT -->
+			<section class="section pop-in" id="voucherHotSection">
+				<div class="section-header">
+					<div>
+						<h2 class="section-title">Voucher Hot Trong Tháng</h2>
+						<p class="section-subtitle">Săn ngay những mã giảm giá độc quyền dành riêng cho bạn. Số lượng có
+							hạn!</p>
+					</div>
+				</div>
+				<div class="voucher-hot-grid" id="voucherHotGrid">
+					<!-- Injected by JS -->
+				</div>
+			</section>
+
 
 			<section class="section pop-in">
 				<div class="section-header">
@@ -1483,36 +1466,7 @@
 				</div>
 			</section>
 
-			<section class="section pop-in">
-				<div class="section-header">
-					<div>
-						<h2 class="section-title">Voucher Của Tôi</h2>
-						<p class="section-subtitle">Toàn bộ voucher đã nhận sẽ được lưu cục bộ, còn sau khi tải lại
-							trang. Bạn có thể sao chép mã chỉ với một cú click.</p>
-					</div>
-				</div>
-				<div class="wallet-grid" id="voucherWallet"></div>
-			</section>
 
-			<section class="section pop-in">
-				<div class="section-header">
-					<div>
-						<h2 class="section-title">Lịch Sử</h2>
-						<p class="section-subtitle">Ghi lại ngày, loại trò chơi và voucher nhận được để người dùng dễ
-							kiểm tra lại toàn bộ hành trình.</p>
-					</div>
-				</div>
-				<table class="timeline">
-					<thead>
-						<tr>
-							<th>Ngày</th>
-							<th>Loại trò chơi</th>
-							<th>Voucher nhận được</th>
-						</tr>
-					</thead>
-					<tbody id="historyBody"></tbody>
-				</table>
-			</section>
 
 			<footer>
 				<div class="footer-links">
@@ -1807,7 +1761,7 @@
 					{ label: 'Secret Reward', type: 'secret', reward: 'SECRET_REWARD', weightClass: 'high' },
 					{ label: 'Gaming Combo', type: 'gift', reward: 'GAMING_COMBO', weightClass: 'high' },
 					{ label: 'Premium Gift', type: 'gift', reward: 'PREMIUM_GIFT', weightClass: 'high' },
-					{ label: 'Voucher 500K', type: 'cash', reward: 'PC500K', weightClass: 'high' }
+					{ label: 'Voucher 500K', type: 'cash', reward: 'PC500K', weightClass: 'medium' }
 				];
 			} else {
 				// Silver & default pool
@@ -2152,8 +2106,8 @@
 			if (customerRank === 'VIP') {
 				probHTML = `
 					<div class="prob-item"><strong>Nhóm VIP (40%, 50%, 1M, RTX)</strong><br>20% cơ hội</div>
-					<div class="prob-item"><strong>Nhóm Cao (500K, Secret, Gear, Gift)</strong><br>45% cơ hội</div>
-					<div class="prob-item"><strong>Nhóm Trung bình (200K, 300K, Free)</strong><br>35% cơ hội</div>
+					<div class="prob-item"><strong>Nhóm Cao (Secret, Combo, Premium)</strong><br>45% cơ hội</div>
+					<div class="prob-item"><strong>Nhóm Trung bình (Voucher 500K)</strong><br>35% cơ hội</div>
 				`;
 			} else if (customerRank === 'Platinum') {
 				probHTML = `
@@ -2222,117 +2176,220 @@
 			updateUI();
 		}
 
-		function renderWallet() {
-			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
-			
-			// Define the 5 target voucher types and their display info
-			const targetTiers = [
-				{ keys: ['PC50K'], name: 'Voucher 50.000 VNĐ', val: '50.000đ', amount: 50000 },
-				{ keys: ['PC100K'], name: 'Voucher 100.000 VNĐ', val: '100.000đ', amount: 100000 },
-				{ keys: ['PC200K'], name: 'Voucher 200.000 VNĐ', val: '200.000đ', amount: 200000 },
-				{ keys: ['PC500K'], name: 'Voucher 500.000 VNĐ', val: '500.000đ', amount: 500000 },
-				{ keys: ['PC1M', 'PC1000K'], name: 'Voucher 1.000.000 VNĐ', val: '1.000.000đ', amount: 1000000 }
-			];
-
-			// 1. Get owned vouchers of these tiers
-			const ownedVouchers = wallet.filter(v => targetTiers.some(t => t.keys.includes(v.baseReward)));
-			
-			// Map each to include metadata for sorting
-			const mappedOwned = ownedVouchers.map(v => {
-				const tier = targetTiers.find(t => t.keys.includes(v.baseReward));
-				return {
-					isPlaceholder: false,
-					voucher: v,
-					amount: tier ? tier.amount : 0,
-					name: tier ? tier.name : v.name,
-					val: tier ? tier.val : '-'
-				};
-			});
-
-			// Sort owned by amount ascending
-			mappedOwned.sort((a, b) => a.amount - b.amount);
-
-			let finalItems = [];
-			if (mappedOwned.length >= 5) {
-				finalItems = mappedOwned.slice(0, 5);
-			} else {
-				// We have N < 5 owned items.
-				finalItems = [...mappedOwned];
-				
-				// Find which tiers are NOT present in the owned list
-				const ownedKeys = mappedOwned.map(item => item.voucher.baseReward);
-				const missingTiers = targetTiers.filter(t => !t.keys.some(k => ownedKeys.includes(k)));
-				
-				// Create placeholders for the missing tiers
-				const placeholders = missingTiers.map(t => ({
-					isPlaceholder: true,
-					amount: t.amount,
-					name: t.name,
-					val: t.val
-				}));
-
-				// Add placeholders to reach exactly 5 items
-				const needed = 5 - finalItems.length;
-				finalItems = finalItems.concat(placeholders.slice(0, needed));
-				
-				// Sort the combined list by amount ascending
-				finalItems.sort((a, b) => a.amount - b.amount);
+		// ============================================================
+		// NEW LANDING PAGE SECTIONS
+		// ============================================================
+		const banners = [
+			{
+				id: 1,
+				title: "",
+				subtitle: "",
+				image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/690x300_banner%20tuu%20truong.png",
+				buttonText: "",
+				link: "/productdetail?id=15"
+			},
+			{
+				id: 2,
+				title: "",
+				subtitle: "",
+				image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/M365-cate%20(2).png",
+				buttonText: "",
+				link: "/productdetail?id=18"
+			},
+			{
+				id: 3,
+				title: "",
+				subtitle: "",
+				image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/samsung-s23-ultra-cate.png",
+				buttonText: "",
+				link: "/productdetail?id=25"
 			}
+		];
 
-			// Render the items
-			const html = finalItems.map(item => {
-				if (!item.isPlaceholder) {
-					const v = item.voucher;
-					return `
-						<article class="voucher-card unlocked" style="border: 1px solid rgba(17,17,17,0.1); background: #ffffff;">
-							<h4 class="voucher-title" style="margin: 0; font-size: 0.95rem; font-weight: 800;">🎁 ${item.name}</h4>
-							<div class="voucher-code" style="margin-top: 4px; font-size: 0.8rem; padding: 4px 10px; background: #111111; color: #ffffff; border-radius: 999px; width: fit-content; font-weight: 800;">${v.code}</div>
-							<div class="voucher-value" style="font-weight: 700; color: #111111; font-size: 0.88rem; margin-top: 6px;">Giảm: ${item.val}</div>
-							<div class="voucher-expiry" style="color: var(--ink-soft); font-size: 0.8rem; margin-top: 2px;">Hạn dùng: ${formatDateOnly(v.expiryAt)}</div>
-							<div class="voucher-actions" style="margin-top: 10px;">
-								<button class="btn btn-dark btn-full" type="button" data-copy="${v.code}" style="padding: 10px 12px; font-size: 0.85rem; border-radius: 12px; width: 100%;">Sao chép mã</button>
-							</div>
-						</article>
+		const voucherData = [
+			{ icon: '🎁', name: 'Giảm 50.000đ', cond: 'Đơn tối thiểu 500k', code: 'HC50K', exp: '31/07/2026', badge: 'HOT' },
+			{ icon: '🔥', name: 'Giảm 100.000đ', cond: 'Đơn tối thiểu 1.5tr', code: 'HC100K', exp: '31/07/2026' },
+			{ icon: '💎', name: 'Giảm 200.000đ', cond: 'Đơn tối thiểu 3tr', code: 'HC200K', exp: '31/07/2026' },
+			{ icon: '🌟', name: 'Giảm 300.000đ', cond: 'Đơn tối thiểu 5tr', code: 'HC300K', exp: '31/07/2026', badge: 'HOT' },
+			{ icon: '👑', name: 'Giảm 500.000đ', cond: 'Đơn tối thiểu 8tr', code: 'HC500K', exp: '31/07/2026' },
+			{ icon: '🏆', name: 'Giảm 1.000.000đ', cond: 'Đơn tối thiểu 15tr', code: 'HC1M', exp: '31/07/2026', badge: 'VIP' },
+			{ icon: '⚡', name: 'Giảm 15%', cond: 'Giảm tối đa 300k', code: 'SALE15', exp: '31/07/2026' },
+			{ icon: '🚀', name: 'FreeShip', cond: 'Tối đa 50k', code: 'FREESHIP', exp: '31/07/2026' },
+			{ icon: '🎮', name: 'Gaming Combo', cond: 'Khi mua Laptop', code: 'GEAR', exp: '31/07/2026', badge: 'HOT' }
+		];
+
+		function renderBanner() {
+			const track = $('heroTrack');
+			const dotsContainer = $('heroDots');
+			if (!track || !dotsContainer) return;
+
+			track.innerHTML = '';
+			dotsContainer.innerHTML = '';
+
+			banners.forEach((b, i) => {
+				const slide = document.createElement('div');
+				slide.className = 'hero-slide';
+				slide.onclick = () => window.location.href = b.link;
+
+				const img = document.createElement('img');
+				img.src = b.image;
+				img.alt = b.title || 'Banner ' + b.id;
+				img.style.width = '100%';
+				img.style.height = '100%';
+				img.style.objectFit = 'cover';
+				img.style.position = 'absolute';
+				img.style.inset = '0';
+				img.style.zIndex = '0';
+				slide.appendChild(img);
+
+				if (b.title || b.subtitle || b.buttonText) {
+					const content = document.createElement('div');
+					content.className = 'hero-slide-content';
+					content.style.zIndex = '1';
+					content.innerHTML = `
+						${b.title ? `<h1 class="hero-slide-title">${b.title}</h1>` : ''}
+						${b.subtitle ? `<p class="hero-slide-desc">${b.subtitle}</p>` : ''}
+						${b.buttonText ? `<button class="hero-btn" onclick="event.stopPropagation(); window.location.href='${b.link}'">${b.buttonText}</button>` : ''}
 					`;
-				} else {
-					return `
-						<article class="voucher-card locked-card" style="border: 1px dashed rgba(17,17,17,0.12); background: rgba(245, 245, 245, 0.75); box-shadow: none; opacity: 0.65; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 16px; text-align: center; min-height: 188px;">
-							<div class="lock-icon" style="font-size: 1.4rem; color: #888; margin-bottom: 6px;">🔒</div>
-							<h4 style="margin: 0; font-size: 0.9rem; font-weight: 800; color: #666;">Chưa mở khóa</h4>
-							<p style="margin: 4px 0 0 0; font-size: 0.75rem; color: #888; line-height: 1.4;">Nhận voucher bằng cách mua hàng và quay Lucky Spin.</p>
-							<div style="margin-top: 8px; font-size: 0.78rem; font-weight: 700; color: #999;">Trị giá: ${item.val}</div>
-						</article>
-					`;
+					slide.appendChild(content);
 				}
-			}).join('');
 
-			$('voucherWallet').innerHTML = html;
+				track.appendChild(slide);
 
-			$('voucherWallet').querySelectorAll('[data-copy]').forEach(btn => {
-				btn.addEventListener('click', () => copyVoucherCode(btn.getAttribute('data-copy')));
+				const dot = document.createElement('div');
+				dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+				dot.dataset.index = i;
+				dotsContainer.appendChild(dot);
 			});
-			
-			// Total count of owned target vouchers
-			$('statVoucherCount').textContent = ownedVouchers.length;
 		}
 
-		function renderHistory() {
-			const history = safeParse(STORAGE_KEYS.history, []);
-			$('historyBody').innerHTML = history.length ? history.map(item => `
-				<tr>
-					<td>${formatDateTime(item.date)}</td>
-					<td>${item.game}</td>
-					<td>${item.reward}</td>
-				</tr>
-			`).join('') : '<tr><td colspan="3" style="text-align:center; color: var(--ink-soft);">Chưa có lịch sử nào</td></tr>';
-			$('statHistoryCount').textContent = history.length;
+		function initSlider() {
+			const track = $('heroTrack');
+			const dots = document.querySelectorAll('.hero-dot');
+			const prevBtn = $('heroPrev');
+			const nextBtn = $('heroNext');
+			let currentIdx = 0;
+			let sliderInterval;
+
+			if (!track || banners.length === 0) return;
+
+			function goToSlide(idx) {
+				if (idx < 0) idx = banners.length - 1;
+				if (idx >= banners.length) idx = 0;
+				currentIdx = idx;
+				track.style.transform = `translateX(-${currentIdx * 100}%)`;
+				dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+			}
+
+			function nextSlide() { goToSlide(currentIdx + 1); }
+			function prevSlide() { goToSlide(currentIdx - 1); }
+
+			function startAuto() {
+				stopAuto();
+				sliderInterval = setInterval(nextSlide, 5000);
+			}
+
+			function stopAuto() {
+				if (sliderInterval) clearInterval(sliderInterval);
+			}
+
+			if (prevBtn) prevBtn.onclick = () => { prevSlide(); startAuto(); };
+			if (nextBtn) nextBtn.onclick = () => { nextSlide(); startAuto(); };
+			dots.forEach((dot, i) => {
+				dot.onclick = () => { goToSlide(i); startAuto(); };
+			});
+
+			const slider = $('heroSlider');
+			if (slider) {
+				slider.onmouseenter = stopAuto;
+				slider.onmouseleave = startAuto;
+			}
+
+			startAuto();
+		}
+
+		function renderVoucherList() {
+			const grid = $('voucherHotGrid');
+			if (!grid) return;
+
+			grid.innerHTML = voucherData.map(v => `
+				<div class="vh-card">
+					<div class="vh-top">
+						${v.badge ? `<div class="vh-badge">${v.badge}</div>` : ''}
+						<div class="vh-icon">${v.icon}</div>
+						<h4 class="vh-title">${v.name}</h4>
+					</div>
+					<div class="vh-bottom">
+						<p class="vh-cond">${v.cond}</p>
+						<div class="vh-info-row">
+							<span class="vh-exp">HSD: ${v.exp}</span>
+							<span class="vh-code">${v.code}</span>
+						</div>
+						<button class="vh-btn" onclick="claimHotVoucher('${v.code}')">Nhận ngay</button>
+					</div>
+				</div>
+			`).join('');
 		}
 
 		function updateUI() {
-			renderWallet();
-			renderHistory();
 			$('coinCount').textContent = String(getStoredNumber(STORAGE_KEYS.coins, 0));
 		}
+
+		function claimHotVoucher(code) {
+			const v = voucherData.find(x => x.code === code);
+			if (!v) return;
+
+			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
+			// Check if already in wallet
+			if (wallet.some(w => w.code === code)) {
+				showToast('Bạn đã nhận voucher này rồi');
+				return;
+			}
+
+			let baseReward = 'HOT_CASH';
+			let discountText = v.name;
+			if (v.name.includes('%')) {
+				baseReward = 'HOT_PERCENT';
+			} else if (v.name.toLowerCase().includes('freeship')) {
+				baseReward = 'HOT_FREESHIP';
+			}
+
+			const voucher = {
+				id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+				name: v.name,
+				code: v.code,
+				baseReward: baseReward,
+				description: v.cond,
+				discountText: discountText,
+				receivedAt: now().toISOString(),
+				expiryAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+				source: 'Voucher Hot',
+				isUsed: false,
+				cond: v.cond
+			};
+
+			wallet.unshift(voucher);
+			saveJSON(STORAGE_KEYS.vouchers, wallet);
+			if (typeof saveStorage === 'function') saveStorage();
+
+			if (navigator.clipboard && navigator.clipboard.writeText) {
+				navigator.clipboard.writeText(v.code).catch(() => { });
+			}
+
+			showToast(`Đã lưu và copy mã ${v.code} vào ví của bạn!`);
+
+			// Optional: open popup
+			openPopup({
+				kind: 'Voucher',
+				title: '🎉 Nhận Voucher Thành Công',
+				text: `Voucher ${v.name} đã được copy và lưu vào ví. Bạn có thể chọn trực tiếp ở bước thanh toán.`,
+				code: voucher.code,
+				primaryText: 'OK',
+				secondaryText: 'Đóng',
+				onPrimary: () => { }
+			});
+		}
+
 
 		// ============================================================
 		// PARTICLES
@@ -2353,10 +2410,16 @@
 			}
 		}
 
+
+
 		// ============================================================
 		// INIT
 		// ============================================================
 		function init() {
+			renderBanner();
+			renderVoucherList();
+			initSlider();
+
 			buildParticles();
 			loadStorage();
 			renderWheelLabels();

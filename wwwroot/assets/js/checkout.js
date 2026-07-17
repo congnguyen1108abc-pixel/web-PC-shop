@@ -26,11 +26,11 @@ const shippingNames = { standard: 'Giao hàng nhanh - GHN', express: 'Hỏa tố
  */
 function estimateProductPhysics(name) {
     const lower = name.toLowerCase();
-    
+
     // Default fallback
     let weight = 0.5; // kg
     let bulkiness = 1.0; // scale factor
-    
+
     if (lower.includes('case') || lower.includes('vỏ máy') || lower.includes('thùng máy') || lower.includes('nyx') || lower.includes('h5 flow') || lower.includes('o11') || lower.includes('h9 flow') || lower.includes('4000d')) {
         weight = 7.0;
         bulkiness = 3.5;
@@ -77,7 +77,7 @@ function estimateProductPhysics(name) {
         weight = 0.05;
         bulkiness = 0.2;
     }
-    
+
     return { weight, bulkiness };
 }
 
@@ -88,10 +88,10 @@ function calculateShippingFee(items, method, province) {
     if (!items || items.length === 0) {
         return { price: 0, weight: 0, bulkiness: 0 };
     }
-    
+
     let totalWeight = 0;
     let totalBulkiness = 0;
-    
+
     items.forEach(item => {
         const name = item.name || item.title || 'Sản phẩm';
         const qty = item.qty || item.quantity || 1;
@@ -99,20 +99,20 @@ function calculateShippingFee(items, method, province) {
         totalWeight += physics.weight * qty;
         totalBulkiness += physics.bulkiness * qty;
     });
-    
+
     // Base Rates
     let baseRate = method === 'express' ? 35000 : 15000;
-    
+
     // Weight Charge (per kg)
     let weightRate = method === 'express' ? 10000 : 4000;
     let weightCharge = totalWeight * weightRate;
-    
+
     // Bulkiness Charge
     let bulkRate = method === 'express' ? 8000 : 3000;
     let bulkCharge = totalBulkiness * bulkRate;
-    
+
     let subtotalShipping = baseRate + weightCharge + bulkCharge;
-    
+
     // Province Modifier
     let modifier = 1.0;
     if (province) {
@@ -125,9 +125,9 @@ function calculateShippingFee(items, method, province) {
             modifier = 1.1; // Standard province surcharge
         }
     }
-    
+
     let finalShipping = Math.round((subtotalShipping * modifier) / 500) * 500; // Round to nearest 500đ
-    
+
     return {
         price: finalShipping,
         weight: totalWeight.toFixed(2),
@@ -154,7 +154,7 @@ if (!authToken || !authUser) {
     try {
         const user = JSON.parse(authUser);
         console.log('[Checkout] User ID:', user.userId, '| Name:', user.fullName, '| Email:', user.email);
-    } catch(e) {
+    } catch (e) {
         console.error('[Checkout] ❌ Invalid user data - redirecting');
         clearAuthAndRedirect();
     }
@@ -194,10 +194,10 @@ function showLoading(text = 'Đang xử lý...', subtext = 'Vui lòng đợi tro
     const overlay = document.getElementById('loadingOverlay');
     const loadingText = overlay.querySelector('.loading-text');
     const loadingSubtext = overlay.querySelector('.loading-subtext');
-    
+
     if (loadingText) loadingText.textContent = text;
     if (loadingSubtext) loadingSubtext.textContent = subtext;
-    
+
     overlay.classList.add('active');
 }
 
@@ -231,19 +231,19 @@ async function loadCities() {
         // ── Lọc bỏ các tỉnh test/giả của GHN Sandbox ──────────────────────────────
         // Danh sách 63 tỉnh/thành thực tế của Việt Nam
         const VALID_PROVINCES = new Set([
-            'An Giang','Bà Rịa - Vũng Tàu','Bắc Giang','Bắc Kạn','Bạc Liêu',
-            'Bắc Ninh','Bến Tre','Bình Định','Bình Dương','Bình Phước',
-            'Bình Thuận','Cà Mau','Cần Thơ','Cao Bằng','Đà Nẵng',
-            'Đắk Lắk','Đắk Nông','Điện Biên','Đồng Nai','Đồng Tháp',
-            'Gia Lai','Hà Giang','Hà Nam','Hà Nội','Hà Tĩnh',
-            'Hải Dương','Hải Phòng','Hậu Giang','Hòa Bình','Hưng Yên',
-            'Khánh Hòa','Kiên Giang','Kon Tum','Lai Châu','Lâm Đồng',
-            'Lạng Sơn','Lào Cai','Long An','Nam Định','Nghệ An',
-            'Ninh Bình','Ninh Thuận','Phú Thọ','Phú Yên','Quảng Bình',
-            'Quảng Nam','Quảng Ngãi','Quảng Ninh','Quảng Trị','Sóc Trăng',
-            'Sơn La','Tây Ninh','Thái Bình','Thái Nguyên','Thanh Hóa',
-            'Thừa Thiên Huế','Tiền Giang','TP. Hồ Chí Minh','Trà Vinh',
-            'Tuyên Quang','Vĩnh Long','Vĩnh Phúc','Yên Bái'
+            'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu',
+            'Bắc Ninh', 'Bến Tre', 'Bình Định', 'Bình Dương', 'Bình Phước',
+            'Bình Thuận', 'Cà Mau', 'Cần Thơ', 'Cao Bằng', 'Đà Nẵng',
+            'Đắk Lắk', 'Đắk Nông', 'Điện Biên', 'Đồng Nai', 'Đồng Tháp',
+            'Gia Lai', 'Hà Giang', 'Hà Nam', 'Hà Nội', 'Hà Tĩnh',
+            'Hải Dương', 'Hải Phòng', 'Hậu Giang', 'Hòa Bình', 'Hưng Yên',
+            'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 'Lâm Đồng',
+            'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định', 'Nghệ An',
+            'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 'Quảng Bình',
+            'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị', 'Sóc Trăng',
+            'Sơn La', 'Tây Ninh', 'Thái Bình', 'Thái Nguyên', 'Thanh Hóa',
+            'Thừa Thiên Huế', 'Tiền Giang', 'TP. Hồ Chí Minh', 'Trà Vinh',
+            'Tuyên Quang', 'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái'
         ]);
 
         const provinces = allProvinces.filter(p => {
@@ -378,29 +378,29 @@ wardSelect.addEventListener("change", loadAndRenderCart);
 // ==========================================
 async function loadAndRenderCart() {
     console.log('[Checkout] ============ CART LOAD START ============');
-    
+
     // Sync cart from database if user is logged in
     const token = localStorage.getItem('pc_store_token');
     const userRaw = localStorage.getItem('pc_store_user');
-    
+
     if (token && userRaw) {
         try {
             const user = JSON.parse(userRaw);
             if (user && user.userId) {
                 console.log('[Checkout] 🔄 Syncing cart from API for UserID:', user.userId);
                 const res = await fetch(`/api/Cart/user/${user.userId}`, {
-                    headers: { 
-                        'Authorization': `Bearer ${token}`, 
-                        'Content-Type': 'application/json' 
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
                     }
                 });
-                
+
                 console.log('[Checkout] API Response status:', res.status);
-                
+
                 if (res.ok) {
                     const dbItems = await res.json();
                     console.log('[Checkout] ✅ Received', dbItems.length, 'items from database');
-                    
+
                     const localCart = dbItems.map(item => ({
                         id: item.productId,
                         cartId: item.cartId,
@@ -410,7 +410,7 @@ async function loadAndRenderCart() {
                         qty: item.quantity,
                         img: item.defaultImageUrl || '/assets/img/placeholder-product.png'
                     }));
-                    
+
                     localStorage.setItem('hyper_core_cart', JSON.stringify(localCart));
                     console.log('[Checkout] ✅ Cart saved to localStorage');
                 } else if (res.status === 401) {
@@ -443,12 +443,12 @@ async function loadAndRenderCart() {
     if (!rawItems.length) {
         console.warn('[Checkout] ⚠ Cart is empty');
         productList.innerHTML = '<p style="color:#6b7280;text-align:center;padding:30px;line-height:1.8;">Giỏ hàng của bạn đang trống.<br><a href="/Products" style="color:#38bdf8;text-decoration:underline;">Tiếp tục mua sắm</a></p>';
-        
+
         if (subtotalEl) subtotalEl.innerText = formatCurrency(0);
         if (shippingEl) shippingEl.innerText = formatCurrency(0);
         if (discountEl) discountEl.innerText = '-' + formatCurrency(0);
         if (totalEl) totalEl.innerText = formatCurrency(0);
-        
+
         return;
     }
 
@@ -456,7 +456,7 @@ async function loadAndRenderCart() {
     console.log('[Checkout] 🎨 Rendering', rawItems.length, 'product items...');
     productList.innerHTML = '';
     let subtotal = 0;
-    
+
     rawItems.forEach((item, index) => {
         const name = item.name || item.title || 'Sản phẩm';
         const variant = item.specs || item.variant || '';
@@ -555,7 +555,7 @@ async function loadAndRenderCart() {
     const timeDisplay = document.getElementById('shippingTimeDisplay');
     const priceDisplay = document.getElementById('shippingPriceDisplay');
     const subDisplay = document.getElementById('shippingSubDisplay');
-    
+
     if (selectedShipping === 'standard') {
         if (nameDisplay) nameDisplay.textContent = 'Giao hàng nhanh - GHN';
         if (timeDisplay) timeDisplay.textContent = `Dự kiến giao: ${getStandardShippingEstimate().replace('Dự kiến giao: ', '')}`;
@@ -566,6 +566,11 @@ async function loadAndRenderCart() {
         if (timeDisplay) timeDisplay.textContent = 'Dự kiến giao: Hôm nay';
         if (priceDisplay) priceDisplay.textContent = formatCurrency(currentShippingFee);
         if (subDisplay) subDisplay.style.display = 'none';
+    }
+
+    // Check and re-apply voucher if needed, and render voucher list
+    if (typeof renderAvailableVouchers === 'function') {
+        renderAvailableVouchers(subtotal);
     }
 
     console.log('[Checkout] ✅ Order summary updated in DOM');
@@ -581,20 +586,20 @@ function getStandardShippingEstimate() {
     tomorrow.setDate(today.getDate() + 1);
     const threeDays = new Date(today);
     threeDays.setDate(today.getDate() + 3);
-    
+
     const formatDayMonth = (date) => {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         return `${day} Th${month}`;
     };
-    
+
     return `Dự kiến giao: ${formatDayMonth(tomorrow)} - ${formatDayMonth(threeDays)}`;
 }
 
 async function openShippingModal() {
     tempSelectedShipping = selectedShipping;
     updateModalSelectionUI();
-    
+
     const estText = document.getElementById('standardTimeEstimateText');
     if (estText) {
         estText.innerHTML = `Get by ${getStandardShippingEstimate().replace('Dự kiến giao: ', '')} <span class="help-circle">?</span>`;
@@ -618,7 +623,7 @@ async function openShippingModal() {
             w += Math.round(physics.weight * 1000) * qty;
         });
         if (w > 0) totalWeightGrams = w;
-    } catch(e) {}
+    } catch (e) { }
 
     const optStandardPrice = document.querySelector('#opt-standard .option-price-tag');
     const optExpressPrice = document.querySelector('#opt-express .option-price-tag');
@@ -637,7 +642,7 @@ async function openShippingModal() {
                 standardFee = d.fee || standardFee;
                 currentShippingFee = standardFee; // Đồng bộ lại fee ngoài
             }
-        } catch(e) {}
+        } catch (e) { }
 
         // Phí hỏa tốc ≈ phí chuẩn × 2.5 (GHN quy định giao trong ngày đắt hơn)
         const expressFee = Math.round(standardFee * 2.5 / 1000) * 1000;
@@ -666,7 +671,7 @@ function selectShippingOption(option) {
 function updateModalSelectionUI() {
     const standardCard = document.getElementById('opt-standard');
     const expressCard = document.getElementById('opt-express');
-    
+
     if (standardCard && expressCard) {
         if (tempSelectedShipping === 'standard') {
             standardCard.classList.add('active');
@@ -727,7 +732,7 @@ async function applyVoucher() {
     try {
         const cartStr = localStorage.getItem('hyper_core_cart');
         rawItems = JSON.parse(cartStr) || [];
-    } catch (e) {}
+    } catch (e) { }
 
     let subtotal = 0;
     rawItems.forEach(item => {
@@ -784,11 +789,11 @@ async function applyVoucher() {
         } else {
             appliedVoucherCode = null;
             voucherDiscount = 0;
-            
+
             msgEl.textContent = 'Mã giảm giá không hợp lệ, đã hết hạn hoặc không đủ điều kiện!';
             msgEl.className = 'voucher-message error';
             msgEl.style.display = 'block';
-            
+
             await loadAndRenderCart();
         }
     } catch (err) {
@@ -843,28 +848,28 @@ function validateForm() {
     const district = document.getElementById('districtSelect').value;
     const ward = document.getElementById('wardSelect').value;
     const streetAddress = document.getElementById('streetAddress').value.trim();
-    
+
     if (!fullName) {
         alert('Vui lòng nhập họ tên!');
         return false;
     }
-    
+
     const phoneRegex = /^0[0-9]{9}$/;
     if (!phoneNumber || !phoneRegex.test(phoneNumber)) {
         alert('Số điện thoại không hợp lệ! (Phải là 10 số, bắt đầu bằng 0)');
         return false;
     }
-    
+
     if (!province || !district || !ward) {
         alert('Vui lòng chọn đầy đủ Tỉnh/Thành, Quận/Huyện, Phường/Xã!');
         return false;
     }
-    
+
     if (!streetAddress) {
         alert('Vui lòng nhập số nhà, tên đường!');
         return false;
     }
-    
+
     return true;
 }
 
@@ -877,7 +882,7 @@ function validateForm() {
  */
 async function createSePayPayment(orderId, userId, amount) {
     console.log('[SePay] Creating payment for Order:', orderId, 'Amount:', amount);
-    
+
     try {
         const response = await fetch('/api/sepay/create-payment', {
             method: 'POST',
@@ -911,11 +916,11 @@ async function createSePayPayment(orderId, userId, amount) {
         if (result.success && result.data) {
             // Update QR code với VietQR format
             const vietQRUrl = `https://img.vietqr.io/image/970422-0364885351-qr_only.png?amount=${amount}&addInfo=${encodeURIComponent(`HYPERCORE ${orderId}`)}&accountName=${encodeURIComponent('NGUYEN VAN CHI')}`;
-            
+
             if (qrImg) qrImg.src = vietQRUrl;
             if (amountEl) amountEl.innerText = formatCurrency(amount);
             if (descriptionEl) descriptionEl.innerText = `HYPERCORE ${orderId}`;
-            
+
             // Show payment detail box
             if (sePayDetail) {
                 sePayDetail.classList.add('active');
@@ -968,7 +973,7 @@ async function checkPaymentStatus(orderId) {
  */
 function startPaymentPolling(orderId) {
     console.log('[SePay] 🔄 Starting payment polling for Order:', orderId);
-    
+
     const pollingStatus = document.getElementById('sepay-polling-status');
     if (pollingStatus) {
         pollingStatus.textContent = '⏳ Đang chờ thanh toán...';
@@ -986,7 +991,7 @@ function startPaymentPolling(orderId) {
             if (status.isPaid) {
                 console.log('[SePay] ✅ Payment confirmed!');
                 stopPaymentPolling();
-                
+
                 if (pollingStatus) {
                     pollingStatus.textContent = '✅ Thanh toán thành công!';
                     pollingStatus.style.background = 'rgba(34, 197, 94, 0.1)';
@@ -1004,7 +1009,7 @@ function startPaymentPolling(orderId) {
                     spinner.style.alignItems = 'center';
                     spinner.innerHTML = '<span style="font-size: 64px; line-height: 1; animation: popCheck 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;">✅</span>';
                 }
-                
+
                 showLoading(
                     'Thanh toán thành công!',
                     'Đơn hàng của bạn đã được xác nhận. Đang chuyển hướng sau giây lát...'
@@ -1012,6 +1017,7 @@ function startPaymentPolling(orderId) {
 
                 // Clear cart and redirect
                 setTimeout(() => {
+                    if (appliedVoucherCode) markVoucherAsUsed(appliedVoucherCode);
                     localStorage.removeItem('hyper_core_cart');
                     localStorage.removeItem('hypercore_cart_items');
                     sessionStorage.setItem('current_orderId', orderId);
@@ -1050,7 +1056,7 @@ function stopPaymentPolling() {
 // ==========================================
 // 7. PAYMENT BUTTON HANDLER
 // ==========================================
-document.getElementById('confirmPayBtn').addEventListener('click', async function() {
+document.getElementById('confirmPayBtn').addEventListener('click', async function () {
     console.log('[Checkout] ============ PAYMENT BUTTON CLICKED ============');
 
     // Validate form
@@ -1089,9 +1095,9 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
     const sepay = document.getElementById('sepay');
 
     let paymentMethod = '';
-    if (creditCard.checked) paymentMethod = 'Credit Card';
+    if (creditCard && creditCard.checked) paymentMethod = 'Credit Card';
     else if (cod && cod.checked) paymentMethod = 'COD';
-    else if (sepay.checked) paymentMethod = 'SePay';
+    else if (sepay && sepay.checked) paymentMethod = 'SePay';
 
     if (!paymentMethod) {
         alert('Vui lòng chọn phương thức thanh toán!');
@@ -1140,15 +1146,15 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
 
         const orderResult = await orderResponse.json();
         currentOrderId = orderResult.newOrderId;
-        
+
         console.log('[Checkout] ✅ Order created with ID:', currentOrderId);
 
         // If SePay is selected, create payment and show QR
         if (paymentMethod === 'SePay') {
             hideLoading();
-            
+
             const success = await createSePayPayment(currentOrderId, userId, totalAmount);
-            
+
             if (success) {
                 // Start polling for payment confirmation
                 startPaymentPolling(currentOrderId);
@@ -1164,17 +1170,18 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
                 spinner.style.alignItems = 'center';
                 spinner.innerHTML = '<span style="font-size: 64px; line-height: 1; animation: popCheck 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;">✅</span>';
             }
-            
+
             showLoading(
                 'Đặt hàng thành công!',
                 'Đơn hàng của bạn đã được ghi nhận. Đang chuyển hướng sau giây lát...'
             );
 
             // Clear cart
+            if (appliedVoucherCode) markVoucherAsUsed(appliedVoucherCode);
             localStorage.removeItem('hyper_core_cart');
             localStorage.removeItem('hypercore_cart_items');
             sessionStorage.setItem('current_orderId', currentOrderId);
-            
+
             // Redirect after 3 seconds
             setTimeout(() => {
                 window.location.href = `/paymentcomplete?status=success&orderId=${currentOrderId}&method=cod`;
@@ -1188,7 +1195,7 @@ document.getElementById('confirmPayBtn').addEventListener('click', async functio
     } catch (error) {
         hideLoading();
         console.error('[Checkout] ❌ Error processing payment:', error);
-        alert('Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại!');
+        alert(error.message || 'Có lỗi xảy ra khi xử lý thanh toán. Vui lòng thử lại!');
     }
 });
 
@@ -1200,3 +1207,207 @@ window.addEventListener('beforeunload', () => {
 });
 
 console.log('[Checkout] ============ SCRIPT LOADED ============');
+
+// ==========================================
+// 9. VOUCHER SYSTEM
+// ==========================================
+function renderAvailableVouchers(subtotal) {
+    const voucherListEl = document.getElementById('available-vouchers-list');
+    const voucherContainer = document.getElementById('available-vouchers-container');
+
+    let wallet = [];
+    try {
+        wallet = JSON.parse(localStorage.getItem('voucherWallet')) || [];
+    } catch (e) { }
+
+    const now = new Date().toISOString();
+    const availableVouchers = wallet.filter(v => !v.isUsed && v.expiryAt > now);
+
+    if (availableVouchers.length > 0 && voucherContainer) {
+        voucherContainer.style.display = 'block';
+        voucherListEl.innerHTML = '';
+        availableVouchers.forEach(v => {
+            let minOrder = 0;
+            if (v.cond && v.cond.includes('tối thiểu')) {
+                const match = v.cond.match(/\d+(\.\d+)?(k|tr)/i);
+                if (match) {
+                    let val = parseFloat(match[0].replace(/k|tr/i, ''));
+                    if (match[0].toLowerCase().includes('k')) minOrder = val * 1000;
+                    if (match[0].toLowerCase().includes('tr')) minOrder = val * 1000000;
+                }
+            }
+            const isEligible = subtotal >= minOrder;
+
+            const div = document.createElement('div');
+            div.style.padding = '10px';
+            div.style.border = '1px solid ' + (isEligible ? '#3aa7ff' : '#ddd');
+            div.style.borderRadius = '8px';
+            div.style.background = isEligible ? 'rgba(58, 167, 255, 0.05)' : '#f9f9f9';
+            div.style.cursor = isEligible ? 'pointer' : 'not-allowed';
+            div.style.opacity = isEligible ? '1' : '0.6';
+            div.style.display = 'flex';
+            div.style.justifyContent = 'space-between';
+            div.style.alignItems = 'center';
+            div.innerHTML = `
+                <div>
+                    <strong style="color: #111; font-size: 14px;">${v.name}</strong> <br/>
+                    <small style="color: #666;">Mã: ${v.code} | ${v.cond || ''}</small>
+                </div>
+                <div>
+                    ${isEligible ? `<button type="button" class="btn-use-voucher" data-code="${v.code}" style="padding: 6px 12px; background: #3aa7ff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">Dùng</button>` : `<span style="font-size:12px;color:#d32f2f;">Chưa đủ đk</span>`}
+                </div>
+            `;
+            voucherListEl.appendChild(div);
+        });
+
+        // Add event listeners for use buttons
+        document.querySelectorAll('.btn-use-voucher').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const code = e.target.getAttribute('data-code');
+                const voucherInput = document.getElementById('voucher-code-input');
+                if (voucherInput) voucherInput.value = code;
+                handleApplyVoucher(code);
+            });
+        });
+    } else if (voucherContainer) {
+        voucherContainer.style.display = 'none';
+    }
+
+    // Auto re-validate currently applied voucher
+    if (appliedVoucherCode) {
+        handleApplyVoucher(appliedVoucherCode);
+    }
+}
+
+function handleApplyVoucher(code) {
+    const messageEl = document.getElementById('voucher-message');
+    if (!code) {
+        if (messageEl) { messageEl.innerText = 'Vui lòng nhập mã giảm giá'; messageEl.style.color = '#d32f2f'; messageEl.style.display = 'block'; }
+        return;
+    }
+
+    let wallet = [];
+    try {
+        wallet = JSON.parse(localStorage.getItem('voucherWallet')) || [];
+    } catch (e) { }
+
+    const v = wallet.find(x => x.code === code && !x.isUsed);
+    if (!v) {
+        if (messageEl) { messageEl.innerText = 'Voucher không hợp lệ hoặc đã sử dụng.'; messageEl.style.color = '#d32f2f'; messageEl.style.display = 'block'; }
+        voucherDiscount = 0;
+        appliedVoucherCode = null;
+        updateTotalsDOM();
+        return;
+    }
+    if (new Date() > new Date(v.expiryAt)) {
+        if (messageEl) { messageEl.innerText = 'Voucher đã hết hạn.'; messageEl.style.color = '#d32f2f'; messageEl.style.display = 'block'; }
+        voucherDiscount = 0;
+        appliedVoucherCode = null;
+        updateTotalsDOM();
+        return;
+    }
+
+    // Calculate subtotal
+    const cartStr = localStorage.getItem('hyper_core_cart');
+    let rawItems = [];
+    try { rawItems = JSON.parse(cartStr) || []; } catch (e) { }
+    let subtotal = 0;
+    rawItems.forEach(item => subtotal += (item.price || 0) * (item.qty || item.quantity || 1));
+
+    let minOrder = 0;
+    if (v.cond && v.cond.includes('tối thiểu')) {
+        const match = v.cond.match(/\d+(\.\d+)?(k|tr)/i);
+        if (match) {
+            let val = parseFloat(match[0].replace(/k|tr/i, ''));
+            if (match[0].toLowerCase().includes('k')) minOrder = val * 1000;
+            if (match[0].toLowerCase().includes('tr')) minOrder = val * 1000000;
+        }
+    }
+
+    if (subtotal < minOrder) {
+        if (messageEl) { messageEl.innerText = `Đơn hàng chưa đạt điều kiện. Cần tối thiểu ${formatCurrency(minOrder)}`; messageEl.style.color = '#d32f2f'; messageEl.style.display = 'block'; }
+        voucherDiscount = 0;
+        appliedVoucherCode = null;
+        updateTotalsDOM();
+        return;
+    }
+
+    let discount = 0;
+    let baseReward = v.baseReward || '';
+    if (baseReward.includes('FREESHIP') || v.name.toLowerCase().includes('freeship')) {
+        discount = Math.min(currentShippingFee, 50000);
+    } else if (baseReward.includes('PERCENT') || v.name.includes('%')) {
+        const pctMatch = v.name.match(/(\d+)%/);
+        const pct = pctMatch ? parseInt(pctMatch[1]) : 0;
+        discount = subtotal * (pct / 100);
+        if (v.cond && v.cond.includes('tối đa')) {
+            const maxMatch = v.cond.match(/\d+(\.\d+)?(k|tr)/i);
+            if (maxMatch) {
+                let maxVal = parseFloat(maxMatch[0].replace(/k|tr/i, ''));
+                if (maxMatch[0].toLowerCase().includes('k')) maxVal *= 1000;
+                if (maxMatch[0].toLowerCase().includes('tr')) maxVal *= 1000000;
+                if (discount > maxVal) discount = maxVal;
+            }
+        }
+    } else {
+        const cleanName = v.name.replace(/\./g, '');
+        const intMatch = cleanName.match(/\d+/);
+        if (intMatch) {
+            discount = parseInt(intMatch[0]);
+            if (cleanName.includes('k') || cleanName.includes('K')) discount *= 1000;
+        }
+    }
+
+    voucherDiscount = discount;
+    appliedVoucherCode = code;
+    if (messageEl) { messageEl.innerText = `Áp dụng thành công! Đã giảm ${formatCurrency(discount)}`; messageEl.style.color = '#2e7d32'; messageEl.style.display = 'block'; }
+    updateTotalsDOM();
+}
+
+function updateTotalsDOM() {
+    const cartStr = localStorage.getItem('hyper_core_cart');
+    let rawItems = [];
+    try { rawItems = JSON.parse(cartStr) || []; } catch (e) { }
+    let subtotal = 0;
+    rawItems.forEach(item => subtotal += (item.price || 0) * (item.qty || item.quantity || 1));
+
+    totalAmount = Math.max(0, subtotal + currentShippingFee - voucherDiscount);
+    const discountEl = document.getElementById('summary-discount');
+    const totalEl = document.getElementById('display-total');
+
+    if (discountEl) discountEl.innerText = '-' + formatCurrency(voucherDiscount);
+    if (totalEl) totalEl.innerText = formatCurrency(totalAmount);
+}
+
+// Bind to apply button on start
+document.addEventListener('DOMContentLoaded', () => {
+    const applyBtn = document.getElementById('apply-voucher-btn');
+    const voucherInput = document.getElementById('voucher-code-input');
+    if (applyBtn && voucherInput) {
+        applyBtn.addEventListener('click', () => {
+            handleApplyVoucher(voucherInput.value.trim());
+        });
+    }
+});
+
+function markVoucherAsUsed(code) {
+    if (!code) return;
+    let wallet = [];
+    try {
+        wallet = JSON.parse(localStorage.getItem('voucherWallet')) || [];
+    } catch (e) { }
+
+    let found = false;
+    for (let i = 0; i < wallet.length; i++) {
+        if (wallet[i].code === code) {
+            wallet[i].isUsed = true;
+            found = true;
+            break;
+        }
+    }
+    if (found) {
+        localStorage.setItem('voucherWallet', JSON.stringify(wallet));
+        localStorage.setItem('pc_voucher_wallet', JSON.stringify(wallet));
+        console.log('[Checkout] ✅ Marked voucher as used:', code);
+    }
+}

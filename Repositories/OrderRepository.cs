@@ -20,7 +20,9 @@ public sealed class OrderRepository : IOrderRepository
             request.ShippingAddress,
             request.PaymentMethod,
             request.VoucherCode,
-            request.ShippingFee
+            request.ShippingFee,
+            request.ToWardCode,
+            request.ToDistrictId
         });
         return r?.NewOrderId;
     }
