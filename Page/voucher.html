@@ -1275,8 +1275,14 @@
 			width: 100%;
 		}
 
-		.vh-btn:hover {
+		.vh-btn:hover:not(:disabled) {
 			background: var(--primary);
+		}
+
+		.vh-btn:disabled {
+			background: #e5e7eb;
+			color: #9ca3af;
+			cursor: not-allowed;
 		}
 
 		/* Responsive */
@@ -1335,13 +1341,314 @@
 				min-height: auto;
 			}
 		}
+
+
+		/* ==================================================
+		   HERO PROMO BLOCKS (LEFT & RIGHT)
+		   ================================================== */
+		.hero-wrapper {
+			position: relative;
+			width: 100%;
+			z-index: 1;
+		}
+
+		.hero-side-promo {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 280px;
+			height: 400px;
+			pointer-events: none;
+			z-index: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.hero-side-left {
+			left: -320px;
+		}
+
+		.hero-side-right {
+			right: -320px;
+		}
+
+		.promo-lightning {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 200px;
+			height: 200px;
+			border-radius: 50%;
+			filter: blur(50px);
+			opacity: 0.6;
+			z-index: -1;
+			animation: lightningPulse 2s infinite alternate;
+		}
+
+		.promo-lightning-orange {
+			background: #ff5722;
+		}
+
+		.promo-lightning-blue {
+			background: #3aa7ff;
+		}
+
+		@keyframes lightningPulse {
+			0% {
+				opacity: 0.4;
+				transform: translate(-50%, -50%) scale(0.9);
+			}
+
+			100% {
+				opacity: 0.8;
+				transform: translate(-50%, -50%) scale(1.1);
+			}
+		}
+
+		.promo-main-img {
+			width: 100%;
+			height: auto;
+			min-height: 250px;
+			max-height: 320px;
+			object-fit: contain;
+			filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+			animation: floatMain 6s ease-in-out infinite;
+			z-index: 2;
+			transition: transform 0.3s ease;
+			pointer-events: auto;
+			background: rgba(17, 17, 17, 0.05);
+			/* Placeholder */
+			border-radius: 20px;
+		}
+
+		.hero-side-promo:hover .promo-main-img {
+			transform: scale(1.03);
+		}
+
+		.side-voucher {
+			position: absolute;
+			background: linear-gradient(135deg, #ffffff, #f9fafb);
+			border-radius: 10px;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+			padding: 10px 14px;
+			text-align: center;
+			color: #111;
+			z-index: 3;
+			border-left: 5px dashed var(--primary);
+			animation: floatVoucher 4s ease-in-out infinite alternate;
+			user-select: none;
+			min-width: 90px;
+		}
+
+		.side-voucher::before,
+		.side-voucher::after {
+			content: '';
+			position: absolute;
+			left: -7.5px;
+			width: 10px;
+			height: 10px;
+			background: var(--bg);
+			border-radius: 50%;
+		}
+
+		.side-voucher::before {
+			top: -5px;
+		}
+
+		.side-voucher::after {
+			bottom: -5px;
+		}
+
+		.sv-top {
+			font-size: 10px;
+			font-weight: 700;
+			color: #777;
+			letter-spacing: 1px;
+		}
+
+		.sv-mid {
+			font-size: 20px;
+			font-weight: 900;
+			color: var(--primary);
+			margin: 6px 0;
+		}
+
+		.sv-bot {
+			font-size: 10px;
+			font-weight: 800;
+			background: #111;
+			color: #fff;
+			padding: 4px 8px;
+			border-radius: 4px;
+			display: inline-block;
+		}
+
+		.sv-1 {
+			top: 8%;
+			left: -20%;
+			animation-delay: 0s;
+			--rot: -12deg;
+			transform: rotate(-12deg);
+		}
+
+		.sv-2 {
+			bottom: 12%;
+			right: -15%;
+			animation-delay: 1.5s;
+			--rot: 10deg;
+			transform: rotate(10deg);
+		}
+
+		.sv-3 {
+			top: 35%;
+			right: -25%;
+			animation-delay: 0.5s;
+			--rot: 15deg;
+			transform: rotate(15deg);
+		}
+
+		.sv-4 {
+			bottom: 20%;
+			left: -15%;
+			animation-delay: 2s;
+			--rot: -8deg;
+			transform: rotate(-8deg);
+		}
+
+		@keyframes floatVoucher {
+			0% {
+				transform: translateY(0) rotate(var(--rot, 0deg));
+			}
+
+			100% {
+				transform: translateY(-15px) rotate(var(--rot, 0deg));
+			}
+		}
+
+		.side-tag {
+			position: absolute;
+			color: #fff;
+			font-size: 12px;
+			font-weight: 800;
+			padding: 6px 14px;
+			border-radius: 20px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+			z-index: 4;
+			animation: floatTag 3s ease-in-out infinite alternate;
+		}
+
+		.tag-flash-sale {
+			top: 25%;
+			right: 5%;
+			background: linear-gradient(90deg, #ff5722, #ff9800);
+			animation-delay: 1s;
+			--rot: 5deg;
+			transform: rotate(5deg);
+		}
+
+		.tag-freeship {
+			bottom: 10%;
+			left: 10%;
+			background: linear-gradient(90deg, #00c853, #64dd17);
+			animation-delay: 0.5s;
+			--rot: -5deg;
+			transform: rotate(-5deg);
+		}
+
+		.side-badge {
+			position: absolute;
+			font-size: 14px;
+			font-weight: 900;
+			color: #fff;
+			width: 44px;
+			height: 44px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 50%;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+			z-index: 4;
+			animation: floatTag 3.5s ease-in-out infinite alternate;
+		}
+
+		.badge-hot {
+			bottom: 30%;
+			left: -5%;
+			background: #e53935;
+			border: 2px solid #fff;
+			animation-delay: 2s;
+			--rot: -10deg;
+			transform: rotate(-10deg);
+		}
+
+		.badge-new {
+			top: 15%;
+			left: 0%;
+			background: #3949ab;
+			border: 2px solid #fff;
+			animation-delay: 1.5s;
+			--rot: 12deg;
+			transform: rotate(12deg);
+		}
+
+		@keyframes floatTag {
+			0% {
+				transform: translateY(0) rotate(var(--rot, 0deg));
+			}
+
+			100% {
+				transform: translateY(-10px) rotate(var(--rot, 0deg));
+			}
+		}
+
+		@media (min-width: 1400px) {
+			.hero-side-promo {
+				transform: translateY(-50%) scale(1);
+			}
+		}
+
+		@media (max-width: 1400px) {
+			.hero-side-promo {
+				transform: translateY(-50%) scale(0.85);
+				transform-origin: center center;
+			}
+
+			.hero-side-left {
+				left: -260px;
+			}
+
+			.hero-side-right {
+				right: -260px;
+			}
+		}
+
+		@media (max-width: 1200px) {
+			.hero-side-promo {
+				transform: translateY(-50%) scale(0.70);
+			}
+
+			.hero-side-left {
+				left: -190px;
+			}
+
+			.hero-side-right {
+				right: -190px;
+			}
+		}
+
+		@media (max-width: 992px) {
+			.hero-side-promo {
+				display: none !important;
+			}
+		}
 	</style>
 </head>
 
 <body>
 	<div class="page-shell">
 		<div class="bg-particles" id="bgParticles"></div>
-		<div class="coin-badge reveal shimmer" id="coinBadge">🪙 <strong id="coinCount">0</strong> Coins</div>
 
 		<div class="flash-sale-card reveal shimmer" id="flashSaleCard">
 			<div class="rank-pill diamond"
@@ -1355,14 +1662,56 @@
 
 		<main class="container">
 			<!-- SECTION 1: HERO BANNER -->
-			<section class="hero-banner-section slide-up" id="heroBannerSection">
-				<div class="hero-slider" id="heroSlider">
-					<div class="hero-track" id="heroTrack"></div>
-					<div class="hero-nav hero-prev" id="heroPrev">&#10094;</div>
-					<div class="hero-nav hero-next" id="heroNext">&#10095;</div>
-					<div class="hero-dots" id="heroDots"></div>
+			<div class="hero-wrapper">
+				<!-- Khối trang trí bên trái -->
+				<div class="hero-side-promo hero-side-left">
+					<div class="promo-lightning promo-lightning-orange"></div>
+					<img class="promo-main-img" src="images/voucher.png" alt="Gaming Setup">
+
+					<div class="side-voucher sv-1">
+						<div class="sv-top">VOUCHER</div>
+						<div class="sv-mid">100K</div>
+						<div class="sv-bot">COPY CODE</div>
+					</div>
+					<div class="side-voucher sv-2">
+						<div class="sv-top">VOUCHER</div>
+						<div class="sv-mid">50K</div>
+						<div class="sv-bot">COPY CODE</div>
+					</div>
+
+					<div class="side-tag tag-flash-sale">⚡ FLASH SALE</div>
+					<div class="side-badge badge-hot">HOT</div>
 				</div>
-			</section>
+
+				<section class="hero-banner-section slide-up" id="heroBannerSection">
+					<div class="hero-slider" id="heroSlider">
+						<div class="hero-track" id="heroTrack"></div>
+						<div class="hero-nav hero-prev" id="heroPrev">&#10094;</div>
+						<div class="hero-nav hero-next" id="heroNext">&#10095;</div>
+						<div class="hero-dots" id="heroDots"></div>
+					</div>
+				</section>
+
+				<!-- Khối trang trí bên phải -->
+				<div class="hero-side-promo hero-side-right">
+					<div class="promo-lightning promo-lightning-blue"></div>
+					<img class="promo-main-img" src="images/voucher.png" alt="Gaming Gear">
+
+					<div class="side-voucher sv-3">
+						<div class="sv-top">VOUCHER</div>
+						<div class="sv-mid">200K</div>
+						<div class="sv-bot">COPY CODE</div>
+					</div>
+					<div class="side-voucher sv-4">
+						<div class="sv-top">VOUCHER</div>
+						<div class="sv-mid">10%</div>
+						<div class="sv-bot">COPY CODE</div>
+					</div>
+
+					<div class="side-tag tag-freeship">🚚 FREE SHIP</div>
+					<div class="side-badge badge-new">NEW</div>
+				</div>
+			</div>
 
 			<!-- SECTION 2: VOUCHER HOT -->
 			<section class="section pop-in" id="voucherHotSection">
@@ -1562,7 +1911,11 @@
 		function safeParse(key, fallback) {
 			try {
 				const raw = localStorage.getItem(key);
-				return raw ? JSON.parse(raw) : fallback;
+				if (!raw) return fallback;
+				const parsed = JSON.parse(raw);
+				if (Array.isArray(fallback) && !Array.isArray(parsed)) return fallback;
+				if (typeof fallback === 'object' && fallback !== null && !Array.isArray(fallback) && (typeof parsed !== 'object' || Array.isArray(parsed) || parsed === null)) return fallback;
+				return parsed;
 			} catch {
 				return fallback;
 			}
@@ -1817,16 +2170,37 @@
 			const meta = VOUCHER_MAP[baseReward] || { name: 'Voucher', description: 'Voucher của bạn', discountText: '-' };
 			const codePrefix = getVoucherPrefix(baseReward);
 
+			let vValue = 0;
+			let vType = 'money';
+			if (meta.name.includes('%')) {
+				const match = meta.name.match(/(\d+)%/);
+				if (match) { vValue = parseInt(match[1]); vType = 'percent'; }
+			} else if (meta.name.toLowerCase().includes('freeship')) {
+				vValue = 50000;
+				vType = 'money';
+			} else {
+				const cleanName = meta.name.replace(/\./g, '');
+				const match = cleanName.match(/\d+/);
+				if (match) {
+					vValue = parseInt(match[0]);
+					if (cleanName.includes('k') || cleanName.includes('K')) vValue *= 1000;
+				}
+			}
+
 			const voucher = {
 				id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
 				name: meta.name,
 				code: randomCode(codePrefix),
+				value: vValue,
+				type: vType,
+				isUsed: false,
 				baseReward,
 				description: meta.description,
 				discountText: meta.discountText,
 				receivedAt: now().toISOString(),
 				expiryAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-				source: 'Vòng quay may mắn'
+				source: 'Vòng quay may mắn',
+				status: 'Available'
 			};
 
 			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
@@ -2131,7 +2505,9 @@
 			$('probGrid').innerHTML = probHTML;
 		}
 
+		let isSpinning = false;
 		function spinWheel() {
+			if (isSpinning) return;
 			const btn = $('spinBtn');
 			const plate = $('wheelPlate');
 			if (btn.disabled) return;
@@ -2147,6 +2523,7 @@
 			saveStorage();
 			updateSpinInfoCard();
 
+			isSpinning = true;
 			const selected = rewardEngine(customerRank, rewardPool);
 			const index = rewardPool.findIndex(item => item === selected || item.reward === selected.reward);
 			const sliceAngle = 360 / rewardPool.length;
@@ -2162,10 +2539,15 @@
 
 			window.setTimeout(() => {
 				plate.classList.remove('spinning');
-				btn.disabled = false;
 
 				// Award reward
 				claimReward(selected);
+
+				// Cooldown before next spin
+				setTimeout(() => {
+					isSpinning = false;
+					btn.disabled = availableSpins <= 0;
+				}, 1500);
 			}, 5200);
 		}
 
@@ -2311,8 +2693,14 @@
 		function renderVoucherList() {
 			const grid = $('voucherHotGrid');
 			if (!grid) return;
+			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
 
-			grid.innerHTML = voucherData.map(v => `
+			grid.innerHTML = voucherData.map(v => {
+				const isClaimed = wallet.some(w => w.code === v.code);
+				const btnText = isClaimed ? 'Đã sở hữu' : 'Nhận ngay';
+				const btnDisabled = isClaimed ? 'disabled' : '';
+
+				return `
 				<div class="vh-card">
 					<div class="vh-top">
 						${v.badge ? `<div class="vh-badge">${v.badge}</div>` : ''}
@@ -2325,14 +2713,49 @@
 							<span class="vh-exp">HSD: ${v.exp}</span>
 							<span class="vh-code">${v.code}</span>
 						</div>
-						<button class="vh-btn" onclick="claimHotVoucher('${v.code}')">Nhận ngay</button>
+						<button class="vh-btn" ${btnDisabled} onclick="claimHotVoucher('${v.code}')">${btnText}</button>
 					</div>
 				</div>
-			`).join('');
+			`}).join('');
 		}
 
 		function updateUI() {
-			$('coinCount').textContent = String(getStoredNumber(STORAGE_KEYS.coins, 0));
+			const coinCountEl = $('coinCount');
+			if (coinCountEl) {
+				coinCountEl.textContent = String(getStoredNumber(STORAGE_KEYS.coins, 0));
+			}
+		}
+
+		function parseExpDate(expStr) {
+			try {
+				const parts = expStr.split('/');
+				if (parts.length === 3) {
+					return new Date(`${parts[2]}-${parts[1]}-${parts[0]}T23:59:59`);
+				}
+				return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+			} catch {
+				return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+			}
+		}
+
+		function checkVoucherExpiry() {
+			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
+			let updated = false;
+			const nowTime = Date.now();
+			wallet.forEach(v => {
+				if (v.status !== 'Used' && v.status !== 'Expired') {
+					if (v.expiryAt && new Date(v.expiryAt).getTime() < nowTime) {
+						v.status = 'Expired';
+						updated = true;
+					} else if (!v.status) {
+						v.status = 'Available';
+						updated = true;
+					}
+				}
+			});
+			if (updated) {
+				saveJSON(STORAGE_KEYS.vouchers, wallet);
+			}
 		}
 
 		function claimHotVoucher(code) {
@@ -2354,17 +2777,37 @@
 				baseReward = 'HOT_FREESHIP';
 			}
 
+			let vValue = 0;
+			let vType = 'money';
+			if (v.name.includes('%')) {
+				const match = v.name.match(/(\d+)%/);
+				if (match) { vValue = parseInt(match[1]); vType = 'percent'; }
+			} else if (v.name.toLowerCase().includes('freeship')) {
+				vValue = 50000;
+				vType = 'money';
+			} else {
+				const cleanName = v.name.replace(/\./g, '');
+				const match = cleanName.match(/\d+/);
+				if (match) {
+					vValue = parseInt(match[0]);
+					if (cleanName.includes('k') || cleanName.includes('K')) vValue *= 1000;
+				}
+			}
+
 			const voucher = {
 				id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
 				name: v.name,
 				code: v.code,
+				value: vValue,
+				type: vType,
+				isUsed: false,
 				baseReward: baseReward,
 				description: v.cond,
 				discountText: discountText,
 				receivedAt: now().toISOString(),
-				expiryAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+				expiryAt: parseExpDate(v.exp).toISOString(),
 				source: 'Voucher Hot',
-				isUsed: false,
+				status: 'Available',
 				cond: v.cond
 			};
 
@@ -2377,6 +2820,8 @@
 			}
 
 			showToast(`Đã lưu và copy mã ${v.code} vào ví của bạn!`);
+
+			renderVoucherList();
 
 			// Optional: open popup
 			openPopup({
@@ -2416,6 +2861,7 @@
 		// INIT
 		// ============================================================
 		function init() {
+			checkVoucherExpiry();
 			renderBanner();
 			renderVoucherList();
 			initSlider();
