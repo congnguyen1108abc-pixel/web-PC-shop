@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -307,26 +307,21 @@
         /* ================================= */
 
         .hero {
-            position: sticky;
-            top: 0;
+            position: relative;
             z-index: 1;
-            width: 100vw;
-            height: calc(100vh - 78px);
+            width: 100%;
+            max-width: 100vw;
             margin-top: 78px;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block;
             padding: 0;
             border-radius: 0 0 20px 20px;
         }
 
         .hero video {
-            position: absolute;
-            top: 0;
-            left: 0;
+            display: block;
             width: 100%;
-            height: 100%;
+            height: auto;
             object-fit: cover;
         }
 
@@ -963,12 +958,6 @@
         }
 
         .gear-desc,
-        .laptop-text {
-            color: rgba(0, 0, 0, .72);
-            max-width: 850px;
-            margin: auto;
-            line-height: 1.9;
-        }
 
         .gear-layout {
             display: grid;
@@ -1097,283 +1086,9 @@
         /* LAPTOP SECTION */
         /* ================================================= */
 
-        .laptop-section {
-            position: relative;
-            z-index: 10;
-            background-color: #FFFFFF;
-            padding: 40px 0;
-            min-height: unset;
-        }
-
-        .laptop-container {
-            width: 100%;
-            max-width: 1450px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr minmax(340px, 400px);
-            gap: 40px;
-            align-items: stretch;
-            padding: 0 20px;
-        }
-
-        .laptop-left {
-            position: relative;
-            height: 460px;
-            min-height: 460px;
-            max-height: 460px;
-            width: 100%;
-            border-radius: 30px;
-            overflow: hidden;
-            background: #0b1018;
-            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
-        }
-
-        .banner-carousel {
-            position: relative;
-            width: 100%;
-            height: 460px;
-            min-height: 460px;
-            max-height: 460px;
-            overflow: hidden;
-        }
-
-        .banner-slide {
-            position: absolute;
-            inset: 0;
-            display: grid;
-            grid-template-columns: 40% 60%;
-            gap: 40px;
-            align-items: center;
-            padding: 0 48px 50px 48px;
-            opacity: 0;
-            transform: translateX(22px);
-            transition: opacity 0.55s ease, transform 0.55s ease;
-            pointer-events: none;
-        }
-
-        .banner-slide.active {
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-
-        .banner-slide::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: var(--banner-bg, linear-gradient(135deg, #111827 0%, #06080f 100%));
-            z-index: 0;
-        }
-
-        .banner-slide::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.08), transparent 28%), radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.07), transparent 24%);
-            z-index: 0;
-        }
-
-        .banner-slide>* {
-            position: relative;
-            z-index: 1;
-        }
-
-        .laptop-copy {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 20px;
-            color: #ffffff;
-        }
-
-        .laptop-copy .gear-tag {
-            margin-bottom: 0;
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.16);
-            color: #f9fafb;
-        }
-
-        .laptop-copy .laptop-title {
-            font-size: 60px;
-            font-weight: 800;
-            line-height: 1.05;
-            margin-bottom: 0;
-            background: none;
-            -webkit-text-fill-color: #ffffff;
-            color: #ffffff;
-        }
-
-        .laptop-copy .laptop-text {
-            max-width: 420px;
-            margin: 0;
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.72);
-            line-height: 1.75;
-        }
-
-        .laptop-copy .gear-btn {
-            margin-top: 4px;
-        }
-
-        .laptop-visual {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100%;
-            position: relative;
-        }
-
-        .laptop-visual::before {
-            content: "";
-            position: absolute;
-            inset: 18% 8% 14% 8%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 28%, transparent 72%);
-            filter: blur(18px);
-            opacity: 0.9;
-            pointer-events: none;
-            transform: scale(1.05);
-        }
-
-        .laptop-visual::after {
-            content: "";
-            position: absolute;
-            left: 16%;
-            right: 16%;
-            bottom: 12%;
-            height: 18px;
-            border-radius: 50%;
-            background: radial-gradient(closest-side, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06) 45%, transparent 100%);
-            filter: blur(8px);
-            opacity: 0.75;
-            pointer-events: none;
-        }
-
-        .laptop-visual img {
-            max-width: 480px;
-            max-height: 340px;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto;
-            background: transparent;
-            filter: drop-shadow(0 22px 38px rgba(0, 0, 0, 0.26)) drop-shadow(0 0 22px rgba(255, 255, 255, 0.12));
-            animation: bannerImageFloat 5.4s ease-in-out infinite;
-            transition: filter 180ms cubic-bezier(.22, 1, .36, 1);
-            will-change: filter;
-        }
-
-        .laptop-visual:hover img {
-            filter: drop-shadow(0 24px 42px rgba(0, 0, 0, 0.28)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.14));
-        }
-
-        .laptop-slider-controls {
-            position: absolute;
-            left: 30px;
-            right: 30px;
-            bottom: 28px;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .laptop-nav-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #ffffff;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            line-height: 1;
-            backdrop-filter: blur(16px);
-            transition: background 120ms cubic-bezier(.22, 1, .36, 1), transform 120ms cubic-bezier(.22, 1, .36, 1);
-        }
-
-        .laptop-nav-btn:hover {
-            background: rgba(255, 255, 255, 0.22);
-            transform: translateY(-1px);
-        }
-
-        .laptop-dots {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .laptop-dot {
-            width: 8px;
-            height: 8px;
-            border: none;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.36);
-            padding: 0;
-            cursor: pointer;
-            transition: width 120ms cubic-bezier(.22, 1, .36, 1), background 120ms cubic-bezier(.22, 1, .36, 1);
-        }
-
-        .laptop-dot.active {
-            width: 24px;
-            background: #ffffff;
-        }
-
-        .laptop-right {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .laptop-card {
-            display: grid;
-            grid-template-columns: 220px 1fr;
-            align-items: center;
-            gap: 28px;
-            padding: 30px;
-            border-radius: 35px;
-            background: rgba(0, 0, 0, .05);
-            border: 1px solid rgba(0, 0, 0, .1);
-            backdrop-filter: blur(20px);
-            transition: transform 120ms cubic-bezier(.22, 1, .36, 1), box-shadow 120ms cubic-bezier(.22, 1, .36, 1);
-        }
-
-        .laptop-card.banner-highlight {
-            transform: translateY(-3px) scale(1.01);
-            border-color: rgba(17, 24, 39, 0.16);
-            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.10);
-        }
-
-        .laptop-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
-        }
-
-        .laptop-card img {
-            width: 220px;
-            border-radius: 20px;
-            transition: transform 120ms cubic-bezier(.22, 1, .36, 1);
-        }
-
-        .laptop-card:hover img {
-            transform: scale(1.05) rotate(-2deg);
-        }
-
-        .laptop-info h3 {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
         @media(max-width:1000px) {
 
             .gear-layout,
-            .laptop-container,
             .audio-grid {
                 grid-template-columns: 1fr;
             }
@@ -1385,79 +1100,18 @@
             }
 
             .gear-section,
-            .laptop-section,
             .audio-section {
                 padding: 65px 20px;
             }
 
-            .banner-slide {
-                grid-template-columns: 1fr;
-                padding: 28px 24px 104px;
-            }
 
-            .laptop-visual {
-                justify-content: flex-start;
-            }
 
-            .laptop-visual img {
-                width: min(100%, 350px);
-                max-height: 252px;
-                transform: translateY(0);
-            }
 
-            .laptop-card {
-                grid-template-columns: 180px 1fr;
-            }
 
-            .laptop-card img {
-                width: 100%;
-            }
 
-            .laptop-slider-controls {
-                left: 24px;
-                right: 24px;
-            }
         }
 
-        @media(max-width:640px) {
-            .laptop-left {
-                min-height: 500px;
-            }
-
-            .banner-slide {
-                padding: 22px 18px 110px;
-            }
-
-            .laptop-copy .laptop-title {
-                font-size: clamp(1.9rem, 9vw, 2.8rem);
-            }
-
-            .laptop-copy .laptop-text {
-                max-width: 100%;
-            }
-
-            .laptop-visual img {
-                width: min(100%, 310px);
-                max-height: 225px;
-                transform: translateY(0);
-            }
-
-            .laptop-slider-controls {
-                left: 18px;
-                right: 18px;
-                bottom: 18px;
-            }
-
-            .laptop-card {
-                grid-template-columns: 1fr;
-                text-align: center;
-                justify-items: center;
-            }
-
-            .laptop-info h3 {
-                font-size: 26px;
-            }
-        }
+        @media(max-width:640px) {}
 
         /* ================================================= */
         /* AUDIO SECTION */
@@ -1530,7 +1184,6 @@
         @media(max-width:1000px) {
 
             .gear-layout,
-            .laptop-container,
             .audio-grid {
                 grid-template-columns: 1fr;
             }
@@ -1542,19 +1195,11 @@
             }
 
             .gear-section,
-            .laptop-section,
             .audio-section {
                 padding: 65px 20px;
             }
 
-            .laptop-card {
-                flex-direction: column;
-                text-align: center;
-            }
 
-            .laptop-card img {
-                width: 100%;
-            }
 
         }
 
@@ -2974,13 +2619,80 @@
 
     </header>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     <section class="hero page-section">
 
         <video src="/images/ROGAstralGeForceRTX5090_clip.mp4" autoplay loop muted playsinline preload="auto"></video>
 
     </section>
 
-    <!-- RECOMMENDATIONS / FEATURED PRODUCTS (APRIORI) -->
+    <section class="showcase page-section">
+
+        <div class="showcase-left">
+
+            <div class="showcase-text-content reveal">
+
+                <h2
+                    style="font-size: clamp(2.2rem, 4.2vw, 4.2rem); line-height: 1.15; margin-bottom: 25px; background: linear-gradient(90deg, #000000, #4f4f4f); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; text-transform: uppercase;">
+                    CHINH PHỤC MỌI GIỚI HẠN CẤU HÌNH
+                </h2>
+
+                <p style="color: rgba(0, 0, 0, .75); line-height: 1.9; font-size: 17px; margin-bottom: 35px;">
+                    Phá vỡ mọi rào cản về cấu hình. Sẵn sàng cho kỷ nguyên đồ họa 4K thực thụ và công nghệ Ray Tracing
+                    thời
+                    gian thực. Với Hyper Core, bạn đang sở hữu một kiệt tác phần cứng dẫn đầu mọi xu hướng công nghệ
+                    toàn
+                    cầu.
+                </p>
+
+                <div class="hero-buttons" style="justify-content: flex-start;">
+                    <button class="hero-btn hero-primary" onclick="window.location.href='/pcbuild'">Khám Phá
+                        Ngay</button>
+                    <button class="hero-btn hero-secondary" onclick="window.location.href='/Products'">Xem Sản
+                        Phẩm</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="showcase-right">
+
+            <div class="showcase-banner reveal"
+                style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center; background: transparent;">
+
+                <model-viewer src="/assets/models/PC_homepage3.glb" camera-orbit="45deg 75deg auto" ar
+                    ar-modes="webxr scene-viewer quick-look" camera-controls interaction-prompt="none"
+                    tone-mapping="neutral" shadow-intensity="1" autoplay auto-rotate auto-rotate-delay="0"
+                    rotation-per-second="20deg"
+                    style="width: 100%; height: 100%; background: transparent; outline: none;">
+                    <div slot="poster"
+                        style="background: transparent; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #000; font-weight: 600; font-family: sans-serif;">
+                        <div class="spinner"
+                            style="border: 4px solid rgba(0, 0, 0, 0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: #000000; animation: spin 1s linear infinite; margin-bottom: 15px;">
+                        </div>
+                        <span>ĐANG TẢI MÔ HÌNH 3D...</span>
+                    </div>
+                </model-viewer>
+
+            </div>
+
+        </div>
+
+    </section>
+
     <section class="products page-section reveal" id="homeRecommendationsSection"
         style="background-color: #ffffff; position: relative; z-index: 2; margin: 0; padding: 40px 0 60px 0;">
         <style>
@@ -3299,179 +3011,58 @@
         </div>
     </section>
 
-    <!-- HERO BANNER SECTION MOVED HERE -->
-    <section class="laptop-section page-section">
-        <div class="laptop-container">
-            <div class="laptop-left reveal">
-                <div class="banner-carousel" id="bannerCarousel" aria-roledescription="carousel"
-                    aria-label="Hero Banner Slider">
-
-                    <article class="banner-slide active" data-banner-target="rtx5080"
-                        style="--banner-bg: linear-gradient(135deg, #111827 0%, #06080f 55%, #1f2937 100%);">
-                        <div class="laptop-copy">
-                            <span class="gear-tag">RTX 5080 SERIES</span>
-                            <h2 class="laptop-title">Thế hệ AI Gaming</h2>
-                            <p class="laptop-text">Thiết bị tối ưu cho ray tracing, AI frame generation và trải nghiệm
-                                mượt ở mọi tựa game.</p>
-                            <button class="gear-btn" onclick="window.location.href='/pcbuild'">Xem bộ sưu tập</button>
-                        </div>
-                        <div class="laptop-visual">
-                            <img src="/images/laptop.png" alt="RTX 5080 Series" />
-                        </div>
-                    </article>
-
-                    <article class="banner-slide" data-banner-target="rtx5070"
-                        style="--banner-bg: linear-gradient(135deg, #0b1220 0%, #111827 52%, #1d4ed8 100%);">
-                        <div class="laptop-copy">
-                            <span class="gear-tag">GAMING FESTIVAL</span>
-                            <h2 class="laptop-title">RTX 5070 Pro</h2>
-                            <p class="laptop-text">Tối ưu hiệu năng, cân bằng giá trị, phù hợp cho những bộ máy gaming
-                                cao cấp thế hệ mới.</p>
-                            <button class="gear-btn" onclick="window.location.href='/Products'">Xem ưu đãi</button>
-                        </div>
-                        <div class="laptop-visual">
-                            <img src="/images/laptop2.png" alt="RTX 5070 Pro" />
-                        </div>
-                    </article>
-
-                    <article class="banner-slide" data-banner-target="none"
-                        style="--banner-bg: linear-gradient(135deg, #111827 0%, #3f1d1d 48%, #7f1d1d 100%);">
-                        <div class="laptop-copy">
-                            <span class="gear-tag">FLASH SALE</span>
-                            <h2 class="laptop-title">Giảm giá trong ngày</h2>
-                            <p class="laptop-text">Khuyến mãi giới hạn cho các cấu hình gaming và phụ kiện chọn lọc với
-                                số lượng có hạn.</p>
-                            <button class="gear-btn" onclick="window.location.href='/voucher'">Săn deal ngay</button>
-                        </div>
-                        <div class="laptop-visual">
-                            <img src="/images/pc_streamer_pc.png" alt="Flash Sale" />
-                        </div>
-                    </article>
-
-                    <article class="banner-slide" data-banner-target="none"
-                        style="--banner-bg: linear-gradient(135deg, #0f172a 0%, #312e81 50%, #0ea5e9 100%);">
-                        <div class="laptop-copy">
-                            <span class="gear-tag">DIAMOND MEMBER</span>
-                            <h2 class="laptop-title">Ưu đãi thành viên</h2>
-                            <p class="laptop-text">Quyền lợi riêng, điểm thưởng nâng cấp và các bộ máy cao cấp dành cho
-                                khách hàng thân thiết.</p>
-                            <button class="gear-btn" onclick="window.location.href='/profile/loyalty'">Khám phá quyền
-                                lợi</button>
-                        </div>
-                        <div class="laptop-visual">
-                            <img src="/images/pc_valorant_pc.png" alt="Diamond Member" />
-                        </div>
-                    </article>
-
-                    <div class="laptop-slider-controls">
-                        <button class="laptop-nav-btn" type="button" id="bannerPrevBtn"
-                            aria-label="Previous slide">‹</button>
-                        <div class="laptop-dots" id="bannerDots" aria-label="Banner pagination">
-                            <button class="laptop-dot active" type="button" aria-label="Go to slide 1"
-                                data-banner-dot="0"></button>
-                            <button class="laptop-dot" type="button" aria-label="Go to slide 2"
-                                data-banner-dot="1"></button>
-                            <button class="laptop-dot" type="button" aria-label="Go to slide 3"
-                                data-banner-dot="2"></button>
-                            <button class="laptop-dot" type="button" aria-label="Go to slide 4"
-                                data-banner-dot="3"></button>
-                        </div>
-                        <button class="laptop-nav-btn" type="button" id="bannerNextBtn"
-                            aria-label="Next slide">›</button>
+    <section class="trust-reasons-section page-section">
+        <div class="trust-reasons-container">
+            <h2 class="trust-reasons-title reveal">4 lý do bạn có thể tin HYPERCORE</h2>
+            <div class="trust-reasons-grid reveal">
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                            <path
+                                d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+                        </svg>
                     </div>
-
+                    <h3>Tư vấn đúng nhu cầu</h3>
+                    <p>Lắng nghe thói quen sử dụng thực tế để gợi ý cấu hình phù hợp nhất. Chúng tôi giúp bạn chọn đúng
+                        sản phẩm ngay từ đầu, tránh lãng phí chi phí thử nghiệm.</p>
                 </div>
-
-                <div class="laptop-right">
-                    <div class="laptop-card reveal" data-banner-target="rtx5080">
-                        <img src="/images/laptop.png" alt="Laptop" />
-                        <div class="laptop-info">
-                            <h3>RTX 5080 ULTRA</h3>
-                            <p>Intel Core Ultra 9</p>
-                            <div class="gear-price">
-                                42.990.000đ
-                            </div>
-                        </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
                     </div>
-
-                    <div class="laptop-card reveal" data-banner-target="rtx5070">
-                        <img src="/images/laptop2.png" alt="Laptop" />
-                        <div class="laptop-info">
-                            <h3>RTX 5070 PRO</h3>
-                            <p>Ryzen 9 AI Edition</p>
-                            <div class="gear-price">
-                                36.990.000đ
-                            </div>
-                        </div>
-                    </div>
-
+                    <h3>Kiểm thử nghiêm ngặt</h3>
+                    <p>Mọi sản phẩm đều được kiểm tra kỹ lưỡng về hiệu năng và độ ổn định trước khi lên kệ. Chúng tôi
+                        kiên quyết từ chối những thiết bị không đạt chuẩn.</p>
                 </div>
-
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                        </svg>
+                    </div>
+                    <h3>Xu hướng mới nhất</h3>
+                    <p>Là đối tác chiến lược của các hãng công nghệ lớn, HYPERCORE luôn mang về những dòng sản phẩm mới
+                        nhất và phiên bản giới hạn sớm nhất thị trường.</p>
+                </div>
+                <div class="trust-reason-card">
+                    <div class="trust-icon-wrapper">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="8" width="18" height="4" rx="1" />
+                            <path
+                                d="M12 8V22M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />
+                        </svg>
+                    </div>
+                    <h3>Bảo hành nhanh chóng</h3>
+                    <p>Quy trình xử lý bảo hành rõ ràng, tối ưu thời gian chờ đợi.</p>
+                </div>
             </div>
+        </div>
     </section>
 
-    <!-- SHOWCASE -->
-
-    <section class="showcase page-section">
-
-        <div class="showcase-left">
-
-            <div class="showcase-text-content reveal">
-
-                <h2
-                    style="font-size: clamp(2.2rem, 4.2vw, 4.2rem); line-height: 1.15; margin-bottom: 25px; background: linear-gradient(90deg, #000000, #4f4f4f); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; text-transform: uppercase;">
-                    CHINH PHỤC MỌI GIỚI HẠN CẤU HÌNH
-                </h2>
-
-                <p style="color: rgba(0, 0, 0, .75); line-height: 1.9; font-size: 17px; margin-bottom: 35px;">
-                    Phá vỡ mọi rào cản về cấu hình. Sẵn sàng cho kỷ nguyên đồ họa 4K thực thụ và công nghệ Ray Tracing
-                    thời
-                    gian thực. Với Hyper Core, bạn đang sở hữu một kiệt tác phần cứng dẫn đầu mọi xu hướng công nghệ
-                    toàn
-                    cầu.
-                </p>
-
-                <div class="hero-buttons" style="justify-content: flex-start;">
-                    <button class="hero-btn hero-primary" onclick="window.location.href='/pcbuild'">Khám Phá
-                        Ngay</button>
-                    <button class="hero-btn hero-secondary" onclick="window.location.href='/Products'">Xem Sản
-                        Phẩm</button>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="showcase-right">
-
-            <div class="showcase-banner reveal"
-                style="width: 100%; height: 500px; display: flex; justify-content: center; align-items: center; background: transparent;">
-
-                <model-viewer src="/assets/models/PC_homepage3.glb" camera-orbit="45deg 75deg auto" ar
-                    ar-modes="webxr scene-viewer quick-look" camera-controls interaction-prompt="none"
-                    tone-mapping="neutral" shadow-intensity="1" autoplay auto-rotate auto-rotate-delay="0"
-                    rotation-per-second="20deg"
-                    style="width: 100%; height: 100%; background: transparent; outline: none;">
-                    <div slot="poster"
-                        style="background: transparent; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #000; font-weight: 600; font-family: sans-serif;">
-                        <div class="spinner"
-                            style="border: 4px solid rgba(0, 0, 0, 0.1); width: 40px; height: 40px; border-radius: 50%; border-left-color: #000000; animation: spin 1s linear infinite; margin-bottom: 15px;">
-                        </div>
-                        <span>ĐANG TẢI MÔ HÌNH 3D...</span>
-                    </div>
-                </model-viewer>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- ================================================= -->
-    <!-- CUSTOMER TESTIMONIALS SECTION -->
-    <!-- ================================================= -->
     <section class="testimonials-section" id="testimonialsSection">
         <div class="testimonials-container">
             <div class="testimonials-header">
@@ -3525,7 +3116,363 @@
         </div>
     </section>
 
-    <!-- PRODUCTS -->
+
+    <!-- HERO CAMPAIGN SLIDER -->
+    <style>
+        .voucher-standalone-section {
+            margin: 64px auto;
+            display: block
+        }
+
+        .vs-container {
+            width: 92%;
+            max-width: 1550px;
+            margin: 0 auto;
+            position: relative
+        }
+
+        .vs-track {
+            position: relative;
+            border-radius: 32px;
+            overflow: hidden;
+            min-height: 420px
+        }
+
+        .vs-slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            padding: 48px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .6s ease
+        }
+
+        .vs-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative
+        }
+
+        .vs-slide .vs-copy {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 2
+        }
+
+        .vs-slide .vs-copy .vs-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            width: fit-content
+        }
+
+        .vs-slide .vs-copy .vs-title {
+            font-size: clamp(28px, 4vw, 52px);
+            line-height: 1.1;
+            font-weight: 900;
+            color: #fff;
+            margin: 0 0 16px;
+            text-shadow: 0 0 15px rgba(0, 0, 0, .3)
+        }
+
+        .vs-slide .vs-copy .vs-desc {
+            font-size: clamp(14px, 1.4vw, 16px);
+            color: rgba(255, 255, 255, .85);
+            margin: 0 0 20px;
+            line-height: 1.6
+        }
+
+        .vs-slide .vs-copy .vs-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            margin-bottom: 24px
+        }
+
+        .vs-slide .vs-copy .vs-features span {
+            color: rgba(255, 255, 255, .85);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .vs-slide .vs-copy .vs-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px
+        }
+
+        .vs-slide .vs-copy .vs-btns a {
+            padding: 13px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform .2s, box-shadow .2s
+        }
+
+        .vs-slide .vs-copy .vs-btns a:hover {
+            transform: translateY(-2px)
+        }
+
+        .vs-slide .vs-copy .vs-btns .vs-btn-primary {
+            color: #fff
+        }
+
+        .vs-slide .vs-copy .vs-btns .vs-btn-secondary {
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .3);
+            color: #fff;
+            backdrop-filter: blur(8px)
+        }
+
+        .vs-slide .vs-visual {
+            width: 45%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2
+        }
+
+        .vs-slide .vs-visual img {
+            width: 85%;
+            max-height: 340px;
+            object-fit: contain;
+            animation: vsFloat 4s ease-in-out infinite
+        }
+
+        .vs-slide.active .vs-copy {
+            animation: vsFadeUp .7s ease both
+        }
+
+        .vs-slide.active .vs-visual img {
+            animation: vsFloat 4s ease-in-out infinite, vsZoomIn .7s ease both
+        }
+
+        @keyframes vsFloat {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                filter: drop-shadow(0 15px 25px rgba(0, 0, 0, .45))
+            }
+
+            50% {
+                transform: translateY(-8px) scale(1.02);
+                filter: drop-shadow(0 25px 35px rgba(0, 0, 0, .55))
+            }
+        }
+
+        @keyframes vsFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes vsZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(.9) translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .vs-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .25);
+            background: rgba(0, 0, 0, .35);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s, transform .2s
+        }
+
+        .vs-arrow:hover {
+            background: rgba(0, 0, 0, .6);
+            transform: translateY(-50%) scale(1.1)
+        }
+
+        .vs-arrow.prev {
+            left: 16px
+        }
+
+        .vs-arrow.next {
+            right: 16px
+        }
+
+        .vs-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px
+        }
+
+        .vs-dots button {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(0, 0, 0, .15);
+            cursor: pointer;
+            padding: 0;
+            transition: width .3s, background .3s
+        }
+
+        .vs-dots button.active {
+            width: 28px;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899)
+        }
+
+        @media(max-width:992px) {
+            .vs-slide {
+                flex-direction: column;
+                padding: 32px 24px;
+                text-align: center
+            }
+
+            .vs-slide .vs-copy,
+            .vs-slide .vs-visual {
+                width: 100%
+            }
+
+            .vs-slide .vs-copy {
+                align-items: center
+            }
+
+            .vs-slide .vs-visual {
+                margin-top: 24px
+            }
+
+            .vs-slide .vs-visual img {
+                max-height: 200px
+            }
+
+            .vs-slide .vs-copy .vs-features {
+                justify-content: center
+            }
+
+            .vs-slide .vs-copy .vs-btns {
+                justify-content: center
+            }
+
+            .vs-arrow {
+                width: 36px;
+                height: 36px;
+                font-size: 16px
+            }
+        }
+
+        @media(max-width:600px) {
+            .voucher-standalone-section {
+                margin: 32px auto
+            }
+
+            .vs-track {
+                border-radius: 24px;
+                min-height: 360px
+            }
+
+            .vs-slide .vs-copy .vs-btns {
+                flex-direction: column;
+                width: 100%
+            }
+
+            .vs-slide .vs-copy .vs-btns a {
+                width: 100%;
+                justify-content: center
+            }
+        }
+    </style>
+    <section class="voucher-standalone-section page-section">
+        <div class="vs-container">
+            <div class="vs-track" id="vsCampaignTrack"></div>
+            <button class="vs-arrow prev" id="vsPrev">&#8249;</button>
+            <button class="vs-arrow next" id="vsNext">&#8250;</button>
+            <div class="vs-dots" id="vsDots"></div>
+        </div>
+        <script>
+            (function () {
+                const campaigns = [
+                    { badge: "🎁 VOUCHER FESTIVAL", title: "SĂN VOUCHER<br>ĐẾN 5.000.000Đ", desc: "Quay vòng may mắn. Lưu voucher. Nhận ưu đãi độc quyền. Giảm đến 5 triệu cho đơn hàng tiếp theo.", features: ["Voucher độc quyền", "Quay miễn phí", "Giảm đến 5 triệu"], btnText: "🎁 Săn Voucher Ngay", btnLink: "voucher.html", btn2Text: "Xem thể lệ", btn2Link: "voucher.html", image: "/images/voucher.png", bg: "linear-gradient(135deg,#4c1d95 0%,#1e3a8a 50%,#be185d 100%)", accent: "#ec4899", badgeBg: "linear-gradient(90deg,#ec4899,#8b5cf6)" },
+                    { badge: "🖥️ BUILD PC GAMING", title: "XÂY DỰNG PC<br>TRONG MƠ CỦA BẠN", desc: "Tự tay lựa chọn từng linh kiện. Công cụ Build PC thông minh giúp bạn tạo cỗ máy chiến game hoàn hảo.", features: ["Tùy chỉnh linh kiện", "Kiểm tra tương thích", "Báo giá tức thì"], btnText: "🖥️ Build PC Ngay", btnLink: "/pcbuild", btn2Text: "Xem cấu hình mẫu", btn2Link: "/pcbuild", image: "/images/pc_valorant_setup.png", bg: "linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0ea5e9 100%)", accent: "#0ea5e9", badgeBg: "linear-gradient(90deg,#0ea5e9,#6366f1)" },
+                    { badge: "🔥 GAMING GEAR SALE", title: "GAMING GEAR<br>GIẢM ĐẾN 40%", desc: "Chuột, bàn phím, tai nghe gaming hàng đầu. Nâng cấp trải nghiệm chơi game với gear chính hãng.", features: ["Chuột gaming cao cấp", "Bàn phím cơ RGB", "Tai nghe 7.1"], btnText: "🔥 Mua Gear Ngay", btnLink: "/gaminggear", btn2Text: "Xem bộ sưu tập", btn2Link: "/gaminggear", image: "/images/mechanicalKeyboard.png", bg: "linear-gradient(135deg,#7c2d12 0%,#991b1b 50%,#f59e0b 100%)", accent: "#f59e0b", badgeBg: "linear-gradient(90deg,#f59e0b,#ef4444)" },
+                    { badge: "💻 LAPTOP GAMING", title: "LAPTOP GAMING<br>HIỆU NĂNG ĐỈNH CAO", desc: "Dòng laptop gaming mới nhất. Mỏng nhẹ, mạnh mẽ, màn hình 165Hz. Chiến mọi tựa game AAA mọi lúc mọi nơi.", features: ["Màn hình 165Hz", "RTX 40 Series", "Pin 8 tiếng+"], btnText: "💻 Xem Laptop", btnLink: "/products?category=laptop", btn2Text: "So sánh cấu hình", btn2Link: "/products?category=laptop", image: "/images/laptop.png", bg: "linear-gradient(135deg,#064e3b 0%,#065f46 50%,#10b981 100%)", accent: "#10b981", badgeBg: "linear-gradient(90deg,#10b981,#06b6d4)" },
+                    { badge: "⭐ SẢN PHẨM NỔI BẬT", title: "BEST SELLER<br>ĐƯỢC YÊU THÍCH NHẤT", desc: "Những sản phẩm bán chạy nhất được hàng nghìn khách hàng tin tưởng. Chất lượng đã được kiểm chứng.", features: ["Top bán chạy", "Đánh giá 5 sao", "Bảo hành chính hãng"], btnText: "⭐ Xem Ngay", btnLink: "/products", btn2Text: "Xem tất cả", btn2Link: "/products", image: "/images/pc_streamer_setup.png", bg: "linear-gradient(135deg,#312e81 0%,#4338ca 50%,#a855f7 100%)", accent: "#a855f7", badgeBg: "linear-gradient(90deg,#a855f7,#ec4899)" }
+                ];
+                const track = document.getElementById('vsCampaignTrack');
+                const dotsC = document.getElementById('vsDots');
+                const checkSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                let cur = 0, timer = null;
+                campaigns.forEach((c, i) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'vs-slide' + (i === 0 ? ' active' : '');
+                    slide.style.background = c.bg;
+                    slide.innerHTML = `<div class="vs-copy"><span class="vs-badge" style="background:${c.badgeBg}">${c.badge}</span><h2 class="vs-title">${c.title}</h2><p class="vs-desc">${c.desc}</p><div class="vs-features">${c.features.map(f => '<span>' + checkSvg + ' ' + f + '</span>').join('')}</div><div class="vs-btns"><a href="${c.btnLink}" class="vs-btn-primary" style="background:${c.badgeBg};box-shadow:0 4px 15px ${c.accent}80">${c.btnText}</a><a href="${c.btn2Link}" class="vs-btn-secondary">${c.btn2Text}</a></div></div><div class="vs-visual"><img src="${c.image}" alt="${c.badge}"></div>`;
+                    track.appendChild(slide);
+                    const dot = document.createElement('button');
+                    dot.className = i === 0 ? 'active' : '';
+                    dot.addEventListener('click', () => goTo(i));
+                    dotsC.appendChild(dot);
+                });
+                const slides = track.querySelectorAll('.vs-slide');
+                const dots = dotsC.querySelectorAll('button');
+                function goTo(n) {
+                    slides[cur].classList.remove('active');
+                    dots[cur].classList.remove('active');
+                    cur = (n + campaigns.length) % campaigns.length;
+                    slides[cur].classList.add('active');
+                    dots[cur].classList.add('active');
+                }
+                function next() { goTo(cur + 1) }
+                function startAuto() { timer = setInterval(next, 5000) }
+                function stopAuto() { clearInterval(timer) }
+                document.getElementById('vsNext').addEventListener('click', () => { next(); stopAuto(); startAuto() });
+                document.getElementById('vsPrev').addEventListener('click', () => { goTo(cur - 1); stopAuto(); startAuto() });
+                track.addEventListener('mouseenter', stopAuto);
+                track.addEventListener('mouseleave', startAuto);
+                startAuto();
+            })();
+        </script>
+    </section>
+
+
+
+
+
+
     <section class="products page-section">
 
         <h2 class="section-title reveal">
@@ -3534,135 +3481,367 @@
             </span>
         </h2>
 
-        <div class="product-grid">
 
-            <div class="product-card reveal floating">
 
-                <img src="/images/pc_creator_pc.png" class="product-image" alt="Gaming PC" />
 
-                <div class="product-info">
+        <style>
+            /* Container sizing for fixed card widths */
+            .hot-slider-container {
+                width: 1248px;
+                max-width: 100%;
+                margin: 0 auto;
+                position: relative;
+            }
 
-                    <h3>RTX Gaming PC</h3>
+            @media(max-width: 1300px) {
+                .hot-slider-container {
+                    width: 932px;
+                }
+            }
 
-                    <p>
-                        Intel Core Ultra + RTX 5090
-                    </p>
+            @media(max-width: 992px) {
+                .hot-slider-container {
+                    width: 616px;
+                }
+            }
 
-                    <div class="price">
-                        59.990.000đ
+            @media(max-width: 650px) {
+                .hot-slider-container {
+                    width: 300px;
+                }
+            }
+
+            .hot-slider-track {
+                overflow: hidden;
+                width: 100%;
+            }
+
+            #hotProductGrid {
+                display: flex;
+                flex-wrap: nowrap;
+                transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+                gap: 16px;
+                margin: 0;
+            }
+
+            /* Card Redesign */
+            #hotProductGrid .product-card {
+                flex: 0 0 300px;
+                width: 300px;
+                height: 400px;
+                border-radius: 20px;
+            }
+
+            /* Image 55-60% height, width 80-85% */
+            #hotProductGrid .product-image {
+                height: 260px;
+                width: 94%;
+                margin: 0 auto;
+                display: block;
+                object-fit: contain;
+                padding: 10px 0;
+                background: transparent;
+            }
+
+            /* Info spacing */
+            #hotProductGrid .product-info {
+                padding: 0 20px 20px 20px;
+                gap: 8px;
+                justify-content: flex-start;
+            }
+
+            /* Title: 17px, bold, 2 lines */
+            #hotProductGrid .product-info h3 {
+                font-size: 17px;
+                font-weight: bold;
+                line-height: 1.4;
+                min-height: 2.8em;
+                max-height: 2.8em;
+                margin-bottom: 0;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                text-align: left;
+            }
+
+            /* Description: 14px, gray, 1 line */
+            #hotProductGrid .product-info p {
+                font-size: 14px;
+                color: #888888;
+                line-height: 1.4;
+                min-height: 1.4em;
+                max-height: 1.4em;
+                margin-bottom: 8px;
+                text-align: left;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            /* Price: 18px, bold, near desc */
+            #hotProductGrid .price {
+                font-size: 18px;
+                font-weight: bold;
+                margin-top: 0;
+                text-align: left;
+            }
+
+            /* Navigation Buttons */
+            .hot-nav-btn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                background: #000000;
+                color: #fff;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                cursor: pointer;
+                z-index: 10;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            }
+
+            .hot-nav-btn:hover:not(:disabled) {
+                background: #333333;
+                box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+            }
+
+            .hot-nav-btn:disabled {
+                background: #cccccc;
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
+
+            .hot-nav-btn.prev {
+                left: -60px;
+            }
+
+            .hot-nav-btn.next {
+                right: -60px;
+            }
+
+            @media(max-width: 1400px) {
+                .hot-nav-btn.prev {
+                    left: -15px;
+                }
+
+                .hot-nav-btn.next {
+                    right: -15px;
+                }
+            }
+        </style>
+        <div class="hot-slider-container">
+            <button id="hotPrev" class="hot-nav-btn prev" disabled aria-label="Previous products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+
+            <div class="hot-slider-track">
+                <div class="product-grid" id="hotProductGrid">
+
+
+
+                    <div class="product-card reveal floating">
+
+                        <img src="/images/pc_creator_pc.png" class="product-image" alt="Gaming PC" />
+
+                        <div class="product-info">
+
+                            <h3>RTX Gaming PC</h3>
+
+                            <p>
+                                Intel Core Ultra + RTX 5090
+                            </p>
+
+                            <div class="price">
+                                59.990.000đ
+                            </div>
+
+                        </div>
+
                     </div>
 
-                </div>
+                    <div class="product-card reveal floating">
 
-            </div>
+                        <img src="/images/mechanicalKeyboard.png" class="product-image" alt="Keyboard" />
 
-            <div class="product-card reveal floating">
+                        <div class="product-info">
 
-                <img src="/images/mechanicalKeyboard.png" class="product-image" alt="Keyboard" />
+                            <h3>Mechanical Keyboard</h3>
 
-                <div class="product-info">
+                            <p>
+                                RGB Hot Swap Gaming Edition
+                            </p>
 
-                    <h3>Mechanical Keyboard</h3>
+                            <div class="price">
+                                2.490.000đ
+                            </div>
 
-                    <p>
-                        RGB Hot Swap Gaming Edition
-                    </p>
+                        </div>
 
-                    <div class="price">
-                        2.490.000đ
                     </div>
 
-                </div>
+                    <div class="product-card reveal floating">
 
-            </div>
+                        <img src="/images/wirelessMouse.png" class="product-image" alt="Mouse" />
 
-            <div class="product-card reveal floating">
+                        <div class="product-info">
 
-                <img src="/images/wirelessMouse.png" class="product-image" alt="Mouse" />
+                            <h3>Wireless Gaming Mouse</h3>
 
-                <div class="product-info">
+                            <p>
+                                Ultra Lightweight 4K Polling
+                            </p>
 
-                    <h3>Wireless Gaming Mouse</h3>
+                            <div class="price">
+                                1.990.000đ
+                            </div>
 
-                    <p>
-                        Ultra Lightweight 4K Polling
-                    </p>
+                        </div>
 
-                    <div class="price">
-                        1.990.000đ
                     </div>
 
-                </div>
+                    <div class="product-card reveal floating">
 
-            </div>
+                        <img src="/images/GamingHeadset.png" class="product-image" alt="Headphone" />
 
-            <div class="product-card reveal floating">
+                        <div class="product-info">
 
-                <img src="/images/GamingHeadset.png" class="product-image" alt="Headphone" />
+                            <h3>Gaming Headset</h3>
 
-                <div class="product-info">
+                            <p>
+                                7.1 Surround Premium Audio
+                            </p>
 
-                    <h3>Gaming Headset</h3>
+                            <div class="price">
+                                3.290.000đ
+                            </div>
 
-                    <p>
-                        7.1 Surround Premium Audio
-                    </p>
+                        </div>
 
-                    <div class="price">
-                        3.290.000đ
                     </div>
 
-                </div>
+                    <div class="product-card reveal floating">
 
-            </div>
+                        <img src="/images/pc_creator_setup.png" class="product-image" alt="Monitor" />
 
-            <div class="product-card reveal floating">
+                        <div class="product-info">
 
-                <img src="/images/pc_creator_setup.png" class="product-image" alt="Monitor" />
+                            <h3>4K Gaming Monitor</h3>
 
-                <div class="product-info">
+                            <p>
+                                240Hz Ultra Fast IPS Display
+                            </p>
 
-                    <h3>4K Gaming Monitor</h3>
+                            <div class="price">
+                                12.990.000đ
+                            </div>
 
-                    <p>
-                        240Hz Ultra Fast IPS Display
-                    </p>
+                        </div>
 
-                    <div class="price">
-                        12.990.000đ
                     </div>
 
-                </div>
+                    <div class="product-card reveal floating">
 
-            </div>
+                        <img src="/images/pc_giatoc_pc.png" class="product-image" alt="Gaming Laptop" />
 
-            <div class="product-card reveal floating">
+                        <div class="product-info">
 
-                <img src="/images/pc_giatoc_pc.png" class="product-image" alt="Gaming Laptop" />
+                            <h3>Gaming Laptop RTX</h3>
 
-                <div class="product-info">
+                            <p>
+                                Intel Ultra + RTX 5080 Mobile
+                            </p>
 
-                    <h3>Gaming Laptop RTX</h3>
+                            <div class="price">
+                                42.990.000đ
+                            </div>
 
-                    <p>
-                        Intel Ultra + RTX 5080 Mobile
-                    </p>
+                        </div>
 
-                    <div class="price">
-                        42.990.000đ
                     </div>
 
-                </div>
 
+
+                </div>
             </div>
 
+            <button id="hotNext" class="hot-nav-btn next" aria-label="Next products">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
         </div>
 
-    </section>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const track = document.getElementById("hotProductGrid");
+                const prevBtn = document.getElementById("hotPrev");
+                const nextBtn = document.getElementById("hotNext");
 
-    <!-- ================================================= -->
-    <!-- GAMING GEAR SECTION -->
-    <!-- ================================================= -->
+                if (!track || !prevBtn || !nextBtn) return;
+
+                let currentIndex = 0;
+
+                function getCardsPerView() {
+                    if (window.innerWidth > 1300) return 4;
+                    if (window.innerWidth > 992) return 3;
+                    if (window.innerWidth > 650) return 2;
+                    return 1;
+                }
+
+                function updateSlider() {
+                    const cardsPerView = getCardsPerView();
+                    const totalCards = track.children.length;
+                    const maxIndex = Math.max(0, totalCards - cardsPerView);
+
+                    if (currentIndex > maxIndex) currentIndex = maxIndex;
+                    if (currentIndex < 0) currentIndex = 0;
+
+                    prevBtn.disabled = currentIndex === 0;
+                    nextBtn.disabled = currentIndex === maxIndex;
+
+                    const cardWidth = 300; // Fixed width
+                    const gap = 16;
+                    const offset = currentIndex * (cardWidth + gap);
+                    track.style.transform = `translateX(-${offset}px)`;
+                }
+
+                prevBtn.addEventListener("click", () => {
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        updateSlider();
+                    }
+                });
+
+                nextBtn.addEventListener("click", () => {
+                    const cardsPerView = getCardsPerView();
+                    const maxIndex = Math.max(0, track.children.length - cardsPerView);
+                    if (currentIndex < maxIndex) {
+                        currentIndex++;
+                        updateSlider();
+                    }
+                });
+
+                window.addEventListener("resize", () => {
+                    updateSlider();
+                });
+
+                setTimeout(updateSlider, 100);
+            });
+        </script>
+
+
+
+
+    </section>
 
     <section class="gear-section page-section">
 
@@ -3784,12 +3963,6 @@
 
     </section>
 
-
-
-    <!-- ================================================= -->
-    <!-- AUDIO SECTION -->
-    <!-- ================================================= -->
-
     <section class="audio-section page-section">
 
         <div class="audio-center reveal">
@@ -3860,66 +4033,11 @@
 
     </section>
 
-
-
-    <!-- ================================================= -->
-    <!-- TRUST REASONS SECTION -->
-    <!-- ================================================= -->
-    <section class="trust-reasons-section page-section">
-        <div class="trust-reasons-container">
-            <h2 class="trust-reasons-title reveal">4 lý do bạn có thể tin HYPERCORE</h2>
-            <div class="trust-reasons-grid reveal">
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-                            <path
-                                d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-                        </svg>
-                    </div>
-                    <h3>Tư vấn đúng nhu cầu</h3>
-                    <p>Lắng nghe thói quen sử dụng thực tế để gợi ý cấu hình phù hợp nhất. Chúng tôi giúp bạn chọn đúng
-                        sản phẩm ngay từ đầu, tránh lãng phí chi phí thử nghiệm.</p>
-                </div>
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <polygon
-                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                        </svg>
-                    </div>
-                    <h3>Kiểm thử nghiêm ngặt</h3>
-                    <p>Mọi sản phẩm đều được kiểm tra kỹ lưỡng về hiệu năng và độ ổn định trước khi lên kệ. Chúng tôi
-                        kiên quyết từ chối những thiết bị không đạt chuẩn.</p>
-                </div>
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                        </svg>
-                    </div>
-                    <h3>Xu hướng mới nhất</h3>
-                    <p>Là đối tác chiến lược của các hãng công nghệ lớn, HYPERCORE luôn mang về những dòng sản phẩm mới
-                        nhất và phiên bản giới hạn sớm nhất thị trường.</p>
-                </div>
-                <div class="trust-reason-card">
-                    <div class="trust-icon-wrapper">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="8" width="18" height="4" rx="1" />
-                            <path
-                                d="M12 8V22M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" />
-                        </svg>
-                    </div>
-                    <h3>Bảo hành nhanh chóng</h3>
-                    <p>Quy trình xử lý bảo hành rõ ràng, tối ưu thời gian chờ đợi.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- CHATBOT UI (Moved to global injection in chatbot-global.js) -->
 
     <!-- FOOTER -->
+
+
     <footer class="site-footer">
         <div class="footer-container">
             <!-- Left Info Column -->
@@ -3959,6 +4077,7 @@
                     <li><a href="#">Về Chúng Tôi</a></li>
                     <li><a href="https://discord.gg/QBbHeKc2Sy" target="_blank">Cộng Đồng Discord</a></li>
                     <li><a href="#">Tin Tức Công Nghệ</a></li>
+                    <li><a href="voucher.html">Voucher</a></li>
                 </ul>
             </div>
 
@@ -4019,7 +4138,6 @@
             { sel: '.product-grid', childSel: ':scope > .reveal', baseDelay: 0 },
             { sel: '.gear-layout', childSel: ':scope > .reveal', baseDelay: 0 },
             { sel: '.gear-small-grid', childSel: ':scope > .reveal', baseDelay: 150 },
-            { sel: '.laptop-right', childSel: ':scope > .reveal', baseDelay: 0 },
             { sel: '.audio-grid', childSel: ':scope > .reveal', baseDelay: 0 }
         ];
 
@@ -4052,124 +4170,6 @@
         );
 
         document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
-
-        /* BANNER PROMOTION SLIDER */
-        (function () {
-            const bannerCarousel = document.getElementById('bannerCarousel');
-            const bannerSlides = bannerCarousel ? Array.from(bannerCarousel.querySelectorAll('.banner-slide')) : [];
-            const bannerDots = bannerCarousel ? Array.from(bannerCarousel.querySelectorAll('[data-banner-dot]')) : [];
-            const bannerPrevBtn = document.getElementById('bannerPrevBtn');
-            const bannerNextBtn = document.getElementById('bannerNextBtn');
-            const bannerHighlightCards = Array.from(document.querySelectorAll('.laptop-card[data-banner-target]'));
-
-            if (!bannerCarousel || bannerSlides.length === 0) {
-                return;
-            }
-
-            let bannerIndex = 0;
-            let bannerTimer = null;
-            let bannerPaused = false;
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            function syncBannerHighlights() {
-                const activeTarget = bannerSlides[bannerIndex] ? bannerSlides[bannerIndex].dataset.bannerTarget : 'none';
-                bannerHighlightCards.forEach((card) => {
-                    card.classList.toggle('banner-highlight', card.dataset.bannerTarget === activeTarget);
-                });
-            }
-
-            function renderBanner(nextIndex) {
-                bannerIndex = (nextIndex + bannerSlides.length) % bannerSlides.length;
-                bannerSlides.forEach((slide, index) => {
-                    slide.classList.toggle('active', index === bannerIndex);
-                });
-                bannerDots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === bannerIndex);
-                });
-                syncBannerHighlights();
-            }
-
-            function stopBannerAutoplay() {
-                if (bannerTimer !== null) {
-                    window.clearInterval(bannerTimer);
-                    bannerTimer = null;
-                }
-            }
-
-            function startBannerAutoplay() {
-                stopBannerAutoplay();
-                bannerTimer = window.setInterval(() => {
-                    if (!bannerPaused) {
-                        renderBanner(bannerIndex + 1);
-                    }
-                }, 5000);
-            }
-
-            function gotoBanner(index) {
-                renderBanner(index);
-                startBannerAutoplay();
-            }
-
-            if (bannerPrevBtn) {
-                bannerPrevBtn.addEventListener('click', () => gotoBanner(bannerIndex - 1));
-            }
-
-            if (bannerNextBtn) {
-                bannerNextBtn.addEventListener('click', () => gotoBanner(bannerIndex + 1));
-            }
-
-            bannerDots.forEach((dot) => {
-                dot.addEventListener('click', () => {
-                    const targetIndex = Number(dot.dataset.bannerDot) || 0;
-                    gotoBanner(targetIndex);
-                });
-            });
-
-            bannerCarousel.addEventListener('mouseenter', () => {
-                bannerPaused = true;
-            });
-
-            bannerCarousel.addEventListener('mouseleave', () => {
-                bannerPaused = false;
-            });
-
-            bannerCarousel.addEventListener('pointerdown', (event) => {
-                touchStartX = event.clientX;
-                touchEndX = event.clientX;
-            });
-
-            bannerCarousel.addEventListener('pointermove', (event) => {
-                touchEndX = event.clientX;
-            });
-
-            bannerCarousel.addEventListener('pointerup', () => {
-                const deltaX = touchEndX - touchStartX;
-                if (Math.abs(deltaX) > 50) {
-                    gotoBanner(deltaX > 0 ? bannerIndex - 1 : bannerIndex + 1);
-                }
-            });
-
-            window.addEventListener('keydown', (event) => {
-                const tagName = event.target && event.target.tagName;
-                if (tagName === 'INPUT' || tagName === 'TEXTAREA' || event.defaultPrevented) {
-                    return;
-                }
-
-                if (event.key === 'ArrowLeft') {
-                    gotoBanner(bannerIndex - 1);
-                }
-
-                if (event.key === 'ArrowRight') {
-                    gotoBanner(bannerIndex + 1);
-                }
-            });
-
-            renderBanner(0);
-            startBannerAutoplay();
-        }());
-
-
 
         /* 1. INTERACTIVE CURSOR GLOW (SPOTLIGHT LERP) */
         let mouseX = 0, mouseY = 0;

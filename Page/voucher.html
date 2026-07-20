@@ -10,6 +10,595 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
 		rel="stylesheet">
 	<style>
+		header {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 78px;
+			padding: 0 45px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			z-index: 999;
+			border-radius: 0 0 20px 20px;
+			background: #FFFFFF;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+			transition: .4s ease;
+		}
+
+		header .logo img {
+			height: 38px;
+			display: block;
+			object-fit: contain;
+		}
+
+		nav {
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			display: flex;
+			gap: 35px;
+			align-items: center;
+		}
+
+		nav a {
+			text-decoration: none;
+			color: #000000;
+			font-size: 15px;
+			position: relative;
+			transition: .3s;
+			display: flex;
+			align-items: center;
+		}
+
+		nav a:hover {
+			color: #000000;
+		}
+
+		nav a::after {
+			content: "";
+			position: absolute;
+			left: 0;
+			bottom: -7px;
+			width: 0%;
+			height: 2px;
+			border-radius: 10px;
+			background: var(--blue-light);
+			transition: .3s;
+		}
+
+		nav a:hover::after {
+			width: 100%;
+		}
+
+		/* ================================= */
+		/* HEADER ICONS — PREMIUM MINIMALIST */
+		/* ================================= */
+
+		.nav-actions {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		/* Generic icon wrapper — no scale, only opacity */
+		.header-icon-btn {
+			background: none;
+			border: none;
+			padding: 8px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #111111;
+			text-decoration: none;
+			transition: opacity 0.2s ease;
+			position: relative;
+			line-height: 0;
+		}
+
+		.header-icon-btn:hover {
+			opacity: 0.6;
+		}
+
+		.header-icon-btn svg {
+			width: 22px;
+			height: 22px;
+			display: block;
+			flex-shrink: 0;
+		}
+
+		/* ----- SEARCH ----- */
+		.header-search-container {
+			display: flex;
+			align-items: center;
+			flex-direction: row;
+			/* icon bên trái */
+			overflow: visible;
+			position: relative;
+		}
+
+		.header-search-input {
+			width: 0;
+			opacity: 0;
+			padding: 0;
+			border: none;
+			border-bottom: 1.5px solid transparent;
+			outline: none;
+			background: transparent;
+			font-size: 14px;
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+			color: #111111;
+			transition:
+				width 0.32s cubic-bezier(0.4, 0, 0.2, 1),
+				opacity 0.25s ease,
+				border-color 0.25s ease;
+		}
+
+		.header-search-container.active .header-search-input {
+			width: 200px;
+			opacity: 1;
+			border-bottom-color: #111111;
+			padding: 2px 0 4px 4px;
+		}
+
+		/* ----- CART BADGE ----- */
+		.cart-badge {
+			position: absolute;
+			top: 2px;
+			right: 2px;
+			min-width: 16px;
+			height: 16px;
+			padding: 0 3px;
+			border-radius: 50%;
+			background: #111111;
+			color: #ffffff;
+			font-size: 9px;
+			font-weight: 600;
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			line-height: 1;
+		}
+
+		/* ----- USER GREETING & DROPDOWN ----- */
+		.user-greeting-wrap {
+			position: relative;
+			display: none;
+			/* hiện bằng JS khi đã login */
+			align-items: center;
+		}
+
+		.user-greeting-btn {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			background: none;
+			border: none;
+			cursor: pointer;
+			padding: 6px 10px;
+			border-radius: 20px;
+			transition: background 0.2s ease;
+			color: #111111;
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		}
+
+		.user-greeting-btn:hover {
+			background: rgba(0, 0, 0, 0.06);
+		}
+
+		.user-avatar {
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			background: #111111;
+			color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 13px;
+			font-weight: 700;
+			flex-shrink: 0;
+		}
+
+		.user-greeting-name {
+			font-size: 14px;
+			font-weight: 600;
+			color: #111111;
+			max-width: 130px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.user-greeting-name em {
+			font-style: normal;
+			font-weight: 400;
+			font-size: 12px;
+			color: #555555;
+			display: block;
+			line-height: 1.2;
+		}
+
+		.user-dropdown {
+			position: absolute;
+			top: calc(100% + 10px);
+			right: 0;
+			background: #ffffff;
+			border: 1px solid rgba(0, 0, 0, 0.1);
+			border-radius: 16px;
+			padding: 8px;
+			min-width: 200px;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+			opacity: 0;
+			pointer-events: none;
+			transform: translateY(-8px);
+			transition: opacity 0.2s ease, transform 0.2s ease;
+			z-index: 2000;
+		}
+
+		.user-greeting-wrap.open .user-dropdown {
+			opacity: 1;
+			pointer-events: all;
+			transform: translateY(0);
+		}
+
+		.dropdown-header {
+			padding: 10px 12px 8px;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+			margin-bottom: 6px;
+		}
+
+		.dropdown-header span {
+			font-size: 13px;
+			color: #111111;
+			font-weight: 600;
+			display: block;
+		}
+
+		.dropdown-header small {
+			font-size: 12px;
+			color: #888888;
+		}
+
+		.dropdown-item {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			padding: 10px 12px;
+			border-radius: 10px;
+			cursor: pointer;
+			font-size: 14px;
+			color: #111111;
+			text-decoration: none;
+			transition: background 0.15s ease;
+			border: none;
+			background: none;
+			width: 100%;
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		}
+
+		.dropdown-item:hover {
+			background: rgba(0, 0, 0, 0.05);
+		}
+
+		.dropdown-item.logout {
+			color: #ef4444;
+			margin-top: 4px;
+			border-top: 1px solid rgba(0, 0, 0, 0.06);
+			border-radius: 0 0 10px 10px;
+			padding-top: 12px;
+		}
+
+		.dropdown-item.logout:hover {
+			background: rgba(239, 68, 68, 0.08);
+		}
+
+		/* icon link không đăng nhập */
+		.account-login-link {
+			display: flex;
+			/* mặc định hiện, ẩn bằng JS khi login */
+		}
+
+
+		/* ================================================= */
+		/* WLMOUSE STYLE MEGA DROPDOWN MENU */
+		/* ================================================= */
+
+		.mega-menu {
+			position: absolute;
+			top: calc(78px + 10px);
+			/* 10px spacing from the header bottom */
+			left: 0;
+			width: 100%;
+			background: rgba(244, 244, 245, 0.96);
+			backdrop-filter: blur(35px);
+			-webkit-backdrop-filter: blur(35px);
+			border-radius: 24px;
+			border: 1px solid rgba(0, 0, 0, 0.16);
+			box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 1px 1px #D1D5DB inset;
+			padding: 50px 60px;
+			display: flex;
+			gap: 60px;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(-15px) scaleY(0.98);
+			transform-origin: top center;
+			transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+				visibility 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+				transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+			z-index: 990;
+		}
+
+		.mega-menu.active,
+		.nav-item-dropdown:hover .mega-menu {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0) scaleY(1);
+		}
+
+		/* Mega Left Column: Categories List */
+		.mega-categories-col {
+			min-width: 360px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			border-right: 1px solid rgba(0, 0, 0, 0.08);
+			padding-right: 40px;
+		}
+
+		.mega-category-list {
+			display: flex;
+			flex-direction: column;
+			gap: 30px;
+		}
+
+		.mega-category-item {
+			font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+			font-size: 19px;
+			font-weight: 700;
+			color: #555555;
+			cursor: pointer;
+			position: relative;
+			padding-left: 25px;
+			user-select: none;
+			white-space: nowrap;
+			/* Entrance stagger animation starting state */
+			opacity: 0;
+			transform: translateY(18px);
+			transition: opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+				transform 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+				color 0.3s ease;
+		}
+
+		/* Staggered delay for each category item when menu is active */
+		.mega-menu.active .mega-category-item {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		.mega-menu.active .mega-category-item:nth-child(1) {
+			transition-delay: 0.08s;
+		}
+
+		.mega-menu.active .mega-category-item:nth-child(2) {
+			transition-delay: 0.14s;
+		}
+
+		.mega-menu.active .mega-category-item:nth-child(3) {
+			transition-delay: 0.20s;
+		}
+
+		.mega-menu.active .mega-category-item:nth-child(4) {
+			transition-delay: 0.26s;
+		}
+
+		.mega-menu.active .mega-category-item:nth-child(5) {
+			transition-delay: 0.32s;
+		}
+
+		.mega-menu.active .mega-category-item:nth-child(6) {
+			transition-delay: 0.38s;
+		}
+
+		.mega-category-item::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 50%;
+			transform: translateY(-50%) scale(0);
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			background: #000000;
+			box-shadow: 0 0 12px #000000;
+			transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+		}
+
+		.mega-category-item:hover {
+			color: rgba(0, 0, 0, 0.85);
+			transform: translateX(4px);
+		}
+
+		.mega-category-item.active {
+			color: #000000;
+			font-weight: 800;
+			transform: translateX(6px);
+		}
+
+		.mega-category-item.active::before {
+			transform: translateY(-50%) scale(1);
+		}
+
+		.mega-view-all {
+			margin-top: 40px;
+			font-size: 18px;
+			font-weight: 600;
+			color: #000000;
+			text-decoration: none;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			/* Entrance stagger animation starting state */
+			opacity: 0;
+			transform: translateY(15px);
+			transition: opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+				transform 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+				color 0.3s, gap 0.3s;
+		}
+
+		.mega-menu.active .mega-view-all {
+			opacity: 1;
+			transform: translateY(0);
+			transition-delay: 0.44s;
+		}
+
+		.mega-view-all:hover {
+			color: #000000;
+			gap: 12px;
+			text-shadow: none;
+		}
+
+		/* Mega Right Column: Dynamic Products Grid */
+		.mega-products-col {
+			flex-grow: 1;
+			position: relative;
+		}
+
+		.mega-products-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 30px;
+			width: 100%;
+			transition: opacity 0.2s ease, transform 0.2s ease;
+		}
+
+		.mega-products-grid.fade-out {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+
+		.mega-products-grid.fade-in {
+			animation: megaProductFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+		}
+
+		@keyframes megaProductFadeIn {
+			0% {
+				opacity: 0;
+				transform: translateY(15px);
+			}
+
+			100% {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* Mega Product Card Item */
+		.mega-product-card {
+			background: #FFFFFF;
+			border: 1px solid #E6E6E6;
+			border-radius: 20px;
+			padding: 30px 25px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+			cursor: pointer;
+			transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.mega-product-card:hover {
+			background: rgba(0, 0, 0, 0.06);
+			border-color: #555555;
+			transform: translateY(-5px);
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 1px 1px #D1D5DB inset;
+		}
+
+		.mega-product-img {
+			width: 175px;
+			height: 175px;
+			object-fit: contain;
+			margin-bottom: 22px;
+			filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.4));
+			transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+		}
+
+		.mega-product-card:hover .mega-product-img {
+			transform: scale(1.12) rotate(2deg);
+		}
+
+		.mega-product-info {
+			width: 100%;
+		}
+
+		.mega-product-name {
+			font-size: 18px;
+			font-weight: 700;
+			color: #000000;
+			margin-bottom: 8px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.mega-product-desc {
+			font-size: 14px;
+			color: #555555;
+			margin-bottom: 18px;
+			height: 20px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.mega-product-price {
+			font-size: 18px;
+			font-weight: 800;
+			color: #000000;
+			text-shadow: none;
+		}
+
+
+		@media(max-width:1000px) {
+
+			header {
+				width: calc(100% - 20px);
+				padding: 0 20px;
+			}
+
+			nav {
+				display: none;
+			}
+
+			.showcase {
+				flex-direction: column;
+				text-align: center;
+				gap: 80px;
+			}
+
+			.showcase-left,
+			.showcase-right {
+				width: 100%;
+			}
+
+			.hero-buttons {
+				justify-content: center;
+			}
+
+			.products {
+				padding: 65px 20px;
+			}
+
+			.glass-box h2 {
+				font-size: 48px;
+			}
+		}
+
 		:root {
 			--bg: #ffffff;
 			--bg-soft: #f5f5f5;
@@ -66,6 +655,7 @@
 			position: relative;
 			min-height: 100vh;
 			overflow: hidden;
+			padding-top: 78px;
 		}
 
 		.bg-particles {
@@ -1650,6 +2240,193 @@
 	<div class="page-shell">
 		<div class="bg-particles" id="bgParticles"></div>
 
+		<!-- HEADER -->
+		<header id="header">
+
+			<div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
+				<img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+					style="height: 38px; display: block; object-fit: contain;">
+			</div>
+
+			<nav>
+
+				<a href="/Homepage" class="active">Trang Chủ</a>
+				<div class="nav-item-dropdown">
+					<a href="/Products" id="nav-products">Sản Phẩm</a>
+					<div class="mega-menu">
+						<div class="mega-col">
+							<h3>Linh Kiện PC</h3>
+							<a href="/Products?category=main">Mainboard - Bo mạch chủ</a>
+							<a href="/Products?category=cpu">CPU - Bộ vi xử lý</a>
+							<a href="/Products?category=vga">VGA - Card màn hình</a>
+							<a href="/Products?category=ram">RAM - Bộ nhớ trong</a>
+							<a href="/Products?category=ssd">Ổ cứng SSD/HDD</a>
+							<a href="/Products?category=psu">Nguồn máy tính</a>
+							<a href="/Products?category=case">Case - Vỏ máy tính</a>
+							<a href="/Products?category=cooling">Tản nhiệt PC</a>
+						</div>
+						<div class="mega-col">
+							<h3>Thương Hiệu</h3>
+							<a href="/Products?brand=asus">Asus</a>
+							<a href="/Products?brand=msi">MSI</a>
+							<a href="/Products?brand=gigabyte">Gigabyte</a>
+							<a href="/Products?brand=intel">Intel</a>
+							<a href="/Products?brand=amd">AMD</a>
+							<a href="/Products?brand=corsair">Corsair</a>
+							<a href="/Products?brand=kingston">Kingston</a>
+						</div>
+					</div>
+				</div>
+				<div class="nav-item-dropdown">
+					<a href="/gaminggear" id="nav-gaminggear">Gaming Gear</a>
+					<div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+						<div class="mega-col">
+							<h3>Gaming Gear</h3>
+							<a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
+							<a href="/gaminggear?category=ban-phim">Bàn Phím</a>
+							<a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
+							<a href="/gaminggear?category=mic-studio">Mic Studio</a>
+							<a href="/gaminggear?category=tay-cam">Tay Cầm</a>
+							<a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
+							<a href="/gaminggear?category=phu-kien">Phụ kiện</a>
+						</div>
+					</div>
+				</div>
+				<div class="nav-item-dropdown">
+					<a href="/pcbuild" id="nav-pcbuild">PC Build</a>
+					<div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+						<div class="mega-col">
+							<h3>PC Build</h3>
+							<a href="/pcbuild?type=streamer">PC Streamer / Cấu hình đề xuất</a>
+							<a href="/pcbuild?type=custom">Tự Build Cấu Hình</a>
+						</div>
+					</div>
+				</div>
+				<div class="nav-item-dropdown">
+					<a href="/order-status">Đơn hàng</a>
+					<div class="mega-menu" style="width: 250px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
+						<div class="mega-col">
+							<h3>Đơn Hàng & Bảo Hành</h3>
+							<a href="/order-status">Trạng thái đơn hàng</a>
+							<a href="/warranty">Chính sách bảo hành</a>
+						</div>
+					</div>
+				</div>
+				<a href="/contact">Liên hệ</a>
+
+			</nav>
+
+			<div class="nav-actions">
+
+				<!-- SEARCH -->
+				<div class="header-search-container" id="headerSearchWrap">
+					<input type="text" id="headerSearchInput" class="header-search-input"
+						placeholder="Tìm kiếm sản phẩm..." onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+					<button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)"
+						title="Tìm kiếm" aria-label="Tìm kiếm">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+							stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="11" cy="11" r="8" />
+							<line x1="21" y1="21" x2="16.65" y2="16.65" />
+						</svg>
+					</button>
+				</div>
+
+				<!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
+				<a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;"
+					class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+						stroke-linejoin="round">
+						<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+						<circle cx="12" cy="7" r="4" />
+					</svg>
+				</a>
+
+				<!-- USER GREETING (hiện khi đã đăng nhập) -->
+				<div class="user-greeting-wrap" id="userGreetingWrap">
+					<button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()"
+						aria-label="Tài khoản">
+						<div class="user-avatar" id="userAvatar">U</div>
+						<div class="user-greeting-name">
+							<em>Xin chào,</em>
+							<span id="userDisplayName">Người dùng</span>
+						</div>
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+							stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<polyline points="6 9 12 15 18 9" />
+						</svg>
+					</button>
+
+					<!-- DROPDOWN -->
+					<div class="user-dropdown" id="userDropdown">
+						<div class="dropdown-header">
+							<span id="dropdownFullName">Người dùng</span>
+							<small id="dropdownEmail">email@example.com</small>
+						</div>
+						<a href="/profile/info" class="dropdown-item">
+							<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+								viewBox="0 0 24 24">
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+								<circle cx="12" cy="7" r="4" />
+							</svg>
+							Hồ sơ của tôi
+						</a>
+						<a href="/shoppingcart" class="dropdown-item">
+							<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+								viewBox="0 0 24 24">
+								<circle cx="9" cy="21" r="1" />
+								<circle cx="20" cy="21" r="1" />
+								<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+							</svg>
+							Giỏ hàng
+						</a>
+						<a href="/order-status" class="dropdown-item">
+							<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+								viewBox="0 0 24 24">
+								<rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+								<line x1="16" y1="2" x2="16" y2="6" />
+								<line x1="8" y1="2" x2="8" y2="6" />
+								<line x1="3" y1="10" x2="21" y2="10" />
+							</svg>
+							Đơn hàng
+						</a>
+						<a href="/customer-returns" class="dropdown-item">
+							<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+								viewBox="0 0 24 24">
+								<path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5" />
+							</svg>
+							Đổi trả / Hoàn tiền
+						</a>
+						<button class="dropdown-item logout" onclick="handleLogout()">
+							<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+								viewBox="0 0 24 24">
+								<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+								<polyline points="16 17 21 12 16 7" />
+								<line x1="21" y1="12" x2="9" y2="12" />
+							</svg>
+							Đăng xuất
+						</button>
+					</div>
+				</div>
+
+				<!-- CART -->
+				<a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link"
+					title="Giỏ hàng" aria-label="Giỏ hàng">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+						stroke-linejoin="round">
+						<circle cx="9" cy="21" r="1" />
+						<circle cx="20" cy="21" r="1" />
+						<path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+					</svg>
+					<span class="cart-badge" id="cartCount">0</span>
+				</a>
+
+			</div>
+
+
+
+		</header>
+
 		<div class="flash-sale-card reveal shimmer" id="flashSaleCard">
 			<div class="rank-pill diamond"
 				style="background: rgba(58, 167, 255, .14); display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(17, 17, 17, .08); font-weight: 800;">
@@ -1849,6 +2626,11 @@
 	</div>
 
 	<div class="toast" id="toast"></div>
+
+	<!-- HEADER SCRIPTS -->
+	<script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+	<script src="/assets/js/cart-drawer-global.js"></script>
+	<script src="/assets/js/auth-ui.js?v=1.1.0"></script>
 
 	<script>
 		// ============================================================
