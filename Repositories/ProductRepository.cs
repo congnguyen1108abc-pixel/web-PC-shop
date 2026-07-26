@@ -70,9 +70,46 @@ public sealed class ProductRepository : IProductRepository
         var r = await _db.QuerySingleAsync<NewIdResult>("sp_Product_Create", new
         {
             request.CategoryId, request.BrandId, request.SKU, request.ProductName,
-            request.Price, request.DiscountPrice, request.CostPrice, request.StockQuantity,
+            request.Price, request.DiscountPrice, request.StockQuantity,
             request.Description, request.WarrantyMonths, request.IsActive
         });
+
+        if (r?.NewProductId != null)
+        {
+            if (request.Attributes != null && request.Attributes.Count > 0)
+            {
+                int order = 1;
+                foreach (var attr in request.Attributes)
+                {
+                    if (!string.IsNullOrWhiteSpace(attr.AttributeName) && !string.IsNullOrWhiteSpace(attr.AttributeValue))
+                    {
+                        await AddAttributeAsync(new ProductAttributeRequest(
+                            r.NewProductId,
+                            attr.AttributeName.Trim(),
+                            attr.AttributeValue.Trim(),
+                            attr.SortOrder > 0 ? attr.SortOrder : order++));
+                    }
+                }
+            }
+
+            if (request.Images != null && request.Images.Count > 0)
+            {
+                int imgOrder = 1;
+                foreach (var img in request.Images)
+                {
+                    if (!string.IsNullOrWhiteSpace(img.ImageUrl))
+                    {
+                        await AddImageAsync(new ProductImageRequest(
+                            r.NewProductId,
+                            img.ImageUrl.Trim(),
+                            img.AltText,
+                            img.SortOrder > 0 ? img.SortOrder : imgOrder++,
+                            img.IsDefault));
+                    }
+                }
+            }
+        }
+
         return r?.NewProductId;
     }
 
@@ -81,9 +118,48 @@ public sealed class ProductRepository : IProductRepository
         var r = await _db.QuerySingleAsync<UpdatedIdResult>("sp_Product_Update", new
         {
             request.ProductId, request.CategoryId, request.BrandId, request.SKU, request.ProductName,
-            request.Price, request.DiscountPrice, request.CostPrice, request.StockQuantity,
+            request.Price, request.DiscountPrice, request.StockQuantity,
             request.Description, request.WarrantyMonths, request.IsActive
         });
+
+        if (r?.UpdatedProductId != null)
+        {
+            if (request.Attributes != null)
+            {
+                await _db.ExecuteRawAsync("DELETE FROM ProductAttributes WHERE ProductID = @ProductId", new { ProductId = request.ProductId });
+                int order = 1;
+                foreach (var attr in request.Attributes)
+                {
+                    if (!string.IsNullOrWhiteSpace(attr.AttributeName) && !string.IsNullOrWhiteSpace(attr.AttributeValue))
+                    {
+                        await AddAttributeAsync(new ProductAttributeRequest(
+                            request.ProductId,
+                            attr.AttributeName.Trim(),
+                            attr.AttributeValue.Trim(),
+                            attr.SortOrder > 0 ? attr.SortOrder : order++));
+                    }
+                }
+            }
+
+            if (request.Images != null && request.Images.Count > 0)
+            {
+                await _db.ExecuteRawAsync("DELETE FROM ProductImages WHERE ProductID = @ProductId", new { ProductId = request.ProductId });
+                int imgOrder = 1;
+                foreach (var img in request.Images)
+                {
+                    if (!string.IsNullOrWhiteSpace(img.ImageUrl))
+                    {
+                        await AddImageAsync(new ProductImageRequest(
+                            request.ProductId,
+                            img.ImageUrl.Trim(),
+                            img.AltText,
+                            img.SortOrder > 0 ? img.SortOrder : imgOrder++,
+                            img.IsDefault));
+                    }
+                }
+            }
+        }
+
         return r?.UpdatedProductId;
     }
 

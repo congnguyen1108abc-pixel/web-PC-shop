@@ -40,6 +40,22 @@ public sealed class CategoriesController : ControllerBase
         return Ok(result);
     }
 
+    [AllowAnonymous]
+    [HttpGet("{categoryId:int}/attributes")]
+    public async Task<ActionResult<IEnumerable<CategoryAttributeTemplateItem>>> GetAttributeTemplates(int categoryId)
+    {
+        var result = await _categories.GetAttributeTemplatesAsync(categoryId);
+        return Ok(result);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("attribute-templates")]
+    public async Task<ActionResult<IEnumerable<CategoryAttributeTemplateItem>>> GetAllAttributeTemplates([FromQuery] string? categoryName = null)
+    {
+        var result = await _categories.GetAttributeTemplatesAsync(null, categoryName);
+        return Ok(result);
+    }
+
     // ── Category Management APIs ──────────────────────────────────────────────
     // Chỉ Admin được thêm/sửa/xóa danh mục.
 

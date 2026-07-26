@@ -23,12 +23,23 @@
                     <span class="cart-tab active">Cart <span class="cart-badge-count" id="drawerCartCount">0</span></span>
                     <span class="cart-tab">Recently viewed</span>
                 </div>
-                <button class="cart-drawer-close" id="cartCloseBtn">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="cart-clear-all-btn" id="cartClearAllBtn" onclick="clearCartGlobal()" style="display: none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        Xóa tất cả
+                    </button>
+                    <button class="cart-drawer-close" id="cartCloseBtn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Scrollable Content -->
@@ -189,8 +200,11 @@
         const actionsEl = document.querySelector('.cart-drawer-actions');
         const footerEl = document.querySelector('.cart-drawer-footer');
 
+        const clearAllBtn = document.getElementById('cartClearAllBtn');
+
         // Render Recently Viewed tab
         if (currentDrawerTab === 'recent') {
+            if (clearAllBtn) clearAllBtn.style.display = 'none';
             if (recEl) recEl.style.display = 'none';
             if (actionsEl) actionsEl.style.display = 'none';
             if (footerEl) footerEl.style.display = 'none';
@@ -254,6 +268,7 @@
         if (footerEl) footerEl.style.display = 'block';
 
         if (cart.length === 0) {
+            if (clearAllBtn) clearAllBtn.style.display = 'none';
             listEl.innerHTML = `
                 <div class="cart-empty-state" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px; min-height: 380px;">
                     <h2 style="font-size: 26px; font-weight: 700; margin-bottom: 12px; color: #000000; font-family: 'Inter', sans-serif;">Your cart is currently empty.</h2>
@@ -274,6 +289,8 @@
             if (badgeEl) badgeEl.style.display = 'none';
             return;
         }
+
+        if (clearAllBtn) clearAllBtn.style.display = 'inline-flex';
 
         listEl.innerHTML = '';
         let totalUsd = 0;
@@ -297,6 +314,8 @@
                 imgUrl = '../wwwroot' + imgUrl;
             }
 
+            const safeItemName = (item.name || '').replace(/'/g, "\\'");
+
             const itemEl = document.createElement('div');
             itemEl.className = 'cart-item-row';
             itemEl.innerHTML = `
@@ -310,11 +329,18 @@
                     <div class="quantity-selector">
                         <span class="qty-display">${item.qty}</span>
                         <div class="qty-btn-col">
-                            <button class="qty-btn-arrow" onclick="changeQtyGlobal(${item.id || 0}, '${item.name}', 1)">▲</button>
-                            <button class="qty-btn-arrow" onclick="changeQtyGlobal(${item.id || 0}, '${item.name}', -1)">▼</button>
+                            <button class="qty-btn-arrow" onclick="changeQtyGlobal(${item.id || 0}, '${safeItemName}', 1)">▲</button>
+                            <button class="qty-btn-arrow" onclick="changeQtyGlobal(${item.id || 0}, '${safeItemName}', -1)">▼</button>
                         </div>
                     </div>
-                    <span class="cart-remove-link" onclick="removeFromCartGlobal(${item.id || 0}, '${item.name}')">Remove</span>
+                    <button class="cart-remove-btn" onclick="removeFromCartGlobal(${item.id || 0}, '${safeItemName}')" title="Xóa sản phẩm">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
                 </div>
             `;
             listEl.appendChild(itemEl);
@@ -421,6 +447,25 @@
                 if (typeof updateHeaderCartCount === 'function') updateHeaderCartCount();
             }
         }
+    };
+
+    window.clearCartGlobal = async function () {
+        let cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+        if (cart.length === 0) return;
+
+        if (!confirm('Bạn có chắc chắn muốn xóa toàn bộ sản phẩm khỏi giỏ hàng?')) {
+            return;
+        }
+
+        if (typeof clearCartHelper === 'function') {
+            await clearCartHelper();
+        } else {
+            localStorage.setItem('hyper_core_cart', '[]');
+            localStorage.setItem('hypercore_cart_items', '[]');
+            if (typeof updateHeaderCartCount === 'function') updateHeaderCartCount();
+        }
+
+        renderCartDrawer();
     };
 
     window.addRecommendedItemGlobal = async function (id) {

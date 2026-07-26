@@ -21,6 +21,17 @@ public sealed record ProductQueryRequest(
     }
 };
 
+public sealed record ProductAttributeInput(
+    string AttributeName,
+    string AttributeValue,
+    int SortOrder = 0);
+
+public sealed record ProductImageInput(
+    string ImageUrl,
+    string? AltText = null,
+    int SortOrder = 1,
+    bool IsDefault = true);
+
 public sealed record ProductCreateRequest(
     int CategoryId,
     int BrandId,
@@ -32,7 +43,9 @@ public sealed record ProductCreateRequest(
     int StockQuantity,
     string? Description,
     int WarrantyMonths,
-    bool IsActive);
+    bool IsActive,
+    List<ProductAttributeInput>? Attributes = null,
+    List<ProductImageInput>? Images = null);
 
 public sealed record ProductUpdateRequest(
     int ProductId,
@@ -46,7 +59,9 @@ public sealed record ProductUpdateRequest(
     int StockQuantity,
     string? Description,
     int WarrantyMonths,
-    bool IsActive);
+    bool IsActive,
+    List<ProductAttributeInput>? Attributes = null,
+    List<ProductImageInput>? Images = null);
 
 public sealed record ProductImageRequest(
     int ProductId,

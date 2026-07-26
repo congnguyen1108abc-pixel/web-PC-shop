@@ -17,29 +17,33 @@ namespace PC_Store.Controllers
             _env = env;
         }
 
+        public class UploadVideoRequest
+        {
+            public string title { get; set; }
+            public IFormFile videoFile { get; set; }
+            public IFormFile thumbnailFile { get; set; }
+            public string linkUrl { get; set; }
+            public int displayOrder { get; set; } = 0;
+        }
+
         /// <summary>
         /// Upload video clip cho banner
         /// </summary>
         [HttpPost("upload-video")]
-        public async Task<IActionResult> UploadVideo(
-            [FromForm] string title,
-            [FromForm] IFormFile videoFile,
-            [FromForm] IFormFile thumbnailFile = null,
-            [FromForm] string linkUrl = null,
-            [FromForm] int displayOrder = 0)
+        public async Task<IActionResult> UploadVideo([FromForm] UploadVideoRequest request)
         {
             try
             {
                 // Validate input
-                if (string.IsNullOrWhiteSpace(title))
+                if (string.IsNullOrWhiteSpace(request.title))
                     return BadRequest(new { error = "Title is required" });
 
-                if (videoFile == null || videoFile.Length == 0)
+                if (request.videoFile == null || request.videoFile.Length == 0)
                     return BadRequest(new { error = "Video file is required" });
 
                 // Check file extensions
                 var allowedVideoExtensions = new[] { ".mp4", ".avi", ".mov", ".webm" };
-                var videoExtension = Path.GetExtension(videoFile.FileName).ToLower();
+                var videoExtension = Path.GetExtension(request.videoFile.FileName).ToLower();
                 
                 if (!Array.Exists(allowedVideoExtensions, ext => ext == videoExtension))
                     return BadRequest(new { error = $"Video format not allowed. Allowed: {string.Join(", ", allowedVideoExtensions)}" });
@@ -54,17 +58,17 @@ namespace PC_Store.Controllers
                 
                 using (var stream = new FileStream(videoPath, FileMode.Create))
                 {
-                    await videoFile.CopyToAsync(stream);
+                    await request.videoFile.CopyToAsync(stream);
                 }
 
                 var videoUrl = $"/assets/video/{videoFileName}";
 
                 // Save thumbnail if provided
                 string thumbnailUrl = null;
-                if (thumbnailFile != null && thumbnailFile.Length > 0)
+                if (request.thumbnailFile != null && request.thumbnailFile.Length > 0)
                 {
                     var allowedImageExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
-                    var thumbExtension = Path.GetExtension(thumbnailFile.FileName).ToLower();
+                    var thumbExtension = Path.GetExtension(request.thumbnailFile.FileName).ToLower();
                     
                     if (Array.Exists(allowedImageExtensions, ext => ext == thumbExtension))
                     {
@@ -76,7 +80,7 @@ namespace PC_Store.Controllers
                         
                         using (var stream = new FileStream(thumbPath, FileMode.Create))
                         {
-                            await thumbnailFile.CopyToAsync(stream);
+                            await request.thumbnailFile.CopyToAsync(stream);
                         }
 
                         thumbnailUrl = $"/assets/image/{thumbFileName}";
@@ -90,11 +94,11 @@ namespace PC_Store.Controllers
                     message = "Video uploaded successfully",
                     data = new
                     {
-                        title = title,
+                        title = request.title,
                         videoUrl = videoUrl,
                         thumbnailUrl = thumbnailUrl,
-                        linkUrl = linkUrl,
-                        displayOrder = displayOrder,
+                        linkUrl = request.linkUrl,
+                        displayOrder = request.displayOrder,
                         bannerType = "Video",
                         isActive = true
                     }
@@ -127,7 +131,7 @@ namespace PC_Store.Controllers
                             title = "ROG Astral GeForce RTX 5090",
                             videoUrl = "/assets/image/ROGAstralGeForceRTX5090_clip.mp4",
                             thumbnailUrl = "/assets/image/banner_thumb.jpg",
-                            linkUrl = null,
+                            linkUrl = (string)null,
                             displayOrder = 1,
                             isActive = true
                         }

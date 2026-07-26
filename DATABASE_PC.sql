@@ -8013,3 +8013,159 @@ GO
 
 PRINT N'✅ Hoàn tất tích hợp module Giá, Khuyến Mãi & Lịch Sử Đổi Giá!';
 GO
+
+-- ============================================================
+-- TABLE: CategoryAttributeTemplates
+-- Stores attribute definitions per product category
+-- ============================================================
+IF NOT EXISTS (SELECT 1 FROM sys.tables WHERE name = 'CategoryAttributeTemplates')
+BEGIN
+    CREATE TABLE CategoryAttributeTemplates (
+        TemplateID    INT PRIMARY KEY IDENTITY(1,1),
+        CategoryName  NVARCHAR(100) NOT NULL,
+        AttributeName NVARCHAR(100) NOT NULL,
+        Placeholder   NVARCHAR(255) NULL,
+        SortOrder     INT DEFAULT 0,
+        IsRequired    BIT DEFAULT 0
+    );
+
+    CREATE INDEX IX_CatAttrTemplate_CatName ON CategoryAttributeTemplates (CategoryName);
+END;
+GO
+
+-- Seed CategoryAttributeTemplates
+IF NOT EXISTS (SELECT 1 FROM CategoryAttributeTemplates)
+BEGIN
+    -- VGA
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('VGA', 'Chipset',           N'VD: NVIDIA GeForce RTX 4060', 1),
+    ('VGA', 'VRAM',              N'VD: 8GB GDDR6',                2),
+    ('VGA', 'Memory Bus',        N'VD: 128-bit',                  3),
+    ('VGA', 'Boost Clock',       N'VD: 2535 MHz',                 4),
+    ('VGA', 'CUDA Cores',        N'VD: 3072',                     5),
+    ('VGA', 'PCIe Version',      N'VD: PCIe 4.0 x16',            6),
+    ('VGA', 'Output',            N'VD: HDMI 2.1, 3x DisplayPort', 7),
+    ('VGA', 'Power Connector',   N'VD: 1x 16-pin',               8),
+    ('VGA', 'Recommended PSU',   N'VD: 550W',                    9);
+
+    -- CPU
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('CPU', 'Socket',             N'VD: AM5 / LGA1700',           1),
+    ('CPU', 'Cores',              N'VD: 8 Cores',                  2),
+    ('CPU', 'Threads',            N'VD: 16 Threads',               3),
+    ('CPU', 'Base Clock',         N'VD: 3.6 GHz',                  4),
+    ('CPU', 'Boost Clock',        N'VD: 5.1 GHz',                  5),
+    ('CPU', 'Cache',              N'VD: 32MB L3',                   6),
+    ('CPU', 'TDP',                N'VD: 125W',                      7),
+    ('CPU', 'Integrated Graphics',N'VD: AMD Radeon / Không có',    8);
+
+    -- Mainboard
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('Mainboard', 'Socket',       N'VD: AM5 / LGA1700',            1),
+    ('Mainboard', 'Chipset',      N'VD: B650 / Z790',              2),
+    ('Mainboard', 'Form Factor',  N'VD: ATX / mATX / ITX',         3),
+    ('Mainboard', 'RAM Support',  N'VD: DDR5 6000MHz',             4),
+    ('Mainboard', 'PCIe',        N'VD: 2x PCIe 5.0 x16',          5),
+    ('Mainboard', 'M.2 Slots',   N'VD: 3x M.2 NVMe',              6),
+    ('Mainboard', 'WiFi',        N'VD: WiFi 6E',                   7),
+    ('Mainboard', 'Bluetooth',   N'VD: Bluetooth 5.3',             8);
+
+    -- RAM
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('RAM', 'Capacity',      N'VD: 16GB (2x8GB)',  1),
+    ('RAM', 'Bus Speed',     N'VD: DDR5-6000',     2),
+    ('RAM', 'Latency',       N'VD: CL30',          3),
+    ('RAM', 'Voltage',       N'VD: 1.35V',         4),
+    ('RAM', 'RGB',           N'VD: Có / Không',    5);
+
+    -- SSD
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('SSD', 'Capacity',       N'VD: 1TB',               1),
+    ('SSD', 'PCIe Gen',       N'VD: PCIe 4.0 NVMe',     2),
+    ('SSD', 'Read Speed',     N'VD: 7000 MB/s',          3),
+    ('SSD', 'Write Speed',    N'VD: 6500 MB/s',          4),
+    ('SSD', 'Form Factor',    N'VD: M.2 2280',           5),
+    ('SSD', 'NAND',           N'VD: 3D TLC NAND',        6);
+
+    -- Case
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('Case', 'Color',              N'VD: White / Black',              1),
+    ('Case', 'Size',               N'VD: Mid Tower',                   2),
+    ('Case', 'Motherboard Support',N'VD: ATX, mATX, ITX',            3),
+    ('Case', 'GPU Clearance',      N'VD: 380mm',                       4),
+    ('Case', 'Radiator Support',   N'VD: 360mm top, 240mm front',     5),
+    ('Case', 'Material',           N'VD: Steel + Tempered Glass',      6);
+
+    -- PSU
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('PSU', 'Power',          N'VD: 750W',              1),
+    ('PSU', 'Efficiency',     N'VD: 80+ Gold',          2),
+    ('PSU', 'Modular',        N'VD: Full Modular',      3),
+    ('PSU', 'Fan Size',       N'VD: 135mm',             4),
+    ('PSU', 'Certification',  N'VD: 80 PLUS Gold',      5);
+
+    -- Keyboard
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('Keyboard', 'Switch',      N'VD: Linear Red / Tactile Brown',  1),
+    ('Keyboard', 'Layout',      N'VD: TKL 80%',                     2),
+    ('Keyboard', 'Keycap',      N'VD: PBT Double-shot',             3),
+    ('Keyboard', 'Connection',  N'VD: USB-C / Bluetooth',           4),
+    ('Keyboard', 'RGB',         N'VD: Có / Không',                  5);
+
+    -- Mouse
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('Mouse', 'Sensor',        N'VD: PixArt PAW3395',    1),
+    ('Mouse', 'DPI',           N'VD: Up to 26000 DPI',   2),
+    ('Mouse', 'Weight',        N'VD: 59g',               3),
+    ('Mouse', 'Connection',    N'VD: USB / 2.4G / BT',   4),
+    ('Mouse', 'Polling Rate',  N'VD: 1000Hz',            5);
+
+    -- Headset
+    INSERT INTO CategoryAttributeTemplates (CategoryName, AttributeName, Placeholder, SortOrder) VALUES
+    ('Headset', 'Driver',         N'VD: 50mm Neodymium',    1),
+    ('Headset', 'Connection',     N'VD: USB / 3.5mm / 2.4G', 2),
+    ('Headset', 'Microphone',     N'VD: Có (Detachable)',   3),
+    ('Headset', 'Surround',       N'VD: 7.1 Virtual',       4);
+END;
+GO
+
+-- ============================================================
+-- PROCEDURE: sp_Category_GetAttributeTemplates
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_Category_GetAttributeTemplates
+    @CategoryID INT = NULL,
+    @CategoryName NVARCHAR(100) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @TargetCatName NVARCHAR(100) = @CategoryName;
+    
+    IF @CategoryID IS NOT NULL AND (@TargetCatName IS NULL OR @TargetCatName = '')
+    BEGIN
+        SELECT @TargetCatName = CategoryName FROM Categories WHERE CategoryID = @CategoryID;
+    END
+
+    IF @TargetCatName IS NULL OR @TargetCatName = ''
+    BEGIN
+        SELECT TemplateID, CategoryName, AttributeName, Placeholder, SortOrder, IsRequired
+        FROM CategoryAttributeTemplates
+        ORDER BY CategoryName, SortOrder;
+        RETURN;
+    END
+
+    SELECT 
+        TemplateID,
+        CategoryName,
+        AttributeName,
+        Placeholder,
+        SortOrder,
+        IsRequired
+    FROM CategoryAttributeTemplates
+    WHERE UPPER(CategoryName) = UPPER(@TargetCatName)
+       OR @TargetCatName LIKE '%' + CategoryName + '%'
+       OR CategoryName LIKE '%' + @TargetCatName + '%'
+    ORDER BY SortOrder ASC, TemplateID ASC;
+END;
+GO
+

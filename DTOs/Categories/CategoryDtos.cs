@@ -26,3 +26,12 @@ public sealed record CategoryItem(
     int SortOrder,
     bool IsActive,
     int ProductCount);
+
+public sealed record CategoryAttributeTemplateItem(
+    int TemplateId,
+    string CategoryName,
+    string AttributeName,
+    string? Placeholder,
+    int SortOrder,
+    bool IsRequired);
+

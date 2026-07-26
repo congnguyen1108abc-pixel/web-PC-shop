@@ -1617,6 +1617,35 @@
                     <textarea id="prodDescription" rows="4" placeholder="Mô tả thông tin chi tiết sản phẩm..."></textarea>
                 </div>
 
+                <div class="admin-form-group" style="border: 1px dashed var(--border-color); padding: 14px; border-radius: 10px; background: rgba(0,0,0,0.02); margin-top: 10px;">
+                    <label style="font-weight: 700; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+                        <span>🖼️ ÁNH SẢN PHẨM</span>
+                    </label>
+                    <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                        <input type="text" id="prodImageUrl" placeholder="Nhập đường dẫn URL ảnh hoặc chọn tệp từ máy..." oninput="previewProductImage()" style="flex: 1; padding: 8px 10px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color);" />
+                        <label class="btn-action" style="cursor: pointer; padding: 8px 14px; background: #0ea5e9; color: #fff; border-radius: 6px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                            <span>📷</span> Chọn Ảnh Từ Máy
+                            <input type="file" id="prodImageFile" accept="image/*" style="display: none;" onchange="uploadProductImageFile(this)" />
+                        </label>
+                    </div>
+                    <div id="prodImagePreviewContainer" style="display: none; align-items: center; gap: 12px; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <img id="prodImagePreview" src="" style="width: 64px; height: 64px; object-fit: contain; border-radius: 6px; border: 1px solid #e2e8f0;" onerror="this.src='https://placehold.co/64x64?text=L%E1%BB%97i+Ảnh'" />
+                        <div style="font-size: 11px; color: var(--text-muted); flex: 1;">
+                            <div style="font-weight: 700; color: #16a34a; margin-bottom: 2px;">✓ Ảnh xem trước hợp lệ</div>
+                            <div id="prodImagePreviewUrl" style="word-break: break-all; font-family: monospace; font-size: 10px; color: #64748b;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-form-group" style="border: 1px dashed var(--border-color); padding: 14px; border-radius: 10px; background: rgba(0,0,0,0.02); margin-top: 10px;">
+                    <label style="font-weight: 700; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+                        <span>⚙️ THUỘC TÍNH SẢN PHẨM THEO DANH MỤC</span>
+                    </label>
+                    <div id="dynamicAttributesContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Vui lòng chọn Danh Mục để tải thuộc tính kỹ thuật tương ứng.</div>
+                    </div>
+                </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" onclick="closeProductModal()">Hủy</button>
                     <button type="submit" class="btn-submit" id="prodSubmitBtn">LƯU SẢN PHẨM</button>
@@ -2491,6 +2520,171 @@
         let allBrands = [];
         let isRestockFromInventory = false;
 
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        async function loadProductsData() {
+            const body = document.getElementById('productsTableBody');
+            if (body) body.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: var(--text-muted);">⏳ Đang tải danh sách sản phẩm...</td></tr>`;
+            try {
+                const res = await fetch('/api/Products?PageSize=100');
+                if (!res.ok) return;
+                const data = await res.json();
+                allProducts = data.items || [];
+                renderProductsTable(allProducts);
+            } catch (e) {
+                console.error('Lỗi tải danh sách sản phẩm:', e);
+                if (body) body.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: var(--error);">❌ Không thể tải dữ liệu sản phẩm.</td></tr>`;
+            }
+        }
+
+        function renderProductsTable(list) {
+            const body = document.getElementById('productsTableBody');
+            if (!body) return;
+            if (!list || list.length === 0) {
+                body.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 30px; color: var(--text-muted);">Chưa có sản phẩm nào trong hệ thống.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            list.forEach(p => {
+                const badgeClass = p.isActive ? 'success' : 'danger';
+                const statusText = p.isActive ? 'Active' : 'Hidden';
+                const fmtPrice = (p.effectivePrice || p.price || 0).toLocaleString('vi-VN') + 'đ';
+
+                html += `
+                    <tr>
+                        <td style="font-weight:700;">#${p.productId}</td>
+                        <td style="font-weight:600;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <img src="${p.defaultImageUrl || 'https://placehold.co/40x40?text=PC'}" style="width:32px; height:32px; border-radius:4px; object-fit:cover;" onerror="this.src='https://placehold.co/40x40?text=PC'" />
+                                <div>
+                                    <div>${escapeHtml(p.productName)}</div>
+                                    <div style="font-size:11px; color:var(--text-muted);">SKU: ${escapeHtml(p.sku || '—')}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${escapeHtml(p.categoryName || '—')}</td>
+                        <td>${escapeHtml(p.brandName || '—')}</td>
+                        <td style="font-weight:700; color:var(--primary);">${fmtPrice}</td>
+                        <td>${p.warrantyMonths || 24} Tháng</td>
+                        <td><span class="status-pill ${badgeClass}">${statusText}</span></td>
+                        <td>
+                            <div style="display:flex; gap:6px;">
+                                <button class="btn-action" onclick="openEditProductModal(${p.productId})">Sửa</button>
+                                <button class="btn-action" onclick="deleteProduct(${p.productId})" style="color:var(--error); border-color:var(--error);">Xóa</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            body.innerHTML = html;
+        }
+
+        function filterProductsTable() {
+            const input = document.getElementById('searchProductsInput');
+            if (!input) return;
+            const query = input.value.trim().toLowerCase();
+            const filtered = allProducts.filter(p => 
+                (p.productName && p.productName.toLowerCase().includes(query)) ||
+                (p.sku && p.sku.toLowerCase().includes(query)) ||
+                (p.categoryName && p.categoryName.toLowerCase().includes(query)) ||
+                (p.brandName && p.brandName.toLowerCase().includes(query))
+            );
+            renderProductsTable(filtered);
+        }
+
+        async function deleteProduct(productId) {
+            showConfirm('Bạn có chắc chắn muốn XÓA vĩnh viễn sản phẩm này không?', async () => {
+                try {
+                    const res = await fetch(`/api/Products/${productId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${getAdminToken()}`
+                        }
+                    });
+                    if (res.ok) {
+                        showToast('Đã xóa sản phẩm thành công!', 'success');
+                        loadProductsData();
+                    } else {
+                        const err = await res.json();
+                        showToast('Lỗi: ' + (err.message || 'Không thể xóa sản phẩm này'), 'error');
+                    }
+                } catch (e) {
+                    showToast('Lỗi kết nối máy chủ.', 'error');
+                }
+            });
+        }
+
+        async function loadInventoryData() {
+            const body = document.getElementById('inventoryTableBody');
+            if (body) body.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: var(--text-muted);">⏳ Đang tải dữ liệu tồn kho...</td></tr>`;
+            try {
+                const res = await fetch('/api/Products?PageSize=100');
+                if (!res.ok) return;
+                const data = await res.json();
+                const list = data.items || [];
+                renderInventoryTable(list);
+            } catch (e) {
+                console.error('Lỗi tải tồn kho:', e);
+            }
+        }
+
+        function renderInventoryTable(list) {
+            const body = document.getElementById('inventoryTableBody');
+            if (!body) return;
+            if (!list || list.length === 0) {
+                body.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 30px; color: var(--text-muted);">Chưa có sản phẩm nào.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            list.forEach(p => {
+                let stockBadge = 'success';
+                let stockText = 'Đủ hàng';
+                if (p.stockQuantity <= 0) {
+                    stockBadge = 'danger';
+                    stockText = 'Hết hàng';
+                } else if (p.stockQuantity <= 5) {
+                    stockBadge = 'warning';
+                    stockText = 'Sắp hết';
+                }
+
+                html += `
+                    <tr>
+                        <td style="font-weight:700;">#${p.productId}</td>
+                        <td style="font-weight:600;">${escapeHtml(p.productName)}</td>
+                        <td style="font-family:monospace;">${escapeHtml(p.sku || '—')}</td>
+                        <td style="font-weight:700;">${(p.effectivePrice || p.price || 0).toLocaleString('vi-VN')}đ</td>
+                        <td style="font-weight:800; font-size:14px;">${p.stockQuantity ?? 0}</td>
+                        <td><span class="status-pill ${stockBadge}">${stockText}</span></td>
+                        <td>
+                            <button class="btn-action" onclick="openRestockModal(${p.productId}, '${escapeHtml(p.productName).replace(/'/g, "\\'")}', true)" style="color:var(--primary); border-color:var(--primary);">+ Nhập Kho</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            body.innerHTML = html;
+        }
+
+        function filterInventoryTable() {
+            const input = document.getElementById('searchInventoryInput');
+            if (!input) return;
+            const query = input.value.trim().toLowerCase();
+            const filtered = allProducts.filter(p => 
+                (p.productName && p.productName.toLowerCase().includes(query)) ||
+                (p.sku && p.sku.toLowerCase().includes(query))
+            );
+            renderInventoryTable(filtered);
+        }
+
         async function loadCategoriesAndBrands() {
             try {
                 const [catRes, brandRes] = await Promise.all([
@@ -2505,6 +2699,7 @@
                 
                 if (catSelect) {
                     catSelect.innerHTML = allCategories.map(c => `<option value="${c.categoryId}">${c.categoryName}</option>`).join('');
+                    catSelect.onchange = () => renderCategoryAttributeFields();
                 }
                 if (brandSelect) {
                     brandSelect.innerHTML = allBrands.map(b => `<option value="${b.brandId}">${b.brandName}</option>`).join('');
@@ -2514,109 +2709,103 @@
             }
         }
 
-        async function loadProductsData() {
+        async function renderCategoryAttributeFields(existingAttrMap = {}) {
+            const catSelect = document.getElementById('prodCategory');
+            const container = document.getElementById('dynamicAttributesContainer');
+            if (!catSelect || !container) return;
+
+            const categoryId = catSelect.value;
+            if (!categoryId) {
+                container.innerHTML = '<div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Vui lòng chọn Danh Mục.</div>';
+                return;
+            }
+
+            container.innerHTML = '<div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Đang tải thuộc tính danh mục...</div>';
+
             try {
-                const res = await fetch('/api/Products?PageSize=100');
-                if (!res.ok) return;
-                const data = await res.json();
-                allProducts = data.items || [];
-                renderProductsTable(allProducts);
-            } catch (e) {
-                console.error('Lỗi tải sản phẩm:', e);
+                const res = await fetch(`/api/Categories/${categoryId}/attributes`);
+                if (!res.ok) throw new Error('Không thể lấy thuộc tính');
+                const templates = await res.json();
+
+                if (!templates || templates.length === 0) {
+                    container.innerHTML = '<div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Danh mục này dùng mô tả mặc định.</div>';
+                    return;
+                }
+
+                let html = '';
+                templates.forEach(tpl => {
+                    const currentVal = existingAttrMap[tpl.attributeName] || '';
+                    const fullWidth = tpl.attributeName.toLowerCase().includes('mô tả') || tpl.attributeName.toLowerCase().includes('output') ? 'grid-column: 1 / -1;' : '';
+                    html += `
+                        <div style="${fullWidth}">
+                            <label style="font-size: 11px; font-weight: 600; color: var(--text-dark); display: block; margin-bottom: 4px;">
+                                ${tpl.attributeName} ${tpl.isRequired ? '<span style="color:red;">*</span>' : ''}
+                            </label>
+                            <input type="text" class="admin-form-control attr-dynamic-input" 
+                                   data-attr-name="${tpl.attributeName}" 
+                                   placeholder="${tpl.placeholder || 'Nhập ' + tpl.attributeName}" 
+                                   value="${currentVal.replace(/"/g, '&quot;')}"
+                                   style="width:100%; padding: 8px 10px; font-size:12px; border-radius:6px; border:1px solid var(--border-color);" />
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (err) {
+                console.error('Lỗi renderCategoryAttributeFields:', err);
+                container.innerHTML = '<div style="grid-column: 1 / -1; font-size: 12px; color: var(--error);">Không thể tải mẫu thuộc tính.</div>';
             }
         }
 
-        function renderProductsTable(list) {
-            const body = document.getElementById('productsTableBody');
-            let html = '';
-            list.forEach(p => {
-                const statusBadge = p.isActive 
-                    ? '<span class="status-pill success">Hiển thị</span>' 
-                    : '<span class="status-pill danger">Ẩn</span>';
-                html += `
-                    <tr>
-                        <td style="font-weight:700;">#${p.productId}</td>
-                        <td>
-                            <div style="font-weight:600;">${p.productName}</div>
-                            <div style="font-size:10px; color:var(--text-muted);">SKU: ${p.sku || 'N/A'}</div>
-                        </td>
-                        <td>${p.categoryName}</td>
-                        <td>${p.brandName}</td>
-                        <td style="font-weight:700;">${p.price.toLocaleString()}đ</td>
-                        <td>${p.warrantyMonths}T</td>
-                        <td>${statusBadge}</td>
-                        <td>
-                            <div style="display:flex; gap:6px;">
-                                <button class="btn-action" onclick="openEditProductModal(${p.productId})" style="color:var(--primary); border-color:var(--primary);">Sửa</button>
-                                <button class="btn-action" onclick="deleteProduct(${p.productId})" style="color:var(--error); border-color:var(--error);">Xóa</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-            body.innerHTML = html;
-        }
-
-        function filterProductsTable() {
-            const query = document.getElementById('searchProductsInput').value.trim().toLowerCase();
-            const filtered = allProducts.filter(p => 
-                p.productName.toLowerCase().includes(query) || 
-                (p.sku && p.sku.toLowerCase().includes(query)) ||
-                (p.brandName && p.brandName.toLowerCase().includes(query))
-            );
-            renderProductsTable(filtered);
-        }
-
-        // ── Inventory Tab JS Logic ──
-        async function loadInventoryData() {
-            try {
-                const res = await fetch('/api/Products?PageSize=100');
-                if (!res.ok) return;
-                const data = await res.json();
-                allProducts = data.items || [];
-                renderInventoryTable(allProducts);
-            } catch (e) {
-                console.error('Lỗi tải kho hàng:', e);
+        function previewProductImage() {
+            const urlInput = document.getElementById('prodImageUrl');
+            const container = document.getElementById('prodImagePreviewContainer');
+            const img = document.getElementById('prodImagePreview');
+            const urlText = document.getElementById('prodImagePreviewUrl');
+            
+            if (!urlInput || !container || !img) return;
+            const url = urlInput.value.trim();
+            if (url) {
+                img.src = url;
+                if (urlText) urlText.textContent = url;
+                container.style.display = 'flex';
+            } else {
+                container.style.display = 'none';
             }
         }
 
-        function renderInventoryTable(list) {
-            const body = document.getElementById('inventoryTableBody');
-            let html = '';
-            list.forEach(p => {
-                const isLow = p.stockQuantity <= 5;
-                const statusBadge = p.stockQuantity === 0 
-                    ? '<span class="status-pill danger">Hết hàng</span>'
-                    : (isLow ? '<span class="status-pill warning">⚠️ Sắp hết</span>' : '<span class="status-pill success">Còn hàng</span>');
-                const stockColor = isLow ? 'color:var(--error); font-weight:800;' : '';
+        async function uploadProductImageFile(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
 
-                html += `
-                    <tr>
-                        <td style="font-weight:700;">#${p.productId}</td>
-                        <td style="font-weight:600;">${p.productName}</td>
-                        <td style="font-size:12px; font-family:monospace; color:var(--text-muted);">${p.sku || 'N/A'}</td>
-                        <td style="font-weight:700;">${p.price.toLocaleString()}đ</td>
-                        <td style="${stockColor}">${p.stockQuantity}</td>
-                        <td>${statusBadge}</td>
-                        <td>
-                            <button class="btn-action" onclick="openRestockModal(${p.productId}, '${p.productName.replace(/'/g, "\\'")}', true)" style="color:var(--primary); border-color:var(--primary);">Nhập Kho</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            body.innerHTML = html;
+            try {
+                showToast('⏳ Đang tải ảnh lên...', 'info');
+                const res = await fetch('/api/Admin/upload-image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getAdminToken()}`
+                    },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('prodImageUrl').value = data.imageUrl;
+                    previewProductImage();
+                    showToast('✅ Tải ảnh lên thành công!', 'success');
+                } else {
+                    const err = await res.json();
+                    showToast('Lỗi tải ảnh: ' + (err.message || 'Không thể tải ảnh'), 'error');
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Lỗi kết nối khi tải ảnh.', 'error');
+            } finally {
+                input.value = '';
+            }
         }
 
-        function filterInventoryTable() {
-            const query = document.getElementById('searchInventoryInput').value.trim().toLowerCase();
-            const filtered = allProducts.filter(p => 
-                p.productName.toLowerCase().includes(query) || 
-                (p.sku && p.sku.toLowerCase().includes(query))
-            );
-            renderInventoryTable(filtered);
-        }
-
-        // ── Product Add/Edit Dialogs ──
         function openAddProductModal() {
             document.getElementById('editProductId').value = '';
             document.getElementById('modalProductTitle').textContent = 'Thêm Sản Phẩm Mới';
@@ -2629,8 +2818,11 @@
             document.getElementById('prodStockGroup').style.display = 'block';
             document.getElementById('prodIsActive').checked = true;
             document.getElementById('prodDescription').value = '';
+            document.getElementById('prodImageUrl').value = '';
+            previewProductImage();
             
             document.getElementById('productModal').classList.add('active');
+            renderCategoryAttributeFields();
         }
 
         async function openEditProductModal(productId) {
@@ -2648,11 +2840,41 @@
             document.getElementById('prodStockGroup').style.display = 'none';
             document.getElementById('prodIsActive').checked = p.isActive;
             document.getElementById('prodDescription').value = p.description || '';
+            
+            document.getElementById('prodImageUrl').value = p.defaultImageUrl || '';
+            previewProductImage();
 
             document.getElementById('prodCategory').value = p.categoryId;
             document.getElementById('prodBrand').value = p.brandId;
 
             document.getElementById('productModal').classList.add('active');
+
+            try {
+                const res = await fetch(`/api/Products/${productId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.images && data.images.length > 0) {
+                        const defImg = data.images.find(i => i.isDefault) || data.images[0];
+                        if (defImg && defImg.imageUrl) {
+                            document.getElementById('prodImageUrl').value = defImg.imageUrl;
+                            previewProductImage();
+                        }
+                    } else if (data.header && data.header.defaultImageUrl) {
+                        document.getElementById('prodImageUrl').value = data.header.defaultImageUrl;
+                        previewProductImage();
+                    }
+
+                    const existingAttrMap = {};
+                    if (data.attributes && data.attributes.length > 0) {
+                        data.attributes.forEach(a => existingAttrMap[a.attributeName] = a.attributeValue);
+                    }
+                    renderCategoryAttributeFields(existingAttrMap);
+                } else {
+                    renderCategoryAttributeFields();
+                }
+            } catch (err) {
+                renderCategoryAttributeFields();
+            }
         }
 
         function closeProductModal() {
@@ -2664,6 +2886,24 @@
             const editIdVal = document.getElementById('editProductId').value;
             const isEditing = editIdVal !== '';
 
+            const attrInputs = document.querySelectorAll('#dynamicAttributesContainer .attr-dynamic-input');
+            const attributes = [];
+            let sortOrderIdx = 1;
+            attrInputs.forEach(input => {
+                const val = input.value.trim();
+                const name = input.getAttribute('data-attr-name');
+                if (name && val) {
+                    attributes.push({
+                        attributeName: name,
+                        attributeValue: val,
+                        sortOrder: sortOrderIdx++
+                    });
+                }
+            });
+
+            const imgUrl = document.getElementById('prodImageUrl').value.trim();
+            const images = imgUrl ? [{ imageUrl: imgUrl, isDefault: true, sortOrder: 1 }] : null;
+
             const payload = {
                 categoryId: parseInt(document.getElementById('prodCategory').value),
                 brandId: parseInt(document.getElementById('prodBrand').value),
@@ -2674,7 +2914,9 @@
                 warrantyMonths: parseInt(document.getElementById('prodWarranty').value),
                 isActive: document.getElementById('prodIsActive').checked,
                 description: document.getElementById('prodDescription').value.trim(),
-                stockQuantity: parseInt(document.getElementById('prodStock').value) || 0
+                stockQuantity: parseInt(document.getElementById('prodStock').value) || 0,
+                attributes: attributes,
+                images: images
             };
 
             let url = '/api/Products';
