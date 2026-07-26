@@ -6,6 +6,16 @@ using System.Collections.Generic;
 
 namespace PC_Store.Controllers
 {
+    // ── Request DTO (dùng class để Swagger không bị duplicate ContentType) ──
+    public class UploadVideoRequest
+    {
+        public string Title { get; set; } = string.Empty;
+        public IFormFile VideoFile { get; set; } = null!;
+        public IFormFile? ThumbnailFile { get; set; }
+        public string? LinkUrl { get; set; }
+        public int DisplayOrder { get; set; } = 0;
+    }
+
     [ApiController]
     [Route("api/[controller]")]
     public class BannerController : ControllerBase
@@ -21,80 +31,70 @@ namespace PC_Store.Controllers
         /// Upload video clip cho banner
         /// </summary>
         [HttpPost("upload-video")]
-        public async Task<IActionResult> UploadVideo(
-            [FromForm] string title,
-            [FromForm] IFormFile videoFile,
-            [FromForm] IFormFile thumbnailFile = null,
-            [FromForm] string linkUrl = null,
-            [FromForm] int displayOrder = 0)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UploadVideo([FromForm] UploadVideoRequest request)
         {
             try
             {
-                // Validate input
-                if (string.IsNullOrWhiteSpace(title))
+                if (string.IsNullOrWhiteSpace(request.Title))
                     return BadRequest(new { error = "Title is required" });
 
-                if (videoFile == null || videoFile.Length == 0)
+                if (request.VideoFile == null || request.VideoFile.Length == 0)
                     return BadRequest(new { error = "Video file is required" });
 
-                // Check file extensions
                 var allowedVideoExtensions = new[] { ".mp4", ".avi", ".mov", ".webm" };
-                var videoExtension = Path.GetExtension(videoFile.FileName).ToLower();
-                
+                var videoExtension = Path.GetExtension(request.VideoFile.FileName).ToLower();
+
                 if (!Array.Exists(allowedVideoExtensions, ext => ext == videoExtension))
                     return BadRequest(new { error = $"Video format not allowed. Allowed: {string.Join(", ", allowedVideoExtensions)}" });
 
-                // Create directories if not exist
                 var uploadsDir = Path.Combine(_env.ContentRootPath, "wwwroot", "assets", "video");
                 Directory.CreateDirectory(uploadsDir);
 
-                // Save video file
-                var videoFileName = $"banner_video_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 8)}{videoExtension}";
+                var videoFileName = $"banner_video_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N")[..8]}{videoExtension}";
                 var videoPath = Path.Combine(uploadsDir, videoFileName);
-                
+
                 using (var stream = new FileStream(videoPath, FileMode.Create))
                 {
-                    await videoFile.CopyToAsync(stream);
+                    await request.VideoFile.CopyToAsync(stream);
                 }
 
                 var videoUrl = $"/assets/video/{videoFileName}";
 
-                // Save thumbnail if provided
-                string thumbnailUrl = null;
-                if (thumbnailFile != null && thumbnailFile.Length > 0)
+                string? thumbnailUrl = null;
+                if (request.ThumbnailFile != null && request.ThumbnailFile.Length > 0)
                 {
                     var allowedImageExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
-                    var thumbExtension = Path.GetExtension(thumbnailFile.FileName).ToLower();
-                    
+                    var thumbExtension = Path.GetExtension(request.ThumbnailFile.FileName).ToLower();
+
                     if (Array.Exists(allowedImageExtensions, ext => ext == thumbExtension))
                     {
                         var thumbsDir = Path.Combine(_env.ContentRootPath, "wwwroot", "assets", "image");
                         Directory.CreateDirectory(thumbsDir);
 
-                        var thumbFileName = $"banner_thumb_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N").Substring(0, 8)}{thumbExtension}";
+                        var thumbFileName = $"banner_thumb_{DateTime.Now:yyyyMMddHHmmss}_{Guid.NewGuid().ToString("N")[..8]}{thumbExtension}";
                         var thumbPath = Path.Combine(thumbsDir, thumbFileName);
-                        
+
                         using (var stream = new FileStream(thumbPath, FileMode.Create))
                         {
-                            await thumbnailFile.CopyToAsync(stream);
+                            await request.ThumbnailFile.CopyToAsync(stream);
                         }
 
                         thumbnailUrl = $"/assets/image/{thumbFileName}";
                     }
                 }
 
-                // Return response
                 return Ok(new
                 {
                     success = true,
                     message = "Video uploaded successfully",
                     data = new
                     {
-                        title = title,
-                        videoUrl = videoUrl,
-                        thumbnailUrl = thumbnailUrl,
-                        linkUrl = linkUrl,
-                        displayOrder = displayOrder,
+                        title = request.Title,
+                        videoUrl,
+                        thumbnailUrl,
+                        linkUrl = request.LinkUrl,
+                        displayOrder = request.DisplayOrder,
                         bannerType = "Video",
                         isActive = true
                     }
@@ -114,7 +114,6 @@ namespace PC_Store.Controllers
         {
             try
             {
-                // TODO: Query from database using sp_GetHomepageBanners
                 return Ok(new
                 {
                     success = true,
@@ -148,7 +147,6 @@ namespace PC_Store.Controllers
         {
             try
             {
-                // TODO: Delete from database and physical files
                 return Ok(new
                 {
                     success = true,
