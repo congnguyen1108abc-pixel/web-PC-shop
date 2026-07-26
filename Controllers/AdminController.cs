@@ -13,6 +13,11 @@ using PC_Store.DTOs.Warranty;
 using PC_Store.Hubs;
 using PC_Store.Services.Interfaces;
 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System;
+
 namespace PC_Store.Controllers;
 
 [Authorize(Roles = "Admin")]
@@ -32,6 +37,7 @@ public sealed class AdminController : ControllerBase
     private readonly INotificationService _notifications;
     private readonly INotificationPusher _pusher;
     private readonly IHighUtilityMiningService _mining;
+    private readonly IWebHostEnvironment _env;
 
     public AdminController(
         IUserService users,
@@ -45,7 +51,8 @@ public sealed class AdminController : ControllerBase
         IChatService chat,
         INotificationService notifications,
         INotificationPusher pusher,
-        IHighUtilityMiningService mining)
+        IHighUtilityMiningService mining,
+        IWebHostEnvironment env)
     {
         _users         = users;
         _products      = products;
@@ -59,6 +66,7 @@ public sealed class AdminController : ControllerBase
         _notifications = notifications;
         _pusher        = pusher;
         _mining        = mining;
+        _env           = env;
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────
@@ -271,6 +279,36 @@ public sealed class AdminController : ControllerBase
             message = "Xóa banner thành công",
             deletedBannerId = id
         });
+    }
+
+    [HttpPost("upload-video")]
+    [DisableRequestSizeLimit]
+    public async Task<ActionResult> UploadVideo([FromForm] IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest(new { message = "Không có tệp tin nào được gửi." });
+
+        var ext = Path.GetExtension(file.FileName).ToLower();
+        if (ext != ".mp4" && ext != ".webm")
+            return BadRequest(new { message = "Chỉ chấp nhận định dạng .mp4 hoặc .webm." });
+
+        // Ensure target directory exists
+        var uploadsFolder = Path.Combine(_env.WebRootPath, "images");
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
+
+        var fileName = $"home_hero_video_{DateTime.UtcNow.Ticks}{ext}";
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var relativePath = $"/images/{fileName}";
+        return Ok(new { filePath = relativePath, message = "Tải video thành công" });
     }
 
     // ── Dashboard ─────────────────────────────────────────────────────────────

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Xây Dựng Cấu Hình PC - HYPER CORE</title>
 
-    <!-- Style Link -->
+    <!-- Tệp giao diện CSS -->
     <link rel="stylesheet" href="/css/style.css?v=1.1.8">
     <link rel="stylesheet" href="/assets/css/auth-ui.css">
     <style>
@@ -136,7 +136,7 @@
 
 <body>
 
-    <!-- HEADER -->
+    <!-- PHẦN ĐẦU TRANG -->
     <header id="header">
         <div class="logo" style="cursor: pointer;" onclick="window.location.href='/Homepage'">
             <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
@@ -210,7 +210,7 @@
         </nav>
 
         <div class="nav-actions">
-            <!-- SEARCH -->
+            <!-- TÌM KIẾM -->
             <div class="header-search-container" id="headerSearchWrap">
                 <input
                     type="text"
@@ -230,7 +230,7 @@
                 </button>
             </div>
 
-            <!-- ACCOUNT — hiện icon login nếu chưa đăng nhập, greeting nếu đã đăng nhập -->
+            <!-- TÀI KHOẢN - hiện biểu tượng đăng nhập nếu chưa, hoặc lời chào nếu đã đăng nhập -->
             <a href="/Login" id="accountLoginLink" style="text-decoration: none; color: inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -238,7 +238,7 @@
                 </svg>
             </a>
 
-            <!-- USER GREETING (hiện khi đã đăng nhập) -->
+            <!-- LỜI CHÀO (hiện khi đã đăng nhập) -->
             <div class="user-greeting-wrap" id="userGreetingWrap">
                 <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
                     <div class="user-avatar" id="userAvatar">U</div>
@@ -251,7 +251,7 @@
                     </svg>
                 </button>
 
-                <!-- DROPDOWN -->
+                <!-- MENU TÙY CHỌN TÀI KHOẢN -->
                 <div class="user-dropdown" id="userDropdown">
                     <div class="dropdown-header">
                         <span id="dropdownFullName">Người dùng</span>
@@ -280,7 +280,7 @@
                 </div>
             </div>
 
-            <!-- CART -->
+            <!-- GIỎ HÀNG -->
             <a href="/shoppingcart" style="text-decoration: none; color: inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="9" cy="21" r="1"/>
@@ -292,14 +292,14 @@
         </div>
     </header>
 
-    <!-- HERO VIDEO BANNER -->
+    <!-- BANNER VIDEO NỔI BẬT -->
     <div class="pc-build-hero">
         <video src="/images/PCGaming_clip.mp4" autoplay loop muted playsinline></video>
         <h1 class="hero-title">PC BUILD & CONFIGURATOR</h1>
         <p class="hero-subtitle">Tự thiết kế cấu hình tối ưu hoặc lựa chọn những bộ PC lắp sẵn đề xuất chuyên nghiệp</p>
     </div>
 
-    <!-- CONTENT WRAPPER -->
+    <!-- PHẦN NỘI DUNG CHÍNH -->
     <div class="pc-build-content">
         <main class="main-container">
             <div class="section-header" id="pc-streamer-section">
@@ -323,7 +323,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
             <div class="bento-grid" id="bentoCarousel">
-            <!-- CARD 1 -->
+            <!-- THẺ SẢN PHẨM 1 -->
             <div class="bento-card" data-category="KOL">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Esport Master</span>
@@ -357,7 +357,7 @@
                 </div>
             </div>
 
-            <!-- CARD 2 -->
+            <!-- THẺ SẢN PHẨM 2 -->
             <div class="bento-card" data-category="STREAMER">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Streamer Elite</span>
@@ -391,7 +391,7 @@
                 </div>
             </div>
 
-            <!-- CARD 3 -->
+            <!-- THẺ SẢN PHẨM 3 -->
             <div class="bento-card" data-category="CREATOR">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Creator Extreme</span>
@@ -425,7 +425,7 @@
                 </div>
             </div>
 
-            <!-- CARD 4 -->
+            <!-- THẺ SẢN PHẨM 4 -->
             <div class="bento-card" data-category="GAME THỦ">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Gia Tốc Gaming</span>
@@ -459,7 +459,7 @@
                 </div>
             </div>
 
-            <!-- CARD 5 -->
+            <!-- THẺ SẢN PHẨM 5 -->
             <div class="bento-card" data-category="GAME THỦ">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Ultimate Gaming</span>
@@ -493,7 +493,7 @@
                 </div>
             </div>
 
-            <!-- CARD 6 -->
+            <!-- THẺ SẢN PHẨM 6 -->
             <div class="bento-card" data-category="STREAMER">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Streamer Pro</span>
@@ -527,7 +527,7 @@
                 </div>
             </div>
 
-            <!-- CARD 7 -->
+            <!-- THẺ SẢN PHẨM 7 -->
             <div class="bento-card" data-category="CREATOR">
                 <div class="card-img-wrapper image-container">
                     <span class="card-tag">Creator Pro</span>
@@ -566,16 +566,16 @@
             </button>
         </div>
 
-        <!-- SECTION 2: CUSTOM PC BUILDER -->
+        <!-- PHẦN 2: TỰ XÂY DỰNG CẤU HÌNH PC -->
         <div class="section-header" id="custom-builder-section">
             <h2>TỰ BUILD CẤU HÌNH</h2>
             <div class="line"></div>
         </div>
 
         <div class="builder-layout">
-            <!-- LEFT COLUMN: COMPONENT ROWS -->
+            <!-- CỘT TRÁI: DANH SÁCH LINH KIỆN -->
             <div class="builder-left" id="builderRowsContainer">
-                <!-- Row CPU -->
+                <!-- Dòng chọn CPU -->
                 <div class="builder-row" data-category="cpu">
                     <div class="row-info">
                         <div class="row-icon">
@@ -592,7 +592,7 @@
                     </div>
                 </div>
 
-                <!-- Row Mainboard -->
+                <!-- Dòng chọn Bo mạch chủ -->
                 <div class="builder-row" data-category="mainboard">
                     <div class="row-info">
                         <div class="row-icon">
@@ -609,7 +609,7 @@
                     </div>
                 </div>
 
-                <!-- Row RAM -->
+                <!-- Dòng chọn RAM -->
                 <div class="builder-row" data-category="ram">
                     <div class="row-info">
                         <div class="row-icon">
@@ -626,7 +626,7 @@
                     </div>
                 </div>
 
-                <!-- Row VGA -->
+                <!-- Dòng chọn Card Đồ Họa -->
                 <div class="builder-row" data-category="vga">
                     <div class="row-info">
                         <div class="row-icon">
@@ -643,7 +643,7 @@
                     </div>
                 </div>
 
-                <!-- Row PSU -->
+                <!-- Dòng chọn Nguồn -->
                 <div class="builder-row" data-category="psu">
                     <div class="row-info">
                         <div class="row-icon">
@@ -660,7 +660,7 @@
                     </div>
                 </div>
 
-                <!-- Row Case -->
+                <!-- Dòng chọn Vỏ Case -->
                 <div class="builder-row" data-category="case">
                     <div class="row-info">
                         <div class="row-icon">
@@ -677,7 +677,7 @@
                     </div>
                 </div>
 
-                <!-- BUILD PERFORMANCE SECTION -->
+                <!-- PHẦN ƯỚC TÍNH HIỆU NĂNG -->
                 <div class="build-performance-section">
                     <div class="section-header" style="margin-bottom: 24px;">
                         <h2>HIỆU SUẤT TỐI ĐA</h2>
@@ -685,7 +685,7 @@
                     </div>
 
                     <div class="performance-flex-container">
-                        <!-- Left Panel: 3DMark Benchmark Card -->
+                        <!-- Khung trái: Thẻ đánh giá điểm 3DMark -->
                         <div class="benchmark-left-panel">
                             <div class="timespy-card">
                                 <div class="timespy-image" style="background-image: url('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80');">
@@ -733,7 +733,7 @@
                             </div>
                         </div>
 
-                        <!-- Right Panel: Vertical Game Cards Grid -->
+                        <!-- Khung phải: Lưới ước tính FPS các tựa game -->
                         <div class="benchmark-right-panel">
                             <div class="game-fps-grid">
                                 <!-- Game 1: Valorant -->
@@ -791,7 +791,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Game 6: League of Legends -->
+                                <!-- Game 6: Liên Minh Huyền Thoại -->
                                 <div class="game-fps-card" title="League of Legends FPS Estimation">
                                     <div class="game-poster-wrap">
                                         <div class="game-poster" style="background-image: url('/images/LOLbanner.png');"></div>
@@ -807,7 +807,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: STICKY CHECKOUT -->
+            <!-- CỘT PHẢI: BẢNG TÓM TẮT & THANH TOÁN (Trượt dọc theo trang) -->
             <div class="builder-right">
                 <div class="checkout-card">
                     <h3 class="checkout-header">Tóm tắt cấu hình</h3>
@@ -854,10 +854,10 @@
     </main>
     </div>
 
-    <!-- FOOTER -->
+    <!-- CHÂN TRANG (FOOTER) -->
     <footer class="site-footer">
         <div class="footer-container">
-            <!-- Left Info Column -->
+            <!-- Cột thông tin trái -->
             <div class="footer-info-col">
                 <div class="footer-logo">
                     <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
@@ -865,7 +865,7 @@
                 </div>
             </div>
 
-            <!-- Links Columns -->
+            <!-- Các cột chứa đường dẫn -->
             <div class="footer-links-col">
                 <h4>Linh Kiện</h4>
                 <ul>
@@ -914,7 +914,7 @@
         </div>
     </footer>
 
-    <!-- RIGHT COMPONENT DRAWER -->
+    <!-- NGĂN KÉO CHỌN LINH KIỆN BÊN PHẢI -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
     <div class="drawer-container" id="drawerContainer">
         <div class="drawer-header">
@@ -922,16 +922,17 @@
             <button class="drawer-close" onclick="closeDrawer()">✕</button>
         </div>
         <div class="drawer-body" id="drawerOptionsContainer">
-            <!-- Options will be loaded dynamically by Javascript -->
+            <!-- Các tùy chọn linh kiện sẽ được Javascript tự động tải vào đây -->
         </div>
     </div>
 
-    <!-- DATA & LOGIC JAVASCRIPT -->
+    <!-- CÁC ĐOẠN MÃ XỬ LÝ (JAVASCRIPT) -->
     <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
     <script src="/assets/js/cart-drawer-global.js?v=1.0.7"></script>
-    <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
+    <script src="/assets/js/search.js?v=1.0.0"></script>
+  <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
     <script>
-        // Static component database fallback
+        // CSDL linh kiện dự phòng
         const staticDatabase = {
             cpu: [],
             mainboard: [],
@@ -941,10 +942,10 @@
             case: []
         };
 
-        // Live database copy that will be updated from SQL
+        // Bản sao CSDL trực tiếp sẽ được cập nhật từ SQL
         let database = JSON.parse(JSON.stringify(staticDatabase));
 
-        // Function to fetch products from SQL API and update configurator options
+        // Hàm lấy sản phẩm từ SQL API và cập nhật các tùy chọn cấu hình
         async function loadComponentsFromAPI() {
             console.log('[PC Build] Fetching components from SQL database...');
             try {
@@ -960,7 +961,7 @@
                     return;
                 }
 
-                // Temp storage to group active SQL products
+                // Bộ nhớ tạm để nhóm các sản phẩm SQL đang hoạt động
                 const tempDb = {
                     cpu: [],
                     mainboard: [],
@@ -1002,11 +1003,11 @@
                     }
                 });
 
-                // Overwrite live database completely with SQL data
+                // Ghi đè hoàn toàn CSDL trực tiếp bằng dữ liệu SQL
                 database = tempDb;
                 console.log('[PC Build] Successfully loaded products from SQL:', database);
 
-                // Update UI placeholders for empty categories
+                // Cập nhật giao diện thay thế cho các danh mục trống
                 const categoriesList = ['cpu', 'mainboard', 'ram', 'vga', 'psu', 'case'];
                 categoriesList.forEach(cat => {
                     if (database[cat].length === 0) {
@@ -1023,7 +1024,7 @@
             }
         }
 
-        // User selected components state
+        // Trạng thái linh kiện do người dùng chọn
         let selectedComponents = {
             cpu: null,
             mainboard: null,
@@ -1035,7 +1036,7 @@
 
         let currentActiveCategory = null;
 
-        // Header Cart count badge sync
+        // Đồng bộ số lượng trên huy hiệu giỏ hàng ở đầu trang
         function updateHeaderCartCount() {
             const cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
             const countBadge = document.getElementById("cartCount");
@@ -1046,7 +1047,7 @@
             }
         }
 
-        // Function to fetch active streamer configurations from Banners API and render them dynamically
+        // Hàm lấy cấu hình streamer đang hoạt động từ Banners API và hiển thị động
         let streamerBannersList = [];
         let filteredStreamerBanners = [];
         let streamerCurrentPage = 1;
@@ -1056,13 +1057,13 @@
         function selectStreamerCategory(category) {
             currentStreamerCategory = category;
             
-            // Update trigger text
+            // Cập nhật văn bản nút nhấn
             const trigger = document.getElementById('streamerDropdownTrigger');
             if (trigger) {
                 trigger.innerHTML = `${category} <svg class="chevron-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
             }
 
-            // Update active class in dropdown items
+            // Cập nhật class active trong các mục menu thả xuống
             const items = document.querySelectorAll('.inline-dropdown-item');
             items.forEach(item => {
                 if (item.getAttribute('data-value') === category) {
@@ -1072,7 +1073,7 @@
                 }
             });
 
-            // Filter
+            // Lọc
             filteredStreamerBanners = streamerBannersList.filter(card => {
                 const cardCat = (card.getAttribute('data-category') || '').trim().toUpperCase();
                 if (category === 'GAME THỦ') {
@@ -1084,7 +1085,7 @@
                 return cardCat === category;
             });
 
-            // Reset page
+            // Đặt lại trang
             streamerCurrentPage = 1;
             renderStreamerPage();
         }
@@ -1134,13 +1135,13 @@
 
             let html = '';
             
-            // First page button (<<)
+            // Nút trang đầu (<<)
             html += `<button class="page-btn ${streamerCurrentPage === 1 ? 'disabled' : ''}" onclick="changeStreamerPage(1)" ${streamerCurrentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
             
-            // Prev button (<)
+            // Nút trang trước (<)
             html += `<button class="page-btn ${streamerCurrentPage === 1 ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage - 1})" ${streamerCurrentPage === 1 ? 'disabled' : ''}>&lt;</button>`;
 
-            // Calculate the window of 5 pages
+            // Tính toán khung hiển thị 5 trang
             let startPage = streamerCurrentPage - 2;
             let endPage = streamerCurrentPage + 2;
 
@@ -1153,25 +1154,25 @@
                 endPage = totalPages;
             }
 
-            // Ellipsis before
+            // Dấu chấm lửng phía trước
             if (startPage > 1) {
                 html += `<span class="page-ellipsis">...</span>`;
             }
 
-            // Page numbers
+            // Các số trang
             for (let i = startPage; i <= endPage; i++) {
                 html += `<button class="page-btn ${i === streamerCurrentPage ? 'active' : ''}" onclick="changeStreamerPage(${i})">${i}</button>`;
             }
 
-            // Ellipsis after
+            // Dấu chấm lửng phía sau
             if (endPage < totalPages) {
                 html += `<span class="page-ellipsis">...</span>`;
             }
 
-            // Next button (>)
+            // Nút trang tiếp theo (>)
             html += `<button class="page-btn ${streamerCurrentPage === totalPages ? 'disabled' : ''}" onclick="changeStreamerPage(${streamerCurrentPage + 1})" ${streamerCurrentPage === totalPages ? 'disabled' : ''}>&gt;</button>`;
 
-            // Last page button (>>)
+            // Nút trang cuối (>>)
             html += `<button class="page-btn ${streamerCurrentPage === totalPages ? 'disabled' : ''}" onclick="changeStreamerPage(${totalPages})" ${streamerCurrentPage === totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
 
             container.innerHTML = html;
@@ -1190,7 +1191,7 @@
             selectStreamerCategory('STREAMER');
         }
 
-        // Function to fetch active streamer configurations from Banners API and render them dynamically
+        // Hàm lấy cấu hình streamer đang hoạt động từ Banners API và hiển thị động
         async function loadStreamerConfigs() {
             console.log('[PC Build] Loading dynamic streamer configurations...');
             try {
@@ -1231,7 +1232,7 @@
                         return;
                     }
 
-                    // Lookup products in the live database loaded from SQL
+                    // Tìm kiếm sản phẩm trong CSDL trực tiếp đã tải từ SQL
                     const cpu = database.cpu.find(p => p.id === cpuId);
                     const mb = database.mainboard.find(p => p.id === mainboardId);
                     const ram = database.ram.find(p => p.id === ramId);
@@ -1248,7 +1249,7 @@
 
                     const totalPrice = (cpu?.price || 0) + (mb?.price || 0) + (ram?.price || 0) + (vga?.price || 0) + (psu?.price || 0) + (cas?.price || 0);
 
-                    // Form short specs for badges
+                    // Tạo thông số rút gọn cho các huy hiệu
                     const cpuShort = cpuSpec.split(' ').pop();
                     const vgaShort = vgaSpec.replace('GeForce ', '').replace('RTX ', '');
                     const ramShort = ramSpec.split(' ').slice(0, 2).join(' ');
@@ -1297,7 +1298,7 @@
             }
         }
 
-        // Initialize Cart badge and load SQL components on load
+        // Khởi tạo huy hiệu giỏ hàng và tải linh kiện SQL khi mở trang
         document.addEventListener("DOMContentLoaded", async () => {
             updateHeaderCartCount();
             updateBenchmark(0);
@@ -1306,7 +1307,7 @@
             updateCarouselArrows();
             setTimeout(updateCarouselArrows, 150);
 
-            // Hook up inline dropdown menu
+            // Gắn sự kiện cho menu thả xuống nội tuyến
             const trigger = document.getElementById('streamerDropdownTrigger');
             const menu = document.getElementById('streamerDropdownMenu');
             if (trigger && menu) {
@@ -1334,11 +1335,11 @@
             }
         });
 
-        // 1. Pre-built add to cart function
+        // 1. Hàm thêm cấu hình dựng sẵn vào giỏ hàng
         async function addPrebuiltToCart(name, specs, price, img) {
             console.log('[PC Build] Adding prebuilt configuration components to cart:', name);
             
-            // Find the card containing this prebuilt name to extract component names
+            // Tìm thẻ chứa tên cấu hình dựng sẵn này để trích xuất tên linh kiện
             let customizeBtn = null;
             const cards = document.querySelectorAll('.bento-card');
             for (const card of cards) {
@@ -1380,7 +1381,7 @@
                 }
 
                 if (bestMatch) {
-                    // Add this real SQL product to the cart
+                    // Thêm sản phẩm SQL thực tế này vào giỏ hàng
                     const success = await addToCartHelper(bestMatch.id, 1);
                     if (success) addedAny = true;
                 }
@@ -1391,7 +1392,7 @@
                 return;
             }
 
-            // Open global Cart Drawer directly on this page
+            // Mở trực tiếp Ngăn Kéo Giỏ Hàng chung trên trang này
             if (typeof openCartDrawer === 'function') {
                 openCartDrawer();
             } else {
@@ -1399,7 +1400,7 @@
             }
         }
 
-        // 2. Custom configurator drawer controls
+        // 2. Các điều khiển cho ngăn kéo cấu hình tùy chỉnh
         function openDrawer(category) {
             currentActiveCategory = category;
             const overlay = document.getElementById("drawerOverlay");
@@ -1407,7 +1408,7 @@
             const title = document.getElementById("drawerTitle");
             const container = document.getElementById("drawerOptionsContainer");
 
-            // Update title
+            // Cập nhật tiêu đề
             const categoryNames = {
                 cpu: "Chọn CPU",
                 mainboard: "Chọn Bo Mạch Chủ (Mainboard)",
@@ -1418,7 +1419,7 @@
             };
             title.innerText = categoryNames[category] || "Chọn linh kiện";
 
-            // Render options
+            // Hiển thị các tùy chọn
             container.innerHTML = "";
             const items = database[category] || [];
             
@@ -1453,7 +1454,7 @@
                 });
             }
 
-            // Slide in drawer
+            // Trượt ngăn kéo vào
             overlay.classList.add("active");
             drawer.classList.add("active");
             document.body.style.overflow = "hidden";
@@ -1536,7 +1537,7 @@
             }
         }
 
-        // Component selection and state update
+        // Lựa chọn linh kiện và cập nhật trạng thái
         function selectComponent(item) {
             const cat = currentActiveCategory;
             selectedComponents[cat] = item;
@@ -1563,14 +1564,14 @@
                 }
             });
 
-            // Update total label
+            // Cập nhật nhãn tổng giá
             document.getElementById("totalPriceVal").innerText = sum.toLocaleString("vi-VN") + " đ";
             
-            // Toggle placeholder
+            // Bật/tắt văn bản thay thế
             const placeholder = document.getElementById("no-item-placeholder");
             placeholder.style.display = hasItems ? "none" : "block";
 
-            // Update FPS estimation in real-time
+            // Cập nhật ước tính FPS theo thời gian thực
             updateBenchmark(sum);
         }
 
@@ -1624,16 +1625,16 @@
             }
         }
 
-        // Custom config add all to cart
+        // Thêm tất cả cấu hình tùy chỉnh vào giỏ hàng
         async function addCustomToCart() {
-            // Check if any component is selected
+            // Kiểm tra xem có linh kiện nào được chọn chưa
             const activeCats = Object.keys(selectedComponents).filter(cat => selectedComponents[cat] !== null);
             if (activeCats.length === 0) {
                 alert("Vui lòng chọn ít nhất một linh kiện để thêm vào giỏ hàng!");
                 return;
             }
 
-            // Add each selected component to the cart using the helper
+            // Thêm từng linh kiện đã chọn vào giỏ hàng bằng hàm hỗ trợ
             for (const cat of activeCats) {
                 const item = selectedComponents[cat];
                 await addToCartHelper(item.id, 1);
@@ -1641,7 +1642,7 @@
 
             resetConfiguration();
 
-            // Open global Cart Drawer directly on this page
+            // Mở trực tiếp Ngăn Kéo Giỏ Hàng chung trên trang này
             if (typeof openCartDrawer === 'function') {
                 openCartDrawer();
             } else {
@@ -1649,23 +1650,23 @@
             }
         }
 
-        // Store current FPS values and benchmark scores to animate from
+        // Lưu trữ các giá trị FPS hiện tại và điểm benchmark để tạo hiệu ứng chuyển động
         let currentFPS = { valorant: 0, cs2: 0, pubg: 0, bmwk: 0, gta5: 0, lol: 0 };
         let currentScores = { timespy: 0, cpu: 0, gpu: 0 };
         let activeResolutionFactor = 1.0;
 
         function changeResolution(preset, factor, btn) {
-            // Remove active class from all buttons
+            // Bỏ class active khỏi tất cả các nút
             const buttons = document.querySelectorAll('.res-btn');
             buttons.forEach(b => b.classList.remove('active'));
             
-            // Add active class to clicked button
+            // Thêm class active vào nút được bấm
             btn.classList.add('active');
             
-            // Set factor
+            // Đặt hệ số
             activeResolutionFactor = factor;
             
-            // Re-run benchmark update with current sum
+            // Chạy lại cập nhật benchmark với tổng giá hiện tại
             let sum = 0;
             Object.keys(selectedComponents).forEach(cat => {
                 const item = selectedComponents[cat];
@@ -1693,7 +1694,7 @@
             };
 
             if (totalPrice > 0) {
-                // Calculate FPS targets based on base price tier
+                // Tính toán mục tiêu FPS dựa trên mức giá cơ bản
                 if (totalPrice < 15000000) {
                     targetFPS = {
                         valorant: 300,
@@ -1723,12 +1724,12 @@
                     };
                 }
 
-                // Apply active resolution factor
+                // Áp dụng hệ số độ phân giải đang chọn
                 Object.keys(targetFPS).forEach(game => {
                     targetFPS[game] = Math.round(targetFPS[game] * activeResolutionFactor);
                 });
 
-                // Calculate estimated TimeSpy, CPU and GPU Scores
+                // Tính toán điểm ước tính của TimeSpy, CPU và GPU
                 const maxCpu = 25000;
                 const maxGpu = 50000;
                 
@@ -1737,7 +1738,7 @@
                 targetScores.timespy = Math.round(targetScores.cpu * 0.4 + targetScores.gpu * 0.6);
             }
 
-            // Animate each game FPS
+            // Tạo hiệu ứng nhảy số cho FPS từng game
             animateValue("fps-valorant", currentFPS.valorant, targetFPS.valorant, 500);
             animateValue("fps-cs2", currentFPS.cs2, targetFPS.cs2, 500);
             animateValue("fps-pubg", currentFPS.pubg, targetFPS.pubg, 500);
@@ -1745,14 +1746,14 @@
             animateValue("fps-gta5", currentFPS.gta5, targetFPS.gta5, 500);
             animateValue("fps-lol", currentFPS.lol, targetFPS.lol, 500);
 
-            // Animate 3DMark TimeSpy Score (with gauge fill)
+            // Tạo hiệu ứng nhảy số cho điểm 3DMark TimeSpy (với vòng cung)
             animateScore("timespy-score", currentScores.timespy, targetScores.timespy, 500, "gauge-fill", 30000);
 
-            // Animate CPU & GPU progress bars
+            // Tạo hiệu ứng nhảy số cho thanh tiến trình CPU & GPU
             animateProgressBar("cpu-score-text", "cpu-score-fill", currentScores.cpu, targetScores.cpu, 25000, 500);
             animateProgressBar("gpu-score-text", "gpu-score-fill", currentScores.gpu, targetScores.gpu, 50000, 500);
 
-            // Update current stores
+            // Cập nhật các biến lưu trữ hiện tại
             currentFPS = targetFPS;
             currentScores = targetScores;
         }
@@ -1865,11 +1866,11 @@
         }
     </script>
 
-    <!-- AUTODETECT PROTOCOL FOR LOCAL MEDIA/STYLE FILES -->
+    <!-- MÃ TỰ ĐỘNG CHỈNH ĐƯỜNG DẪN KHI CHẠY Ở MÔI TRƯỜNG LOCAL -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (window.location.protocol === 'file:') {
-                // Adjust link hrefs for local navigation
+                // Chỉnh sửa đường dẫn liên kết cho điều hướng cục bộ
                 document.querySelectorAll("a").forEach(a => {
                     const href = a.getAttribute("href");
                     if (href && href.startsWith("/")) {
@@ -1883,7 +1884,7 @@
                         else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
                     }
                 });
-                // Adjust logo onclick for local navigation
+                // Chỉnh sửa sự kiện bấm logo cho điều hướng cục bộ
                 const logo = document.querySelector(".logo");
                 if (logo) {
                     const onclickStr = logo.getAttribute("onclick");
@@ -1891,21 +1892,21 @@
                         logo.setAttribute("onclick", "window.location.href='homepage.html'");
                     }
                 }
-                // Adjust stylesheet source
+                // Chỉnh sửa nguồn tệp CSS
                 document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
                     const href = link.getAttribute("href");
                     if (href && href.startsWith("/")) {
                         link.href = "../wwwroot" + href;
                     }
                 });
-                // Adjust logo / setup image sources
+                // Chỉnh sửa nguồn ảnh logo / cấu hình
                 document.querySelectorAll("img").forEach(img => {
                     const src = img.getAttribute("src");
                     if (src && src.startsWith("/")) {
                         img.src = "../wwwroot" + src;
                     }
                 });
-                // Adjust video sources
+                // Chỉnh sửa nguồn video
                 document.querySelectorAll("video").forEach(v => {
                     const src = v.getAttribute("src");
                     if (src && src.startsWith("/")) {
@@ -1914,7 +1915,7 @@
                 });
             }
 
-            // URL Parameter scroll detection
+            // Phát hiện cuộn theo tham số URL
             const urlParams = new URLSearchParams(window.location.search);
             const buildType = urlParams.get('type');
             if (buildType === 'streamer') {
@@ -1929,7 +1930,7 @@
                 }
             }
         });
-        // Carousel scroll navigation
+        // Điều hướng cuộn cho danh sách
         function scrollCarousel(direction) {
             const grid = document.getElementById('bentoCarousel');
             if (!grid) return;
@@ -1938,7 +1939,7 @@
             grid.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
-        // Show/hide carousel arrow buttons based on content overflow
+        // Hiện/ẩn các nút mũi tên danh sách dựa trên tràn nội dung
         function updateCarouselArrows() {
             const leftArrow = document.querySelector('.carousel-arrow-left');
             const rightArrow = document.querySelector('.carousel-arrow-right');
@@ -1946,7 +1947,7 @@
             if (rightArrow) rightArrow.style.display = 'none';
         }
 
-        // Add resize and load event listeners for responsiveness
+        // Thêm sự kiện đổi kích thước và tải trang để tự động điều chỉnh
         window.addEventListener('resize', updateCarouselArrows);
         window.addEventListener('load', updateCarouselArrows);
     </script>

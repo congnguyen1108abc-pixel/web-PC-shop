@@ -4099,7 +4099,8 @@
 
     <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
     <script src="/assets/js/cart-drawer-global.js"></script>
-    <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
+    <script src="/assets/js/search.js?v=1.0.0"></script>
+  <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
     <script>
 
         const header = document.getElementById("header");
@@ -4670,6 +4671,26 @@
                 });
             }
         });
+
+        // ── DYNAMIC HOME VIDEO LOADER ──
+        async function loadDynamicHomeVideo() {
+            try {
+                const res = await fetch("/api/Banners/active");
+                if (!res.ok) return;
+                const banners = await res.json();
+                const videoBanner = banners.find(b => b.title === "[home_video]");
+                if (videoBanner && videoBanner.imageUrl) {
+                    const heroVideo = document.querySelector(".hero video");
+                    if (heroVideo) {
+                        heroVideo.src = window.location.protocol === 'file:' ? '../wwwroot' + videoBanner.imageUrl : videoBanner.imageUrl;
+                        heroVideo.load();
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load dynamic home video", err);
+            }
+        }
+        document.addEventListener("DOMContentLoaded", loadDynamicHomeVideo);
     </script>
     <!-- Chatbot Global -->
     <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>

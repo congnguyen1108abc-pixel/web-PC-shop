@@ -23,6 +23,12 @@ builder.Services.AddControllers()
         opts.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 builder.Services.AddEndpointsApiExplorer();
 
+// ── Form Upload Limits ────────────────────────────────────────────────────────
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 524288000; // 500 MB
+});
+
 // ── SignalR (built-in, không cần package ngoài) ────────────────────────────
 builder.Services.AddSignalR();
 builder.Services.AddScoped<INotificationPusher, NotificationPusher>();
@@ -359,12 +365,6 @@ app.Use(async (context, next) =>
     }
 
     await next();
-});
-
-app.MapPost("/Login", context =>
-{
-    context.Response.Redirect("/Homepage");
-    return Task.CompletedTask;
 });
 
 app.MapGet("/Register", async context =>

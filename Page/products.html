@@ -1778,6 +1778,7 @@
   </div>
 
   <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
+  <script src="/assets/js/search.js?v=1.0.0"></script>
   <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
   <script src="/assets/js/cart-drawer-global.js?v=1.0.7"></script>
   <script>
@@ -2143,8 +2144,11 @@
 
       // Search Filter
       if (filters.search) {
-        const q = filters.search.toLowerCase();
-        list = list.filter(p => p.name.toLowerCase().includes(q) || p.specs.toLowerCase().includes(q));
+        const q = window.removeAccents ? window.removeAccents(filters.search) : filters.search.toLowerCase();
+        list = list.filter(p => {
+            const nameStr = window.removeAccents ? window.removeAccents(p.name) : p.name.toLowerCase();
+            return nameStr.includes(q);
+        });
       }
 
       // Sorting
@@ -2174,6 +2178,33 @@
 
     function applyFiltersAndRender() {
       renderCards(getFilteredList());
+    }
+
+    function autoSelectBrands(searchStr) {
+      if (searchStr && searchStr.trim().length >= 2) {
+         const q = window.removeAccents ? window.removeAccents(searchStr.trim()) : searchStr.trim().toLowerCase();
+         const matchedProducts = PRODUCTS.filter(p => {
+             const nameStr = window.removeAccents ? window.removeAccents(p.name) : p.name.toLowerCase();
+             return nameStr.includes(q);
+         });
+         const matchedBrands = [...new Set(matchedProducts.map(p => p.brand?.toLowerCase()).filter(Boolean))];
+         
+         document.querySelectorAll('#brandFilter input').forEach(checkbox => {
+             const brandVal = checkbox.value.toLowerCase();
+             if (matchedBrands.includes(brandVal) || brandVal.includes(q)) {
+                 checkbox.checked = true;
+             } else {
+                 checkbox.checked = false;
+             }
+         });
+         filters.brands = Array.from(document.querySelectorAll('#brandFilter input:checked')).map(input => input.value);
+      } else if (!searchStr || searchStr.trim().length === 0) {
+         // Clear brand selection when search is empty
+         document.querySelectorAll('#brandFilter input').forEach(checkbox => {
+             checkbox.checked = false;
+         });
+         filters.brands = [];
+      }
     }
 
     // SHARED CART LOGIC (LOCAL STORAGE & SLIDE-OUT DRAWER)
@@ -2230,6 +2261,7 @@
     // Search input event
     document.getElementById('searchInput').addEventListener('input', function () {
       filters.search = this.value.trim();
+      autoSelectBrands(filters.search);
       currentPage = 1;
       applyFiltersAndRender();
     });
@@ -2331,6 +2363,7 @@
       if (searchParam) {
         filters.search = searchParam;
         document.getElementById('searchInput').value = searchParam;
+        autoSelectBrands(searchParam);
       }
       
       updateCategoryCounts();

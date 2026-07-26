@@ -556,9 +556,34 @@
         /* ================================================= */
         /* REDIRECT IF ALREADY LOGGED IN                     */
         /* ================================================= */
-        if (localStorage.getItem('pc_store_token')) {
-            window.location.href = '/Homepage';
-        }
+        (function() {
+            // Nếu có tham số ?force=true hoặc ?logout=true thì xóa sạch auth state
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('force') || urlParams.has('logout')) {
+                localStorage.removeItem('pc_store_token');
+                localStorage.removeItem('pc_store_refresh_token');
+                localStorage.removeItem('pc_store_user');
+                return;
+            }
+
+            const existingToken = localStorage.getItem('pc_store_token');
+            const existingUser  = localStorage.getItem('pc_store_user');
+            if (existingToken && existingUser) {
+                try {
+                    const u = JSON.parse(existingUser);
+                    if (u && (u.userId || u.email) && existingToken.trim().length > 10) {
+                        window.location.href = '/Homepage';
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Invalid user state in localStorage.');
+                }
+                // Nếu token hoặc user không đủ thông tin hợp lệ -> dọn dẹp để cho phép đăng nhập
+                localStorage.removeItem('pc_store_token');
+                localStorage.removeItem('pc_store_refresh_token');
+                localStorage.removeItem('pc_store_user');
+            }
+        })();
 
         /* ================================================= */
         /* HELPERS                                           */
