@@ -4693,12 +4693,23 @@
                     }
                     
                     const btn = document.getElementById("homeVideoLinkBtn");
-                    if (btn) {
-                        if (videoBanner.linkUrl) {
-                            btn.href = `/product/${videoBanner.linkUrl}`;
+                    if (videoBanner.linkUrl) {
+                        const targetUrl = `/product/${videoBanner.linkUrl}`;
+                        if (btn) {
+                            btn.href = targetUrl;
                             btn.style.display = "inline-flex";
-                        } else {
-                            btn.style.display = "none";
+                        }
+                        if (heroVideo) {
+                            heroVideo.style.cursor = "pointer";
+                            heroVideo.onclick = () => {
+                                window.location.href = targetUrl;
+                            };
+                        }
+                    } else {
+                        if (btn) btn.style.display = "none";
+                        if (heroVideo) {
+                            heroVideo.style.cursor = "default";
+                            heroVideo.onclick = null;
                         }
                     }
                 }
