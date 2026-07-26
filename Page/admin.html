@@ -851,6 +851,38 @@
                     </table>
                 </div>
             </div>
+
+            <!-- PC BUILD VIDEO CARD -->
+            <div class="glass-card" id="pcbuildVideoCard" style="display: none; margin-bottom: 24px;">
+                <div class="management-title-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                    <h2 style="display: inline-block; vertical-align: middle;">Banner Clip Build PC</h2>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <label for="pcbuildVideoUploadInput" class="btn-submit" style="padding: 10px 16px; font-size:12px; font-weight:700; border-radius:8px; display:flex; align-items:center; gap:6px; background:#10b981; border:none; color:white; cursor:pointer; margin:0;">
+                            <span>📤</span> TẢI CLIP LÊN
+                        </label>
+                    </div>
+                    <input type="file" id="pcbuildVideoUploadInput" accept="video/mp4,video/webm" style="display:none;" onchange="uploadPcBuildVideoDirectly(this)" />
+                </div>
+                <div style="margin-top: 10px;">
+                    <small id="pcbuildVideoUploadStatus" style="color: var(--success); display: none; font-weight: 600;"></small>
+                </div>
+                <div style="overflow-x: auto; margin-top: 20px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Video Demo</th>
+                                <th>Đường Dẫn (URL)</th>
+                                <th>Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pcbuildVideoTableBody">
+                            <tr>
+                                <td colspan="3" style="text-align:center; padding: 20px; color: var(--text-muted);">Đang tải thông tin...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -3755,6 +3787,12 @@
                 document.getElementById('homeVideoCard').style.display = 'none';
             }
 
+            if (pageType === 'pcbuild') {
+                document.getElementById('pcbuildVideoCard').style.display = 'block';
+            } else {
+                document.getElementById('pcbuildVideoCard').style.display = 'none';
+            }
+
             let title = 'Quản lý Banner - Trang Chủ';
             if (pageType === 'pcbuild') {
                 title = 'Quản lý Cấu hình PC theo Streamer';
@@ -3771,6 +3809,7 @@
             document.getElementById('bannersPageGrid').style.display = 'grid';
             document.getElementById('bannerDetailCard').style.display = 'none';
             document.getElementById('homeVideoCard').style.display = 'none';
+            document.getElementById('pcbuildVideoCard').style.display = 'none';
         }
 
         function renderBannersTable(pageType) {
@@ -3827,11 +3866,35 @@
                         </tr>
                     `;
                 }
+            } else if (pageType === 'pcbuild') {
+                const pcbuildVideoBanner = allBannersData.find(b => b.title === '[pcbuild_video]');
+                const pcbuildVideoTbody = document.getElementById('pcbuildVideoTableBody');
+                if (pcbuildVideoBanner) {
+                    pcbuildVideoTbody.innerHTML = `
+                        <tr>
+                            <td>
+                                <video src="${pcbuildVideoBanner.imageUrl}" muted loop autoplay style="width: 160px; height: 90px; object-fit: cover; border-radius: 8px;"></video>
+                            </td>
+                            <td>${pcbuildVideoBanner.imageUrl}</td>
+                            <td>
+                                <button class="btn-cancel" onclick="deleteBanner(${pcbuildVideoBanner.bannerId})" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border:none; cursor:pointer; background:rgba(239, 68, 68, 0.1); color:#ef4444;">Xóa Video</button>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    pcbuildVideoTbody.innerHTML = `
+                        <tr>
+                            <td colspan="3" style="text-align:center; padding: 20px; color: var(--text-muted);">
+                                Chưa có video nền nào được tải lên cho trang Build PC. Sẽ sử dụng video/hình ảnh mặc định.
+                            </td>
+                        </tr>
+                    `;
+                }
             }
 
             const filtered = allBannersData.filter(b => {
                 const title = b.title || '';
-                if (title === '[home_video]') return false; // Hide video from standard banner table
+                if (title === '[home_video]' || title === '[pcbuild_video]') return false; // Hide video from standard banner table
                 if (pageType === 'pcbuild') return title.startsWith('[pcbuild]');
                 if (pageType === 'gaminggear') return title.startsWith('[gaminggear]');
                 return title.startsWith('[home]') || (!title.startsWith('[pcbuild]') && !title.startsWith('[gaminggear]'));
@@ -3991,6 +4054,74 @@
                         status.style.color = "var(--success)";
                         await loadBannersData(); // Tải lại danh sách
                         renderBannersTable('home');
+                    } else {
+                        status.textContent = "Lỗi khi lưu thông tin vào CSDL.";
+                        status.style.color = "#ef4444";
+                    }
+                    setTimeout(() => { status.style.display = "none"; }, 5000);
+                } else {
+                    let errMsg = "Không xác định.";
+                    try {
+                        const err = await res.json();
+                        errMsg = err.message || JSON.stringify(err);
+                    } catch (e) {
+                        errMsg = `HTTP Error ${res.status}: ${res.statusText}`;
+                    }
+                    status.textContent = "Lỗi tải lên: " + errMsg;
+                    status.style.color = "#ef4444";
+                }
+            } catch (err) {
+                console.error(err);
+                status.textContent = "Lỗi mạng hoặc máy chủ không phản hồi: " + err.message;
+                status.style.color = "#ef4444";
+            }
+        }
+
+        async function uploadPcBuildVideoDirectly(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const status = document.getElementById("pcbuildVideoUploadStatus");
+            status.style.display = "block";
+            status.textContent = "Đang tải video lên server, vui lòng chờ...";
+            status.style.color = "var(--text-muted)";
+
+            try {
+                const res = await fetch("/api/Admin/upload-video", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${getAdminToken()}` },
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    status.textContent = "Đang cập nhật cơ sở dữ liệu...";
+                    
+                    const existingVideo = allBannersData.find(b => b.title === '[pcbuild_video]');
+                    
+                    const upsertRes = await fetch('/api/Admin/banner', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getAdminToken()}`
+                        },
+                        body: JSON.stringify({
+                            bannerId: existingVideo ? existingVideo.bannerId : null,
+                            title: '[pcbuild_video]',
+                            imageUrl: data.filePath,
+                            linkUrl: '',
+                            displayOrder: 1,
+                            isActive: true
+                        })
+                    });
+
+                    if (upsertRes.ok) {
+                        status.textContent = "Đã tải lên và thay thế thành công!";
+                        status.style.color = "var(--success)";
+                        await loadBannersData();
+                        renderBannersTable('pcbuild');
                     } else {
                         status.textContent = "Lỗi khi lưu thông tin vào CSDL.";
                         status.style.color = "#ef4444";

@@ -1950,6 +1950,26 @@
         // Thêm sự kiện đổi kích thước và tải trang để tự động điều chỉnh
         window.addEventListener('resize', updateCarouselArrows);
         window.addEventListener('load', updateCarouselArrows);
+
+        // ── DYNAMIC PC BUILD VIDEO LOADER ──
+        async function loadDynamicPcBuildVideo() {
+            try {
+                const res = await fetch("/api/Banners/active");
+                if (!res.ok) return;
+                const banners = await res.json();
+                const videoBanner = banners.find(b => b.title === "[pcbuild_video]");
+                if (videoBanner && videoBanner.imageUrl) {
+                    const heroVideo = document.querySelector(".pc-build-hero video");
+                    if (heroVideo) {
+                        heroVideo.src = window.location.protocol === 'file:' ? '../wwwroot' + videoBanner.imageUrl : videoBanner.imageUrl;
+                        heroVideo.load();
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load dynamic pc build video", err);
+            }
+        }
+        document.addEventListener("DOMContentLoaded", loadDynamicPcBuildVideo);
     </script>
     <!-- Chatbot Global -->
     <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>
