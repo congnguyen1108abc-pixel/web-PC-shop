@@ -99,15 +99,15 @@
     <div class="sidebar">
         <div class="logo-section">
             <div class="logo-container" style="flex-direction: column; align-items: flex-start; gap: 4px;">
-                <!-- Logo image shown when expanded -->
-                <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" class="logo-img-expanded" />
-                
-                <!-- Icon H shown when collapsed -->
-                <div class="logo-icon logo-img-collapsed" style="display: none;">H</div>
-                
-                <div class="logo-text" style="margin-top: 2px;">
-                    <p style="margin: 0; font-size: 11px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;">Hệ thống Quản Trị</p>
-                </div>
+                <!-- Logo image shown when expanded - click to go to login -->
+                <a href="/Login" title="Về trang đăng nhập" style="display:flex; flex-direction:column; gap:4px; text-decoration:none;">
+                    <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" class="logo-img-expanded" style="cursor:pointer;" />
+                    <!-- Icon H shown when collapsed -->
+                    <div class="logo-icon logo-img-collapsed" style="display: none; cursor:pointer;">H</div>
+                    <div class="logo-text" style="margin-top: 2px;">
+                        <p style="margin: 0; font-size: 11px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;">Hệ thống Quản Trị</p>
+                    </div>
+                </a>
             </div>
             <button class="toggle-sidebar-btn" id="toggleSidebarBtn" title="Thu gọn sidebar">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -3813,7 +3813,8 @@
             localStorage.removeItem('pc_store_token');
             localStorage.removeItem('pc_store_refresh_token');
             localStorage.removeItem('pc_store_user');
-            window.location.href = '/Homepage';
+            sessionStorage.clear();
+            window.location.href = '/Login';
         }
 
         // ── Sidebar Collapse Toggle ───────────────────────────────────────────────
