@@ -16,16 +16,51 @@ public sealed class VouchersController : ControllerBase
         _vouchers = vouchers;
     }
 
+    // ── Public APIs ────────────────────────────────────────────────────────────
+    // Trang danh sách voucher cần lấy voucher đang active mà không cần đăng nhập.
+
+    [AllowAnonymous]
+    [HttpGet("active")]
+    public async Task<IActionResult> GetActive()
+    {
+        try
+        {
+            var result = await _vouchers.GetAllAsync(new VoucherQueryRequest(OnlyActive: true));
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "Lỗi khi lấy danh sách voucher active",
+                error = ex.Message,
+                stackTrace = ex.StackTrace
+            });
+        }
+    }
+
     // ── Admin APIs ────────────────────────────────────────────────────────────
     // Chỉ Admin được xem toàn bộ voucher, thêm, sửa, xóa voucher.
 
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<VoucherItem>>> GetAll(
+    public async Task<IActionResult> GetAll(
         [FromQuery] VoucherQueryRequest request)
     {
-        var result = await _vouchers.GetAllAsync(request);
-        return Ok(result);
+        try
+        {
+            var result = await _vouchers.GetAllAsync(request);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "Lỗi khi lấy toàn bộ danh sách voucher (Admin)",
+                error = ex.Message,
+                stackTrace = ex.StackTrace
+            });
+        }
     }
 
     // ── Customer APIs ─────────────────────────────────────────────────────────
@@ -33,11 +68,23 @@ public sealed class VouchersController : ControllerBase
 
     [Authorize]
     [HttpGet("available")]
-    public async Task<ActionResult<IEnumerable<VoucherAvailableItem>>> GetAvailable(
+    public async Task<IActionResult> GetAvailable(
         [FromQuery] VoucherAvailableRequest request)
     {
-        var result = await _vouchers.GetAvailableAsync(request);
-        return Ok(result);
+        try
+        {
+            var result = await _vouchers.GetAvailableAsync(request);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "Lỗi khi lấy danh sách voucher khả dụng cho user",
+                error = ex.Message,
+                stackTrace = ex.StackTrace
+            });
+        }
     }
 
     // ── Voucher Management APIs ───────────────────────────────────────────────
@@ -60,8 +107,8 @@ public sealed class VouchersController : ControllerBase
     }
 
     [Authorize(Roles = "Admin")]
-    [HttpPut]
-    public async Task<ActionResult> Update([FromBody] VoucherUpdateRequest request)
+    [HttpPut("{voucherCode}")]
+    public async Task<ActionResult> Update(string voucherCode, [FromBody] VoucherUpdateRequest request)
     {
         var code = await _vouchers.UpdateAsync(request);
 

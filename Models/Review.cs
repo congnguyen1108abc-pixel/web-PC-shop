@@ -11,4 +11,5 @@ public sealed record Review(
     string? Comment,
     string? ImageUrl,
     bool IsApproved,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    string? Sentiment);

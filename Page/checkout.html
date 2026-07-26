@@ -9,7 +9,7 @@
     <!-- External Styles -->
     <link rel="stylesheet" href="/css/style.css?v=1.0.5">
     <link rel="stylesheet" href="/assets/css/auth-ui.css" />
-    <link rel="stylesheet" href="/assets/css/checkout.css" />
+    <link rel="stylesheet" href="/assets/css/checkout.css?v=1.0.7" />
 </head>
 
 <body>
@@ -428,20 +428,23 @@
 
                 <!-- VOUCHER SECTION -->
                 <div class="voucher-container">
+                    <!-- Input + Apply button -->
                     <div class="voucher-input-group">
-                        <input type="text" id="voucher-code-input" placeholder="Mã giảm giá (ví dụ: PROMO10)..."
-                            class="voucher-input" />
+                        <input type="text" id="voucher-code-input" placeholder="Nhập mã giảm giá..."
+                            class="voucher-input" autocomplete="off" />
                         <button type="button" id="apply-voucher-btn" class="voucher-btn">ÁP DỤNG</button>
                     </div>
                     <div id="voucher-message" class="voucher-message"></div>
-                    <!-- Danh sách voucher khả dụng -->
-                    <div id="available-vouchers-container" style="margin-top: 15px; display: none;">
-                        <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--secondary);">Voucher của bạn:</h4>
-                        <div id="available-vouchers-list"
-                            style="display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto;">
-                            <!-- Injected by JS -->
-                        </div>
+
+                    <!-- Link Chọn giảm giá -->
+                    <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+                        <button type="button" id="open-voucher-picker-btn" class="voucher-see-more-btn" onclick="openVoucherPicker()" style="color: #38bdf8; font-size: 13.5px; font-weight: 500; background: none; border: none; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                            Chọn hoặc nhập mã <span style="font-size: 11px;">&gt;</span>
+                        </button>
                     </div>
+
+                    <!-- Applied voucher badge -->
+                    <div id="voucher-applied-badge" style="display:none; margin-top:10px;"></div>
                 </div>
 
                 <div class="summary-row">
@@ -544,11 +547,27 @@
         </div>
     </div>
 
+    <!-- VOUCHER PICKER MODAL -->
+    <div class="vp-overlay" id="voucherPickerOverlay" onclick="closeVoucherPicker(event)">
+        <div class="vp-modal" id="voucherPickerModal">
+            <div class="vp-header">
+                <h3 class="vp-title">Chọn giảm giá</h3>
+                <button class="vp-close-btn" onclick="closeVoucherPicker()" aria-label="Đóng">✕</button>
+            </div>
+
+            <div class="vp-section-label">Mã giảm giá của shop</div>
+
+            <div class="vp-list" id="vp-list">
+                <div class="vp-loading">Đang tải voucher...</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="/assets/js/search.js?v=1.0.0"></script>
   <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
     <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
-    <script src="/assets/js/checkout.js"></script>
+    <script src="/assets/js/checkout.js?v=1.0.7"></script>
 
 </body>
 

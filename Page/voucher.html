@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -2950,70 +2950,45 @@
 		function claimReward(rewardItem) {
 			const baseReward = rewardItem.reward;
 			const meta = VOUCHER_MAP[baseReward] || { name: 'Voucher', description: 'Voucher của bạn', discountText: '-' };
-			const codePrefix = getVoucherPrefix(baseReward);
+			
+			// Ánh xạ giải thưởng vòng quay sang mã voucher thật trong DB
+			let realDbCode = 'HC50K'; // Mặc định
+			if (baseReward.includes('FREESHIP')) realDbCode = 'FREESHIP';
+			else if (baseReward.includes('50K') || baseReward.includes('50k')) realDbCode = 'HC50K';
+			else if (baseReward.includes('100K') || baseReward.includes('100k')) realDbCode = 'HC100K';
+			else if (baseReward.includes('200K') || baseReward.includes('200k')) realDbCode = 'HC200K';
+			else if (baseReward.includes('300K') || baseReward.includes('300k')) realDbCode = 'HC300K';
+			else if (baseReward.includes('500K') || baseReward.includes('500k')) realDbCode = 'HC500K';
+			else if (baseReward.includes('1M') || baseReward.includes('1m')) realDbCode = 'HC500K';
+			else if (baseReward.includes('5%') || baseReward.includes('10%') || baseReward.includes('15%')) realDbCode = 'SALE15';
+			else if (baseReward.includes('20%') || baseReward.includes('25%') || baseReward.includes('30%') || baseReward.includes('40%') || baseReward.includes('50%')) realDbCode = 'SALE15';
+			else if (baseReward.includes('GIFT') || baseReward.includes('COMBO') || baseReward.includes('LUCKY')) realDbCode = 'HC300K';
 
-			let vValue = 0;
-			let vType = 'money';
-			if (meta.name.includes('%')) {
-				const match = meta.name.match(/(\d+)%/);
-				if (match) { vValue = parseInt(match[1]); vType = 'percent'; }
-			} else if (meta.name.toLowerCase().includes('freeship')) {
-				vValue = 50000;
-				vType = 'money';
-			} else {
-				const cleanName = meta.name.replace(/\./g, '');
-				const match = cleanName.match(/\d+/);
-				if (match) {
-					vValue = parseInt(match[0]);
-					if (cleanName.includes('k') || cleanName.includes('K')) vValue *= 1000;
-				}
-			}
-
-			const voucher = {
-				id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-				name: meta.name,
-				code: randomCode(codePrefix),
-				value: vValue,
-				type: vType,
-				isUsed: false,
-				baseReward,
-				description: meta.description,
-				discountText: meta.discountText,
-				receivedAt: now().toISOString(),
-				expiryAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-				source: 'Vòng quay may mắn',
-				status: 'Available'
-			};
-
-			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
-			wallet.unshift(voucher);
-			saveJSON(STORAGE_KEYS.vouchers, wallet);
-
+			// Chỉ ghi nhận vào lịch sử quay
 			const history = safeParse(STORAGE_KEYS.history, []);
 			history.unshift({
-				date: voucher.receivedAt,
-				game: 'Vòng quay',
-				reward: `${voucher.name} (${voucher.code})`
+				date: new Date().toISOString(),
+				game: 'Vòng quay may mắn',
+				reward: `${meta.name} (Mã copy: ${realDbCode})`
 			});
 			saveJSON(STORAGE_KEYS.history, history);
 
-			saveStorage();
 			updateUI();
 			updateSpinInfoCard();
 
 			openPopup({
 				kind: 'Voucher',
 				title: '🎉 CHÚC MỪNG!',
-				text: `Bạn đã trúng: ${voucher.description}. Mã voucher đã được lưu vào ví của bạn.`,
-				code: voucher.code,
+				text: `Bạn đã quay trúng: ${meta.description}. Hãy sao chép mã giảm giá tương ứng và áp dụng khi thanh toán đơn hàng.`,
+				code: realDbCode,
 				primaryText: 'Sao chép mã',
 				secondaryText: 'Đóng',
-				onPrimary: () => copyVoucherCode(voucher.code)
+				onPrimary: () => copyVoucherCode(realDbCode)
 			});
 
 			launchConfetti(70);
 			playTone('win');
-			showToast('Chúc mừng! Bạn đã trúng voucher');
+			showToast(`Chúc mừng! Bạn đã trúng ${meta.name}`);
 		}
 
 		function loadStorage() {
@@ -3343,32 +3318,58 @@
 		// ============================================================
 		// NEW LANDING PAGE SECTIONS
 		// ============================================================
-		const banners = [
-			{
-				id: 1,
-				title: "",
-				subtitle: "",
-				image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/690x300_banner%20tuu%20truong.png",
-				buttonText: "",
-				link: "/productdetail?id=15"
-			},
-			{
-				id: 2,
-				title: "",
-				subtitle: "",
-				image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/M365-cate%20(2).png",
-				buttonText: "",
-				link: "/productdetail?id=18"
-			},
-			{
-				id: 3,
-				title: "",
-				subtitle: "",
-				image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/samsung-s23-ultra-cate.png",
-				buttonText: "",
-				link: "/productdetail?id=25"
+		let banners = [];
+
+		async function loadBannersFromAPI() {
+			try {
+				const response = await fetch('/api/banners/active?t=' + Date.now());
+				if (response.ok) {
+					const allBanners = await response.json() || [];
+					banners = allBanners
+						.filter(b => b.title && b.title.startsWith('[voucher]'))
+						.map(b => ({
+							id: b.bannerId,
+							title: b.title.substring(9).trim(),
+							subtitle: 'Mã giảm giá độc quyền',
+							image: b.imageUrl,
+							buttonText: 'Săn Ngay',
+							link: b.linkUrl || '#'
+						}));
+				}
+			} catch(e) {
+				console.error('Failed to load banners from API:', e);
 			}
-		];
+
+			// Fallback if no active voucher banners in database
+			if (banners.length === 0) {
+				banners = [
+					{
+						id: 1,
+						title: "Siêu Sale Hè Rực Rỡ",
+						subtitle: "Săn ngay voucher giảm giá cực sâu",
+						image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/690x300_banner%20tuu%20truong.png",
+						buttonText: "Săn Ngay",
+						link: "#"
+					},
+					{
+						id: 2,
+						title: "Săn Deal Công Nghệ",
+						subtitle: "Mã giảm giá độc quyền dành cho bạn",
+						image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/M365-cate%20(2).png",
+						buttonText: "Săn Ngay",
+						link: "#"
+					},
+					{
+						id: 3,
+						title: "Đại Tiệc Voucher Giảm Sâu",
+						subtitle: "Số lượng có hạn, săn ngay kẻo lỡ",
+						image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/samsung-s23-ultra-cate.png",
+						buttonText: "Săn Ngay",
+						link: "#"
+					}
+				];
+			}
+		}
 
 		const voucherData = [
 			{ icon: '🎁', name: 'Giảm 50.000đ', cond: 'Đơn tối thiểu 500k', code: 'HC50K', exp: '31/07/2026', badge: 'HOT' },
@@ -3472,149 +3473,80 @@
 			startAuto();
 		}
 
-		function renderVoucherList() {
+		async function renderVoucherList() {
 			const grid = $('voucherHotGrid');
 			if (!grid) return;
-			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
 
-			grid.innerHTML = voucherData.map(v => {
-				const isClaimed = wallet.some(w => w.code === v.code);
-				const btnText = isClaimed ? 'Đã sở hữu' : 'Nhận ngay';
-				const btnDisabled = isClaimed ? 'disabled' : '';
-
-				return `
-				<div class="vh-card">
-					<div class="vh-top">
-						${v.badge ? `<div class="vh-badge">${v.badge}</div>` : ''}
-						<div class="vh-icon">${v.icon}</div>
-						<h4 class="vh-title">${v.name}</h4>
-					</div>
-					<div class="vh-bottom">
-						<p class="vh-cond">${v.cond}</p>
-						<div class="vh-info-row">
-							<span class="vh-exp">HSD: ${v.exp}</span>
-							<span class="vh-code">${v.code}</span>
-						</div>
-						<button class="vh-btn" ${btnDisabled} onclick="claimHotVoucher('${v.code}')">${btnText}</button>
-					</div>
-				</div>
-			`}).join('');
-		}
-
-		function updateUI() {
-			const coinCountEl = $('coinCount');
-			if (coinCountEl) {
-				coinCountEl.textContent = String(getStoredNumber(STORAGE_KEYS.coins, 0));
-			}
-		}
-
-		function parseExpDate(expStr) {
 			try {
-				const parts = expStr.split('/');
-				if (parts.length === 3) {
-					return new Date(`${parts[2]}-${parts[1]}-${parts[0]}T23:59:59`);
-				}
-				return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-			} catch {
-				return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-			}
-		}
-
-		function checkVoucherExpiry() {
-			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
-			let updated = false;
-			const nowTime = Date.now();
-			wallet.forEach(v => {
-				if (v.status !== 'Used' && v.status !== 'Expired') {
-					if (v.expiryAt && new Date(v.expiryAt).getTime() < nowTime) {
-						v.status = 'Expired';
-						updated = true;
-					} else if (!v.status) {
-						v.status = 'Available';
-						updated = true;
+				const response = await fetch('/api/vouchers/active', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
 					}
+				});
+
+				if (!response.ok) throw new Error('Không thể tải voucher');
+
+				const vouchers = await response.json();
+
+				if (vouchers && vouchers.length > 0) {
+					grid.innerHTML = vouchers.map(v => {
+						const icon = v.voucherCode.toLowerCase().includes('freeship') ? '🚀' :
+						             v.isPercent ? '⚡' :
+						             v.discountAmount >= 500000 ? '🏆' :
+						             v.discountAmount >= 200000 ? '💎' :
+						             v.discountAmount >= 100000 ? '🔥' : '🎁';
+
+						const nameText = v.isPercent ? `Giảm ${v.discountAmount}%` : `Giảm ${v.discountAmount.toLocaleString('vi-VN')}đ`;
+						const condText = v.minOrderValue > 0 ? `Đơn tối thiểu ${v.minOrderValue.toLocaleString('vi-VN')}đ` : 'Không giới hạn đơn tối thiểu';
+						const expText = new Date(v.expiryDate).toLocaleDateString('vi-VN');
+						const badge = v.discountAmount >= 500000 ? 'VIP' : (v.isPercent ? 'HOT' : '');
+
+						return `
+						<div class="vh-card">
+							<div class="vh-top">
+								${badge ? `<div class="vh-badge">${badge}</div>` : ''}
+								<div class="vh-icon">${icon}</div>
+								<h4 class="vh-title">${nameText}</h4>
+							</div>
+							<div class="vh-bottom">
+								<p class="vh-cond">${condText}</p>
+								<div class="vh-info-row">
+									<span class="vh-exp">HSD: ${expText}</span>
+									<span class="vh-code">${v.voucherCode}</span>
+								</div>
+								<button class="vh-btn" onclick="claimHotVoucher('${v.voucherCode}')">Copy mã</button>
+							</div>
+						</div>
+					`;
+					}).join('');
+				} else {
+					grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #64748b; padding: 20px;">Hiện tại cửa hàng chưa phát hành voucher nào.</div>';
 				}
-			});
-			if (updated) {
-				saveJSON(STORAGE_KEYS.vouchers, wallet);
+			} catch (error) {
+				console.error('Lỗi tải danh sách voucher:', error);
+				grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 20px;">Lỗi kết nối máy chủ. Không thể hiển thị voucher.</div>';
 			}
 		}
 
 		function claimHotVoucher(code) {
-			const v = voucherData.find(x => x.code === code);
-			if (!v) return;
-
-			const wallet = safeParse(STORAGE_KEYS.vouchers, []);
-			// Check if already in wallet
-			if (wallet.some(w => w.code === code)) {
-				showToast('Bạn đã nhận voucher này rồi');
-				return;
-			}
-
-			let baseReward = 'HOT_CASH';
-			let discountText = v.name;
-			if (v.name.includes('%')) {
-				baseReward = 'HOT_PERCENT';
-			} else if (v.name.toLowerCase().includes('freeship')) {
-				baseReward = 'HOT_FREESHIP';
-			}
-
-			let vValue = 0;
-			let vType = 'money';
-			if (v.name.includes('%')) {
-				const match = v.name.match(/(\d+)%/);
-				if (match) { vValue = parseInt(match[1]); vType = 'percent'; }
-			} else if (v.name.toLowerCase().includes('freeship')) {
-				vValue = 50000;
-				vType = 'money';
-			} else {
-				const cleanName = v.name.replace(/\./g, '');
-				const match = cleanName.match(/\d+/);
-				if (match) {
-					vValue = parseInt(match[0]);
-					if (cleanName.includes('k') || cleanName.includes('K')) vValue *= 1000;
-				}
-			}
-
-			const voucher = {
-				id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-				name: v.name,
-				code: v.code,
-				value: vValue,
-				type: vType,
-				isUsed: false,
-				baseReward: baseReward,
-				description: v.cond,
-				discountText: discountText,
-				receivedAt: now().toISOString(),
-				expiryAt: parseExpDate(v.exp).toISOString(),
-				source: 'Voucher Hot',
-				status: 'Available',
-				cond: v.cond
-			};
-
-			wallet.unshift(voucher);
-			saveJSON(STORAGE_KEYS.vouchers, wallet);
-			if (typeof saveStorage === 'function') saveStorage();
-
 			if (navigator.clipboard && navigator.clipboard.writeText) {
-				navigator.clipboard.writeText(v.code).catch(() => { });
+				navigator.clipboard.writeText(code).then(() => {
+					showToast(`Đã sao chép mã ${code}!`);
+					openPopup({
+						kind: 'Voucher',
+						title: '🎉 COPY THÀNH CÔNG',
+						text: `Mã giảm giá ${code} đã được copy vào bộ nhớ tạm. Hãy dán mã vào ô nhập mã tại trang thanh toán để nhận ưu đãi!`,
+						code: code,
+						primaryText: 'OK',
+						secondaryText: 'Đóng'
+					});
+				}).catch(() => {
+					showToast(`Mã giảm giá: ${code}`);
+				});
+			} else {
+				alert(`Mã giảm giá của bạn: ${code}. Vui lòng tự sao chép!`);
 			}
-
-			showToast(`Đã lưu và copy mã ${v.code} vào ví của bạn!`);
-
-			renderVoucherList();
-
-			// Optional: open popup
-			openPopup({
-				kind: 'Voucher',
-				title: '🎉 Nhận Voucher Thành Công',
-				text: `Voucher ${v.name} đã được copy và lưu vào ví. Bạn có thể chọn trực tiếp ở bước thanh toán.`,
-				code: voucher.code,
-				primaryText: 'OK',
-				secondaryText: 'Đóng',
-				onPrimary: () => { }
-			});
 		}
 
 
@@ -3642,8 +3574,9 @@
 		// ============================================================
 		// INIT
 		// ============================================================
-		function init() {
-			checkVoucherExpiry();
+		async function init() {
+			// checkVoucherExpiry();
+			await loadBannersFromAPI();
 			renderBanner();
 			renderVoucherList();
 			initSlider();

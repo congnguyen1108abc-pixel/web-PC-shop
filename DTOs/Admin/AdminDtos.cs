@@ -37,7 +37,9 @@ public sealed record RevenueReportItem(
     int TotalOrders,
     decimal Revenue,
     decimal TotalDiscount,
-    decimal AvgOrderValue);
+    decimal AvgOrderValue,
+    decimal TotalCogs,
+    decimal NetProfit);
 
 public sealed record LowStockItem(string SKU, string ProductName, int StockQuantity, int SoldCount);
 

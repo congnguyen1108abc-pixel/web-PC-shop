@@ -260,8 +260,12 @@ if (string.IsNullOrEmpty(geminiApiKey))
 {
     Console.WriteLine("Canh bao: Gemini:ApiKey khong duoc cau hinh trong appsettings.json");
 }
+builder.Services.AddScoped<ISentimentService>(sp =>
+    new SentimentService(geminiApiKey ?? "", sp.GetRequiredService<IDbRepository>())
+);
+
 builder.Services.AddScoped<IChatbotService>(sp =>
-    new ChatbotService(geminiApiKey ?? "")
+    new ChatbotService(geminiApiKey ?? "", sp.GetRequiredService<IDbRepository>())
 );
 
 var app = builder.Build();
@@ -337,6 +341,14 @@ app.Use(async (context, next) =>
         path.Equals("/profile/", StringComparison.OrdinalIgnoreCase))
     {
         context.Response.Redirect("/profile/info");
+        return;
+    }
+
+    // Special redirect for /shoppingcart to /checkout
+    if (path.Equals("/shoppingcart", StringComparison.OrdinalIgnoreCase) ||
+        path.Equals("/shoppingcart/", StringComparison.OrdinalIgnoreCase))
+    {
+        context.Response.Redirect("/checkout");
         return;
     }
 

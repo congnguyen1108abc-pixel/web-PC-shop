@@ -21,7 +21,7 @@ public sealed class VoucherRepository : IVoucherRepository
         {
             request.VoucherCode, request.Description, request.DiscountAmount, request.IsPercent,
             request.MaxDiscount, request.MinOrderValue, request.ExpiryDate,
-            request.UsageLimit, request.MaxPerUser, request.IsActive
+            request.UsageLimit, request.MaxPerUser, request.IsActive, request.StartDate
         });
         return r?.NewVoucherCode;
     }
@@ -32,7 +32,7 @@ public sealed class VoucherRepository : IVoucherRepository
         {
             request.VoucherCode, request.Description, request.DiscountAmount, request.IsPercent,
             request.MaxDiscount, request.MinOrderValue, request.ExpiryDate,
-            request.UsageLimit, request.MaxPerUser, request.IsActive
+            request.UsageLimit, request.MaxPerUser, request.IsActive, request.StartDate
         });
         return r?.UpdatedVoucherCode;
     }

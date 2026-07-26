@@ -36,7 +36,7 @@ public sealed class ProductRepository : IProductRepository
         return new PagedResult<ProductListItem>(
             items: itemsList.Select(x => new ProductListItem(
                 x.ProductId, x.CategoryId, x.CategoryName, x.BrandId, x.BrandName,
-                x.SKU, x.ProductName, x.Price, x.DiscountPrice, x.EffectivePrice,
+                x.SKU, x.ProductName, x.Price, x.DiscountPrice, x.CostPrice, x.EffectivePrice,
                 x.StockQuantity, x.SoldCount, x.Description, x.IsActive,
                 x.WarrantyMonths, x.Slug, x.CreatedAt, x.UpdatedAt, x.DefaultImageUrl,
                 x.AvgRating, x.ReviewCount
@@ -70,7 +70,7 @@ public sealed class ProductRepository : IProductRepository
         var r = await _db.QuerySingleAsync<NewIdResult>("sp_Product_Create", new
         {
             request.CategoryId, request.BrandId, request.SKU, request.ProductName,
-            request.Price, request.DiscountPrice, request.StockQuantity,
+            request.Price, request.DiscountPrice, request.CostPrice, request.StockQuantity,
             request.Description, request.WarrantyMonths, request.IsActive
         });
         return r?.NewProductId;
@@ -81,7 +81,7 @@ public sealed class ProductRepository : IProductRepository
         var r = await _db.QuerySingleAsync<UpdatedIdResult>("sp_Product_Update", new
         {
             request.ProductId, request.CategoryId, request.BrandId, request.SKU, request.ProductName,
-            request.Price, request.DiscountPrice, request.StockQuantity,
+            request.Price, request.DiscountPrice, request.CostPrice, request.StockQuantity,
             request.Description, request.WarrantyMonths, request.IsActive
         });
         return r?.UpdatedProductId;
@@ -179,6 +179,7 @@ public sealed class ProductRepository : IProductRepository
         public string ProductName { get; init; } = null!;
         public decimal Price { get; init; }
         public decimal DiscountPrice { get; init; }
+        public decimal CostPrice { get; init; }
         public decimal EffectivePrice { get; init; }
         public int StockQuantity { get; init; }
         public int SoldCount { get; init; }

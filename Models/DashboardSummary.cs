@@ -10,4 +10,7 @@ public sealed record DashboardSummary(
     int CompletedOrders,
     int LowStockProducts,
     int OpenWarrantyClaims,
-    int UnreadNotifications);
+    int UnreadNotifications,
+    decimal NetRevenue,
+    decimal TotalCogs,
+    decimal NetProfit);

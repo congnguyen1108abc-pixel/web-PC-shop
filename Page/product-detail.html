@@ -427,9 +427,14 @@
       box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
     }
 
+    .product-description-text,
+    .product-description-text * {
+      font-family: 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+    }
+
     .product-description-text {
-      font-size: 14px;
-      line-height: 1.75;
+      font-size: 14.5px;
+      line-height: 1.8;
       color: #374151;
       white-space: pre-line;
     }
@@ -2172,7 +2177,7 @@
         document.getElementById('bc-cat').href = `/Products`;
         document.getElementById('bc-name').textContent = p.productName;
         document.getElementById('pd-name').textContent = p.productName;
-        document.getElementById('pd-description').textContent = p.description || 'Sản phẩm này chưa có mô tả chi tiết.';
+        document.getElementById('pd-description').innerHTML = p.description || 'Sản phẩm này chưa có mô tả chi tiết.';
 
         // Rating & Stock
         let stockCls = '#22d3a0';
@@ -2345,8 +2350,14 @@
     // ============================================================
     // BUY NOW
     // ============================================================
-    function buyNow() {
-      window.location.href = '/shoppingcart';
+    async function buyNow() {
+      if (!window.product) return;
+      const success = await addToCartHelper(window.product.id, 1);
+      if (success) {
+        window.location.href = '/checkout';
+      } else {
+        alert('Có lỗi xảy ra khi chuẩn bị thanh toán. Vui lòng thử lại!');
+      }
     }
 
     // ============================================================

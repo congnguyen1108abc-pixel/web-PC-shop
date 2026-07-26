@@ -1196,7 +1196,7 @@
             console.log('[PC Build] Loading dynamic streamer configurations...');
             try {
                 streamerBannersList = [];
-                const response = await fetch('/api/Banners/active');
+                const response = await fetch('/api/Banners/active?t=' + Date.now());
                 if (!response.ok) {
                     console.warn('[PC Build] Failed to fetch streamer banners, using static list.');
                     fallbackToStatic();

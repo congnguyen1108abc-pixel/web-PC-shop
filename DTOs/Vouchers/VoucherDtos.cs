@@ -14,7 +14,8 @@ public sealed record VoucherCreateRequest(
     DateTime ExpiryDate,
     int UsageLimit,
     int MaxPerUser,
-    bool IsActive);
+    bool IsActive,
+    DateTime? StartDate);
 
 public sealed record VoucherUpdateRequest(
     string VoucherCode,
@@ -26,7 +27,8 @@ public sealed record VoucherUpdateRequest(
     DateTime ExpiryDate,
     int UsageLimit,
     int MaxPerUser,
-    bool IsActive);
+    bool IsActive,
+    DateTime? StartDate);
 
 public sealed record VoucherDeleteRequest(string VoucherCode);
 
@@ -41,7 +43,8 @@ public sealed record VoucherItem(
     int UsageLimit,
     int MaxPerUser,
     bool IsActive,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    DateTime? StartDate);
 
 public sealed record VoucherAvailableItem(
     string VoucherCode,
@@ -53,4 +56,5 @@ public sealed record VoucherAvailableItem(
     DateTime ExpiryDate,
     int UsageLimit,
     int MaxPerUser,
-    int UsedCount);
+    int UsedCount,
+    DateTime? StartDate);

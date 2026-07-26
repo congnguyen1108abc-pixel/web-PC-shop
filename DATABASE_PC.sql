@@ -145,6 +145,7 @@ CREATE TABLE Vouchers (
     UsageLimit     INT            DEFAULT 0,   -- Tổng số lượt dùng còn lại
     MaxPerUser     INT            DEFAULT 1,   --  Mỗi user dùng tối đa bao nhiêu lần
     IsActive       BIT            DEFAULT 1,
+    StartDate      DATETIME       NULL,        -- Ngày bắt đầu hiệu lực
     CreatedAt      DATETIME       DEFAULT GETDATE()
 );
 GO
@@ -220,6 +221,7 @@ CREATE TABLE Reviews (
     ImageURL   NVARCHAR(500) NULL,   --  Ảnh kèm theo đánh giá
     IsApproved BIT           DEFAULT 0,   --  Admin duyệt trước khi hiển thị
     CreatedAt  DATETIME      DEFAULT GETDATE(),
+    Sentiment  NVARCHAR(50)  NULL,        --  Sắc thái nhận định từ AI (Tích cực, Tiêu cực, Trung lập)
     CONSTRAINT UQ_Review_User_Product UNIQUE (UserID, ProductID)  -- Mỗi user chỉ review 1 lần/SP
 );
 GO
@@ -786,6 +788,8 @@ END;
 GO
 
 -- [TRIGGER 03] trg_LimitActiveBanners đã được xóa để không giới hạn số lượng banner hoạt động.
+DROP TRIGGER IF EXISTS trg_LimitActiveBanners;
+GO
 
 -- [TRIGGER 04] trg_PreventDeleteOrders | Dòng gốc: 475-484
 
@@ -1257,13 +1261,14 @@ BEGIN
             FROM Vouchers WITH (UPDLOCK, HOLDLOCK)
             WHERE VoucherCode = @VoucherCode
               AND IsActive = 1
+              AND (StartDate IS NULL OR StartDate <= GETDATE())
               AND ExpiryDate >= GETDATE()
               AND UsageLimit > 0
               AND MinOrderValue <= @TotalAmount;
 
             IF @VDiscount IS NULL
             BEGIN
-                RAISERROR(N'Ma giam gia khong hop le hoac khong du dieu kien!', 16, 1);
+                RAISERROR(N'Ma giam gia khong hop le, chua den thoi gian su dung hoac da het han!', 16, 1);
                 ROLLBACK;
                 RETURN;
             END
@@ -1396,7 +1401,8 @@ CREATE PROCEDURE sp_Customer_AddReview
     @ProductID INT,
     @Rating    INT,
     @Comment   NVARCHAR(MAX),
-    @ImageURL  NVARCHAR(500) = NULL
+    @ImageURL  NVARCHAR(500) = NULL,
+    @Sentiment NVARCHAR(50) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -1416,8 +1422,9 @@ BEGIN
         RAISERROR(N'Bạn đã đánh giá sản phẩm này rồi!', 16, 1);
         RETURN;
     END
-    INSERT INTO Reviews (ProductID, UserID, Rating, Comment, ImageURL, IsApproved)
-    VALUES (@ProductID, @UserID, @Rating, @Comment, @ImageURL, 0);
+    -- IsApproved = 1: Tự động đăng ngay, admin có thể ẩn đi nếu xấu
+    INSERT INTO Reviews (ProductID, UserID, Rating, Comment, ImageURL, IsApproved, Sentiment)
+    VALUES (@ProductID, @UserID, @Rating, @Comment, @ImageURL, 1, @Sentiment);
 END;
 GO
 
@@ -3091,8 +3098,7 @@ BEGIN
         RETURN;
     END
 
-    UPDATE Banners
-    SET IsActive = 0
+    DELETE FROM Banners
     WHERE BannerID = @BannerID;
 
     SELECT @BannerID AS DeletedBannerID;
@@ -3746,7 +3752,8 @@ BEGIN
         UsageLimit,
         MaxPerUser,
         IsActive,
-        CreatedAt
+        CreatedAt,
+        StartDate
     FROM Vouchers
     WHERE (@OnlyActive = 0 OR IsActive = 1)
     ORDER BY ExpiryDate ASC, VoucherCode ASC;
@@ -3779,6 +3786,7 @@ BEGIN
         v.ExpiryDate,
         v.UsageLimit,
         v.MaxPerUser,
+        v.StartDate,
         UsedCount = ISNULL(vu.UsedCount, 0)
     FROM Vouchers v
     OUTER APPLY
@@ -3789,6 +3797,7 @@ BEGIN
           AND UserID = @UserID
     ) vu
     WHERE v.IsActive = 1
+      AND (v.StartDate IS NULL OR v.StartDate <= GETDATE())
       AND v.ExpiryDate >= GETDATE()
       AND v.UsageLimit > 0
       AND v.MinOrderValue <= @OrderValue
@@ -3816,7 +3825,8 @@ CREATE OR ALTER PROCEDURE sp_Voucher_Create
     @ExpiryDate     DATETIME,
     @UsageLimit     INT = 0,
     @MaxPerUser     INT = 1,
-    @IsActive       BIT = 1
+    @IsActive       BIT = 1,
+    @StartDate      DATETIME = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -3850,7 +3860,8 @@ BEGIN
         ExpiryDate,
         UsageLimit,
         MaxPerUser,
-        IsActive
+        IsActive,
+        StartDate
     )
     VALUES
     (
@@ -3863,7 +3874,8 @@ BEGIN
         @ExpiryDate,
         @UsageLimit,
         @MaxPerUser,
-        @IsActive
+        @IsActive,
+        ISNULL(@StartDate, GETDATE())
     );
 
     SELECT @VoucherCode AS NewVoucherCode;
@@ -3889,7 +3901,8 @@ CREATE OR ALTER PROCEDURE sp_Voucher_Update
     @ExpiryDate     DATETIME,
     @UsageLimit     INT = 0,
     @MaxPerUser     INT = 1,
-    @IsActive       BIT = 1
+    @IsActive       BIT = 1,
+    @StartDate      DATETIME = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -3921,7 +3934,8 @@ BEGIN
         ExpiryDate     = @ExpiryDate,
         UsageLimit     = @UsageLimit,
         MaxPerUser     = @MaxPerUser,
-        IsActive       = @IsActive
+        IsActive       = @IsActive,
+        StartDate      = ISNULL(@StartDate, StartDate)
     WHERE VoucherCode = @VoucherCode;
 
     SELECT @VoucherCode AS UpdatedVoucherCode;
@@ -3949,9 +3963,14 @@ BEGIN
         RETURN;
     END
 
-    UPDATE Vouchers
-    SET IsActive = 0
-    WHERE VoucherCode = @VoucherCode;
+    -- Xóa liên kết trong VoucherUsage
+    DELETE FROM VoucherUsage WHERE VoucherCode = @VoucherCode;
+
+    -- Cập nhật VoucherCode thành NULL trong bảng Orders
+    UPDATE Orders SET VoucherCode = NULL WHERE VoucherCode = @VoucherCode;
+
+    -- Xóa cứng voucher
+    DELETE FROM Vouchers WHERE VoucherCode = @VoucherCode;
 
     SELECT @VoucherCode AS DeletedVoucherCode;
 END;
@@ -5206,15 +5225,15 @@ IF OBJECT_ID('sp_Product_GetAllPaged', 'P') IS NOT NULL
 GO
 
 CREATE PROCEDURE sp_Product_GetAllPaged
-    @CategoryId  INT           = NULL,
-    @BrandId     INT           = NULL,
-    @Keyword     NVARCHAR(255) = NULL,
-    @MinPrice    DECIMAL(18,2) = NULL,
-    @MaxPrice    DECIMAL(18,2) = NULL,
-    @OnlyActive  BIT           = 1,
-    @SortBy      NVARCHAR(20)  = 'Newest',  -- 'Newest', 'PriceLowHigh', 'PriceHighLow', 'BestSelling', 'Name'
-    @PageNumber  INT           = 1,
-    @PageSize    INT           = 10
+    @CategoryId INT = NULL,
+    @BrandId INT = NULL,
+    @Keyword NVARCHAR(100) = NULL,
+    @MinPrice DECIMAL(18,2) = NULL,
+    @MaxPrice DECIMAL(18,2) = NULL,
+    @OnlyActive BIT = 1,
+    @SortBy VARCHAR(50) = 'Newest',
+    @PageNumber INT = 1,
+    @PageSize INT = 10
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -5222,13 +5241,12 @@ BEGIN
     -- Validate pagination parameters
     IF @PageNumber < 1 SET @PageNumber = 1;
     IF @PageSize < 1 SET @PageSize = 10;
-    IF @PageSize > 100 SET @PageSize = 100;  -- Giới hạn tối đa 100 items/page
+    IF @PageSize > 100 SET @PageSize = 100;
 
     DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
 
-    ;WITH FilteredProducts AS
-    (
-        SELECT
+    WITH FilteredProducts AS (
+        SELECT 
             p.ProductID,
             p.CategoryID,
             c.CategoryName,
@@ -5238,33 +5256,35 @@ BEGIN
             p.ProductName,
             p.Price,
             p.DiscountPrice,
-            CASE
-                WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice
-                ELSE p.Price
-            END AS EffectivePrice,
+            -- EffectivePrice để sort và filter
+            COALESCE(NULLIF(p.DiscountPrice, 0), p.Price) AS EffectivePrice,
             p.StockQuantity,
             p.SoldCount,
             p.Description,
             p.IsActive,
             p.WarrantyMonths,
+            p.Slug,
             p.CreatedAt,
             p.UpdatedAt,
-            (SELECT TOP 1 ImageURL FROM ProductImages WHERE ProductID = p.ProductID AND IsDefault = 1) AS DefaultImageUrl,
-            ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(3,2))) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1), 0) AS AvgRating,
-            (SELECT COUNT(*) FROM Reviews WHERE ProductID = p.ProductID AND IsApproved = 1) AS ReviewCount,
-            COUNT(*) OVER() AS TotalRecords  -- Tổng số bản ghi (không phân trang)
+            -- Lấy ảnh mặc định
+            (SELECT TOP 1 ImageUrl FROM ProductImages pi WHERE pi.ProductID = p.ProductID AND pi.IsDefault = 1) AS DefaultImageUrl,
+            -- Lấy rating
+            ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(3,1))) FROM Reviews r WHERE r.ProductID = p.ProductID AND r.IsApproved = 1), 0) AS AvgRating,
+            ISNULL((SELECT COUNT(*) FROM Reviews r WHERE r.ProductID = p.ProductID AND r.IsApproved = 1), 0) AS ReviewCount,
+            -- Tính tổng số record
+            COUNT(*) OVER() AS TotalRecords
         FROM Products p
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
         LEFT JOIN Brands b ON p.BrandID = b.BrandID
-        WHERE
+        WHERE 
             (@CategoryId IS NULL OR p.CategoryID = @CategoryId)
             AND (@BrandId IS NULL OR p.BrandID = @BrandId)
             AND (@Keyword IS NULL OR p.ProductName LIKE '%' + @Keyword + '%' OR p.SKU LIKE '%' + @Keyword + '%')
-            AND (@MinPrice IS NULL OR (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END) >= @MinPrice)
-            AND (@MaxPrice IS NULL OR (CASE WHEN ISNULL(p.DiscountPrice, 0) > 0 THEN p.DiscountPrice ELSE p.Price END) <= @MaxPrice)
+            AND (@MinPrice IS NULL OR COALESCE(NULLIF(p.DiscountPrice, 0), p.Price) >= @MinPrice)
+            AND (@MaxPrice IS NULL OR COALESCE(NULLIF(p.DiscountPrice, 0), p.Price) <= @MaxPrice)
             AND (@OnlyActive = 0 OR p.IsActive = 1)
     )
-    SELECT
+    SELECT 
         ProductID,
         CategoryID,
         CategoryName,
@@ -5280,6 +5300,7 @@ BEGIN
         Description,
         IsActive,
         WarrantyMonths,
+        Slug,
         CreatedAt,
         UpdatedAt,
         DefaultImageUrl,
@@ -5287,15 +5308,15 @@ BEGIN
         ReviewCount,
         TotalRecords
     FROM FilteredProducts
-    ORDER BY
+    ORDER BY 
         CASE WHEN @SortBy = 'Newest' THEN CreatedAt END DESC,
         CASE WHEN @SortBy = 'PriceLowHigh' THEN EffectivePrice END ASC,
         CASE WHEN @SortBy = 'PriceHighLow' THEN EffectivePrice END DESC,
         CASE WHEN @SortBy = 'BestSelling' THEN SoldCount END DESC,
         CASE WHEN @SortBy = 'Name' THEN ProductName END ASC
-    OFFSET @Offset ROWS
+    OFFSET @Offset ROWS 
     FETCH NEXT @PageSize ROWS ONLY;
-END
+END;
 GO
 
 
@@ -5502,6 +5523,7 @@ BEGIN
             r.ImageURL,
             r.IsApproved,
             r.CreatedAt,
+            r.Sentiment,
             COUNT(*) OVER() AS TotalRecords
         FROM Reviews r
         JOIN Products p ON r.ProductID = p.ProductID
@@ -5523,6 +5545,7 @@ BEGIN
         ImageURL,
         IsApproved,
         CreatedAt,
+        Sentiment,
         TotalRecords
     FROM FilteredReviews
     ORDER BY CreatedAt DESC
@@ -5574,12 +5597,13 @@ BEGIN
             r.Comment,
             r.ImageURL,
             r.CreatedAt,
+            r.Sentiment,
             COUNT(*) OVER() AS TotalRecords
         FROM Reviews r
         JOIN Users u ON r.UserID = u.UserID
         WHERE
             r.ProductID = @ProductId
-            AND r.IsApproved = 1  -- Chỉ lấy reviews đã duyệt
+            AND r.IsApproved = 1  -- Chỉ lấy reviews đang hiển thị (admin có thể ẩn review xấu)
     )
     SELECT
         ReviewID,
@@ -5591,6 +5615,7 @@ BEGIN
         Comment,
         ImageURL,
         CreatedAt,
+        Sentiment,
         TotalRecords
     FROM FilteredReviews
     ORDER BY CreatedAt DESC
@@ -7406,4 +7431,585 @@ END;
 GO
 
 PRINT N'✅ Hoàn tất thêm module Đổi Trả & Hoàn Tiền!';
+GO
+
+-- ============================================================================
+-- MODULE MỚI: QUẢN LÝ GIÁ, KHUYẾN MÃI DỰNG CÔNG & LỊCH SỬ ĐỔI GIÁ (2026-07-26)
+-- ============================================================================
+
+-- 1. Cập nhật bảng Products & OrderDetails
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Products') AND name = 'CostPrice')
+BEGIN
+    ALTER TABLE Products ADD CostPrice DECIMAL(18, 2) NOT NULL DEFAULT 0;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('OrderDetails') AND name = 'OriginalPrice')
+BEGIN
+    ALTER TABLE OrderDetails ADD OriginalPrice DECIMAL(18, 2) NOT NULL DEFAULT 0;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('OrderDetails') AND name = 'CostPrice')
+BEGIN
+    ALTER TABLE OrderDetails ADD CostPrice DECIMAL(18, 2) NOT NULL DEFAULT 0;
+END
+GO
+
+-- 2. Tạo bảng ProductPromotions
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID('ProductPromotions') AND type in (N'U'))
+BEGIN
+    CREATE TABLE ProductPromotions (
+        PromotionID    INT PRIMARY KEY IDENTITY(1,1),
+        ProductID      INT NOT NULL FOREIGN KEY REFERENCES Products(ProductID) ON DELETE CASCADE,
+        DiscountType   NVARCHAR(50) NOT NULL, -- 'Percentage' hoặc 'FixedAmount'
+        DiscountValue  DECIMAL(18,2) NOT NULL CHECK (DiscountValue >= 0),
+        StartDate      DATETIME NOT NULL,
+        EndDate        DATETIME NOT NULL,
+        Status         NVARCHAR(50) NOT NULL DEFAULT 'Active', -- 'Active', 'Inactive'
+        CreatedAt      DATETIME DEFAULT GETDATE()
+    );
+END
+GO
+
+-- 3. Tạo bảng PriceHistories
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID('PriceHistories') AND type in (N'U'))
+BEGIN
+    CREATE TABLE PriceHistories (
+        HistoryID           INT PRIMARY KEY IDENTITY(1,1),
+        ProductID           INT NOT NULL FOREIGN KEY REFERENCES Products(ProductID) ON DELETE CASCADE,
+        OldPrice            DECIMAL(18,2) NOT NULL,
+        NewPrice            DECIMAL(18,2) NOT NULL,
+        ChangedBy           INT NOT NULL, -- UserID
+        ChangedAt           DATETIME DEFAULT GETDATE(),
+        EffectiveStartDate  DATETIME NOT NULL,
+        EffectiveEndDate    DATETIME NULL,
+        Notes               NVARCHAR(500) NULL
+    );
+END
+GO
+
+-- Seed CostPrice mẫu
+UPDATE Products SET CostPrice = CAST(Price * 0.7 AS DECIMAL(18, 2)) WHERE CostPrice = 0;
+GO
+
+-- ============================================================================
+-- CẬP NHẬT CÁC STORED PROCEDURES
+-- ============================================================================
+
+-- 1. sp_Product_GetAllPaged (KM động)
+CREATE OR ALTER PROCEDURE sp_Product_GetAllPaged
+    @CategoryId INT = NULL,
+    @BrandId INT = NULL,
+    @Keyword NVARCHAR(100) = NULL,
+    @MinPrice DECIMAL(18,2) = NULL,
+    @MaxPrice DECIMAL(18,2) = NULL,
+    @OnlyActive BIT = 1,
+    @SortBy VARCHAR(50) = 'Newest',
+    @PageNumber INT = 1,
+    @PageSize INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @PageNumber < 1 SET @PageNumber = 1;
+    IF @PageSize < 1 SET @PageSize = 10;
+    IF @PageSize > 100 SET @PageSize = 100;
+
+    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+
+    WITH FilteredProducts AS (
+        SELECT 
+            p.ProductID,
+            p.CategoryID,
+            c.CategoryName,
+            p.BrandID,
+            b.BrandName,
+            p.SKU,
+            p.ProductName,
+            p.Price,
+            p.DiscountPrice,
+            p.CostPrice,
+            CAST(
+                CASE 
+                    WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                    WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                    ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+                END AS DECIMAL(18,2)
+            ) AS EffectivePrice,
+            p.StockQuantity,
+            p.SoldCount,
+            p.Description,
+            p.IsActive,
+            p.WarrantyMonths,
+            p.Slug,
+            p.CreatedAt,
+            p.UpdatedAt,
+            (SELECT TOP 1 ImageUrl FROM ProductImages pi WHERE pi.ProductID = p.ProductID AND pi.IsDefault = 1) AS DefaultImageUrl,
+            ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(3,1))) FROM Reviews r WHERE r.ProductID = p.ProductID AND r.IsApproved = 1), 0) AS AvgRating,
+            ISNULL((SELECT COUNT(*) FROM Reviews r WHERE r.ProductID = p.ProductID AND r.IsApproved = 1), 0) AS ReviewCount,
+            COUNT(*) OVER() AS TotalRecords
+        FROM Products p
+        LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
+        LEFT JOIN Brands b ON p.BrandID = b.BrandID
+        OUTER APPLY (
+            SELECT TOP 1 pp.DiscountType, pp.DiscountValue
+            FROM ProductPromotions pp
+            WHERE pp.ProductID = p.ProductID
+              AND pp.Status = 'Active'
+              AND pp.StartDate <= GETDATE()
+              AND pp.EndDate >= GETDATE()
+            ORDER BY pp.CreatedAt DESC
+        ) activePromo
+        WHERE 
+            (@CategoryId IS NULL OR p.CategoryID = @CategoryId)
+            AND (@BrandId IS NULL OR p.BrandID = @BrandId)
+            AND (@Keyword IS NULL OR p.ProductName LIKE '%' + @Keyword + '%' OR p.SKU LIKE '%' + @Keyword + '%')
+            AND (@MinPrice IS NULL OR 
+                 CAST(
+                    CASE 
+                        WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                        WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                        ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+                    END AS DECIMAL(18,2)
+                 ) >= @MinPrice)
+            AND (@MaxPrice IS NULL OR 
+                 CAST(
+                    CASE 
+                        WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                        WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                        ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+                    END AS DECIMAL(18,2)
+                 ) <= @MaxPrice)
+            AND (@OnlyActive = 0 OR p.IsActive = 1)
+    )
+    SELECT 
+        ProductID,
+        CategoryID,
+        CategoryName,
+        BrandID,
+        BrandName,
+        SKU,
+        ProductName,
+        Price,
+        DiscountPrice,
+        CostPrice,
+        EffectivePrice,
+        StockQuantity,
+        SoldCount,
+        Description,
+        IsActive,
+        WarrantyMonths,
+        Slug,
+        CreatedAt,
+        UpdatedAt,
+        DefaultImageUrl,
+        AvgRating,
+        ReviewCount,
+        TotalRecords
+    FROM FilteredProducts
+    ORDER BY 
+        CASE WHEN @SortBy = 'PriceAsc' THEN EffectivePrice END ASC,
+        CASE WHEN @SortBy = 'PriceDesc' THEN EffectivePrice END DESC,
+        CASE WHEN @SortBy = 'Popular' THEN SoldCount END DESC,
+        CASE WHEN @SortBy = 'Rating' THEN AvgRating END DESC,
+        CASE WHEN @SortBy = 'Newest' OR @SortBy IS NULL THEN CreatedAt END DESC
+    OFFSET @Offset ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+END;
+GO
+
+-- 2. sp_Product_GetById (KM động)
+CREATE OR ALTER PROCEDURE sp_Product_GetById
+    @ProductID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        p.ProductID,
+        p.CategoryID,
+        c.CategoryName,
+        p.BrandID,
+        b.BrandName,
+        p.SKU,
+        p.ProductName,
+        p.Price,
+        p.DiscountPrice,
+        p.CostPrice,
+        CAST(
+            CASE 
+                WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+            END AS DECIMAL(18,2)
+        ) AS EffectivePrice,
+        p.StockQuantity,
+        p.SoldCount,
+        p.Description,
+        p.IsActive,
+        p.WarrantyMonths,
+        p.CreatedAt,
+        p.UpdatedAt,
+        CAST(ISNULL(rv.AvgRating, 0) AS DECIMAL(3,2)) AS AvgRating,
+        ISNULL(rv.ReviewCount, 0) AS ReviewCount
+    FROM Products p
+    LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
+    LEFT JOIN Brands b ON p.BrandID = b.BrandID
+    OUTER APPLY (
+        SELECT TOP 1 pp.DiscountType, pp.DiscountValue
+        FROM ProductPromotions pp
+        WHERE pp.ProductID = p.ProductID
+          AND pp.Status = 'Active'
+          AND pp.StartDate <= GETDATE()
+          AND pp.EndDate >= GETDATE()
+        ORDER BY pp.CreatedAt DESC
+    ) activePromo
+    OUTER APPLY
+    (
+        SELECT
+            AVG(CAST(Rating AS DECIMAL(10, 2))) AS AvgRating,
+            COUNT(*) AS ReviewCount
+        FROM Reviews r
+        WHERE r.ProductID = p.ProductID AND r.IsApproved = 1
+    ) rv
+    WHERE p.ProductID = @ProductID;
+
+    SELECT ImageID, ProductID, ImageURL, AltText, SortOrder, IsDefault
+    FROM ProductImages
+    WHERE ProductID = @ProductID
+    ORDER BY SortOrder ASC, ImageID ASC;
+
+    SELECT AttrID, ProductID, AttributeName, AttributeValue, SortOrder
+    FROM ProductAttributes
+    WHERE ProductID = @ProductID
+    ORDER BY SortOrder ASC, AttrID ASC;
+END;
+GO
+
+-- 3. sp_Customer_PlaceOrder
+CREATE OR ALTER PROCEDURE sp_Customer_PlaceOrder
+    @UserID          INT,
+    @ShippingAddress NVARCHAR(500),
+    @PaymentMethod   NVARCHAR(50),
+    @VoucherCode     NVARCHAR(20) = NULL,
+    @ShippingFee     DECIMAL(18, 2) = 0,
+    @ToWardCode      NVARCHAR(50) = NULL,
+    @ToDistrictId    INT = 0
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE @TotalAmount DECIMAL(18,2);
+        DECLARE @DiscountAmt DECIMAL(18,2) = 0;
+        DECLARE @FinalAmount DECIMAL(18,2);
+
+        SELECT @TotalAmount = SUM(
+            CAST(
+                CASE 
+                    WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                    WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                    ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+                END AS DECIMAL(18,2)
+            ) * c.Quantity
+        )
+        FROM Cart c
+        JOIN Products p ON c.ProductID = p.ProductID
+        OUTER APPLY (
+            SELECT TOP 1 pp.DiscountType, pp.DiscountValue
+            FROM ProductPromotions pp
+            WHERE pp.ProductID = p.ProductID
+              AND pp.Status = 'Active'
+              AND pp.StartDate <= GETDATE()
+              AND pp.EndDate >= GETDATE()
+            ORDER BY pp.CreatedAt DESC
+        ) activePromo
+        WHERE c.UserID = @UserID;
+
+        IF @TotalAmount IS NULL OR @TotalAmount = 0
+        BEGIN
+            RAISERROR(N'Gio hang trong!', 16, 1);
+            ROLLBACK;
+            RETURN;
+        END
+
+        IF @VoucherCode IS NOT NULL
+        BEGIN
+            DECLARE @VDiscount   DECIMAL(18,2);
+            DECLARE @VIsPercent  BIT;
+            DECLARE @VMaxDisc    DECIMAL(18,2);
+            DECLARE @VMinOrder   DECIMAL(18,2);
+            DECLARE @VMaxPerUser INT;
+            DECLARE @UserUsedCount INT;
+
+            SELECT
+                @VDiscount   = DiscountAmount,
+                @VIsPercent  = IsPercent,
+                @VMaxDisc    = MaxDiscount,
+                @VMinOrder   = MinOrderValue,
+                @VMaxPerUser = MaxPerUser
+            FROM Vouchers WITH (UPDLOCK, HOLDLOCK)
+            WHERE VoucherCode = @VoucherCode
+              AND IsActive = 1
+              AND (StartDate IS NULL OR StartDate <= GETDATE())
+              AND ExpiryDate >= GETDATE()
+              AND UsageLimit > 0
+              AND MinOrderValue <= @TotalAmount;
+
+            IF @VDiscount IS NULL
+            BEGIN
+                RAISERROR(N'Ma giam gia khong hop le, chua den thoi gian su dung hoac da het han!', 16, 1);
+                ROLLBACK;
+                RETURN;
+            END
+
+            SELECT @UserUsedCount = COUNT(*)
+            FROM VoucherUsage WITH (UPDLOCK, HOLDLOCK)
+            WHERE VoucherCode = @VoucherCode
+              AND UserID = @UserID;
+
+            IF @UserUsedCount >= @VMaxPerUser
+            BEGIN
+                RAISERROR(N'Ban da su dung het luot dung cua ma giam gia nay!', 16, 1);
+                ROLLBACK;
+                RETURN;
+            END
+
+            IF @VIsPercent = 1
+            BEGIN
+                SET @DiscountAmt = @TotalAmount * @VDiscount / 100.0;
+                IF @VMaxDisc IS NOT NULL AND @DiscountAmt > @VMaxDisc
+                    SET @DiscountAmt = @VMaxDisc;
+            END
+            ELSE
+            BEGIN
+                SET @DiscountAmt = @VDiscount;
+            END
+
+            UPDATE Vouchers
+            SET UsageLimit = UsageLimit - 1
+            WHERE VoucherCode = @VoucherCode
+              AND UsageLimit > 0;
+
+            IF @@ROWCOUNT = 0
+            BEGIN
+                RAISERROR(N'Ma giam gia da het luot su dung.', 16, 1);
+                ROLLBACK;
+                RETURN;
+            END
+        END
+
+        SET @FinalAmount = @TotalAmount - @DiscountAmt + @ShippingFee;
+        IF @FinalAmount < 0 SET @FinalAmount = 0;
+
+        INSERT INTO Orders
+        (
+            UserID,
+            TotalAmount,
+            DiscountAmount,
+            ShippingFee,
+            FinalAmount,
+            VoucherCode,
+            ShippingAddress,
+            PaymentMethod,
+            Status,
+            PaymentStatus
+        )
+        VALUES
+        (
+            @UserID,
+            @TotalAmount,
+            @DiscountAmt,
+            @ShippingFee,
+            @FinalAmount,
+            @VoucherCode,
+            @ShippingAddress,
+            @PaymentMethod,
+            N'Chờ xác nhận',
+            N'Chưa thanh toán'
+        );
+
+        DECLARE @NewOrderID INT = SCOPE_IDENTITY();
+
+        INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice, OriginalPrice, CostPrice)
+        SELECT
+            @NewOrderID,
+            c.ProductID,
+            c.Quantity,
+            CAST(
+                CASE 
+                    WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                    WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                    ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+                END AS DECIMAL(18,2)
+            ),
+            p.Price,
+            p.CostPrice
+        FROM Cart c
+        JOIN Products p ON c.ProductID = p.ProductID
+        OUTER APPLY (
+            SELECT TOP 1 pp.DiscountType, pp.DiscountValue
+            FROM ProductPromotions pp
+            WHERE pp.ProductID = p.ProductID
+              AND pp.Status = 'Active'
+              AND pp.StartDate <= GETDATE()
+              AND pp.EndDate >= GETDATE()
+            ORDER BY pp.CreatedAt DESC
+        ) activePromo
+        WHERE c.UserID = @UserID;
+
+        IF @VoucherCode IS NOT NULL
+        BEGIN
+            INSERT INTO VoucherUsage (VoucherCode, UserID, OrderID)
+            VALUES (@VoucherCode, @UserID, @NewOrderID);
+        END
+
+        DELETE FROM Cart WHERE UserID = @UserID;
+
+        INSERT INTO Notifications (UserID, Title, Message, Type, RelatedID)
+        VALUES
+        (
+            @UserID,
+            N'Đặt hàng thành công #' + CAST(@NewOrderID AS NVARCHAR(20)),
+            N'Đơn hàng của bạn đang chờ xác nhận. Cảm ơn bạn đã mua sắm!',
+            'Order',
+            @NewOrderID
+        );
+
+        COMMIT TRANSACTION;
+        SELECT @NewOrderID AS NewOrderID;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+-- 4. sp_Dashboard_GetSummary (Financial Summary)
+CREATE OR ALTER PROCEDURE sp_Dashboard_GetSummary
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @NetRevenue DECIMAL(18,2) = 0;
+    DECLARE @TotalCogs DECIMAL(18,2) = 0;
+    DECLARE @NetProfit DECIMAL(18,2) = 0;
+
+    SELECT @NetRevenue = ISNULL(SUM(FinalAmount), 0)
+    FROM Orders
+    WHERE Status = N'Hoàn tất';
+
+    SELECT @TotalCogs = ISNULL(SUM(od.Quantity * od.CostPrice), 0)
+    FROM OrderDetails od
+    JOIN Orders o ON od.OrderID = o.OrderID
+    WHERE o.Status = N'Hoàn tất';
+
+    SET @NetProfit = @NetRevenue - @TotalCogs;
+
+    SELECT
+        TotalUsers = (SELECT COUNT(*) FROM Users),
+        ActiveUsers = (SELECT COUNT(*) FROM Users WHERE IsActive = 1),
+        TotalProducts = (SELECT COUNT(*) FROM Products),
+        ActiveProducts = (SELECT COUNT(*) FROM Products WHERE IsActive = 1),
+        PendingOrders = (SELECT COUNT(*) FROM Orders WHERE Status = N'Chờ xác nhận'),
+        ShippingOrders = (SELECT COUNT(*) FROM Orders WHERE Status = N'Đang giao'),
+        CompletedOrders = (SELECT COUNT(*) FROM Orders WHERE Status = N'Hoàn tất'),
+        LowStockProducts = (SELECT COUNT(*) FROM Products WHERE IsActive = 1 AND StockQuantity <= 5),
+        OpenWarrantyClaims = (SELECT COUNT(*) FROM WarrantyClaims WHERE Status IN (N'Đang tiếp nhận', N'Đang sửa chữa')),
+        UnreadNotifications = (SELECT COUNT(*) FROM Notifications WHERE IsRead = 0),
+        NetRevenue = @NetRevenue,
+        TotalCogs = @TotalCogs,
+        NetProfit = @NetProfit;
+END;
+GO
+
+-- 5. sp_Admin_GetRevenueReport
+CREATE OR ALTER PROCEDURE sp_Admin_GetRevenueReport
+    @StartDate DATETIME,
+    @EndDate   DATETIME
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @ActualEndDate DATETIME = DATEADD(MILLISECOND, -3, CAST(DATEADD(DAY, 1, CAST(@EndDate AS DATE)) AS DATETIME));
+
+    SELECT
+        CAST(o.OrderDate AS DATE)        AS SalesDate,
+        COUNT(o.OrderID)                  AS TotalOrders,
+        SUM(o.FinalAmount)                AS Revenue,
+        SUM(o.DiscountAmount)             AS TotalDiscount,
+        AVG(o.FinalAmount)                AS AvgOrderValue,
+        ISNULL(SUM(cogs.OrderCogs), 0)    AS TotalCogs,
+        SUM(o.FinalAmount) - ISNULL(SUM(cogs.OrderCogs), 0) AS NetProfit
+    FROM Orders o
+    LEFT JOIN (
+        SELECT OrderID, SUM(Quantity * CostPrice) AS OrderCogs
+        FROM OrderDetails
+        GROUP BY OrderID
+    ) cogs ON o.OrderID = cogs.OrderID
+    WHERE o.OrderDate BETWEEN @StartDate AND @ActualEndDate
+      AND o.Status = N'Hoàn tất'
+    GROUP BY CAST(o.OrderDate AS DATE)
+    ORDER BY SalesDate DESC;
+END;
+GO
+
+-- 6. sp_Customer_GetCart
+CREATE OR ALTER PROCEDURE sp_Customer_GetCart
+    @UserID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        c.CartID,
+        c.UserID,
+        c.ProductID,
+        p.SKU,
+        p.ProductName,
+        p.Price,
+        p.DiscountPrice,
+        CAST(
+            CASE 
+                WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+            END AS DECIMAL(18,2)
+        ) AS UnitPrice,
+        c.Quantity,
+        c.Quantity * CAST(
+            CASE 
+                WHEN activePromo.DiscountType = 'Percentage' THEN p.Price * (1.0 - activePromo.DiscountValue / 100.0)
+                WHEN activePromo.DiscountType = 'FixedAmount' THEN CASE WHEN p.Price - activePromo.DiscountValue < 0 THEN 0 ELSE p.Price - activePromo.DiscountValue END
+                ELSE COALESCE(NULLIF(p.DiscountPrice, 0), p.Price)
+            END AS DECIMAL(18,2)
+        ) AS LineTotal,
+        p.StockQuantity,
+        p.IsActive,
+        img.ImageURL AS DefaultImageUrl,
+        c.AddedAt
+    FROM Cart c
+    JOIN Products p ON c.ProductID = p.ProductID
+    OUTER APPLY (
+        SELECT TOP 1 pp.DiscountType, pp.DiscountValue
+        FROM ProductPromotions pp
+        WHERE pp.ProductID = p.ProductID
+          AND pp.Status = 'Active'
+          AND pp.StartDate <= GETDATE()
+          AND pp.EndDate >= GETDATE()
+        ORDER BY pp.CreatedAt DESC
+    ) activePromo
+    LEFT JOIN (
+        SELECT ProductID, ImageURL, ROW_NUMBER() OVER(PARTITION BY ProductID ORDER BY IsDefault DESC, SortOrder ASC, ImageID ASC) as rn
+        FROM ProductImages
+    ) img ON p.ProductID = img.ProductID AND img.rn = 1
+    WHERE c.UserID = @UserID;
+END;
+GO
+
+PRINT N'✅ Hoàn tất tích hợp module Giá, Khuyến Mãi & Lịch Sử Đổi Giá!';
 GO

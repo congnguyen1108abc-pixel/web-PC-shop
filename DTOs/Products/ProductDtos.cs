@@ -28,6 +28,7 @@ public sealed record ProductCreateRequest(
     string ProductName,
     decimal Price,
     decimal DiscountPrice,
+    decimal CostPrice,
     int StockQuantity,
     string? Description,
     int WarrantyMonths,
@@ -41,6 +42,7 @@ public sealed record ProductUpdateRequest(
     string ProductName,
     decimal Price,
     decimal DiscountPrice,
+    decimal CostPrice,
     int StockQuantity,
     string? Description,
     int WarrantyMonths,
@@ -88,6 +90,7 @@ public sealed record ProductListItem(
     string ProductName,
     decimal Price,
     decimal DiscountPrice,
+    decimal CostPrice,
     decimal EffectivePrice,
     int StockQuantity,
     int SoldCount,
@@ -112,6 +115,7 @@ public sealed record ProductDetailHeader
     public string ProductName { get; init; } = null!;
     public decimal Price { get; init; }
     public decimal DiscountPrice { get; init; }
+    public decimal CostPrice { get; init; }
     public decimal EffectivePrice { get; init; }
     public int StockQuantity { get; init; }
     public int SoldCount { get; init; }

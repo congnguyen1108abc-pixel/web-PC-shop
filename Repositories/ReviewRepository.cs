@@ -27,7 +27,7 @@ public sealed class ReviewRepository : IReviewRepository
         return new PagedResult<AdminReviewItem>(
             items: itemsList.Select(x => new AdminReviewItem(
                 x.ReviewId, x.ProductId, x.ProductName, x.SKU, x.UserId,
-                x.FullName, x.Rating, x.Comment, x.ImageURL, x.IsApproved, x.CreatedAt
+                x.FullName, x.Rating, x.Comment, x.ImageURL, x.IsApproved, x.CreatedAt, x.Sentiment
             )),
             totalRecords: totalRecords,
             pageNumber: normalized.PageNumber,
@@ -41,21 +41,22 @@ public sealed class ReviewRepository : IReviewRepository
     public Task ApproveAsync(ApproveReviewRequest request)
         => _db.ExecuteAsync("sp_Admin_ApproveReview", new { request.ReviewId, request.IsApproved });
 
-    public Task AddAsync(AddReviewRequest request)
+    public Task AddAsync(AddReviewRequest request, string? sentiment)
         => _db.ExecuteAsync("sp_Customer_AddReview", new
         {
             request.UserId,
             request.ProductId,
             request.Rating,
             request.Comment,
-            ImageUrl = request.ImageUrl
+            ImageUrl = request.ImageUrl,
+            Sentiment = sentiment
         });
 
-    public Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl)
+    public Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl, string? sentiment)
     {
         return _db.ExecuteRawAsync(
-            "UPDATE Reviews SET Rating = @Rating, Comment = @Comment, ImageURL = @ImageUrl WHERE ReviewID = @ReviewId AND UserID = @UserId",
-            new { ReviewId = reviewId, UserId = userId, Rating = rating, Comment = comment, ImageUrl = imageUrl }
+            "UPDATE Reviews SET Rating = @Rating, Comment = @Comment, ImageURL = @ImageUrl, Sentiment = @Sentiment WHERE ReviewID = @ReviewId AND UserID = @UserId",
+            new { ReviewId = reviewId, UserId = userId, Rating = rating, Comment = comment, ImageUrl = imageUrl, Sentiment = sentiment }
         );
     }
 
@@ -76,7 +77,7 @@ public sealed class ReviewRepository : IReviewRepository
         return new PagedResult<CustomerReviewItem>(
             items: itemsList.Select(x => new CustomerReviewItem(
                 x.ReviewId, x.ProductId, x.UserId, x.FullName, x.AvatarURL,
-                x.Rating, x.Comment, x.ImageURL, x.CreatedAt
+                x.Rating, x.Comment, x.ImageURL, x.CreatedAt, x.Sentiment
             )),
             totalRecords: totalRecords,
             pageNumber: pageNumber,
@@ -104,10 +105,10 @@ public sealed class ReviewRepository : IReviewRepository
     private sealed record AdminReviewItemWithTotal(
         int ReviewId, int ProductId, string ProductName, string SKU, int UserId,
         string FullName, int Rating, string? Comment, string? ImageURL, bool IsApproved,
-        DateTime CreatedAt, int TotalRecords);
+        DateTime CreatedAt, string? Sentiment, int TotalRecords);
 
     private sealed record CustomerReviewItemWithTotal(
         int ReviewId, int ProductId, int UserId, string? FullName, string? AvatarURL,
-        int Rating, string? Comment, string? ImageURL, DateTime CreatedAt, int TotalRecords);
+        int Rating, string? Comment, string? ImageURL, DateTime CreatedAt, string? Sentiment, int TotalRecords);
 }
 

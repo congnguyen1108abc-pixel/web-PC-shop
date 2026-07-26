@@ -1,5 +1,6 @@
 using Google.GenAI;
 using PC_Store.DTOs.Chat;
+using PC_Store.Repositories.Base;
 
 namespace PC_Store.Services
 {
@@ -12,11 +13,13 @@ namespace PC_Store.Services
     public class ChatbotService : IChatbotService
     {
         private readonly Client _client;
+        private readonly IDbRepository _db;
         private readonly string _systemPrompt;
 
-        public ChatbotService(string apiKey)
+        public ChatbotService(string apiKey, IDbRepository db)
         {
             _client = new Client(apiKey: apiKey);
+            _db = db;
             _systemPrompt = GetSystemPrompt();
         }
 
@@ -36,9 +39,13 @@ namespace PC_Store.Services
                     }
                 }
 
+                var dynamicRecs = await GetDynamicRecommendedProductsAsync();
+
                 var fullPrompt = $@"{_systemPrompt}
 
 {GetKnowledgeBase()}
+
+{dynamicRecs}
 
 {historyText}
 --- CÂU HỎI MỚI CỦA KHÁCH HÀNG ---
@@ -93,9 +100,13 @@ namespace PC_Store.Services
                     contextPrompt = "Khách hàng đang xem trang web của chúng tôi. Hãy gửi lời chào nhiệt tình từ PC Store và hỏi xem họ đang tìm kiếm dòng PC, Laptop hay linh kiện công nghệ nào hôm nay.";
                 }
 
+                var dynamicRecs = await GetDynamicRecommendedProductsAsync();
+
                 var fullPrompt = $@"{_systemPrompt}
 
 {GetKnowledgeBase()}
+
+{dynamicRecs}
 
 --- YÊU CẦU NGỮ CẢNH ---
 {contextPrompt}
@@ -114,6 +125,42 @@ LƯU Ý: Tạo câu chào ngắn gọn (khoảng 2-3 câu), tự nhiên, hướn
                 return !string.IsNullOrEmpty(request.ProductName)
                     ? $"Chào bạn! Tôi thấy bạn đang quan tâm đến sản phẩm {request.ProductName}. Bạn có cần tôi tư vấn về hiệu năng chơi game hoặc linh kiện đi kèm phù hợp không?"
                     : "Chào bạn! Tôi có thể hỗ trợ gì cho bạn về sản phẩm và cấu hình PC hôm nay?";
+            }
+        }
+
+        private async Task<string> GetDynamicRecommendedProductsAsync()
+        {
+            try
+            {
+                const string sql = @"
+                    SELECT TOP 10
+                        p.ProductID,
+                        p.ProductName,
+                        p.Price,
+                        p.DiscountPrice,
+                        ISNULL(p.SoldCount, 0) AS SalesCount,
+                        ISNULL((SELECT COUNT(*) FROM Reviews r WHERE r.ProductID = p.ProductID AND (r.Rating >= 4 OR r.Sentiment = N'Tích cực')), 0) AS PositiveReviewsCount,
+                        (ISNULL(p.SoldCount, 0) * 3 + ISNULL((SELECT COUNT(*) FROM Reviews r WHERE r.ProductID = p.ProductID AND (r.Rating >= 4 OR r.Sentiment = N'Tích cực')), 0) * 5) AS RecommendationScore
+                    FROM Products p
+                    WHERE p.IsActive = 1
+                    ORDER BY RecommendationScore DESC;";
+                
+                var products = await _db.QueryRawAsync<dynamic>(sql);
+                
+                var sb = new System.Text.StringBuilder();
+                sb.AppendLine("=== SẢN PHẨM GỢI Ý ĐỀ XUẤT THÔNG MINH (Xếp hạng theo lượt bán & đánh giá tích cực) ===");
+                sb.AppendLine("LƯU Ý QUAN TRỌNG: Đây là danh sách các sản phẩm bán chạy nhất và có tỷ lệ hài lòng cao nhất từ khách hàng. Hãy ưu tiên giới thiệu các dòng này khi khách hàng nhờ tư vấn.");
+                foreach (var p in products)
+                {
+                    decimal price = p.DiscountPrice > 0 ? p.DiscountPrice : p.Price;
+                    sb.AppendLine($"- [ID: {p.ProductID}] {p.ProductName} | Giá: {price:N0}đ (Đã bán: {p.SalesCount} chiếc, {p.PositiveReviewsCount} đánh giá tích cực, Điểm đề xuất: {p.RecommendationScore})");
+                }
+                return sb.ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Chatbot Recommended Query Error] {ex.Message}");
+                return "=== SẢN PHẨM GỢI Ý ĐỀ XUẤT ===\n(Không thể truy vấn cơ sở dữ liệu thực tế lúc này)";
             }
         }
 
@@ -146,6 +193,8 @@ QUY TẮC TRẢ LỜI:
 - Trả lời bằng tiếng Việt, ngắn gọn nhưng đầy đủ thông tin
 - Luôn kết thúc bằng một câu hỏi hoặc đề nghị để khách tiếp tục tương tác
 - Có thể trả lời bất kỳ câu hỏi nào, không từ chối, luôn cố gắng giúp đỡ
+- ƯU TIÊN đề xuất các sản phẩm trong danh sách 'SẢN PHẨM GỢI Ý ĐỀ XUẤT THÔNG MINH' khi khách hỏi về tư vấn cấu hình, mua sắm hoặc tìm kiếm sản phẩm hot. Hãy giải thích rằng các sản phẩm này đang đứng đầu danh sách bán chạy và nhận được nhiều phản hồi tích cực từ khách hàng đã mua trước đó.
+- SỬ DỤNG luật kết hợp Apriori & High Utility Itemset Mining để đề xuất các sản phẩm đi kèm (cross-sell) hợp lý (ví dụ: mua CPU thì gợi ý mua thêm Mainboard hoặc Tản nhiệt thường đi cùng nhau từ lịch sử mua hàng).
 
 PERSONALITY:
 - Vui vẻ, hòa đồng, dễ gần

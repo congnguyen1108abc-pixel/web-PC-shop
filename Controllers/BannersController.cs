@@ -43,29 +43,53 @@ public sealed class BannersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Upsert([FromBody] UpsertBannerRequest request)
     {
-        await _banners.UpsertAsync(request);
-
-        return Ok(new
+        try
         {
-            message = request.BannerId is null
-                ? "Thêm banner thành công"
-                : "Cập nhật banner thành công"
-        });
+            await _banners.UpsertAsync(request);
+
+            return Ok(new
+            {
+                message = request.BannerId is null
+                    ? "Thêm banner thành công"
+                    : "Cập nhật banner thành công"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "Lỗi khi thêm hoặc cập nhật banner",
+                error = ex.Message,
+                stackTrace = ex.StackTrace
+            });
+        }
     }
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{bannerId:int}")]
     public async Task<ActionResult> Delete(int bannerId)
     {
-        var id = await _banners.DeleteAsync(bannerId);
-
-        if (id is null)
-            return NotFound(new { message = "Không tìm thấy banner" });
-
-        return Ok(new
+        try
         {
-            message = "Xóa banner thành công",
-            deletedBannerId = id
-        });
+            var id = await _banners.DeleteAsync(bannerId);
+
+            if (id is null)
+                return NotFound(new { message = "Không tìm thấy banner" });
+
+            return Ok(new
+            {
+                message = "Xóa banner thành công",
+                deletedBannerId = id
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                message = "Lỗi khi xóa banner",
+                error = ex.Message,
+                stackTrace = ex.StackTrace
+            });
+        }
     }
 }

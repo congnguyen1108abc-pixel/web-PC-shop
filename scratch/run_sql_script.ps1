@@ -6,7 +6,7 @@ $connectionString = "Server=localhost\SQLEXPRESS;Database=PC_Store;Trusted_Conne
 $connection = New-Object System.Data.SqlClient.SqlConnection($connectionString)
 try {
     $connection.Open()
-    $sql = Get-Content -Path $FilePath -Raw
+    $sql = [System.IO.File]::ReadAllText((Resolve-Path $FilePath), [System.Text.Encoding]::UTF8)
     # Split by GO if present, or execute as a single batch
     $batches = $sql -split "(?mi)^\s*GO\s*$"
     foreach ($batch in $batches) {

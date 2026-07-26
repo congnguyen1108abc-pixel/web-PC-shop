@@ -28,9 +28,24 @@ public sealed record AdminReviewItem(
     string? Comment,
     string? ImageUrl,
     bool IsApproved,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    string? Sentiment);
 
 public sealed record DeleteReviewRequest(int ReviewId);
+
+public sealed record UpdateSentimentRequest(string Sentiment);
+
+public sealed record ReviewStatsDto(
+    int TotalCount,
+    int PositiveCount,
+    int NegativeCount,
+    int NeutralCount,
+    decimal AvgRating,
+    int Star5Count,
+    int Star4Count,
+    int Star3Count,
+    int Star2Count,
+    int Star1Count);
 
 // Customer: gửi đánh giá sản phẩm (chỉ khi đã mua và nhận hàng)
 public sealed record AddReviewRequest(
@@ -55,7 +70,8 @@ public sealed record CustomerReviewItem(
     int Rating,
     string? Comment,
     string? ImageUrl,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    string? Sentiment);
 
 public sealed record TestimonialItem(
     int ReviewId,

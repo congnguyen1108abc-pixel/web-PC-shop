@@ -1130,207 +1130,388 @@ window.addEventListener('beforeunload', () => {
 console.log('[Checkout] ============ SCRIPT LOADED ============');
 
 // ==========================================
-// 9. VOUCHER SYSTEM
+// 9. VOUCHER PICKER SYSTEM
 // ==========================================
-function renderAvailableVouchers(subtotal) {
-    const voucherListEl = document.getElementById('available-vouchers-list');
-    const voucherContainer = document.getElementById('available-vouchers-container');
+let currentAvailableVouchers = [];
+let vpAllVouchers = [];         // All active vouchers from /api/vouchers/active
+let vpSubtotal = 0;             // Current subtotal for discount calculation
 
-    let wallet = [];
+// ── Open / Close Picker ──────────────────────────────────────
+function openVoucherPicker() {
+    document.getElementById('voucherPickerOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    const searchInput = document.getElementById('vp-search-input');
+    if (searchInput) { searchInput.value = ''; filterVoucherList(''); }
+    renderVoucherPickerList(vpAllVouchers, vpSubtotal);
+}
+
+function closeVoucherPicker(e) {
+    if (e && e.target !== document.getElementById('voucherPickerOverlay')) return;
+    _closeVoucherPicker();
+}
+
+function _closeVoucherPicker() {
+    document.getElementById('voucherPickerOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ── Filter list by search ──────────────────────────────────
+function filterVoucherList(query) {
+    if (!query || !query.trim()) {
+        renderVoucherPickerList(vpAllVouchers, vpSubtotal);
+        return;
+    }
+    const q = query.trim().toLowerCase();
+    const filtered = vpAllVouchers.filter(v =>
+        v.voucherCode.toLowerCase().includes(q) ||
+        (v.description || '').toLowerCase().includes(q)
+    );
+    renderVoucherPickerList(filtered, vpSubtotal);
+}
+
+// ── Render voucher list inside picker ─────────────────────
+function renderVoucherPickerList(vouchers, subtotal) {
+    const listEl = document.getElementById('vp-list');
+    if (!listEl) return;
+
+    if (!vouchers || vouchers.length === 0) {
+        listEl.innerHTML = `
+            <div class="vp-empty">
+                <div class="vp-empty-icon">🎟️</div>
+                <div class="vp-empty-text">Không tìm thấy mã giảm giá</div>
+                <div class="vp-empty-sub">Thử nhập mã thủ công ở ô bên trên</div>
+            </div>`;
+        return;
+    }
+
+    const appliedCode = voucherState.code ? voucherState.code.toUpperCase() : null;
+    const cartItems = (() => {
+        try { return JSON.parse(localStorage.getItem('hyper_core_cart')) || []; } catch(e) { return []; }
+    })();
+
+    listEl.innerHTML = vouchers.map((v, i) => {
+        const eligible = subtotal >= (v.minOrderValue || 0);
+        const isApplied = appliedCode === v.voucherCode.toUpperCase();
+
+        const icon = '%';
+
+        const discountStr = v.isPercent
+            ? `Giảm ${v.discountAmount}%`
+            : `Giảm ${formatCurrency(v.discountAmount)}`;
+
+        const minOrderStr = (v.minOrderValue || 0) > 0
+            ? `Đơn tối thiểu ${formatCurrency(v.minOrderValue)}`
+            : 'Không giới hạn đơn tối thiểu';
+
+        const condClass = eligible ? 'can-use' : 'cant-use';
+        const condText = eligible ? '✓ Đủ điều kiện' : `Cần thêm ${formatCurrency((v.minOrderValue || 0) - subtotal)}`;
+
+        // Convert expiryDate to standard dd/M/yyyy (e.g. 31/7/2026)
+        const d = new Date(v.expiryDate);
+        const expStr = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+        
+        const applyBtnClass = isApplied ? 'vp-apply-btn applied-btn' : 'vp-apply-btn';
+        const applyBtnText = isApplied ? '✓ Đang dùng' : 'Áp dụng';
+
+        // Detail: list cart items
+        const cartItemsHtml = cartItems.length > 0
+            ? cartItems.map(ci => `<li>${ci.name || 'Sản phẩm'} (x${ci.qty || ci.quantity || 1})</li>`).join('')
+            : '<li>Tất cả sản phẩm trong giỏ hàng</li>';
+
+        return `
+        <div class="vp-card ${eligible ? 'eligible' : 'ineligible'} ${isApplied ? 'selected' : ''}" id="vp-card-${i}">
+            <div class="vp-card-main">
+                <div class="vp-card-badge-icon">${icon}</div>
+                <div class="vp-card-info">
+                    <div class="vp-card-code">${v.voucherCode}</div>
+                    <div class="vp-card-expiry">HSD: ${expStr}</div>
+                    <div class="vp-card-discount-line">${discountStr}</div>
+                </div>
+                <div class="vp-card-actions">
+                    <button class="${applyBtnClass}" 
+                        ${!eligible && !isApplied ? 'disabled' : ''}
+                        onclick="applyFromPicker('${v.voucherCode}')">${applyBtnText}</button>
+                    <span class="vp-condition-pill ${condClass}">${condText}</span>
+                </div>
+            </div>
+            <div class="vp-card-footer">
+                <button class="vp-detail-toggle" onclick="toggleVpDetail(this, 'vp-detail-${i}')">
+                    Xem chi tiết <span class="vp-chevron">⌵</span>
+                </button>
+                <div class="vp-detail-body" id="vp-detail-${i}">
+                    <div class="vp-detail-body-container">
+                        <ul>
+                            <li>Mô tả: ${v.description || discountStr}</li>
+                            <li>Áp dụng tối đa ${v.maxPerUser || 1} lần trên tài khoản khách hàng</li>
+                            <li>${minOrderStr}</li>
+                            ${v.maxDiscount && v.isPercent ? `<li>Giảm tối đa ${formatCurrency(v.maxDiscount)}</li>` : ''}
+                        </ul>
+                        <div class="detail-sub-label">Sản phẩm áp dụng</div>
+                        <ul style="max-height: 120px; overflow-y: auto;">${cartItemsHtml}</ul>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ── Toggle expand detail ────────────────────────────────────
+function toggleVpDetail(btn, detailId) {
+    const detailEl = document.getElementById(detailId);
+    if (!detailEl) return;
+    const isOpen = detailEl.classList.contains('open');
+    detailEl.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.querySelector('.vp-chevron').textContent = isOpen ? '▾' : '▴';
+}
+
+// ── Apply voucher from picker ───────────────────────────────
+function applyFromPicker(code) {
+    processVoucher(code);
+    _closeVoucherPicker();
+}
+
+// ── Render available vouchers (chips + quick row) ──────────
+async function renderAvailableVouchers(subtotal) {
+    vpSubtotal = subtotal;
+
+    if (!authToken || !authUser) return;
+    const userObj = JSON.parse(authUser);
+    const userId = userObj.userId || userObj.UserId || 0;
+
     try {
-        wallet = JSON.parse(localStorage.getItem('voucherWallet')) || [];
-    } catch (e) { }
-
-    const now = new Date().toISOString();
-    const availableVouchers = wallet.filter(v => !v.isUsed && v.expiryAt > now);
-
-    if (availableVouchers.length > 0 && voucherContainer) {
-        voucherContainer.style.display = 'block';
-        voucherListEl.innerHTML = '';
-        availableVouchers.forEach(v => {
-            let minOrder = 0;
-            if (v.cond && v.cond.includes('tối thiểu')) {
-                const match = v.cond.match(/\d+(\.\d+)?(k|tr)/i);
-                if (match) {
-                    let val = parseFloat(match[0].replace(/k|tr/i, ''));
-                    if (match[0].toLowerCase().includes('k')) minOrder = val * 1000;
-                    if (match[0].toLowerCase().includes('tr')) minOrder = val * 1000000;
-                }
-            }
-            const isEligible = subtotal >= minOrder;
-
-            const div = document.createElement('div');
-            div.style.padding = '10px';
-            div.style.border = '1px solid ' + (isEligible ? '#3aa7ff' : '#ddd');
-            div.style.borderRadius = '8px';
-            div.style.background = isEligible ? 'rgba(58, 167, 255, 0.05)' : '#f9f9f9';
-            div.style.cursor = isEligible ? 'pointer' : 'not-allowed';
-            div.style.opacity = isEligible ? '1' : '0.6';
-            div.style.display = 'flex';
-            div.style.justifyContent = 'space-between';
-            div.style.alignItems = 'center';
-            div.innerHTML = `
-                <div>
-                    <strong style="color: #111; font-size: 14px;">${v.name}</strong> <br/>
-                    <small style="color: #666;">Mã: ${v.code} | ${v.cond || ''}</small>
-                </div>
-                <div>
-                    ${isEligible ? `<button type="button" class="btn-use-voucher" data-code="${v.code}" style="padding: 6px 12px; background: #3aa7ff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">Dùng</button>` : `<span style="font-size:12px;color:#d32f2f;">Chưa đủ đk</span>`}
-                </div>
-            `;
-            voucherListEl.appendChild(div);
+        // Load available vouchers for this user + order value
+        const res = await fetch(`/api/vouchers/available?userId=${userId}&orderValue=${subtotal}`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
         });
+        if (!res.ok) throw new Error('Voucher load failed');
+        currentAvailableVouchers = await res.json() || [];
+    } catch(e) {
+        console.warn('[Voucher] Could not load available vouchers:', e);
+        currentAvailableVouchers = [];
+    }
 
-        // Add event listeners for use buttons
-        document.querySelectorAll('.btn-use-voucher').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const code = e.target.getAttribute('data-code');
-                const voucherInput = document.getElementById('voucher-code-input');
-                if (voucherInput) voucherInput.value = code;
-                processVoucher(code);
-            });
-        });
-    } else if (voucherContainer) {
-        voucherContainer.style.display = 'none';
+    // Also load ALL active vouchers for the picker (no auth needed)
+    try {
+        const res2 = await fetch('/api/vouchers/active');
+        if (res2.ok) vpAllVouchers = await res2.json() || [];
+    } catch(e) {
+        vpAllVouchers = currentAvailableVouchers;
+    }
+
+    // Render quick chips (top 3 eligible vouchers)
+    const quickRow = document.getElementById('voucher-quick-row');
+    const chipsEl = document.getElementById('voucher-chips-list');
+
+    if (quickRow && chipsEl && vpAllVouchers.length > 0) {
+        quickRow.style.display = 'block';
+        const eligibleTop = vpAllVouchers.filter(v => subtotal >= (v.minOrderValue || 0)).slice(0, 3);
+        chipsEl.innerHTML = eligibleTop.map(v => {
+            const label = v.isPercent ? `Giảm ${v.discountAmount}%` : `Giảm ${formatCurrency(v.discountAmount)}`;
+            const isApplied = voucherState.code && voucherState.code.toUpperCase() === v.voucherCode.toUpperCase();
+            return `<button type="button" class="voucher-chip ${isApplied ? 'applied' : ''}" 
+                onclick="processVoucher('${v.voucherCode}'); updateVoucherUI();">
+                ${isApplied ? '✓ ' : ''}${label}
+            </button>`;
+        }).join('');
     }
 
     // Auto re-validate currently applied voucher
     if (voucherState.code) {
-        handleApplyVoucher(voucherState.code);
+        processVoucher(voucherState.code, true);
+    }
+
+    updateVoucherAppliedBadge();
+}
+
+// ── Update the applied voucher badge ──────────────────────
+function updateVoucherAppliedBadge() {
+    const badgeEl = document.getElementById('voucher-applied-badge');
+    if (badgeEl) badgeEl.style.display = 'none';
+
+    const inp = document.getElementById('voucher-code-input');
+    const btn = document.getElementById('apply-voucher-btn');
+    const msgEl = document.getElementById('voucher-message');
+
+    if (voucherState.code && voucherState.discount > 0) {
+        const code = voucherState.code.toUpperCase();
+        if (inp) {
+            inp.value = code;
+            inp.readOnly = false;
+            inp.style.background = '';
+            inp.style.color = '';
+            inp.style.fontWeight = '';
+            inp.style.borderColor = '';
+        }
+        if (btn) {
+            btn.textContent = 'ÁP DỤNG';
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            btn.onclick = (e) => {
+                e.preventDefault();
+                processVoucher(inp.value.trim());
+            };
+        }
+        if (msgEl) {
+            msgEl.innerHTML = `✓ Đã áp dụng mã <strong>${code}</strong> (Tiết kiệm ${formatCurrency(voucherState.discount)})`;
+            msgEl.style.color = '#16a34a';
+            msgEl.style.display = 'block';
+            msgEl.style.marginTop = '6px';
+            msgEl.style.fontSize = '13.5px';
+            msgEl.style.fontWeight = '500';
+        }
+    } else {
+        if (inp) {
+            if (voucherState.code === null) {
+                if (!inp.value.trim()) inp.value = '';
+            }
+            inp.readOnly = false;
+            inp.style.background = '';
+            inp.style.color = '';
+            inp.style.fontWeight = '';
+            inp.style.borderColor = '';
+        }
+        if (btn) {
+            btn.textContent = 'ÁP DỤNG';
+            btn.style.background = '';
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            btn.onclick = (e) => {
+                e.preventDefault();
+                processVoucher(inp.value.trim());
+            };
+        }
+        if (msgEl) {
+            msgEl.style.display = 'none';
+            msgEl.textContent = '';
+        }
+    }
+}
+
+// ── Remove applied voucher ──────────────────────────────────
+function removeVoucher() {
+    voucherState.code = null;
+    voucherState.discount = 0;
+    voucherState.source = null;
+    const inp = document.getElementById('voucher-code-input');
+    if (inp) inp.value = '';
+    const msgEl = document.getElementById('voucher-message');
+    if (msgEl) { msgEl.style.display = 'none'; msgEl.textContent = ''; }
+    updateTotalsDOM();
+    updateVoucherUI();
+    logVoucherState('Remove Voucher');
+}
+
+// ── Full UI refresh after voucher change ──────────────────
+function updateVoucherUI() {
+    updateVoucherAppliedBadge();
+    // Refresh chips
+    const quickRow = document.getElementById('voucher-quick-row');
+    const chipsEl = document.getElementById('voucher-chips-list');
+    if (chipsEl && vpAllVouchers.length > 0) {
+        const eligibleTop = vpAllVouchers.filter(v => vpSubtotal >= (v.minOrderValue || 0)).slice(0, 3);
+        chipsEl.innerHTML = eligibleTop.map(v => {
+            const label = v.isPercent ? `Giảm ${v.discountAmount}%` : `Giảm ${formatCurrency(v.discountAmount)}`;
+            const isApplied = voucherState.code && voucherState.code.toUpperCase() === v.voucherCode.toUpperCase();
+            return `<button type="button" class="voucher-chip ${isApplied ? 'applied' : ''}" 
+                onclick="processVoucher('${v.voucherCode}'); updateVoucherUI();">
+                ${isApplied ? '✓ ' : ''}${label}
+            </button>`;
+        }).join('');
     }
 }
 
 function processVoucher(inputCode, isAutoRevalidate = false) {
     const messageEl = document.getElementById('voucher-message');
+
     if (!inputCode || !inputCode.trim()) {
-        console.log('=> Dừng: Lỗi không có mã nhập vào (clear voucher).');
-        console.groupEnd();
-        if (messageEl) {
-            messageEl.innerText = 'Đã hủy mã giảm giá.';
-            messageEl.className = 'voucher-message';
-            messageEl.style.display = 'none';
+        if (messageEl) { messageEl.style.display = 'none'; messageEl.textContent = ''; }
+        voucherState.code = null;
+        voucherState.discount = 0;
+        updateTotalsDOM();
+        updateVoucherUI();
+        logVoucherState('Clear Voucher');
+        return;
+    }
+
+    const code = inputCode.trim().toUpperCase();
+
+    // Match against available vouchers (user-eligible)
+    let v = currentAvailableVouchers.find(x => x.voucherCode && x.voucherCode.toUpperCase() === code);
+
+    // Fallback: check all active vouchers
+    if (!v) {
+        v = vpAllVouchers.find(x => x.voucherCode && x.voucherCode.toUpperCase() === code);
+    }
+
+    if (!v) {
+        if (messageEl && !isAutoRevalidate) {
+            messageEl.innerHTML = '❌ Mã không tồn tại, đã hết hạn hoặc không áp dụng được.';
+            messageEl.style.color = '#ef4444';
+            messageEl.style.display = 'block';
         }
         voucherState.code = null;
         voucherState.discount = 0;
         updateTotalsDOM();
-        logVoucherState('Clear Voucher');
+        updateVoucherUI();
         return;
     }
-    const code = inputCode.trim().toUpperCase();
-    if (isTestVoucher(code)) {
-        const tv = testVouchers[code];
-        const cartStr = localStorage.getItem('hyper_core_cart');
-        let rawItems = [];
-        try { rawItems = JSON.parse(cartStr) || []; } catch (e) { }
-        let subtotal = 0;
-        rawItems.forEach(item => subtotal += (item.price || 0) * (item.qty || item.quantity || 1));
-        let discount = 0;
-        if (tv.type === 'percent') {
-            discount = subtotal * (tv.value / 100);
-        } else if (tv.type === 'money') {
-            discount = tv.value;
-        }
-        if (discount > subtotal + currentShippingFee) {
-            discount = subtotal + currentShippingFee;
-        }
-        voucherState.code = code;
-        voucherState.discount = discount;
-        voucherState.source = 'test';
-        if (messageEl) { messageEl.innerText = 'Áp dụng thành công test voucher! Đã giảm ' + formatCurrency(discount); messageEl.style.color = '#2e7d32'; messageEl.style.display = 'block'; }
-        updateTotalsDOM();
-        logVoucherState('Apply Test Voucher');
-        return;
-    }
-    let wallet = [];
-    try { wallet = JSON.parse(localStorage.getItem('pc_voucher_wallet')) || JSON.parse(localStorage.getItem('voucherWallet')) || []; } catch (e) { }
-    const v = wallet.find(x => x.code && x.code.toUpperCase() === code && !x.isUsed);
-    if (!v) {
-        if (messageEl && !isAutoRevalidate) { messageEl.innerText = 'Voucher không hợp lệ hoặc đã sử dụng.'; messageEl.style.color = '#d32f2f'; messageEl.style.display = 'block'; }
-        if (!voucherState.code) voucherState.discount = 0;
-        updateTotalsDOM();
-        logVoucherState('Apply Real Voucher (Error)');
-        return;
-    }
-    if (new Date() > new Date(v.expiryAt)) {
-        if (messageEl && !isAutoRevalidate) { messageEl.innerText = 'Voucher đã hết hạn.'; messageEl.style.color = '#d32f2f'; messageEl.style.display = 'block'; }
-        if (!voucherState.code) voucherState.discount = 0;
-        updateTotalsDOM();
-        logVoucherState('Apply Real Voucher (Error)');
-        return;
-    }
+
+    // Calculate discount
     const cartStr = localStorage.getItem('hyper_core_cart');
     let rawItems = [];
-    try { rawItems = JSON.parse(cartStr) || []; } catch (e) { }
+    try { rawItems = JSON.parse(cartStr) || []; } catch(e) {}
     let subtotal = 0;
     rawItems.forEach(item => subtotal += (item.price || 0) * (item.qty || item.quantity || 1));
-    let minOrder = 0;
-    if (v.cond && v.cond.includes('tối thiểu')) {
-        const match = v.cond.match(/\d+(\.\d+)?(k|tr)/i);
-        if (match) {
-            let val = parseFloat(match[0].replace(/k|tr/i, ''));
-            if (match[0].toLowerCase().includes('k')) minOrder = val * 1000;
-            if (match[0].toLowerCase().includes('tr')) minOrder = val * 1000000;
+
+    if (subtotal < (v.minOrderValue || 0) && !isAutoRevalidate) {
+        if (messageEl) {
+            messageEl.innerHTML = `❌ Đơn hàng chưa đủ điều kiện. Cần thêm ${formatCurrency((v.minOrderValue || 0) - subtotal)}.`;
+            messageEl.style.color = '#ef4444';
+            messageEl.style.display = 'block';
         }
-    }
-    if (subtotal < minOrder) {
-        if (messageEl && !isAutoRevalidate) { messageEl.innerText = 'Đơn hàng chưa đạt điều kiện. Cần tối thiểu ' + formatCurrency(minOrder); messageEl.style.color = '#d32f2f'; messageEl.style.display = 'block'; }
-        if (!voucherState.code) voucherState.discount = 0;
-        updateTotalsDOM();
-        logVoucherState('Apply Real Voucher (Error)');
         return;
     }
+
     let discount = 0;
-    let baseReward = v.baseReward || '';
-    if (baseReward.includes('FREESHIP') || (v.name && v.name.toLowerCase().includes('freeship'))) {
-        discount = Math.min(currentShippingFee, 50000);
-    } else if (baseReward.includes('PERCENT') || (v.name && v.name.includes('%'))) {
-        const pctMatch = v.name.match(/(\d+)%/);
-        const pct = pctMatch ? parseInt(pctMatch[1]) : 0;
-        discount = subtotal * (pct / 100);
-        if (v.cond && v.cond.includes('tối đa')) {
-            const maxMatch = v.cond.match(/\d+(\.\d+)?(k|tr)/i);
-            if (maxMatch) {
-                let maxVal = parseFloat(maxMatch[0].replace(/k|tr/i, ''));
-                if (maxMatch[0].toLowerCase().includes('k')) maxVal *= 1000;
-                if (maxMatch[0].toLowerCase().includes('tr')) maxVal *= 1000000;
-                if (discount > maxVal) discount = maxVal;
-            }
-        }
+    if (v.isPercent) {
+        discount = subtotal * (v.discountAmount / 100);
+        if (v.maxDiscount && discount > v.maxDiscount) discount = v.maxDiscount;
     } else {
-        const cleanName = (v.name || '').replace(/\./g, '');
-        const intMatch = cleanName.match(/\d+/);
-        if (intMatch) {
-            discount = parseInt(intMatch[0]);
-            if (cleanName.includes('k') || cleanName.includes('K')) discount *= 1000;
-        }
+        discount = v.discountAmount;
     }
+    if (discount > subtotal + currentShippingFee) discount = subtotal + currentShippingFee;
+
     voucherState.discount = discount;
     voucherState.code = code;
-    voucherState.source = 'wallet';
-    if (messageEl && !isAutoRevalidate) { messageEl.innerText = 'Áp dụng thành công! Đã giảm ' + formatCurrency(discount); messageEl.style.color = '#2e7d32'; messageEl.style.display = 'block'; }
+    voucherState.source = 'api';
+
+    if (messageEl) { messageEl.style.display = 'none'; }
+
     updateTotalsDOM();
-    logVoucherState('Apply Real Voucher (Success)');
+    updateVoucherUI();
+
+    if (!isAutoRevalidate) {
+        // Show brief success toast
+        const toastEl = document.getElementById('voucher-message');
+        if (toastEl) {
+            toastEl.innerHTML = `✅ Áp dụng <strong>${code}</strong> thành công! Tiết kiệm ${formatCurrency(discount)}`;
+            toastEl.style.color = '#16a34a';
+            toastEl.style.display = 'block';
+            setTimeout(() => { toastEl.style.display = 'none'; }, 3000);
+        }
+    }
+    logVoucherState('Apply Voucher');
 }
 
 function updateTotalsDOM() {
     const cartStr = localStorage.getItem('hyper_core_cart');
     let rawItems = [];
-    try { rawItems = JSON.parse(cartStr) || []; } catch (e) { }
+    try { rawItems = JSON.parse(cartStr) || []; } catch(e) {}
     let subtotal = 0;
     rawItems.forEach(item => subtotal += (item.price || 0) * (item.qty || item.quantity || 1));
-    if (voucherState.code && isTestVoucher(voucherState.code)) {
-        const tv = testVouchers[voucherState.code.toUpperCase()];
-        if (tv) {
-            if (tv.type === 'percent') {
-                voucherState.discount = subtotal * (tv.value / 100);
-            } else if (tv.type === 'money') {
-                voucherState.discount = tv.value;
-            }
-            if (voucherState.discount > subtotal + currentShippingFee) {
-                voucherState.discount = subtotal + currentShippingFee;
-            }
-        }
-    }
+
     const discount = voucherState.discount || 0;
     totalAmount = Math.max(0, subtotal + currentShippingFee - discount);
     const discountEl = document.getElementById('summary-discount');
@@ -1339,43 +1520,50 @@ function updateTotalsDOM() {
     if (totalEl) totalEl.innerText = formatCurrency(totalAmount);
 }
 
-// Bind to apply button on start
+// ── Bind UI events ─────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    // Apply button
     const applyBtn = document.getElementById('apply-voucher-btn');
     const voucherInput = document.getElementById('voucher-code-input');
     if (applyBtn && voucherInput) {
         applyBtn.addEventListener('click', () => {
             processVoucher(voucherInput.value.trim());
         });
-    }
-    if (voucherInput) {
         voucherInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                processVoucher(voucherInput.value.trim());
+            if (e.key === 'Enter') { e.preventDefault(); processVoucher(voucherInput.value.trim()); }
+        });
+        voucherInput.addEventListener('input', () => {
+            if (!voucherInput.value.trim()) {
+                // Tự tay xóa hết chữ trong ô -> Hủy voucher ngay lập tức
+                voucherState.code = null;
+                voucherState.discount = 0;
+                voucherState.source = null;
+                const messageEl = document.getElementById('voucher-message');
+                if (messageEl) { messageEl.style.display = 'none'; messageEl.textContent = ''; }
+                updateTotalsDOM();
+                updateVoucherUI();
+                logVoucherState('User Cleared Input');
             }
         });
     }
+
+    // "Xem thêm mã giảm giá" button
+    const openPickerBtn = document.getElementById('open-voucher-picker-btn');
+    if (openPickerBtn) {
+        openPickerBtn.addEventListener('click', openVoucherPicker);
+    }
+
+    // ESC key closes picker
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') _closeVoucherPicker();
+    });
 });
 
 function markVoucherAsUsed(code) {
     if (!code) return;
-    let wallet = [];
-    try {
-        wallet = JSON.parse(localStorage.getItem('voucherWallet')) || [];
-    } catch (e) { }
-
-    let found = false;
-    for (let i = 0; i < wallet.length; i++) {
-        if (wallet[i].code === code) {
-            wallet[i].isUsed = true;
-            found = true;
-            break;
-        }
-    }
-    if (found) {
-        localStorage.setItem('voucherWallet', JSON.stringify(wallet));
-        localStorage.setItem('pc_voucher_wallet', JSON.stringify(wallet));
-        console.log('[Checkout] ✅ Marked voucher as used:', code);
-    }
+    console.log('[Checkout] ✅ Voucher used:', code);
+    // Clear voucher state after order placed
+    voucherState.code = null;
+    voucherState.discount = 0;
+    voucherState.source = null;
 }

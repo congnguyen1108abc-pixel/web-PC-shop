@@ -1277,3 +1277,489 @@ body {
     }
 }
 
+/* ============================================
+   VOUCHER PICKER SYSTEM
+   ============================================ */
+
+/* "Xem thêm mã giảm giá" link button */
+.voucher-see-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    color: #1a73e8;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0;
+    text-decoration: none;
+    transition: color 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.voucher-see-more-btn:hover {
+    color: #1558b0;
+    text-decoration: underline;
+}
+
+/* Quick voucher chip buttons */
+.voucher-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff;
+    border: 1.5px solid #1a73e8;
+    color: #1a73e8;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 20px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.voucher-chip:hover {
+    background: #1a73e8;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26,115,232,0.25);
+}
+.voucher-chip.applied {
+    background: #1a73e8;
+    color: #fff;
+}
+
+/* Applied voucher badge */
+.voucher-applied-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1.5px solid #86efac;
+    border-radius: 10px;
+    padding: 10px 14px;
+    gap: 10px;
+}
+.voucher-applied-box .va-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+.voucher-applied-box .va-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.voucher-applied-box .va-code {
+    font-weight: 700;
+    color: #15803d;
+    font-size: 13px;
+}
+.voucher-applied-box .va-desc {
+    color: #16a34a;
+    font-size: 12px;
+}
+.voucher-applied-box .va-remove {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.voucher-applied-box .va-remove:hover {
+    color: #ef4444;
+    background: rgba(239,68,68,0.08);
+}
+
+/* ─── VOUCHER PICKER MODAL OVERLAY ─────────── */
+.vp-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 99998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+.vp-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ─── VOUCHER PICKER MODAL ─────────────────── */
+.vp-modal {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    width: 92%;
+    max-width: 480px;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    transform: scale(0.96);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.vp-overlay.active .vp-modal {
+    transform: scale(1);
+}
+
+/* Header */
+.vp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+}
+.vp-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+.vp-close-btn {
+    background: rgba(0, 0, 0, 0.04);
+    border: none;
+    font-size: 14px;
+    color: #4b5563;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.vp-close-btn:hover {
+    background: #000000;
+    color: #ffffff;
+    transform: rotate(90deg);
+}
+
+/* Section label */
+.vp-section-label {
+    padding: 14px 26px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    flex-shrink: 0;
+}
+
+/* Voucher list */
+.vp-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 20px 16px;
+}
+.vp-list::-webkit-scrollbar { width: 5px; }
+.vp-list::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+
+.vp-loading {
+    text-align: center;
+    padding: 50px 20px;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Voucher card inside modal */
+.vp-card {
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 18px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    position: relative;
+}
+.vp-card:last-child { margin-bottom: 0; }
+.vp-card.eligible { border-color: rgba(0, 0, 0, 0.06); }
+.vp-card.ineligible { opacity: 0.7; }
+.vp-card.selected { border-color: #000000; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08); }
+
+/* Circle cutouts for coupon styling */
+.vp-card::before, .vp-card::after {
+    content: '';
+    position: absolute;
+    left: 72px; /* Centered with dashed divider */
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #f9fafb; /* Color of the element underneath overlay */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    z-index: 10;
+}
+.vp-card::before {
+    top: -8px;
+    box-shadow: inset 0 -3px 3px rgba(0,0,0,0.02);
+}
+.vp-card::after {
+    bottom: -8px;
+    box-shadow: inset 0 3px 3px rgba(0,0,0,0.02);
+}
+
+/* Card top row */
+.vp-card-main {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px;
+    position: relative;
+}
+
+/* Dashed divider line */
+.vp-card-main::after {
+    content: '';
+    position: absolute;
+    left: 79px;
+    top: 15%;
+    bottom: 15%;
+    width: 1px;
+    border-left: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.vp-card-badge-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    background: #f3f4f6;
+    color: #9ca3af;
+    font-weight: 800;
+    transition: all 0.2s ease;
+}
+.vp-card.eligible .vp-card-badge-icon { 
+    background: #111827;
+    color: #ffffff;
+}
+
+.vp-card-info { 
+    flex: 1; 
+    min-width: 0; 
+    padding-left: 14px;
+}
+.vp-card-code {
+    font-size: 14.5px;
+    font-weight: 850;
+    color: #111827;
+    margin-bottom: 3px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    background: rgba(0, 0, 0, 0.05);
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+.vp-card.ineligible .vp-card-code {
+    color: #6b7280;
+    background: rgba(0, 0, 0, 0.03);
+}
+.vp-card-expiry {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.vp-card-discount-line {
+    font-size: 13px;
+    color: #1f2937;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.vp-card-discount-line::before {
+    content: '•';
+    color: #000000;
+    font-weight: 900;
+    margin-right: 2px;
+}
+
+.vp-card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* Apply button */
+.vp-apply-btn {
+    height: 32px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    background: #000000;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+    white-space: nowrap;
+}
+.vp-apply-btn:hover:not(:disabled) {
+    background: #374151;
+}
+.vp-apply-btn:disabled {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+.vp-apply-btn.applied-btn {
+    background: #16a34a;
+}
+.vp-apply-btn.applied-btn:hover {
+    background: #15803d;
+}
+
+/* Condition pill */
+.vp-condition-pill {
+    font-size: 10.5px;
+    color: #64748b;
+    font-weight: 600;
+}
+.vp-condition-pill.can-use {
+    color: #16a34a;
+}
+.vp-condition-pill.cant-use {
+    color: #ef4444;
+}
+
+/* "Xem chi tiết" toggle */
+.vp-card-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    padding: 0 18px;
+    background: #ffffff;
+}
+.vp-detail-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 10px 0;
+    font-family: inherit;
+    transition: color 0.15s ease;
+}
+.vp-detail-toggle:hover { color: #000000; }
+.vp-detail-toggle .vp-chevron {
+    display: inline-block;
+    transition: transform 0.2s ease;
+    font-style: normal;
+}
+.vp-detail-toggle.open .vp-chevron { transform: rotate(180deg); }
+
+/* Expanded detail section */
+.vp-detail-body {
+    display: none;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    font-size: 12.5px;
+    color: #4b5563;
+    line-height: 1.6;
+    transition: all 0.25s ease-out;
+}
+.vp-detail-body.open { 
+    display: block; 
+    max-height: 400px;
+    padding: 4px 0 14px;
+}
+.vp-detail-body-container {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+.vp-detail-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+}
+.vp-detail-body ul li {
+    padding: 2px 0;
+    padding-left: 14px;
+    position: relative;
+    color: #4b5563;
+    font-size: 12px;
+}
+.vp-detail-body ul li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: #94a3b8;
+}
+.vp-detail-body .detail-sub-label {
+    font-weight: 700;
+    margin-top: 10px;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #64748b;
+}
+
+/* Footer */
+.vp-footer {
+    padding: 16px 24px 22px;
+    flex-shrink: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: flex-end;
+}
+.vp-cancel-btn {
+    height: 42px;
+    padding: 0 24px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    background: #ffffff;
+    color: #374151;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+.vp-cancel-btn:hover {
+    background: #f9fafb;
+    border-color: #000000;
+}
+
+/* No voucher state */
+.vp-empty {
+    text-align: center;
+    padding: 50px 24px;
+    color: #64748b;
+}
+.vp-empty-icon { font-size: 44px; margin-bottom: 12px; }
+.vp-empty-text { font-size: 14.5px; font-weight: 700; color: #111827; }
+.vp-empty-sub { font-size: 12.5px; color: #94a3b8; margin-top: 6px; }

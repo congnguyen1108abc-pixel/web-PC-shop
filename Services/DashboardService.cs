@@ -27,7 +27,7 @@ public sealed class DashboardService : IDashboardService
             factory: async () =>
             {
                 var summary = await _repo.GetSummaryAsync();
-                return summary ?? new DashboardSummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                return summary ?? new DashboardSummary(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             },
             expiration: SummaryCacheExpiration
         );

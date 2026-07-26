@@ -31,17 +31,9 @@ public sealed class VoucherService : IVoucherService
         return result ?? Enumerable.Empty<VoucherItem>();
     }
 
-    public async Task<IEnumerable<VoucherAvailableItem>> GetAvailableAsync(VoucherAvailableRequest request)
+    public Task<IEnumerable<VoucherAvailableItem>> GetAvailableAsync(VoucherAvailableRequest request)
     {
-        var cacheKey = $"{CacheKeyPrefix}:available:{request.UserId}";
-
-        var result = await _cache.GetOrCreateAsync(
-            key: cacheKey,
-            factory: () => _repo.GetAvailableAsync(request),
-            expiration: CacheExpiration
-        );
-
-        return result ?? Enumerable.Empty<VoucherAvailableItem>();
+        return _repo.GetAvailableAsync(request);
     }
 
     public async Task<string?> CreateAsync(VoucherCreateRequest request)

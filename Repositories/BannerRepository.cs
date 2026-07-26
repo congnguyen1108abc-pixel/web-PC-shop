@@ -20,13 +20,19 @@ public sealed class BannerRepository : IBannerRepository
     public Task UpsertAsync(UpsertBannerRequest request)
         => _db.ExecuteAsync("sp_Admin_UpsertBanner", new
         {
-            request.BannerId, request.Title, request.ImageUrl, request.LinkUrl,
-            request.DisplayOrder, request.StartDate, request.EndDate, request.IsActive
+            BannerID = request.BannerId,
+            Title = request.Title,
+            ImageURL = request.ImageUrl,
+            LinkURL = request.LinkUrl,
+            DisplayOrder = request.DisplayOrder,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            IsActive = request.IsActive
         });
 
     public async Task<int?> DeleteAsync(int bannerId)
     {
-        var r = await _db.QuerySingleAsync<DeletedIdResult>("sp_Banner_Delete", new { BannerId = bannerId });
+        var r = await _db.QuerySingleAsync<DeletedIdResult>("sp_Banner_Delete", new { BannerID = bannerId });
         return r?.DeletedBannerId;
     }
 

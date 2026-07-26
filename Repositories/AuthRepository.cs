@@ -128,13 +128,15 @@ public sealed record VerifyTokenResult(
     bool IsUsed,
     bool IsValid);
 
-// Helper record cho Refresh Token
-public sealed record RefreshTokenVerifyResult(
-    int TokenID,
-    int UserID,
-    string Email,
-    string? FullName,
-    string Role,
-    DateTime ExpiresAt,
-    bool IsRevoked,
-    bool IsValid);
+// Helper class cho Refresh Token để Dapper map linh hoạt các cột trả về từ sp_Auth_VerifyRefreshToken
+public sealed class RefreshTokenVerifyResult
+{
+    public int TokenID { get; set; }
+    public int UserID { get; set; }
+    public string Email { get; set; } = null!;
+    public string? FullName { get; set; }
+    public string Role { get; set; } = null!;
+    public DateTime ExpiresAt { get; set; }
+    public bool IsRevoked { get; set; }
+    public bool IsValid { get; set; }
+}

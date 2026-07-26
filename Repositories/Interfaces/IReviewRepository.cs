@@ -9,8 +9,8 @@ public interface IReviewRepository
     Task<PagedResult<AdminReviewItem>> GetAdminReviewsAsync(AdminReviewQueryRequest request);
     Task DeleteAsync(int reviewId, int? userId = null);
     Task ApproveAsync(ApproveReviewRequest request);
-    Task AddAsync(AddReviewRequest request);
+    Task AddAsync(AddReviewRequest request, string? sentiment);
     Task<PagedResult<CustomerReviewItem>> GetByProductAsync(int productId, int pageNumber = 1, int pageSize = 10);
-    Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl);
+    Task UpdateAsync(int reviewId, int userId, int rating, string? comment, string? imageUrl, string? sentiment);
     Task<IEnumerable<TestimonialItem>> GetTopTestimonialsAsync();
 }
