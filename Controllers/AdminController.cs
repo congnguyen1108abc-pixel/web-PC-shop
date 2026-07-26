@@ -361,6 +361,41 @@ public sealed class AdminController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("financial-details")]
+    public async Task<ActionResult> GetFinancialDetails(
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null)
+    {
+        var result = await _dashboard.GetFinancialDetailsAsync(startDate, endDate);
+        return Ok(result);
+    }
+
+    [HttpGet("top-products")]
+    public async Task<ActionResult> GetTopProducts(
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null,
+        [FromQuery] int top = 10)
+    {
+        var result = await _dashboard.GetTopProductsAsync(startDate, endDate, top);
+        return Ok(result);
+    }
+
+    [HttpGet("revenue-by-category")]
+    public async Task<ActionResult> GetRevenueByCategory(
+        [FromQuery] DateTime? startDate = null,
+        [FromQuery] DateTime? endDate = null)
+    {
+        var result = await _dashboard.GetRevenueByCategoryAsync(startDate, endDate);
+        return Ok(result);
+    }
+
+    [HttpGet("financial-yearly")]
+    public async Task<ActionResult> GetFinancialYearly()
+    {
+        var result = await _dashboard.GetFinancialYearlySummaryAsync();
+        return Ok(result);
+    }
+
     // ── Vouchers ──────────────────────────────────────────────────────────────
 
     [HttpGet("voucher-usage")]

@@ -35,5 +35,20 @@ public sealed class DashboardService : IDashboardService
         return result;
     }
 
-    public Task<IEnumerable<RevenueReportItem>> GetRevenueReportAsync(RevenueReportRequest request) => _repo.GetRevenueReportAsync(request);
+    public Task<IEnumerable<RevenueReportItem>> GetRevenueReportAsync(RevenueReportRequest request)
+        => _repo.GetRevenueReportAsync(request);
+
+    // ── Financial Reports ────────────────────────────────────────────────
+
+    public Task<IEnumerable<FinancialDetailItem>> GetFinancialDetailsAsync(DateTime? startDate, DateTime? endDate)
+        => _repo.GetFinancialDetailsAsync(startDate, endDate);
+
+    public Task<IEnumerable<TopProductItem>> GetTopProductsAsync(DateTime? startDate, DateTime? endDate, int top = 10)
+        => _repo.GetTopProductsAsync(startDate, endDate, top);
+
+    public Task<IEnumerable<RevenueByCategoryItem>> GetRevenueByCategoryAsync(DateTime? startDate, DateTime? endDate)
+        => _repo.GetRevenueByCategoryAsync(startDate, endDate);
+
+    public Task<IEnumerable<FinancialYearlySummary>> GetFinancialYearlySummaryAsync()
+        => _repo.GetFinancialYearlySummaryAsync();
 }
