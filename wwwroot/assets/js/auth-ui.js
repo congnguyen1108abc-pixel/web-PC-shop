@@ -24,18 +24,13 @@ function initAuthUI() {
         console.log('User NOT logged in - showing login link');
         if (loginLink) {
             loginLink.style.display = 'flex';
-            loginLink.onclick = function() {
-                // Đảm bảo khi bấm đăng nhập sẽ xóa dọn dẹp data cũ nếu có
-                localStorage.removeItem('pc_store_token');
-                localStorage.removeItem('pc_store_refresh_token');
-                localStorage.removeItem('pc_store_user');
-            };
-            // Cập nhật href cho thẻ a để luôn hoạt động mượt mà ở cả Server lẫn File
+            // Không gán onclick để không chặn navigation mặc định của href
+            // Chỉ set href đúng
             if (window.location.protocol === 'file:') {
                 const isSubfolder = window.location.pathname.toLowerCase().includes('/profile/');
                 loginLink.setAttribute('href', isSubfolder ? '../login.html' : 'login.html');
             } else {
-                loginLink.setAttribute('href', '/login');
+                loginLink.setAttribute('href', '/Login');
             }
         }
         if (greetWrap) greetWrap.style.display = 'none';
@@ -163,26 +158,20 @@ async function handleLogout() {
         }
     }
 
-    // Xóa local storage auth
+    // Xóa toàn bộ auth data
     localStorage.removeItem('pc_store_token');
     localStorage.removeItem('pc_store_refresh_token');
     localStorage.removeItem('pc_store_user');
-    
-    // Xóa local/session storage giỏ hàng và địa chỉ giao hàng trực tiếp để bảo mật phiên đăng nhập
     localStorage.removeItem('hyper_core_cart');
     localStorage.removeItem('hypercore_cart_items');
     localStorage.removeItem('hypercore_cart');
     localStorage.removeItem('shippingAddress');
     localStorage.removeItem('pc_store_cart_owner');
-    
-    sessionStorage.removeItem('checkout_addressId');
-    sessionStorage.removeItem('checkout_address');
-    sessionStorage.removeItem('current_orderId');
-    console.log('✓ Auth, cart, and address data cleared from storage');
+    sessionStorage.clear();
+    console.log('✓ Auth, cart, and address data cleared');
 
-    // Reload để cập nhật UI
-    console.log('Reloading page...');
-    window.location.reload();
+    // Redirect về trang Login (không reload lại trang hiện tại)
+    window.location.href = '/Login';
 }
 
 window.initAuthUI = initAuthUI;
