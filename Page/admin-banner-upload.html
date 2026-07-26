@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Banner - Upload Video Clip</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="file"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f5f5f5;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #f0f0f0;
+            border-color: #667eea;
+        }
+
+        .file-input-label.has-file {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .file-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
+
+        .preview-container {
+            margin-top: 15px;
+            max-height: 300px;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #f5f5f5;
+        }
+
+        .preview-container video,
+        .preview-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert.success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .alert.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .alert.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .success-info {
+            background: white;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-info h3 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+
+        .success-info code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            display: block;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📹 Upload Banner Video</h1>
+        <p class="subtitle">Tải lên clip mới cho banner trang chủ</p>
+
+        <div class="alert" id="alert"></div>
+
+        <form id="uploadForm">
+            <!-- Title -->
+            <div class="form-group">
+                <label for="title">Tiêu đề Banner *</label>
+                <input 
+                    type="text" 
+                    id="title" 
+                    name="title"
+                    placeholder="VD: ROG Astral GeForce RTX 5090"
+                    required>
+            </div>
+
+            <!-- Display Order -->
+            <div class="form-group">
+                <label for="displayOrder">Thứ tự hiển thị</label>
+                <input 
+                    type="number" 
+                    id="displayOrder" 
+                    name="displayOrder"
+                    value="1"
+                    min="1">
+            </div>
+
+            <!-- Video File -->
+            <div class="form-group">
+                <label for="videoFile">Video Clip (MP4, AVI, MOV, WEBM) *</label>
+                <div class="file-input-wrapper">
+                    <label class="file-input-label" id="videoLabel">
+                        <span>
+                            <span class="file-icon">🎬</span>
+                            <span class="file-name" id="videoFileName">Chọn file video...</span>
+                        </span>
+                        <span style="font-size: 12px; color: #999;" id="videoSize"></span>
+                    </label>
+                    <input 
+                        type="file" 
+                        id="videoFile" 
+                        name="videoFile"
+                        accept=".mp4,.avi,.mov,.webm"
+                        required>
+                </div>
+                <div class="preview-container" id="videoPreview"></div>
+                <div class="info-box">
+                    ✓ Định dạng hỗ trợ: MP4, AVI, MOV, WEBM<br>
+                    ✓ Kích thước tối đa: 500MB
+                </div>
+            </div>
+
+            <!-- Thumbnail Image -->
+            <div class="form-group">
+                <label for="thumbnailFile">Ảnh Thumbnail (JPG, PNG, WEBP)</label>
+                <div class="file-input-wrapper">
+                    <label class="file-input-label" id="thumbLabel">
+                        <span>
+                            <span class="file-icon">🖼️</span>
+                            <span class="file-name" id="thumbFileName">Chọn ảnh...</span>
+                        </span>
+                        <span style="font-size: 12px; color: #999;" id="thumbSize"></span>
+                    </label>
+                    <input 
+                        type="file" 
+                        id="thumbnailFile" 
+                        name="thumbnailFile"
+                        accept=".jpg,.jpeg,.png,.webp">
+                </div>
+                <div class="preview-container" id="thumbPreview"></div>
+                <div class="info-box">
+                    💡 Nên là ảnh với tỷ lệ 16:9 để tương thích tốt nhất
+                </div>
+            </div>
+
+            <!-- Link URL -->
+            <div class="form-group">
+                <label for="linkUrl">URL Liên kết (Tùy chọn)</label>
+                <input 
+                    type="text" 
+                    id="linkUrl" 
+                    name="linkUrl"
+                    placeholder="VD: /Products">
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="button-group">
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="loading-spinner" id="spinner"></span>
+                    <span id="submitText">Tải Lên</span>
+                </button>
+                <button type="reset" class="btn-reset">Xóa</button>
+            </div>
+        </form>
+
+        <!-- Success Info -->
+        <div class="success-info" id="successInfo">
+            <h3>✓ Tải lên thành công!</h3>
+            <p>Video của bạn đã được lưu vào cơ sở dữ liệu:</p>
+            <code id="successData"></code>
+            <p style="margin-top: 15px; font-size: 13px; color: #666;">
+                Bây giờ bạn có thể sử dụng URL này trong database hoặc cập nhật banner từ admin panel.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const videoInput = document.getElementById('videoFile');
+        const thumbInput = document.getElementById('thumbnailFile');
+        const videoLabel = document.getElementById('videoLabel');
+        const thumbLabel = document.getElementById('thumbLabel');
+        const videoPreview = document.getElementById('videoPreview');
+        const thumbPreview = document.getElementById('thumbPreview');
+        const alert = document.getElementById('alert');
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('spinner');
+        const successInfo = document.getElementById('successInfo');
+
+        // Handle video file selection
+        videoInput.addEventListener('change', function (e) {
+            const file = this.files[0];
+            if (file) {
+                updateFileLabel('videoLabel', 'videoFileName', 'videoSize', file);
+                previewVideo(file);
+            }
+        });
+
+        // Handle thumbnail file selection
+        thumbInput.addEventListener('change', function (e) {
+            const file = this.files[0];
+            if (file) {
+                updateFileLabel('thumbLabel', 'thumbFileName', 'thumbSize', file);
+                previewImage(file);
+            }
+        });
+
+        function updateFileLabel(labelId, nameId, sizeId, file) {
+            document.getElementById(labelId).classList.add('has-file');
+            document.getElementById(nameId).textContent = file.name;
+            document.getElementById(sizeId).textContent = formatFileSize(file.size);
+        }
+
+        function previewVideo(file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                videoPreview.innerHTML = `<video controls><source src="${e.target.result}" type="${file.type}"></video>`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function previewImage(file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                thumbPreview.innerHTML = `<img src="${e.target.result}" alt="Thumbnail preview">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Validate
+            if (!videoInput.files[0]) {
+                showAlert('Vui lòng chọn file video', 'error');
+                return;
+            }
+
+            // Prepare FormData
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('displayOrder', document.getElementById('displayOrder').value);
+            formData.append('linkUrl', document.getElementById('linkUrl').value);
+            formData.append('videoFile', videoInput.files[0]);
+            
+            if (thumbInput.files[0]) {
+                formData.append('thumbnailFile', thumbInput.files[0]);
+            }
+
+            // Submit
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            document.getElementById('submitText').textContent = 'Đang tải...';
+            successInfo.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/banner/upload-video', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showAlert('✓ Tải lên thành công!', 'success');
+                    
+                    // Show success info
+                    document.getElementById('successData').textContent = JSON.stringify(data.data, null, 2);
+                    successInfo.style.display = 'block';
+                    
+                    // Reset form
+                    form.reset();
+                    videoLabel.classList.remove('has-file');
+                    thumbLabel.classList.remove('has-file');
+                    videoPreview.innerHTML = '';
+                    thumbPreview.innerHTML = '';
+                    
+                    // Scroll to success info
+                    setTimeout(() => {
+                        successInfo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 500);
+                } else {
+                    showAlert(`❌ ${data.error || 'Lỗi không xác định'}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`❌ Lỗi: ${error.message}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                spinner.style.display = 'none';
+                document.getElementById('submitText').textContent = 'Tải Lên';
+            }
+        });
+
+        function showAlert(message, type) {
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+            alert.style.display = 'block';
+            
+            if (type !== 'error') {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

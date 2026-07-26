@@ -804,14 +804,26 @@
                 <div class="management-title-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
                     <h2 style="display: inline-block; vertical-align: middle;">Banner Clip Thumbnail</h2>
                     <div style="display:flex; align-items:center; gap:12px;">
-                        <div style="position: relative;" id="homeVideoSearchWrapper">
-                            <input type="text" id="homeVideoProductSearch" placeholder="🔍 Tìm kiếm để ghim sản phẩm..." style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px; width: 260px;" onkeyup="filterHomeVideoProducts()" onfocus="showHomeVideoProductList()" autocomplete="off">
+                        <div style="position: relative; width: 320px;" id="homeVideoSearchWrapper">
+                            <div id="homeVideoSelectBox" onclick="toggleHomeVideoProductDropdown()" style="padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border-color, #cbd5e1); font-size: 13px; background: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;">
+                                <span id="homeVideoSelectedText" style="color: #64748b; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">— Chọn hoặc tìm sản phẩm ghim —</span>
+                                <span style="font-size: 10px; color: #94a3b8; margin-left: 6px;">▼</span>
+                            </div>
                             <input type="hidden" id="homeVideoProductSelect" value="">
-                            <div id="homeVideoProductDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e2e8f0; border-radius: 8px; max-height: 250px; overflow-y: auto; z-index: 1000; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-top: 4px;">
-                                <!-- Dropdown items -->
+                            
+                            <div id="homeVideoProductDropdown" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid #cbd5e1; border-radius: 10px; z-index: 1000; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15); padding: 8px; max-height: 320px; overflow-y: auto;">
+                                <div style="padding: 4px; margin-bottom: 6px;">
+                                    <input type="text" id="homeVideoProductSearch" placeholder="🔍 Gõ tên sản phẩm để lọc..." style="width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 12px; outline: none; box-sizing: border-box;" onkeyup="filterHomeVideoProducts()" onclick="event.stopPropagation();">
+                                </div>
+                                <div id="homeVideoProductOptionsList">
+                                    <!-- Dropdown items -->
+                                </div>
                             </div>
                         </div>
-                        <button class="btn-submit" onclick="updateHomeVideoProduct()" style="padding: 9px 14px; font-size:12px; border-radius:8px; background:var(--primary); color:white; border:none; cursor:pointer;">📌 Ghim</button>
+                        
+                        <button class="btn-submit" onclick="updateHomeVideoProduct()" style="padding: 10px 18px; font-size:13px; font-weight:700; border-radius:8px; background:var(--primary, #0284c7); color:white; border:none; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                            <span>📌</span> Ghim
+                        </button>
                         
                         <label for="homeVideoUploadInput" class="btn-submit" style="padding: 10px 16px; font-size:12px; font-weight:700; border-radius:8px; display:flex; align-items:center; gap:6px; background:#10b981; border:none; color:white; cursor:pointer; margin:0;">
                             <span>📤</span> TẢI CLIP LÊN
@@ -3405,15 +3417,11 @@
         let homeVideoAllProducts = [];
 
         async function populateHomeVideoProducts() {
-            if (homeVideoProductsLoaded) {
-                setHomeVideoSelectValue();
-                return;
-            }
             try {
-                const res = await fetch('/api/Products?PageSize=250&OnlyActive=true');
+                const res = await fetch('/api/Products?PageSize=100&OnlyActive=true');
                 if (res.ok) {
                     const data = await res.json();
-                    homeVideoAllProducts = data.items || [];
+                    homeVideoAllProducts = data.items || data.Items || (Array.isArray(data) ? data : []);
                     renderHomeVideoDropdownList(homeVideoAllProducts);
                     homeVideoProductsLoaded = true;
                     setHomeVideoSelectValue();
@@ -3424,52 +3432,92 @@
         }
 
         function renderHomeVideoDropdownList(products) {
-            const dropdown = document.getElementById('homeVideoProductDropdown');
-            if (!dropdown) return;
-            dropdown.innerHTML = '';
+            const listContainer = document.getElementById('homeVideoProductOptionsList');
+            if (!listContainer) return;
+            listContainer.innerHTML = '';
             
+            // Option bỏ ghim
             const defaultOpt = document.createElement('div');
-            defaultOpt.style.cssText = 'padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #eee; color: #ef4444; font-weight: 600; font-size: 13px;';
+            defaultOpt.style.cssText = 'padding: 8px 10px; cursor: pointer; border-radius: 6px; color: #ef4444; font-weight: 600; font-size: 12px; margin-bottom: 4px; background: #fff5f5;';
             defaultOpt.textContent = '— Bỏ ghim sản phẩm —';
-            defaultOpt.onclick = () => selectHomeVideoProduct('', '');
-            dropdown.appendChild(defaultOpt);
+            defaultOpt.onclick = (e) => {
+                e.stopPropagation();
+                selectHomeVideoProduct('', '— Chọn hoặc tìm sản phẩm ghim —');
+            };
+            listContainer.appendChild(defaultOpt);
+
+            if (products.length === 0) {
+                const empty = document.createElement('div');
+                empty.style.cssText = 'padding: 12px; text-align: center; color: #94a3b8; font-size: 12px;';
+                empty.textContent = 'Không tìm thấy sản phẩm phù hợp';
+                listContainer.appendChild(empty);
+                return;
+            }
 
             products.forEach(p => {
                 const opt = document.createElement('div');
-                opt.style.cssText = 'padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; transition: background 0.2s;';
-                opt.onmouseover = () => opt.style.background = '#f8fafc';
+                opt.style.cssText = 'padding: 8px 10px; cursor: pointer; border-radius: 6px; display: flex; align-items: center; gap: 10px; transition: background 0.15s; margin-bottom: 2px;';
+                opt.onmouseover = () => opt.style.background = '#f1f5f9';
                 opt.onmouseout = () => opt.style.background = 'transparent';
                 
+                const imgUrl = p.defaultImageUrl || p.imageUrl || '/assets/images/placeholder.png';
+                const priceStr = (p.effectivePrice || p.discountPrice || p.price || 0).toLocaleString('vi-VN') + 'đ';
+                
                 opt.innerHTML = `
-                    <img src="${p.imageUrl || '/assets/images/placeholder.png'}" style="width:36px; height:36px; object-fit:contain; border-radius:4px; background:#fff; border:1px solid #eee;">
-                    <div style="font-size:12px; flex:1;">
-                        <div style="font-weight:600; color:#1e293b; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${p.productName}</div>
-                        <div style="color:#ef4444; font-weight:600; margin-top:2px;">${(p.discountPrice || p.price || 0).toLocaleString('vi-VN')}đ</div>
+                    <img src="${imgUrl}" style="width:32px; height:32px; object-fit:contain; border-radius:4px; background:#fff; border:1px solid #e2e8f0; flex-shrink:0;">
+                    <div style="font-size:12px; flex:1; overflow:hidden;">
+                        <div style="font-weight:600; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.productName}</div>
+                        <div style="color:#e02d2d; font-weight:700; font-size:11px; margin-top:1px;">${priceStr}</div>
                     </div>
                 `;
-                opt.onclick = () => selectHomeVideoProduct(p.slug || p.productId, p.productName);
-                dropdown.appendChild(opt);
+                opt.onclick = (e) => {
+                    e.stopPropagation();
+                    selectHomeVideoProduct(p.slug || p.productId, p.productName);
+                };
+                listContainer.appendChild(opt);
             });
         }
 
-        function showHomeVideoProductList() {
-            document.getElementById('homeVideoProductDropdown').style.display = 'block';
+        function toggleHomeVideoProductDropdown() {
+            const dropdown = document.getElementById('homeVideoProductDropdown');
+            if (!dropdown) return;
+            const isVisible = dropdown.style.display === 'block';
+            dropdown.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                const searchInput = document.getElementById('homeVideoProductSearch');
+                if (searchInput) {
+                    searchInput.value = '';
+                    filterHomeVideoProducts();
+                    setTimeout(() => searchInput.focus(), 100);
+                }
+            }
         }
 
         function filterHomeVideoProducts() {
-            const query = document.getElementById('homeVideoProductSearch').value.toLowerCase();
+            const searchInput = document.getElementById('homeVideoProductSearch');
+            if (!searchInput) return;
+            const query = searchInput.value.toLowerCase().trim();
             if (!query) {
                 renderHomeVideoDropdownList(homeVideoAllProducts);
                 return;
             }
-            const filtered = homeVideoAllProducts.filter(p => p.productName.toLowerCase().includes(query) || (p.sku && p.sku.toLowerCase().includes(query)));
+            const filtered = homeVideoAllProducts.filter(p => 
+                (p.productName && p.productName.toLowerCase().includes(query)) || 
+                (p.sku && p.sku.toLowerCase().includes(query)) ||
+                (p.categoryName && p.categoryName.toLowerCase().includes(query)) ||
+                (p.brandName && p.brandName.toLowerCase().includes(query))
+            );
             renderHomeVideoDropdownList(filtered);
-            showHomeVideoProductList();
         }
 
         function selectHomeVideoProduct(val, name) {
             document.getElementById('homeVideoProductSelect').value = val;
-            document.getElementById('homeVideoProductSearch').value = name;
+            const textSpan = document.getElementById('homeVideoSelectedText');
+            if (textSpan) {
+                textSpan.textContent = name;
+                textSpan.style.color = val ? '#0f172a' : '#64748b';
+                textSpan.style.fontWeight = val ? '600' : '500';
+            }
             document.getElementById('homeVideoProductDropdown').style.display = 'none';
         }
 
@@ -3477,23 +3525,28 @@
         document.addEventListener('click', function(e) {
             const wrapper = document.getElementById('homeVideoSearchWrapper');
             if (wrapper && !wrapper.contains(e.target)) {
-                document.getElementById('homeVideoProductDropdown').style.display = 'none';
+                const dropdown = document.getElementById('homeVideoProductDropdown');
+                if (dropdown) dropdown.style.display = 'none';
             }
         });
 
         function setHomeVideoSelectValue() {
             const videoBanner = allBannersData.find(b => b.title === '[home_video]');
             const selInput = document.getElementById('homeVideoProductSelect');
-            const searchInput = document.getElementById('homeVideoProductSearch');
-            if (selInput && searchInput && videoBanner) {
+            const textSpan = document.getElementById('homeVideoSelectedText');
+            if (selInput && textSpan && videoBanner) {
                 const val = videoBanner.linkUrl || '';
                 selInput.value = val;
                 
                 if (val) {
                     const prod = homeVideoAllProducts.find(p => p.slug === val || p.productId == val);
-                    searchInput.value = prod ? prod.productName : val;
+                    textSpan.textContent = prod ? prod.productName : val;
+                    textSpan.style.color = '#0f172a';
+                    textSpan.style.fontWeight = '600';
                 } else {
-                    searchInput.value = '';
+                    textSpan.textContent = '— Chọn hoặc tìm sản phẩm ghim —';
+                    textSpan.style.color = '#64748b';
+                    textSpan.style.fontWeight = '500';
                 }
             }
         }
@@ -3660,6 +3713,7 @@
 
             if (pageType === 'home') {
                 document.getElementById('homeVideoCard').style.display = 'block';
+                await populateHomeVideoProducts();
             } else {
                 document.getElementById('homeVideoCard').style.display = 'none';
             }

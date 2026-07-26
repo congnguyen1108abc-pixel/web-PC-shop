@@ -404,6 +404,12 @@ app.MapGet("/product/{slug}", async context =>
 });
 
 // ── API Controllers ───────────────────────────────────────────────────────────
+app.MapGet("/admin-banner-upload", async context =>
+{
+    context.Response.ContentType = "text/html";
+    await context.Response.SendFileAsync(Path.Combine(builder.Environment.ContentRootPath, "Page", "admin-banner-upload.html"));
+});
+
 app.MapControllers();
 
 // ── SignalR Hub Endpoint ──────────────────────────────────────────────────────
