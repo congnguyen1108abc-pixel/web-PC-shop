@@ -2635,11 +2635,17 @@
     <section class="hero page-section" style="position: relative;">
 
         <video src="/images/ROGAstralGeForceRTX5090_clip.mp4" autoplay loop muted playsinline preload="auto"></video>
-        
+
         <!-- Nút MUA NGAY ghim sản phẩm -->
-        <a id="homeVideoLinkBtn" href="#" style="display: none; position: absolute; bottom: 35px; right: 35px; padding: 14px 28px; background: linear-gradient(135deg, #e02d2d 0%, #b91c1c 100%); color: white; border-radius: 50px; font-weight: 800; text-decoration: none; font-size: 15px; box-shadow: 0 8px 25px rgba(224, 45, 45, 0.4); z-index: 10; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; align-items: center; gap: 8px;">
+        <a id="homeVideoLinkBtn" href="#"
+            style="display: none; position: absolute; bottom: 35px; right: 35px; padding: 14px 28px; background: linear-gradient(135deg, #e02d2d 0%, #b91c1c 100%); color: white; border-radius: 50px; font-weight: 800; text-decoration: none; font-size: 15px; box-shadow: 0 8px 25px rgba(224, 45, 45, 0.4); z-index: 10; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; align-items: center; gap: 8px;">
             <span>MUA NGAY</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
         </a>
 
     </section>
@@ -4106,7 +4112,7 @@
     <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
     <script src="/assets/js/cart-drawer-global.js"></script>
     <script src="/assets/js/search.js?v=1.0.0"></script>
-  <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
+    <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
     <script>
 
         const header = document.getElementById("header");
@@ -4681,7 +4687,8 @@
         // ── DYNAMIC HOME VIDEO LOADER ──
         async function loadDynamicHomeVideo() {
             try {
-                const res = await fetch("/api/Banners/active");
+                const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
+                const res = await fetch(`${baseUrl}/api/Banners/active`);
                 if (!res.ok) return;
                 const banners = await res.json();
                 const videoBanner = banners.find(b => b.title === "[home_video]");
@@ -4691,7 +4698,7 @@
                         heroVideo.src = window.location.protocol === 'file:' ? '../wwwroot' + videoBanner.imageUrl : videoBanner.imageUrl;
                         heroVideo.load();
                     }
-                    
+
                     const btn = document.getElementById("homeVideoLinkBtn");
                     if (videoBanner.linkUrl) {
                         const targetUrl = `/product/${videoBanner.linkUrl}`;
@@ -4719,6 +4726,146 @@
         }
         document.addEventListener("DOMContentLoaded", loadDynamicHomeVideo);
     </script>
+    <!-- DYNAMIC HOMEPAGE SECTIONS SYNC -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            try {
+                // Helper observer for newly cloned cards to preserve animation
+                const syncObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                            syncObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+                // 1. PRODUCTS (hotProductGrid)
+                const rawProducts = localStorage.getItem('homepageProducts');
+                if (rawProducts) {
+                    const products = JSON.parse(rawProducts).filter(p => p.status !== false).sort((a, b) => (a.order || 0) - (b.order || 0));
+                    if (products.length > 0) {
+                        const grid = document.getElementById('hotProductGrid');
+                        if (grid) {
+                            const existingCards = Array.from(grid.querySelectorAll('.product-card'));
+                            const templateCard = existingCards[0] ? existingCards[0].cloneNode(true) : null;
+
+                            products.forEach((prod, idx) => {
+                                let card;
+                                if (idx < existingCards.length) {
+                                    card = existingCards[idx];
+                                } else if (templateCard) {
+                                    card = templateCard.cloneNode(true);
+                                    card.classList.remove('active'); // reset animation class for new elements
+                                    grid.appendChild(card);
+                                    syncObserver.observe(card);
+                                }
+                                if (card) {
+                                    card.style.display = '';
+                                    const img = card.querySelector('img.product-image');
+                                    if (img && prod.image) {
+                                        img.src = prod.image;
+                                        img.alt = prod.name || prod.title || '';
+                                    }
+                                    const h3 = card.querySelector('h3');
+                                    if (h3 && (prod.name || prod.title)) h3.textContent = prod.name || prod.title;
+                                    const p = card.querySelector('p');
+                                    if (p && prod.desc) p.textContent = prod.desc;
+                                    const priceDiv = card.querySelector('.price');
+                                    if (priceDiv && prod.price) {
+                                        priceDiv.textContent = prod.sale_price ? prod.sale_price : prod.price;
+                                    }
+                                    if (prod.link) {
+                                        card.style.cursor = 'pointer';
+                                        card.onclick = () => window.location.href = prod.link;
+                                    }
+                                }
+                            });
+
+                            // Remove any extra hardcoded cards if there are fewer dynamic products
+                            for (let i = products.length; i < existingCards.length; i++) {
+                                existingCards[i].remove();
+                            }
+                        }
+                    }
+                }
+
+                // 2. GAMING GEAR (Big Banner & 4 Cards)
+                const rawGGBanner = localStorage.getItem('homepageGamingBanner');
+                if (rawGGBanner) {
+                    const banner = JSON.parse(rawGGBanner);
+                    if (banner.status !== false) {
+                        const bigCard = document.querySelector('.gear-big-card');
+                        if (bigCard) {
+                            const img = bigCard.querySelector('img.gear-big-image');
+                            if (img && banner.image) img.src = banner.image;
+                            const h3 = bigCard.querySelector('h3');
+                            if (h3 && (banner.title || banner.name)) h3.textContent = banner.title || banner.name;
+                            const p = bigCard.querySelector('p');
+                            if (p && banner.desc) p.textContent = banner.desc;
+                            const price = bigCard.querySelector('.gear-price');
+                            if (price && banner.price) price.textContent = banner.price;
+                            const btn = bigCard.querySelector('.gear-btn');
+                            if (btn) {
+                                if (banner.cta) btn.textContent = banner.cta;
+                                if (banner.link) btn.setAttribute('onclick', `window.location.href='${banner.link}'`);
+                            }
+                        }
+                    }
+                }
+
+                const rawGGCards = localStorage.getItem('homepageGamingCards');
+                if (rawGGCards) {
+                    const cardsData = JSON.parse(rawGGCards).filter(c => c.status !== false).sort((a, b) => (a.order || 0) - (b.order || 0));
+                    if (cardsData.length > 0) {
+                        const smallCards = document.querySelectorAll('.gear-small-card');
+                        smallCards.forEach((cardEl, idx) => {
+                            const data = cardsData[idx];
+                            if (data) {
+                                const img = cardEl.querySelector('img');
+                                if (img && data.image) img.src = data.image;
+                                const h4 = cardEl.querySelector('.small-info h4') || cardEl.querySelector('h4');
+                                if (h4 && data.name) h4.textContent = data.name;
+                                const span = cardEl.querySelector('.small-info span') || cardEl.querySelector('span');
+                                if (span && data.price) span.textContent = data.price;
+                                if (data.link) {
+                                    cardEl.style.cursor = 'pointer';
+                                    cardEl.onclick = () => window.location.href = data.link;
+                                }
+                            }
+                        });
+                    }
+                }
+
+                // 3. AUDIO
+                const rawAudio = localStorage.getItem('homepageAudio');
+                if (rawAudio) {
+                    const audioData = JSON.parse(rawAudio).filter(c => c.status !== false).sort((a, b) => (a.order || 0) - (b.order || 0));
+                    if (audioData.length > 0) {
+                        const audioCards = document.querySelectorAll('.audio-card');
+                        audioCards.forEach((cardEl, idx) => {
+                            const data = audioData[idx];
+                            if (data) {
+                                const img = cardEl.querySelector('img');
+                                if (img && data.image) img.src = data.image;
+                                const h3 = cardEl.querySelector('.audio-content h3') || cardEl.querySelector('h3');
+                                if (h3 && data.name) h3.textContent = data.name;
+                                const p = cardEl.querySelector('.audio-content p') || cardEl.querySelector('p');
+                                if (p && data.desc) p.textContent = data.desc;
+                                if (data.link) {
+                                    cardEl.style.cursor = 'pointer';
+                                    cardEl.onclick = () => window.location.href = data.link;
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn('[Sync Error]', e);
+            }
+        });
+    </script>
+
     <!-- Chatbot Global -->
     <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>
 
