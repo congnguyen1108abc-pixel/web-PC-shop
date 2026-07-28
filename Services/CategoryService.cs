@@ -71,4 +71,7 @@ public sealed class CategoryService : ICategoryService
 
         return result;
     }
+
+    public Task<IEnumerable<CategoryAttributeTemplateItem>> GetAttributeTemplatesAsync(int? categoryId, string? categoryName = null)
+        => _repo.GetAttributeTemplatesAsync(categoryId, categoryName);
 }

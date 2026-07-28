@@ -53,4 +53,11 @@ public sealed class CartController : ControllerBase
         await _cart.DeleteCartItemAsync(cartId, userId);
         return Ok(new { message = "Xóa sản phẩm khỏi giỏ hàng thành công" });
     }
+
+    [HttpDelete("clear/user/{userId:int}")]
+    public async Task<ActionResult> ClearCart(int userId)
+    {
+        await _cart.ClearCartAsync(userId);
+        return Ok(new { message = "Xóa toàn bộ giỏ hàng thành công" });
+    }
 }

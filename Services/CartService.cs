@@ -13,4 +13,5 @@ public sealed class CartService : ICartService
     public Task<IEnumerable<CartItem>> GetCartAsync(int userId) => _repo.GetCartAsync(userId);
     public Task UpdateCartItemAsync(CartUpdateRequest request) => _repo.UpdateCartItemAsync(request);
     public Task DeleteCartItemAsync(int cartId, int userId) => _repo.DeleteCartItemAsync(cartId, userId);
+    public Task ClearCartAsync(int userId) => _repo.ClearCartAsync(userId);
 }

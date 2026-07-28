@@ -30,4 +30,7 @@ public sealed class CartRepository : ICartRepository
         {
             CartId = cartId, UserId = userId, NewQuantity = 0
         });
+
+    public Task ClearCartAsync(int userId)
+        => _db.ExecuteRawAsync("DELETE FROM Cart WHERE UserID = @UserId", new { UserId = userId });
 }

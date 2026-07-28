@@ -61,4 +61,18 @@ public sealed class WarrantyController : ControllerBase
 
         return Ok(result);
     }
+
+    /// <summary>
+    /// Tra cứu bảo hành công khai theo SĐT hoặc SKU / Serial Number
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("lookup")]
+    public async Task<ActionResult<IEnumerable<WarrantyItem>>> Lookup([FromQuery] string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return BadRequest(new { message = "Vui lòng nhập số điện thoại hoặc mã SKU / Serial." });
+
+        var results = await _warranty.PublicLookupAsync(query.Trim());
+        return Ok(results);
+    }
 }

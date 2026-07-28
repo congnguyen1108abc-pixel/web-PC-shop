@@ -95,8 +95,8 @@ A: Có trong 7 ngày nếu sản phẩm bị lỗi kỹ thuật
    Không hỗ trợ đổi trả nếu do người dùng
 
 Q10: Địa chỉ cửa hàng ở đâu?
-A: 123 Nguyễn Hữu Cảnh, Bình Thạnh, TP.HCM
-   Hotline: 0123.456.789
+A: 10/4 Lê Quang Đạo, Hóc Môn, TP. Hồ Chí Minh
+   Hotline: 0364885351
 ";
         }
 
@@ -147,10 +147,10 @@ A: 123 Nguyễn Hữu Cảnh, Bình Thạnh, TP.HCM
 
 📍 ĐỊA CHỈ:
 PC Store - HYPER CORE Premium Electronics
-123 Nguyễn Hữu Cảnh, Quận Bình Thạnh, TP. Hồ Chí Minh
+10/4 Lê Quang Đạo, Hóc Môn, TP. Hồ Chí Minh
 
 📞 HOTLINE:
-- Tổng đài: 0123.456.789
+- Tổng đài & Zalo: 0364885351
 - Hỗ trợ kỹ thuật: 0987.654.321
 
 📧 EMAIL:

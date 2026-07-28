@@ -2058,6 +2058,46 @@ nav a:hover::after, nav a.active::after {
       color: #CCCCCC;
     }
 
+    .cart-remove-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .cart-remove-btn:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .cart-clear-all-btn {
+      background: rgba(239, 68, 68, 0.06);
+      color: #dc2626;
+      border: 1px solid rgba(220, 38, 38, 0.2);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .cart-clear-all-btn:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+
     /* Recommendations Section */
     .cart-recommendations {
       background: transparent;

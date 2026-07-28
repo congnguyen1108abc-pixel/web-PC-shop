@@ -9,5 +9,6 @@ public interface ICategoryService
     Task<int?> CreateAsync(CategoryCreateRequest request);
     Task<int?> UpdateAsync(CategoryUpdateRequest request);
     Task<int?> DeleteAsync(int categoryId);
+    Task<IEnumerable<CategoryAttributeTemplateItem>> GetAttributeTemplatesAsync(int? categoryId, string? categoryName = null);
 }
 

@@ -124,7 +124,7 @@ namespace PC_Store.Controllers
                         {
                             bannerID = 1,
                             title = "ROG Astral GeForce RTX 5090",
-                            videoUrl = "/assets/image/ROGAstralGeForceRTX5090_clip.mp4",
+                            videoUrl = "/assets/video/ROGAstralGeForceRTX5090_clip.mp4",
                             thumbnailUrl = "/assets/image/banner_thumb.jpg",
                             linkUrl = (string?)null,
                             displayOrder = 1,

@@ -40,6 +40,9 @@ public sealed class CategoryRepository : ICategoryRepository
         return r?.DeletedCategoryId;
     }
 
+    public Task<IEnumerable<CategoryAttributeTemplateItem>> GetAttributeTemplatesAsync(int? categoryId, string? categoryName = null)
+        => _db.QueryAsync<CategoryAttributeTemplateItem>("sp_Category_GetAttributeTemplates", new { CategoryId = categoryId, CategoryName = categoryName });
+
     private sealed record NewIdResult(int NewCategoryId);
     private sealed record UpdatedIdResult(int UpdatedCategoryId);
     private sealed record DeletedIdResult(int DeletedCategoryId);

@@ -311,6 +311,35 @@ public sealed class AdminController : ControllerBase
         return Ok(new { filePath = relativePath, message = "Tải video thành công" });
     }
 
+    [HttpPost("upload-image")]
+    public async Task<ActionResult> UploadImage([FromForm] IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest(new { message = "Không có tệp tin nào được gửi." });
+
+        var ext = Path.GetExtension(file.FileName).ToLower();
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif" };
+        if (!Array.Exists(allowedExtensions, e => e == ext))
+            return BadRequest(new { message = "Định dạng ảnh không hợp lệ. Chỉ chấp nhận JPG, PNG, WEBP, GIF." });
+
+        var uploadsFolder = Path.Combine(_env.WebRootPath, "assets", "img", "products");
+        if (!Directory.Exists(uploadsFolder))
+        {
+            Directory.CreateDirectory(uploadsFolder);
+        }
+
+        var fileName = $"prod_{DateTime.UtcNow.Ticks}_{Guid.NewGuid().ToString("N")[..8]}{ext}";
+        var filePath = Path.Combine(uploadsFolder, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var relativePath = $"/assets/img/products/{fileName}";
+        return Ok(new { imageUrl = relativePath, message = "Tải ảnh thành công" });
+    }
+
     // ── Dashboard ─────────────────────────────────────────────────────────────
 
     [HttpGet("dashboard")]

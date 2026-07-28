@@ -428,6 +428,52 @@ async function deleteCartItemHelper(productId, cartId = null) {
 }
 
 /**
+ * Xóa sạch tất cả sản phẩm trong giỏ hàng (DB + Local)
+ */
+async function clearCartHelper() {
+    if (!isUserLoggedIn()) {
+        localStorage.setItem('hyper_core_cart', '[]');
+        localStorage.setItem('hypercore_cart_items', '[]');
+        localStorage.setItem('pc_store_cart_owner', 'guest');
+        updateHeaderCartCount();
+        window.dispatchEvent(new CustomEvent('cartSynced', { detail: [] }));
+        return true;
+    }
+
+    const user = getCartUser();
+    const token = getCartToken();
+
+    if (!user || !user.userId) {
+        console.error("Không có thông tin user để xóa toàn bộ giỏ hàng");
+        return false;
+    }
+
+    try {
+        const response = await fetch(`${CART_API_BASE}/Cart/clear/user/${user.userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            localStorage.setItem('hyper_core_cart', '[]');
+            localStorage.setItem('hypercore_cart_items', '[]');
+            updateHeaderCartCount();
+            window.dispatchEvent(new CustomEvent('cartSynced', { detail: [] }));
+            return true;
+        } else {
+            console.error("Lỗi API xóa toàn bộ giỏ hàng:", response.status);
+            return false;
+        }
+    } catch (error) {
+        console.error("Lỗi mạng xóa toàn bộ giỏ hàng:", error);
+        return false;
+    }
+}
+
+/**
  * Đồng bộ giỏ hàng của Khách (guest) lên Database khi Đăng nhập thành công
  */
 async function syncGuestCartToDbHelper(userId, token) {

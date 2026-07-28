@@ -102,13 +102,36 @@ public sealed class ReviewRepository : IReviewRepository
         return _db.QueryRawAsync<TestimonialItem>(sql);
     }
 
-    private sealed record AdminReviewItemWithTotal(
-        int ReviewId, int ProductId, string ProductName, string SKU, int UserId,
-        string FullName, int Rating, string? Comment, string? ImageURL, bool IsApproved,
-        DateTime CreatedAt, string? Sentiment, int TotalRecords);
+    private sealed class AdminReviewItemWithTotal
+    {
+        public int ReviewId { get; set; }
+        public int ProductId { get; set; }
+        public string ProductName { get; set; } = string.Empty;
+        public string SKU { get; set; } = string.Empty;
+        public int UserId { get; set; }
+        public string FullName { get; set; } = string.Empty;
+        public int Rating { get; set; }
+        public string? Comment { get; set; }
+        public string? ImageURL { get; set; }
+        public bool IsApproved { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? Sentiment { get; set; }
+        public int TotalRecords { get; set; }
+    }
 
-    private sealed record CustomerReviewItemWithTotal(
-        int ReviewId, int ProductId, int UserId, string? FullName, string? AvatarURL,
-        int Rating, string? Comment, string? ImageURL, DateTime CreatedAt, string? Sentiment, int TotalRecords);
+    private sealed class CustomerReviewItemWithTotal
+    {
+        public int ReviewId { get; set; }
+        public int ProductId { get; set; }
+        public int UserId { get; set; }
+        public string? FullName { get; set; }
+        public string? AvatarURL { get; set; }
+        public int Rating { get; set; }
+        public string? Comment { get; set; }
+        public string? ImageURL { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? Sentiment { get; set; }
+        public int TotalRecords { get; set; }
+    }
 }
 
