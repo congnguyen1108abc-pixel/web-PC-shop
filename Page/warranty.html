@@ -590,48 +590,21 @@
                             <circle cx="11" cy="11" r="8"></circle>
                             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                        <input type="text" id="warrantyInput" placeholder="Nhập Serial Number hoặc Số điện thoại...">
+                        <input type="text" id="warrantyInput" placeholder="Nhập Mã SKU, Serial Number hoặc Số điện thoại mua hàng..." onkeydown="if(event.key==='Enter')checkWarranty()">
                     </div>
                     <button class="btn-check-warranty" onclick="checkWarranty()">Kiểm tra</button>
                 </div>
-                <p class="lookup-help-text">Gợi ý thử: <span class="suggestion-tag"
-                        onclick="useSuggestion('0987654321')">0987654321</span> hoặc <span class="suggestion-tag"
-                        onclick="useSuggestion('SN-GPRO-OUT')">SN-GPRO-OUT</span></p>
+                <p class="lookup-help-text">Gợi ý thử SĐT: <span class="suggestion-tag"
+                        onclick="useSuggestion('0987654321')">0987654321</span> hoặc Mã SKU: <span class="suggestion-tag"
+                        onclick="useSuggestion('ASUS-ROG-4090')">ASUS-ROG-4090</span></p>
                 <div id="warrantyError" class="warranty-error-msg" style="display:none;"></div>
             </div>
         </section>
 
         <!-- Result Card Section -->
-        <section class="result-section" id="resultSection" style="display:none;">
-            <div class="result-card">
-                <div class="result-card-inner">
-                    <div class="result-card-left">
-                        <img id="resultImage" src="/images/default_product.png" alt="Component Thumbnail"
-                            onerror="this.src='/images/default_product.png'">
-                    </div>
-                    <div class="result-card-right">
-                        <h2 id="resultName">Tên linh kiện sản phẩm</h2>
-                        <div class="status-badge-wrapper">
-                            <span class="status-label">Trạng thái:</span>
-                            <span id="resultStatus" class="status-badge">🟢 Còn bảo hành</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Serial Number:</span>
-                            <span id="resultSerial" class="info-value">SN-12345</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Ngày mua hàng:</span>
-                            <span id="resultPurchaseDate" class="info-value">01/01/2024</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Ngày hết hạn:</span>
-                            <span id="resultExpiryDate" class="info-value">01/01/2027</span>
-                        </div>
-                        <button class="btn-warranty-request" onclick="requestWarrantySupport()">Yêu cầu bảo hành linh
-                            kiện này</button>
-                    </div>
-                </div>
-            </div>
+        <section class="result-section" id="resultSection" style="display:none; max-width: 900px; margin: 30px auto;">
+            <h2 id="resultTitle" style="font-size:20px; font-weight:800; color:#111827; margin-bottom:20px; text-align:center;">Kết quả tra cứu bảo hành</h2>
+            <div id="resultsList" style="display:flex; flex-direction:column; gap:20px;"></div>
         </section>
 
         <!-- Warranty Terms Grid -->
@@ -832,10 +805,11 @@
     <script src="/assets/js/search.js?v=1.0.0"></script>
   <script src="/assets/js/auth-ui.js?v=1.0.5"></script>
     <script>
-        // Mock Warranty Database for demonstration
+        // Mock Warranty Database for demonstration / offline fallback
         const mockWarrantyDB = [
             {
                 serial: "SN-RTX4090-9982",
+                sku: "ASUS-ROG-4090",
                 phone: "0987654321",
                 name: "Card màn hình ASUS ROG Strix GeForce RTX 4090 OC Edition 24GB",
                 status: "🟢 Còn bảo hành",
@@ -845,7 +819,30 @@
                 img: "https://dlcdnwebobs.asus.com/webobs/images/model/rog-strix-rtx4090-o24g-gaming/1000.png"
             },
             {
+                serial: "SN-MB-MAXIMUS-0012",
+                sku: "ASUS-ROG-Z790",
+                phone: "0987654321",
+                name: "Bo mạch chủ ASUS ROG MAXIMUS Z790 HERO",
+                status: "🟢 Còn bảo hành",
+                expired: false,
+                purchaseDate: "12/08/2024",
+                expiryDate: "12/08/2027",
+                img: "https://dlcdnwebobs.asus.com/webobs/images/model/rog-maximus-z790-hero/1000.png"
+            },
+            {
+                serial: "SN-PSU-RM1000X-77",
+                sku: "PSU-CORSAIR-1000",
+                phone: "0987654321",
+                name: "Nguồn Corsair RM1000x 1000W 80 Plus Gold Fully Modular",
+                status: "🟢 Còn bảo hành",
+                expired: false,
+                purchaseDate: "12/08/2024",
+                expiryDate: "12/08/2034",
+                img: "https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Power-Supply-Units/rmx-series-2021-config/RM1000x/Gallery/RM1000x_01.png"
+            },
+            {
                 serial: "SN-I914900-5521",
+                sku: "CPU-INTEL-I9",
                 phone: "0912345678",
                 name: "Bộ vi xử lý Intel Core i9-14900K",
                 status: "🟢 Còn bảo hành",
@@ -856,9 +853,10 @@
             },
             {
                 serial: "SN-RAMDOM-1122",
+                sku: "RAM-CORSAIR-D5",
                 phone: "0933445566",
                 name: "RAM Corsair Vengeance RGB 32GB (2x16GB) DDR5 6000MHz",
-                status: "🟢 1Còn bảo hành",
+                status: "🟢 Còn bảo hành",
                 expired: false,
                 purchaseDate: "05/05/2025",
                 expiryDate: "05/05/2028",
@@ -866,6 +864,7 @@
             },
             {
                 serial: "SN-GPRO-OUT",
+                sku: "LOGI-GPRO-SUPERLIGHT",
                 phone: "0900000000",
                 name: "Chuột Gaming Không Dây Logitech G Pro X Superlight Black",
                 status: "🔴 Hết bảo hành",
@@ -876,53 +875,110 @@
             }
         ];
 
-        function checkWarranty() {
+        async function checkWarranty() {
             const inputVal = document.getElementById("warrantyInput").value.trim();
             const errorEl = document.getElementById("warrantyError");
             const resultSection = document.getElementById("resultSection");
+            const resultsList = document.getElementById("resultsList");
+            const resultTitle = document.getElementById("resultTitle");
 
             errorEl.style.display = "none";
             resultSection.style.display = "none";
+            resultsList.innerHTML = "";
 
             if (!inputVal) {
-                errorEl.textContent = "Vui lòng nhập Serial Number hoặc Số điện thoại mua hàng.";
+                errorEl.textContent = "Vui lòng nhập Mã SKU, Serial Number hoặc Số điện thoại mua hàng.";
                 errorEl.style.display = "block";
                 return;
             }
 
-            // Find matching product
-            const match = mockWarrantyDB.find(item =>
-                item.serial.toLowerCase() === inputVal.toLowerCase() ||
-                item.phone === inputVal
-            );
+            let matches = [];
 
-            if (match) {
-                // Populate details
-                document.getElementById("resultName").textContent = match.name;
-                document.getElementById("resultSerial").textContent = match.serial;
-                document.getElementById("resultPurchaseDate").textContent = match.purchaseDate;
-                document.getElementById("resultExpiryDate").textContent = match.expiryDate;
+            // 1. Try real API backend lookup first
+            try {
+                const response = await fetch('/api/Warranty/lookup?query=' + encodeURIComponent(inputVal));
+                if (response.ok) {
+                    const data = await response.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        matches = data.map(item => ({
+                            serial: item.warrantyCode || item.sku || 'N/A',
+                            sku: item.sku || 'N/A',
+                            phone: inputVal,
+                            name: item.productName || 'Sản phẩm không tên',
+                            status: item.status || '🟢 Còn bảo hành',
+                            expired: (item.status || '').includes('Hết') || (new Date(item.endDate) < new Date()),
+                            purchaseDate: item.startDate ? new Date(item.startDate).toLocaleDateString('vi-VN') : 'N/A',
+                            expiryDate: item.endDate ? new Date(item.endDate).toLocaleDateString('vi-VN') : 'N/A',
+                            img: item.defaultImageUrl || '/images/default_product.png'
+                        }));
+                    }
+                }
+            } catch (e) {
+                console.log("Using local mock dataset fallback for warranty search.");
+            }
 
-                const statusBadge = document.getElementById("resultStatus");
-                statusBadge.textContent = match.status;
-                if (match.expired) {
-                    statusBadge.className = "status-badge expired";
+            // 2. Fallback to rich mock db if API returned no results or failed
+            if (matches.length === 0) {
+                const searchLower = inputVal.toLowerCase();
+                const isPhone = /^[0-9+\s\-]{8,15}$/.test(inputVal);
+
+                matches = mockWarrantyDB.filter(item => {
+                    if (isPhone) {
+                        return item.phone.replace(/[\s\-]/g, '') === inputVal.replace(/[\s\-]/g, '');
+                    } else {
+                        return (item.serial && item.serial.toLowerCase().includes(searchLower)) ||
+                               (item.sku && item.sku.toLowerCase().includes(searchLower)) ||
+                               (item.name && item.name.toLowerCase().includes(searchLower));
+                    }
+                });
+            }
+
+            if (matches.length > 0) {
+                const isPhoneSearch = /^[0-9+\s\-]{8,15}$/.test(inputVal);
+                if (isPhoneSearch) {
+                    resultTitle.textContent = `Danh sách sản phẩm thuộc quyền sở hữu của SĐT (${inputVal}) - ${matches.length} sản phẩm:`;
                 } else {
-                    statusBadge.className = "status-badge";
+                    resultTitle.textContent = `Kết quả tra cứu theo Mã SKU / Serial: "${inputVal}"`;
                 }
 
-                // Handle Image
-                const imgEl = document.getElementById("resultImage");
-                imgEl.src = match.img;
-                imgEl.onerror = function () {
-                    this.src = "/images/default_product.png";
-                };
+                resultsList.innerHTML = matches.map(item => `
+                    <div class="result-card">
+                        <div class="result-card-inner">
+                            <div class="result-card-left">
+                                <img src="${item.img}" alt="${item.name}" onerror="this.src='/images/default_product.png'">
+                            </div>
+                            <div class="result-card-right">
+                                <h2>${item.name}</h2>
+                                <div class="status-badge-wrapper">
+                                    <span class="status-label">Trạng thái:</span>
+                                    <span class="${item.expired ? 'status-badge expired' : 'status-badge'}">${item.status}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Mã SKU / Serial Number:</span>
+                                    <span class="info-value">${item.serial || item.sku}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Số điện thoại mua hàng:</span>
+                                    <span class="info-value">${item.phone || inputVal}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Ngày mua hàng:</span>
+                                    <span class="info-value">${item.purchaseDate}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Ngày hết hạn bảo hành:</span>
+                                    <span class="info-value">${item.expiryDate}</span>
+                                </div>
+                                <button class="btn-warranty-request" onclick="requestWarrantySupport('${item.name.replace(/'/g, "\\'")}')">Yêu cầu bảo hành linh kiện này</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
 
-                // Show result
                 resultSection.style.display = "block";
                 resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             } else {
-                errorEl.textContent = "Không tìm thấy thông tin bảo hành cho Serial Number hoặc Số điện thoại này. Vui lòng kiểm tra lại.";
+                errorEl.textContent = `Không tìm thấy thông tin bảo hành nào cho từ khóa "${inputVal}". Vui lòng kiểm tra lại Số điện thoại hoặc Mã SKU / Serial.`;
                 errorEl.style.display = "block";
             }
         }
@@ -932,8 +988,8 @@
             checkWarranty();
         }
 
-        function requestWarrantySupport() {
-            alert("Yêu cầu bảo hành đã được ghi nhận thành công! Nhân viên CSKH của HYPER CORE sẽ liên hệ với quý khách qua Số điện thoại đăng ký trong vòng 24 giờ làm việc.");
+        function requestWarrantySupport(productName) {
+            alert("Yêu cầu bảo hành cho [" + (productName || "linh kiện") + "] đã được ghi nhận thành công! Nhân viên CSKH sẽ liên hệ với quý khách trong vòng 24 giờ làm việc.");
         }
 
         // Auto sync user and cart on page load

@@ -1252,6 +1252,13 @@
             </div>
         </div>
 
+    <!-- MODAL: ADD / EDIT PROMOTION -->
+    <div class="modal-overlay" id="promotionModal">
+        <div class="modal-card" style="max-width:560px; width:96vw;">
+            <div class="modal-header">
+                <h3 id="promotionModalTitle">Tạo Khuyến Mãi Mới</h3>
+                <button class="modal-close" onclick="closePromotionModal()">✕</button>
+            </div>
             <form id="promotionForm" onsubmit="savePromotion(event)">
                 <input type="hidden" id="editPromotionId" />
                 
@@ -1296,7 +1303,7 @@
                 </div>
 
                 <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
-                    <button type="button" class="btn-cancel" onclick="closePromotionModal()" style="padding: 10px 20px; border-radius:8px;">Hủy bộ</button>
+                    <button type="button" class="btn-cancel" onclick="closePromotionModal()" style="padding: 10px 20px; border-radius:8px;">Hủy bỏ</button>
                     <button type="submit" class="btn-submit" style="padding: 10px 20px; border-radius:8px; background:var(--primary); border:none; color:white;">Lưu lại</button>
                 </div>
             </form>

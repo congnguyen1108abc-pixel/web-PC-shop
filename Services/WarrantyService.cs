@@ -15,4 +15,5 @@ public sealed class WarrantyService : IWarrantyService
     public Task<WarrantyItem?> GetByCodeAsync(string warrantyCode, int? userId) => _repo.GetByCodeAsync(warrantyCode, userId);
     public Task<IEnumerable<WarrantyClaimItem>> GetAdminClaimsAsync(WarrantyClaimQueryRequest request) => _repo.GetAdminClaimsAsync(request);
     public Task ProcessClaimAsync(ProcessWarrantyClaimRequest request) => _repo.ProcessClaimAsync(request);
+    public Task<IEnumerable<WarrantyItem>> PublicLookupAsync(string query) => _repo.PublicLookupAsync(query);
 }

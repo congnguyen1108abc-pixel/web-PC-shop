@@ -10,4 +10,5 @@ public interface IWarrantyRepository
     Task<WarrantyItem?> GetByCodeAsync(string warrantyCode, int? userId);
     Task<IEnumerable<WarrantyClaimItem>> GetAdminClaimsAsync(WarrantyClaimQueryRequest request);
     Task ProcessClaimAsync(ProcessWarrantyClaimRequest request);
+    Task<IEnumerable<WarrantyItem>> PublicLookupAsync(string query);
 }
