@@ -20,6 +20,14 @@
 
     <link rel="stylesheet" href="/assets/css/admin.css">
     <style>
+        body,
+        input,
+        select,
+        textarea,
+        button {
+            font-family: 'Inter', 'Segoe UI', Roboto, Arial, sans-serif !important;
+        }
+
         .filter-tab {
             padding: 8px 18px;
             border-radius: 10px;
@@ -1849,8 +1857,11 @@
                 </div>
 
                 <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
-                    <button type="button" class="btn-cancel" onclick="closePromotionModal()" style="padding: 10px 20px; border-radius:8px;">Hủy bỏ</button>
-                    <button type="submit" class="btn-submit" style="padding: 10px 20px; border-radius:8px; background:var(--primary); border:none; color:white;">Lưu lại</button>
+                    <button type="button" class="btn-cancel" onclick="closePromotionModal()"
+                        style="padding: 10px 20px; border-radius:8px;">Hủy bỏ</button>
+                    <button type="submit" class="btn-submit"
+                        style="padding: 10px 20px; border-radius:8px; background:var(--primary); border:none; color:white;">Lưu
+                        lại</button>
                 </div>
             </form>
         </div>
@@ -2257,6 +2268,47 @@
             </form>
         </div>
     </div>
+    <style>
+        /* Responsive Product Modal */
+        #productModal .modal-card {
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #productModal .modal-header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 10;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            #productModal .modal-card {
+                width: 95%;
+                margin: 20px auto;
+                max-height: 95vh;
+                padding: 20px;
+            }
+
+            #productModal .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            #productModal .admin-form-group {
+                width: 100%;
+            }
+
+            #dynamicAttributesContainer {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
 
     <!-- MODAL: ADD / EDIT PRODUCT -->
     <div class="modal-overlay" id="productModal">
@@ -2330,32 +2382,48 @@
                         placeholder="Mô tả thông tin chi tiết sản phẩm..."></textarea>
                 </div>
 
-                <div class="admin-form-group" style="border: 1px dashed var(--border-color); padding: 14px; border-radius: 10px; background: rgba(0,0,0,0.02); margin-top: 10px;">
-                    <label style="font-weight: 700; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+                <div class="admin-form-group"
+                    style="border: 1px dashed var(--border-color); padding: 14px; border-radius: 10px; background: rgba(0,0,0,0.02); margin-top: 10px;">
+                    <label
+                        style="font-weight: 700; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
                         <span>🖼️ ÁNH SẢN PHẨM</span>
                     </label>
                     <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                        <input type="text" id="prodImageUrl" placeholder="Nhập đường dẫn URL ảnh hoặc chọn tệp từ máy..." oninput="previewProductImage()" style="flex: 1; padding: 8px 10px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color);" />
-                        <label class="btn-action" style="cursor: pointer; padding: 8px 14px; background: #0ea5e9; color: #fff; border-radius: 6px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                        <input type="text" id="prodImageUrl"
+                            placeholder="Nhập đường dẫn URL ảnh hoặc chọn tệp từ máy..." oninput="previewProductImage()"
+                            style="flex: 1; padding: 8px 10px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color);" />
+                        <label class="btn-action"
+                            style="cursor: pointer; padding: 8px 14px; background: #0ea5e9; color: #fff; border-radius: 6px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
                             <span>📷</span> Chọn Ảnh Từ Máy
-                            <input type="file" id="prodImageFile" accept="image/*" style="display: none;" onchange="uploadProductImageFile(this)" />
+                            <input type="file" id="prodImageFile" accept="image/*" style="display: none;"
+                                onchange="uploadProductImageFile(this)" />
                         </label>
                     </div>
-                    <div id="prodImagePreviewContainer" style="display: none; align-items: center; gap: 12px; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0;">
-                        <img id="prodImagePreview" src="" style="width: 64px; height: 64px; object-fit: contain; border-radius: 6px; border: 1px solid #e2e8f0;" onerror="this.src='https://placehold.co/64x64?text=L%E1%BB%97i+Ảnh'" />
+                    <div id="prodImagePreviewContainer"
+                        style="display: none; align-items: center; gap: 12px; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <img id="prodImagePreview" src=""
+                            style="width: 64px; height: 64px; object-fit: contain; border-radius: 6px; border: 1px solid #e2e8f0;"
+                            onerror="this.src='https://placehold.co/64x64?text=L%E1%BB%97i+Ảnh'" />
                         <div style="font-size: 11px; color: var(--text-muted); flex: 1;">
-                            <div style="font-weight: 700; color: #16a34a; margin-bottom: 2px;">✓ Ảnh xem trước hợp lệ</div>
-                            <div id="prodImagePreviewUrl" style="word-break: break-all; font-family: monospace; font-size: 10px; color: #64748b;"></div>
+                            <div style="font-weight: 700; color: #16a34a; margin-bottom: 2px;">✓ Ảnh xem trước hợp lệ
+                            </div>
+                            <div id="prodImagePreviewUrl"
+                                style="word-break: break-all; font-size: 10px; color: #64748b;">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="admin-form-group" style="border: 1px dashed var(--border-color); padding: 14px; border-radius: 10px; background: rgba(0,0,0,0.02); margin-top: 10px;">
-                    <label style="font-weight: 700; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+                <div class="admin-form-group"
+                    style="border: 1px dashed var(--border-color); padding: 14px; border-radius: 10px; background: rgba(0,0,0,0.02); margin-top: 10px;">
+                    <label
+                        style="font-weight: 700; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
                         <span>⚙️ THUỘC TÍNH SẢN PHẨM THEO DANH MỤC</span>
                     </label>
-                    <div id="dynamicAttributesContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Vui lòng chọn Danh Mục để tải thuộc tính kỹ thuật tương ứng.</div>
+                    <div id="dynamicAttributesContainer"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Vui lòng chọn Danh
+                            Mục để tải thuộc tính kỹ thuật tương ứng.</div>
                     </div>
                 </div>
 
@@ -3332,7 +3400,7 @@
             const input = document.getElementById('searchProductsInput');
             if (!input) return;
             const query = input.value.trim().toLowerCase();
-            const filtered = allProducts.filter(p => 
+            const filtered = allProducts.filter(p =>
                 (p.productName && p.productName.toLowerCase().includes(query)) ||
                 (p.sku && p.sku.toLowerCase().includes(query)) ||
                 (p.categoryName && p.categoryName.toLowerCase().includes(query)) ||
@@ -3418,7 +3486,7 @@
             const input = document.getElementById('searchInventoryInput');
             if (!input) return;
             const query = input.value.trim().toLowerCase();
-            const filtered = allProducts.filter(p => 
+            const filtered = allProducts.filter(p =>
                 (p.productName && p.productName.toLowerCase().includes(query)) ||
                 (p.sku && p.sku.toLowerCase().includes(query))
             );
@@ -3433,10 +3501,10 @@
                 ]);
                 if (catRes.ok) allCategories = await catRes.json();
                 if (brandRes.ok) allBrands = await brandRes.json();
-                
+
                 const catSelect = document.getElementById('prodCategory');
                 const brandSelect = document.getElementById('prodBrand');
-                
+
                 if (catSelect) {
                     catSelect.innerHTML = allCategories.map(c => `<option value="${c.categoryId}">${c.categoryName}</option>`).join('');
                     catSelect.onchange = () => renderCategoryAttributeFields();
@@ -3501,7 +3569,7 @@
             const container = document.getElementById('prodImagePreviewContainer');
             const img = document.getElementById('prodImagePreview');
             const urlText = document.getElementById('prodImagePreviewUrl');
-            
+
             if (!urlInput || !container || !img) return;
             const url = urlInput.value.trim();
             if (url) {
@@ -3560,7 +3628,7 @@
             document.getElementById('prodDescription').value = '';
             document.getElementById('prodImageUrl').value = '';
             previewProductImage();
-            
+
             document.getElementById('productModal').classList.add('active');
             renderCategoryAttributeFields();
         }
@@ -3580,7 +3648,7 @@
             document.getElementById('prodStockGroup').style.display = 'none';
             document.getElementById('prodIsActive').checked = p.isActive;
             document.getElementById('prodDescription').value = p.description || '';
-            
+
             document.getElementById('prodImageUrl').value = p.defaultImageUrl || '';
             previewProductImage();
 

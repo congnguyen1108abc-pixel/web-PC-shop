@@ -2595,7 +2595,7 @@
         }
 
         function renderShowcaseCard() {
-            const showcaseProd = PRODUCTS.find(p => p.id === 41) || PRODUCTS[0];
+            const showcaseProd = PRODUCTS[0];
             if (showcaseProd) {
                 const card = document.getElementById('showcaseCard1');
                 if (card) {
@@ -2620,11 +2620,9 @@
         }
 
         function renderTrendingGrid() {
-            const trendingIds = [41, 42, 45, 43];
             const trendingCards = document.querySelectorAll('.trending-card');
             trendingCards.forEach((card, idx) => {
-                const targetId = trendingIds[idx];
-                const p = PRODUCTS.find(prod => prod.id === targetId);
+                const p = PRODUCTS[idx];
                 if (p) {
                     const img = card.querySelector('.trending-card-img');
                     const tag = card.querySelector('.trending-card-tag');
@@ -2741,16 +2739,7 @@
             });
         }
 
-        let PRODUCTS = [
-            { id: 41, name: "CORE M-PRO", price: 2450000, img: "https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png", specs: "Mouse" },
-            { id: 42, name: "CORE K-ELITE", price: 3890000, img: "https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png", specs: "Keyboard" },
-            { id: 43, name: "CORE H-SOUND", price: 2890000, img: "https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png", specs: "Headset" },
-            { id: 44, name: "CORE STUDIO", price: 3100000, img: "https://cdn.shopify.com/s/files/1/0073/3288/8687/products/Yeti-Black-Front_1024x1024.png", specs: "Mic" },
-            { id: 45, name: "CORE G-CMD", price: 4500000, img: "https://compass-ssl.xbox.com/assets/80/75/807530ce-2e8f-4d32-8ea7-a3aa7ccb68fc.png?n=Elite-Series-2_Gallery_1084x794_02.png", specs: "Gamepad" },
-            { id: 46, name: "CORE PAD PRO", price: 1800000, img: "https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Mousepads/MM700_RGB_Extended/Gallery/MM700_RGB_EXTENDED_01.png", specs: "Mousepad" },
-            { id: 47, name: "CORE BASE RGB", price: 1200000, img: "https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Accessories/ST100/Gallery/ST100_01.png", specs: "Accessories" },
-            { id: 48, name: "CORE WHEEL", price: 9500000, img: "https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g923-and-trueforce/g923-gallery-1.png?v=1", specs: "Racing" }
-        ];
+        let PRODUCTS = [];
 
         async function loadCategoriesMapping() {
             try {
