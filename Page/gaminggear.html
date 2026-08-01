@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HYPER CORE - Premium Gaming Gear</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
         :root {
             --bg-color: #f4f4f5;
             --text-color: #000000;
@@ -13,104 +15,416 @@
             --ceramic-shadow: #d1d5db;
             --gold: #fbc02d;
         }
-        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',system-ui,-apple-system,sans-serif; }
-        html { scroll-behavior: smooth; }
-        body { background-color:var(--bg-color); color:var(--text-color); overflow-x:hidden; }
-        ::-webkit-scrollbar { width:6px; }
-        ::-webkit-scrollbar-track { background:#f4f4f5; }
-        ::-webkit-scrollbar-thumb { background:rgba(0,0,0,.2); border-radius:99px; }
-        ::-webkit-scrollbar-thumb:hover { background:rgba(0,0,0,.4); }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f4f4f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, .2);
+            border-radius: 99px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, .4);
+        }
 
         /* ===== HEADER ===== */
         header {
-            position:fixed; top:0; left:0; width:100%; height:78px;
-            padding:0 45px; display:flex; justify-content:space-between;
-            align-items:center; z-index:999; border-radius:0 0 20px 20px;
-            background:transparent; box-shadow:none; border:none;
-            transition:background .5s ease,backdrop-filter .5s ease,box-shadow .5s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 78px;
+            padding: 0 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 999;
+            border-radius: 0 0 20px 20px;
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            transition: background .5s ease, backdrop-filter .5s ease, box-shadow .5s ease;
         }
-        header, header * { font-family:'Inter',system-ui,-apple-system,sans-serif !important; }
+
+        header,
+        header * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+        }
+
         header.scrolled {
-            background:rgba(255,255,255,.2);
-            backdrop-filter:blur(16px) saturate(180%);
-            -webkit-backdrop-filter:blur(16px) saturate(180%);
-            box-shadow:inset 0 0 0 1px rgba(255,255,255,.4), 0 8px 32px rgba(0,0,0,.1);
+            background: rgba(255, 255, 255, .2);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .4), 0 8px 32px rgba(0, 0, 0, .1);
         }
-        .logo { font-size:32px; font-weight:800; letter-spacing:4px; color:#000; cursor:pointer; }
-        nav { position:absolute; left:50%; transform:translateX(-50%); display:flex; gap:35px; align-items:center; }
-        nav a { text-decoration:none; color:#000; font-size:15px; position:relative; transition:.3s; display:flex; align-items:center; }
-        nav a:hover { color:#000; }
-        nav a::after { content:""; position:absolute; left:0; bottom:-7px; width:0%; height:2px; border-radius:10px; background:#555; transition:.3s; }
-        nav a:hover::after { width:100%; }
-        .nav-actions { display:flex; align-items:center; gap:6px; }
-        .header-icon-btn { background:none; border:none; padding:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#111; text-decoration:none; transition:opacity .2s; position:relative; line-height:0; }
-        .header-icon-btn:hover { opacity:.6; }
-        .header-icon-btn svg { width:22px; height:22px; display:block; flex-shrink:0; }
-        .header-search-container { display:flex; align-items:center; flex-direction:row; overflow:visible; position:relative; }
-        .header-search-input { width:0; opacity:0; padding:0; border:none; border-bottom:1.5px solid transparent; outline:none; background:transparent; font-size:14px; color:#111; transition:width .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,border-color .25s ease; }
-        .header-search-container.active .header-search-input { width:200px; opacity:1; border-bottom-color:#111; padding:2px 0 4px 4px; }
-        .cart-badge { position:absolute; top:2px; right:2px; min-width:16px; height:16px; padding:0 3px; border-radius:50%; background:#111; color:#fff; font-size:9px; font-weight:600; display:none; align-items:center; justify-content:center; line-height:1; }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #000;
+            cursor: pointer;
+        }
+
+        nav {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-size: 15px;
+            position: relative;
+            transition: .3s;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a:hover {
+            color: #000;
+        }
+
+        nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -7px;
+            width: 0%;
+            height: 2px;
+            border-radius: 10px;
+            background: #555;
+            transition: .3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-icon-btn {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #111;
+            text-decoration: none;
+            transition: opacity .2s;
+            position: relative;
+            line-height: 0;
+        }
+
+        .header-icon-btn:hover {
+            opacity: .6;
+        }
+
+        .header-icon-btn svg {
+            width: 22px;
+            height: 22px;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        .header-search-container {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            overflow: visible;
+            position: relative;
+        }
+
+        .header-search-input {
+            width: 0;
+            opacity: 0;
+            padding: 0;
+            border: none;
+            border-bottom: 1.5px solid transparent;
+            outline: none;
+            background: transparent;
+            font-size: 14px;
+            color: #111;
+            transition: width .32s cubic-bezier(.4, 0, .2, 1), opacity .25s ease, border-color .25s ease;
+        }
+
+        .header-search-container.active .header-search-input {
+            width: 200px;
+            opacity: 1;
+            border-bottom-color: #111;
+            padding: 2px 0 4px 4px;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            min-width: 16px;
+            height: 16px;
+            padding: 0 3px;
+            border-radius: 50%;
+            background: #111;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
 
         /* ===== MAIN ===== */
-        main { position:relative; z-index:10; padding:180px 0 50px; overflow:hidden; }
+        main {
+            position: relative;
+            z-index: 10;
+            padding: 180px 0 50px;
+            overflow: hidden;
+        }
 
         /* ===== SHOWCASE ===== */
-        .showcase-container { position:relative; max-width:1500px; margin:0 auto; padding:0 50px; }
-        .item-section { position:relative; min-height:90vh; display:flex; align-items:center; margin-bottom:80px; perspective:2000px; }
-        .align-left { justify-content:flex-start; }
-        .align-right { justify-content:flex-end; }
+        .showcase-container {
+            position: relative;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 0 50px;
+        }
+
+        .item-section {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            margin-bottom: 80px;
+            perspective: 2000px;
+        }
+
+        .align-left {
+            justify-content: flex-start;
+        }
+
+        .align-right {
+            justify-content: flex-end;
+        }
 
         /* Scroll reveal showcase */
         .item-section .tilt-card,
         .item-section .side-content {
-            opacity:0; transform:translateY(40px);
-            transition:opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .7s cubic-bezier(.22, 1, .36, 1), transform .7s cubic-bezier(.22, 1, .36, 1);
         }
-        .item-section .side-content { transition-delay:.15s; }
+
+        .item-section .side-content {
+            transition-delay: .15s;
+        }
+
         .item-section.show .tilt-card,
-        .item-section.show .side-content { opacity:1; transform:translateY(0); }
+        .item-section.show .side-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* Tilt card showcase */
         .tilt-card {
-            position:relative; z-index:5; border-radius:40px;
-            background:linear-gradient(145deg,#ffffff,#f9f9fb);
-            box-shadow:0 4px 24px rgba(0,0,0,.04);
-            border:1px solid rgba(0,0,0,.03);
-            display:flex; flex-direction:column; align-items:center;
-            transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
-            cursor:pointer;
+            position: relative;
+            z-index: 5;
+            border-radius: 40px;
+            background: linear-gradient(145deg, #ffffff, #f9f9fb);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .04);
+            border: 1px solid rgba(0, 0, 0, .03);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform .4s cubic-bezier(.22, 1, .36, 1), box-shadow .4s ease;
+            cursor: pointer;
         }
-        .tilt-card:hover { transform:translateY(-6px) scale(1.01); box-shadow:0 20px 50px rgba(0,0,0,.10); }
-        .card-sm { width:350px; padding:50px 30px; }
-        .card-md { width:500px; padding:70px 50px; }
-        .card-lg { width:700px; padding:90px 60px; }
-        .card-xl { width:950px; padding:120px 60px; }
-        .glass-base { position:absolute; bottom:15%; width:70%; height:30px; background:radial-gradient(circle,rgba(0,0,0,.08) 0%,rgba(0,0,0,0) 70%); border-radius:50%; filter:blur(8px); }
 
-        .product-img { object-fit:contain; margin-bottom:40px; filter:drop-shadow(0 15px 20px rgba(0,0,0,.12)); transition:transform .5s cubic-bezier(.22,1,.36,1); }
-        .tilt-card:hover .product-img { transform:translateY(-5px); }
-        .card-sm .product-img { width:200px; height:200px; }
-        .card-md .product-img { width:280px; height:280px; }
-        .card-lg .product-img { width:400px; height:400px; }
-        .card-xl .product-img { width:550px; height:450px; }
+        .tilt-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .10);
+        }
 
-        .item-info { text-align:center; }
-        .item-name { font-size:28px; font-weight:900; margin-bottom:5px; letter-spacing:1px; }
-        .card-sm .item-name { font-size:22px; }
-        .card-xl .item-name { font-size:50px; }
-        .item-tag { font-size:13px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:3px; margin-bottom:15px; }
-        .item-price { font-size:22px; font-weight:600; color:#111; }
+        .card-sm {
+            width: 350px;
+            padding: 50px 30px;
+        }
 
-        .side-content { width:450px; padding:40px; z-index:6; }
-        .align-left .side-content { margin-left:60px; }
-        .align-right .side-content { margin-right:60px; text-align:right; }
-        .side-title { font-size:55px; font-weight:900; line-height:1.1; margin-bottom:20px; text-transform:uppercase; }
-        .side-desc { font-size:18px; color:#555; line-height:1.6; }
+        .card-md {
+            width: 500px;
+            padding: 70px 50px;
+        }
+
+        .card-lg {
+            width: 700px;
+            padding: 90px 60px;
+        }
+
+        .card-xl {
+            width: 950px;
+            padding: 120px 60px;
+        }
+
+        .glass-base {
+            position: absolute;
+            bottom: 15%;
+            width: 70%;
+            height: 30px;
+            background: radial-gradient(circle, rgba(0, 0, 0, .08) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+
+        .product-img {
+            object-fit: contain;
+            margin-bottom: 40px;
+            filter: drop-shadow(0 15px 20px rgba(0, 0, 0, .12));
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .tilt-card:hover .product-img {
+            transform: translateY(-5px);
+        }
+
+        .card-sm .product-img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .card-md .product-img {
+            width: 280px;
+            height: 280px;
+        }
+
+        .card-lg .product-img {
+            width: 400px;
+            height: 400px;
+        }
+
+        .card-xl .product-img {
+            width: 550px;
+            height: 450px;
+        }
+
+        .item-info {
+            text-align: center;
+        }
+
+        .item-name {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .card-sm .item-name {
+            font-size: 22px;
+        }
+
+        .card-xl .item-name {
+            font-size: 50px;
+        }
+
+        .item-tag {
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+        }
+
+        .item-price {
+            font-size: 22px;
+            font-weight: 600;
+            color: #111;
+        }
+
+        .side-content {
+            width: 450px;
+            padding: 40px;
+            z-index: 6;
+        }
+
+        .align-left .side-content {
+            margin-left: 60px;
+        }
+
+        .align-right .side-content {
+            margin-right: 60px;
+            text-align: right;
+        }
+
+        .side-title {
+            font-size: 55px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .side-desc {
+            font-size: 18px;
+            color: #555;
+            line-height: 1.6;
+        }
 
         /* ===== TRENDING SECTION ===== */
-        .trending-section { max-width:1400px; margin:80px auto 0; padding:0 50px; }
-        .trending-title { font-size:28px; font-weight:900; margin-bottom:48px; display:flex; align-items:center; gap:10px; letter-spacing:1px; }
-        .trending-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
+        .trending-section {
+            max-width: 1400px;
+            margin: 80px auto 0;
+            padding: 0 50px;
+        }
+
+        .trending-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+
+        .trending-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px;
+        }
 
         /* Trending cards mirror the Product Card system, scoped only here. */
         .trending-card {
@@ -133,15 +447,18 @@
             transition: transform 220ms ease-out, box-shadow 220ms ease-out, opacity 220ms ease-out, filter 220ms ease-out;
             opacity: 0;
         }
+
         .trending-card.show {
             opacity: 1;
             transform: translate3d(0, 0, 0);
         }
+
         .trending-card.show:hover {
             background-color: #ffffff;
-            box-shadow: 0 18px 52px rgba(0,0,0,.11);
+            box-shadow: 0 18px 52px rgba(0, 0, 0, .11);
             transform: translateY(-8px) scale(1.02);
         }
+
         .trending-card .trending-card-img-wrap,
         .trending-card .card-img-wrap {
             position: relative;
@@ -150,6 +467,7 @@
             overflow: hidden;
             background: linear-gradient(145deg, #fafafa, #f4f4f6);
         }
+
         .trending-card-img {
             width: 100%;
             height: 100%;
@@ -163,22 +481,26 @@
             transition: transform 220ms ease-out, filter 220ms ease-out;
             display: block;
         }
+
         .trending-card.show:hover .trending-card-img {
             transform: scale(1.05) translateY(-3px);
         }
+
         .trending-card-img-overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
             height: 40%;
-            background: linear-gradient(to top, rgba(245,245,247,.6), transparent);
+            background: linear-gradient(to top, rgba(245, 245, 247, .6), transparent);
             pointer-events: none;
         }
+
         .trending-card-body {
             padding: 18px 18px 16px;
             flex: 1;
         }
+
         .trending-card-tag {
             font-size: 11px;
             color: #999;
@@ -190,6 +512,7 @@
             font-weight: 400;
             text-transform: none;
         }
+
         .trending-card-name {
             font-size: 14px;
             font-weight: 600;
@@ -198,12 +521,14 @@
             color: #111;
             letter-spacing: 0;
         }
+
         .trending-card-price {
             font-size: 17px;
             font-weight: 300;
             color: #111;
             letter-spacing: -.5px;
         }
+
         .trending-card-price-row {
             display: flex;
             align-items: baseline;
@@ -211,11 +536,13 @@
             margin-bottom: 12px;
             flex-wrap: wrap;
         }
+
         .trending-card .price-old-tag {
             font-size: 12px;
             color: #aaa;
             text-decoration: line-through;
         }
+
         .trending-card .discount-tag {
             padding: 2px 7px;
             border-radius: 10px;
@@ -225,30 +552,35 @@
             font-size: 10px;
             font-weight: 700;
         }
+
         .trending-card .card-actions {
             display: flex;
             gap: 8px;
         }
+
         .trending-card .btn-add,
         .trending-card .btn-detail {
             opacity: 0;
             transform: translateY(10px);
-            transition: opacity .28s cubic-bezier(.22,1,.36,1), transform .28s cubic-bezier(.22,1,.36,1);
+            transition: opacity .28s cubic-bezier(.22, 1, .36, 1), transform .28s cubic-bezier(.22, 1, .36, 1);
         }
+
         .trending-card:hover .btn-add {
             opacity: 1;
             transform: translateY(0);
             transition-delay: .02s;
         }
+
         .trending-card:hover .btn-detail {
             opacity: 1;
             transform: translateY(0);
             transition-delay: .06s;
         }
+
         .trending-card .btn-add {
             flex: 1;
             padding: 9px 14px;
-            background-color: rgba(17,24,39,.9);
+            background-color: rgba(17, 24, 39, .9);
             color: #fff;
             border: none;
             font-weight: 600;
@@ -260,30 +592,35 @@
             min-height: 36px;
             transition: transform .15s ease;
         }
+
         .trending-card .btn-add:hover {
             background-color: #000;
             transform: scale(1.02);
         }
+
         .trending-card .btn-add::before {
             content: "";
             position: absolute;
-            left: var(--rx,50%);
-            top: var(--ry,50%);
+            left: var(--rx, 50%);
+            top: var(--ry, 50%);
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            background: rgba(255,255,255,.25);
-            transform: translate(-50%,-50%) scale(0);
+            background: rgba(255, 255, 255, .25);
+            transform: translate(-50%, -50%) scale(0);
             transition: transform .5s ease, opacity .5s ease;
             opacity: 0;
         }
+
         .trending-card .btn-add.ripple::before {
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
             opacity: 0;
         }
+
         .trending-card .btn-add.added {
             background: #111;
         }
+
         .trending-card .btn-add .btn-text,
         .trending-card .btn-add .btn-check {
             position: absolute;
@@ -293,24 +630,28 @@
             justify-content: center;
             transition: opacity .25s ease, transform .25s ease;
         }
+
         .trending-card .btn-add .btn-check {
             opacity: 0;
             transform: scale(.6);
         }
+
         .trending-card .btn-add.added .btn-text {
             opacity: 0;
             transform: scale(.6);
         }
+
         .trending-card .btn-add.added .btn-check {
             opacity: 1;
             transform: scale(1);
         }
+
         .trending-card .btn-detail {
             flex: 1;
             padding: 9px;
             background: transparent;
-            border: 1px solid rgba(0,0,0,.12);
-            color: rgba(0,0,0,.55);
+            border: 1px solid rgba(0, 0, 0, .12);
+            color: rgba(0, 0, 0, .55);
             font-weight: 500;
             border-radius: 8px;
             cursor: pointer;
@@ -321,11 +662,13 @@
             align-items: center;
             justify-content: center;
         }
+
         .trending-card .btn-detail:hover {
-            background: rgba(0,0,0,.05);
+            background: rgba(0, 0, 0, .05);
             color: #000;
             border-color: #111;
         }
+
         .trending-badge {
             position: absolute;
             top: 12px;
@@ -338,239 +681,838 @@
             text-transform: uppercase;
             letter-spacing: .8px;
         }
-        .badge-best { background: #111; color: #fff; }
-        .badge-hot { background: #e53e3e; color: #fff; }
-        .badge-limited { background: #7B2FBE; color: #fff; }
-        .badge-new { background: #2B6CB0; color: #fff; }
+
+        .badge-best {
+            background: #111;
+            color: #fff;
+        }
+
+        .badge-hot {
+            background: #e53e3e;
+            color: #fff;
+        }
+
+        .badge-limited {
+            background: #7B2FBE;
+            color: #fff;
+        }
+
+        .badge-new {
+            background: #2B6CB0;
+            color: #fff;
+        }
 
         /* ===== MINI STATS ===== */
-        .stats-section { max-width:1400px; margin:60px auto; padding:0 50px; }
-        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
-        .stat-card {
-            background:rgba(255,255,255,.7); backdrop-filter:blur(20px);
-            border:1px solid rgba(255,255,255,.8);
-            border-radius:20px; padding:28px 20px; text-align:center;
-            box-shadow:0 4px 20px rgba(0,0,0,.05);
-            transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease;
-            opacity:0; transform:translateY(20px);
+        .stats-section {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 50px;
         }
-        .stat-card.show { opacity:1; transform:translateY(0); }
-        .stat-card:hover { transform:translateY(-4px); box-shadow:0 12px 40px rgba(0,0,0,.10); }
-        .stat-number { font-size:36px; font-weight:900; color:#111; letter-spacing:-1px; }
-        .stat-label { font-size:12px; color:#888; font-weight:500; margin-top:4px; text-transform:uppercase; letter-spacing:1.5px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, .7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, .8);
+            border-radius: 20px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .05);
+            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .stat-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .10);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: #111;
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
 
         /* ===== FEATURES ROW ===== */
-        .features-section { max-width:1400px; margin:0 auto 20px; padding:0 50px; }
-        .features-row { display:flex; gap:0; border-radius:16px; overflow:hidden; background:rgba(255,255,255,.6); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.8); }
-        .feature-item {
-            flex:1; display:flex; align-items:center; gap:10px; padding:18px 20px;
-            font-size:13px; font-weight:600; color:#333;
-            border-right:1px solid rgba(0,0,0,.06);
-            transition:background .25s ease, transform .25s ease;
-            cursor:default;
+        .features-section {
+            max-width: 1400px;
+            margin: 0 auto 20px;
+            padding: 0 50px;
         }
-        .feature-item:last-child { border-right:none; }
-        .feature-item:hover { background:rgba(255,255,255,.9); transform:translateY(-2px); }
-        .feature-item .fi-icon { font-size:20px; flex-shrink:0; }
+
+        .features-row {
+            display: flex;
+            gap: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, .6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, .8);
+        }
+
+        .feature-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            border-right: 1px solid rgba(0, 0, 0, .06);
+            transition: background .25s ease, transform .25s ease;
+            cursor: default;
+        }
+
+        .feature-item:last-child {
+            border-right: none;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, .9);
+            transform: translateY(-2px);
+        }
+
+        .feature-item .fi-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
 
         /* ===== BRAND SHOWCASE ===== */
-        .brands-section { max-width:1400px; margin:60px auto 0; padding:0 50px; }
-        .brands-title { font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#888; margin-bottom:24px; text-align:center; }
-        .brands-row { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
-        .brand-pill {
-            padding:10px 22px; border-radius:40px;
-            background:rgba(255,255,255,.7); backdrop-filter:blur(12px);
-            border:1px solid rgba(0,0,0,.08);
-            font-size:13px; font-weight:700; color:#555;
-            cursor:pointer; transition:all .3s cubic-bezier(.22,1,.36,1);
-            filter:grayscale(60%);
+        .brands-section {
+            max-width: 1400px;
+            margin: 60px auto 0;
+            padding: 0 50px;
         }
-        .brand-pill:hover, .brand-pill.active { filter:grayscale(0%); background:#111; color:#fff; border-color:#111; transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,.12); }
+
+        .brands-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .brands-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .brand-pill {
+            padding: 10px 22px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, .7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, .08);
+            font-size: 13px;
+            font-weight: 700;
+            color: #555;
+            cursor: pointer;
+            transition: all .3s cubic-bezier(.22, 1, .36, 1);
+            filter: grayscale(60%);
+        }
+
+        .brand-pill:hover,
+        .brand-pill.active {
+            filter: grayscale(0%);
+            background: #111;
+            color: #fff;
+            border-color: #111;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+        }
 
         /* ===== SECTION HEADING ===== */
-        .section-heading { text-align:center; font-size:40px; font-weight:900; margin:80px 0 16px; letter-spacing:2px; position:relative; z-index:10; }
+        .section-heading {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 900;
+            margin: 80px 0 16px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 10;
+        }
 
         /* ===== FILTER BAR ===== */
-        .filter-bar { max-width:1400px; margin:0 auto 16px; padding:0 50px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; z-index:10; position:relative; }
-        .category-menu { display:flex; gap:10px; flex-wrap:wrap; }
-        .cat-btn {
-            padding:10px 22px; border-radius:30px;
-            border:1px solid rgba(255,255,255,.4); background:rgba(255,255,255,.2);
-            backdrop-filter:blur(10px); box-shadow:0 2px 10px rgba(0,0,0,.04);
-            font-weight:700; font-size:13px; cursor:pointer; color:#000;
-            transition:all .3s cubic-bezier(.22,1,.36,1); position:relative; overflow:hidden;
+        .filter-bar {
+            max-width: 1400px;
+            margin: 0 auto 16px;
+            padding: 0 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            z-index: 10;
+            position: relative;
         }
-        .cat-btn:hover { transform:translateY(-2px); background:rgba(255,255,255,.6); box-shadow:0 6px 20px rgba(0,0,0,.08); }
-        .cat-btn.active { background:#111; color:#fff; border-color:#111; }
+
+        .category-menu {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cat-btn {
+            padding: 10px 22px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, .4);
+            background: rgba(255, 255, 255, .2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            color: #000;
+            transition: all .3s cubic-bezier(.22, 1, .36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cat-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, .6);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+        }
+
+        .cat-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
+
         /* Ripple on button */
-        .cat-btn::after { content:""; position:absolute; left:50%; top:50%; width:0; height:0; border-radius:50%; background:rgba(255,255,255,.3); transform:translate(-50%,-50%); transition:width .4s ease, height .4s ease, opacity .4s ease; opacity:0; }
-        .cat-btn:active::after { width:120px; height:120px; opacity:1; }
+        .cat-btn::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .3);
+            transform: translate(-50%, -50%);
+            transition: width .4s ease, height .4s ease, opacity .4s ease;
+            opacity: 0;
+        }
+
+        .cat-btn:active::after {
+            width: 120px;
+            height: 120px;
+            opacity: 1;
+        }
 
         /* Brand filter row */
-        .brand-filter-bar { max-width:1400px; margin:0 auto 16px; padding:0 50px; display:flex; align-items:center; flex-wrap:wrap; gap:10px; position:relative; z-index:10; }
-        .brand-filter-label { font-size:12px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1.5px; margin-right:4px; white-space:nowrap; }
-        .brand-btn { padding:8px 18px; border-radius:30px; border:1px solid rgba(0,0,0,.1); background:rgba(255,255,255,.5); backdrop-filter:blur(8px); font-size:12px; font-weight:600; cursor:pointer; color:#444; transition:all .3s cubic-bezier(.22,1,.36,1); }
-        .brand-btn:hover { transform:translateY(-2px); background:rgba(255,255,255,.8); }
-        .brand-btn.active { background:#111; color:#fff; border-color:#111; }
+        .brand-filter-bar {
+            max-width: 1400px;
+            margin: 0 auto 16px;
+            padding: 0 50px;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand-filter-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-right: 4px;
+            white-space: nowrap;
+        }
+
+        .brand-btn {
+            padding: 8px 18px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 0, 0, .1);
+            background: rgba(255, 255, 255, .5);
+            backdrop-filter: blur(8px);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #444;
+            transition: all .3s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .brand-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, .8);
+        }
+
+        .brand-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
 
         /* Quick filter */
-        .quick-filter-bar { max-width:1400px; margin:0 auto 30px; padding:0 50px; display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:10px; position:relative; z-index:10; }
-        .quick-filter-label { font-size:12px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1.5px; }
-        .quick-btn { padding:8px 16px; border-radius:20px; border:1px solid rgba(0,0,0,.08); background:rgba(255,255,255,.4); font-size:12px; font-weight:600; cursor:pointer; color:#555; transition:all .25s ease; }
-        .quick-btn:hover { background:rgba(255,255,255,.8); transform:translateY(-1px); }
-        .quick-btn.active { background:#111; color:#fff; border-color:#111; }
+        .quick-filter-bar {
+            max-width: 1400px;
+            margin: 0 auto 30px;
+            padding: 0 50px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .quick-filter-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .quick-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, .08);
+            background: rgba(255, 255, 255, .4);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #555;
+            transition: all .25s ease;
+        }
+
+        .quick-btn:hover {
+            background: rgba(255, 255, 255, .8);
+            transform: translateY(-1px);
+        }
+
+        .quick-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
 
         /* Price filter */
-        .price-filter { display:flex; align-items:center; gap:12px; }
-        .price-filter label { font-weight:700; font-size:13px; color:#333; }
-        .glass-select { padding:10px 18px; border-radius:30px; border:1px solid #fff; background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(240,240,240,.9)); box-shadow:inset 0 2px 5px rgba(0,0,0,.05),4px 4px 10px var(--ceramic-shadow); font-weight:600; cursor:pointer; outline:none; transition:.3s; }
-        .glass-select:hover { box-shadow:inset 0 2px 5px rgba(0,0,0,.05),6px 6px 15px var(--ceramic-shadow); }
+        .price-filter {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .price-filter label {
+            font-weight: 700;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .glass-select {
+            padding: 10px 18px;
+            border-radius: 30px;
+            border: 1px solid #fff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, .9), rgba(240, 240, 240, .9));
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, .05), 4px 4px 10px var(--ceramic-shadow);
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: .3s;
+        }
+
+        .glass-select:hover {
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, .05), 6px 6px 15px var(--ceramic-shadow);
+        }
 
         /* ===== PRODUCT GRID ===== */
-        .grid-container { max-width:1400px; margin:0 auto 150px; padding:0 50px; position:relative; z-index:10; }
-        .product-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
+        .grid-container {
+            max-width: 1400px;
+            margin: 0 auto 150px;
+            padding: 0 50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 28px;
+        }
 
         .grid-item {
-            width:100%; padding:0; opacity:1;
-            border-radius:18px !important; background-color:transparent !important;
-            background:none !important; box-shadow:none !important; border:none !important;
-            align-items:stretch !important; flex-direction:column !important;
-            transition:transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease, background-color .3s ease !important;
-            overflow:hidden !important;
+            width: 100%;
+            padding: 0;
+            opacity: 1;
+            border-radius: 18px !important;
+            background-color: transparent !important;
+            background: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            align-items: stretch !important;
+            flex-direction: column !important;
+            transition: transform .4s cubic-bezier(.22, 1, .36, 1), box-shadow .4s ease, background-color .3s ease !important;
+            overflow: hidden !important;
         }
+
         .grid-item:hover {
-            background-color:#ffffff !important;
-            box-shadow:0 16px 48px rgba(0,0,0,.10) !important;
-            transform:translateY(-6px) scale(1.02) !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .10) !important;
+            transform: translateY(-6px) scale(1.02) !important;
         }
-        .grid-item.hidden { opacity:0; transform:translateY(12px); pointer-events:none; }
-        .grid-item .glass-base { display:none; }
+
+        .grid-item.hidden {
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
+        }
+
+        .grid-item .glass-base {
+            display: none;
+        }
 
         /* Card image */
         .grid-item .card-img-wrap {
-            position:relative; width:100%; height:190px;
-            overflow:hidden; background:linear-gradient(145deg,#fafafa,#f4f4f6);
+            position: relative;
+            width: 100%;
+            height: 190px;
+            overflow: hidden;
+            background: linear-gradient(145deg, #fafafa, #f4f4f6);
         }
+
         .grid-item .card-img-wrap img {
-            width:100%; height:100%; object-fit:contain; padding:22px;
-            transition:transform .5s cubic-bezier(.22,1,.36,1);
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 22px;
+            transition: transform .5s cubic-bezier(.22, 1, .36, 1);
         }
-        .grid-item:hover .card-img-wrap img { transform:scale(1.07) translateY(-4px); }
+
+        .grid-item:hover .card-img-wrap img {
+            transform: scale(1.07) translateY(-4px);
+        }
+
         /* Subtle gradient overlay */
         .grid-item .card-img-wrap::after {
-            content:""; position:absolute; bottom:0; left:0; right:0; height:40%;
-            background:linear-gradient(to top,rgba(245,245,247,.6),transparent);
-            pointer-events:none;
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(to top, rgba(245, 245, 247, .6), transparent);
+            pointer-events: none;
         }
 
         /* Card badge */
         .card-badge {
-            position:absolute; top:12px; left:12px; z-index:2;
-            padding:3px 9px; border-radius:12px;
-            font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 2;
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .8px;
         }
-        .card-badge.sale { background:#111; color:#fff; }
-        .card-badge.hot { background:#e53e3e; color:#fff; }
-        .card-badge.new { background:#2B6CB0; color:#fff; }
+
+        .card-badge.sale {
+            background: #111;
+            color: #fff;
+        }
+
+        .card-badge.hot {
+            background: #e53e3e;
+            color: #fff;
+        }
+
+        .card-badge.new {
+            background: #2B6CB0;
+            color: #fff;
+        }
 
         /* Card body */
-        .grid-item .card-body { padding:18px 18px 16px; flex:1; }
-        .grid-item .card-name { font-size:14px; font-weight:600; margin-bottom:4px; line-height:1.3; color:#111; }
-        .grid-item .card-specs { font-size:11px; color:#999; margin-bottom:10px; letter-spacing:.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .grid-item .card-price-row { display:flex; align-items:baseline; gap:7px; margin-bottom:12px; flex-wrap:wrap; }
-        .grid-item .price-new { font-size:17px; font-weight:300; color:#111; letter-spacing:-.5px; }
-        .price-old-tag { font-size:12px; color:#aaa; text-decoration:line-through; }
-        .discount-tag { padding:2px 7px; border-radius:10px; background:#f0f0f0; border:1px solid #e0e0e0; color:#555; font-size:10px; font-weight:700; }
+        .grid-item .card-body {
+            padding: 18px 18px 16px;
+            flex: 1;
+        }
+
+        .grid-item .card-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            line-height: 1.3;
+            color: #111;
+        }
+
+        .grid-item .card-specs {
+            font-size: 11px;
+            color: #999;
+            margin-bottom: 10px;
+            letter-spacing: .3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .grid-item .card-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 7px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .grid-item .price-new {
+            font-size: 17px;
+            font-weight: 300;
+            color: #111;
+            letter-spacing: -.5px;
+        }
+
+        .price-old-tag {
+            font-size: 12px;
+            color: #aaa;
+            text-decoration: line-through;
+        }
+
+        .discount-tag {
+            padding: 2px 7px;
+            border-radius: 10px;
+            background: #f0f0f0;
+            border: 1px solid #e0e0e0;
+            color: #555;
+            font-size: 10px;
+            font-weight: 700;
+        }
 
         /* Card actions - slide up on hover */
-        .grid-item .card-actions { display:flex; gap:8px; }
+        .grid-item .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
         .grid-item .btn-add,
-        .grid-item .btn-detail { opacity:0; transform:translateY(10px); transition:all .28s cubic-bezier(.22,1,.36,1); }
-        .grid-item:hover .btn-add { opacity:1; transform:translateY(0); transition-delay:.02s; }
-        .grid-item:hover .btn-detail { opacity:1; transform:translateY(0); transition-delay:.06s; }
+        .grid-item .btn-detail {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all .28s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .grid-item:hover .btn-add {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: .02s;
+        }
+
+        .grid-item:hover .btn-detail {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: .06s;
+        }
 
         .grid-item .btn-add {
-            flex:1; padding:9px 14px; background-color:rgba(17,24,39,.9);
-            color:#fff; border:none; font-weight:600; border-radius:10px;
-            cursor:pointer; font-size:12px; position:relative; overflow:hidden; min-height:36px;
-            transition:background .2s ease, transform .15s ease;
+            flex: 1;
+            padding: 9px 14px;
+            background-color: rgba(17, 24, 39, .9);
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            position: relative;
+            overflow: hidden;
+            min-height: 36px;
+            transition: background .2s ease, transform .15s ease;
         }
-        .grid-item .btn-add:hover { background-color:#000; transform:scale(1.02); }
+
+        .grid-item .btn-add:hover {
+            background-color: #000;
+            transform: scale(1.02);
+        }
+
         /* Ripple on btn-add */
         .grid-item .btn-add::before {
-            content:""; position:absolute; left:var(--rx,50%); top:var(--ry,50%);
-            width:0; height:0; border-radius:50%; background:rgba(255,255,255,.25);
-            transform:translate(-50%,-50%); transition:width .5s ease, height .5s ease, opacity .5s ease;
-            opacity:0;
+            content: "";
+            position: absolute;
+            left: var(--rx, 50%);
+            top: var(--ry, 50%);
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .25);
+            transform: translate(-50%, -50%);
+            transition: width .5s ease, height .5s ease, opacity .5s ease;
+            opacity: 0;
         }
-        .grid-item .btn-add.ripple::before { width:200px; height:200px; opacity:0; }
-        .grid-item .btn-add.added { background:#111; }
+
+        .grid-item .btn-add.ripple::before {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+        }
+
+        .grid-item .btn-add.added {
+            background: #111;
+        }
+
         .grid-item .btn-add .btn-text,
-        .grid-item .btn-add .btn-check { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; transition:.25s ease; }
-        .grid-item .btn-add .btn-check { opacity:0; transform:scale(.6); }
-        .grid-item .btn-add.added .btn-text { opacity:0; transform:scale(.6); }
-        .grid-item .btn-add.added .btn-check { opacity:1; transform:scale(1); }
+        .grid-item .btn-add .btn-check {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .25s ease;
+        }
+
+        .grid-item .btn-add .btn-check {
+            opacity: 0;
+            transform: scale(.6);
+        }
+
+        .grid-item .btn-add.added .btn-text {
+            opacity: 0;
+            transform: scale(.6);
+        }
+
+        .grid-item .btn-add.added .btn-check {
+            opacity: 1;
+            transform: scale(1);
+        }
 
         .grid-item .btn-detail {
-            flex:1; padding:9px; background:transparent;
-            border:1px solid rgba(0,0,0,.12); color:rgba(0,0,0,.55);
-            font-weight:500; border-radius:8px; cursor:pointer; font-size:12px;
-            transition:all .2s ease; text-decoration:none;
-            display:flex; align-items:center; justify-content:center;
+            flex: 1;
+            padding: 9px;
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, .12);
+            color: rgba(0, 0, 0, .55);
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all .2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .grid-item .btn-detail:hover { background:rgba(0,0,0,.05); color:#000; border-color:#111; }
+
+        .grid-item .btn-detail:hover {
+            background: rgba(0, 0, 0, .05);
+            color: #000;
+            border-color: #111;
+        }
 
         /* ===== SOCIAL SIDEBAR ===== */
         .social-sidebar {
-            position:fixed; left:20px; top:55%; transform:translateY(-50%);
-            z-index:1000; width:50px; background:rgba(228,228,231,.85);
-            backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-            border:1px solid rgba(255,255,255,.4); border-radius:100px;
-            padding:24px 0; display:flex; flex-direction:column; align-items:center;
-            gap:22px; box-shadow:0 10px 30px rgba(0,0,0,.08);
-            transition:all .4s cubic-bezier(.16,1,.3,1);
+            position: fixed;
+            left: 20px;
+            top: 55%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            width: 50px;
+            background: rgba(228, 228, 231, .85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, .4);
+            border-radius: 100px;
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 22px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+            transition: all .4s cubic-bezier(.16, 1, .3, 1);
         }
-        .social-sidebar:hover { background:rgba(228,228,231,.95); box-shadow:0 15px 35px rgba(0,0,0,.12); transform:translateY(-50%) scale(1.02); }
-        .social-item { display:flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; color:#1f1f23; transition:all .3s ease; text-decoration:none; }
-        .social-item svg { width:20px; height:20px; fill:currentColor; transition:all .3s ease; }
-        .social-item:hover { transform:scale(1.1); }
-        .social-item[title="X (Twitter)"]:hover { color:#000; background:rgba(0,0,0,.06); }
-        .social-item[title="Instagram"]:hover { color:#E1306C; background:rgba(225,48,108,.08); }
-        .social-item[title="YouTube"]:hover { color:#FF0000; background:rgba(255,0,0,.08); }
-        .social-item[title="TikTok"]:hover { color:#000; background:rgba(0,0,0,.06); }
-        .social-item[title="Discord"]:hover { color:#5865F2; background:rgba(88,101,242,.08); }
+
+        .social-sidebar:hover {
+            background: rgba(228, 228, 231, .95);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, .12);
+            transform: translateY(-50%) scale(1.02);
+        }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: #1f1f23;
+            transition: all .3s ease;
+            text-decoration: none;
+        }
+
+        .social-item svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            transition: all .3s ease;
+        }
+
+        .social-item:hover {
+            transform: scale(1.1);
+        }
+
+        .social-item[title="X (Twitter)"]:hover {
+            color: #000;
+            background: rgba(0, 0, 0, .06);
+        }
+
+        .social-item[title="Instagram"]:hover {
+            color: #E1306C;
+            background: rgba(225, 48, 108, .08);
+        }
+
+        .social-item[title="YouTube"]:hover {
+            color: #FF0000;
+            background: rgba(255, 0, 0, .08);
+        }
+
+        .social-item[title="TikTok"]:hover {
+            color: #000;
+            background: rgba(0, 0, 0, .06);
+        }
+
+        .social-item[title="Discord"]:hover {
+            color: #5865F2;
+            background: rgba(88, 101, 242, .08);
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width:1200px) {
-            .product-grid { grid-template-columns:repeat(3,1fr); }
-            .trending-grid { grid-template-columns:repeat(2,1fr); }
-            .stats-grid { grid-template-columns:repeat(2,1fr); }
-            .filter-bar { justify-content:center; }
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .trending-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-bar {
+                justify-content: center;
+            }
         }
+
         @media (max-width:1000px) {
-            header { width:calc(100% - 20px); padding:0 20px; left:10px; }
-            nav { display:none; }
-            .social-sidebar { display:none; }
+            header {
+                width: calc(100% - 20px);
+                padding: 0 20px;
+                left: 10px;
+            }
+
+            nav {
+                display: none;
+            }
+
+            .social-sidebar {
+                display: none;
+            }
         }
+
         @media (max-width:992px) {
-            .product-grid { grid-template-columns:repeat(2,1fr); }
-            .item-section { flex-direction:column !important; text-align:center; }
-            .side-content { text-align:center !important; margin:0 !important; width:100%; padding:20px; }
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .item-section {
+                flex-direction: column !important;
+                text-align: center;
+            }
+
+            .side-content {
+                text-align: center !important;
+                margin: 0 !important;
+                width: 100%;
+                padding: 20px;
+            }
+
             .item-section .tilt-card,
-            .item-section .side-content { transform:translateY(40px) scale(.95); }
+            .item-section .side-content {
+                transform: translateY(40px) scale(.95);
+            }
+
             .item-section.show .tilt-card,
-            .item-section.show .side-content { transform:translateY(0) scale(1); }
-            .features-row { flex-wrap:wrap; }
-            .feature-item { min-width:calc(50% - 1px); }
+            .item-section.show .side-content {
+                transform: translateY(0) scale(1);
+            }
+
+            .features-row {
+                flex-wrap: wrap;
+            }
+
+            .feature-item {
+                min-width: calc(50% - 1px);
+            }
         }
+
         @media (max-width:600px) {
-            .product-grid { grid-template-columns:1fr; }
-            .trending-grid { grid-template-columns:1fr 1fr; gap:14px; }
-            .stats-grid { grid-template-columns:repeat(2,1fr); }
-            .showcase-container { padding:0 20px; }
-            .tilt-card { width:100% !important; }
-            .trending-section, .stats-section, .features-section, .brands-section, .filter-bar, .brand-filter-bar, .quick-filter-bar, .grid-container { padding:0 20px; }
-            .feature-item { min-width:100%; }
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trending-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .showcase-container {
+                padding: 0 20px;
+            }
+
+            .tilt-card {
+                width: 100% !important;
+            }
+
+            .trending-section,
+            .stats-section,
+            .features-section,
+            .brands-section,
+            .filter-bar,
+            .brand-filter-bar,
+            .quick-filter-bar,
+            .grid-container {
+                padding: 0 20px;
+            }
+
+            .feature-item {
+                min-width: 100%;
+            }
         }
 
         /* ===== PAGINATION STYLE ===== */
@@ -583,6 +1525,7 @@
             margin-bottom: 30px;
             width: 100%;
         }
+
         .page-btn {
             width: 42px;
             height: 42px;
@@ -598,22 +1541,26 @@
             color: #222;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
+
         .page-btn:hover:not(.disabled) {
             transform: translateY(-2px);
             background: rgba(0, 0, 0, 0.05);
             color: #111;
         }
+
         .page-btn.active {
             background: #111;
             color: #fff;
             border-color: #111;
             font-weight: 600;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
         }
+
         .page-btn.disabled {
             opacity: 0.3;
             cursor: not-allowed;
         }
+
         .page-ellipsis {
             width: 42px;
             height: 42px;
@@ -625,35 +1572,96 @@
             cursor: default;
             user-select: none;
         }
+
+        /* ===========================
+   HERO BANNER
+=========================== */
+        .hero-banner {
+            width: 100vw;
+            max-width: none;
+            margin-left: calc(50% - 50vw);
+            margin-top: var(--header-height, 78px);
+            height: calc(100vh - var(--header-height, 78px));
+            min-height: 550px;
+            overflow: hidden;
+            display: block;
+        }
+
+        .hero-banner a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            transition: filter 0.3s ease;
+        }
+
+        .hero-banner a:hover {
+            filter: brightness(0.95);
+        }
+
+        .hero-banner-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center top;
+            transition: opacity 0.4s ease;
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner {
+                height: auto;
+                aspect-ratio: 16 / 9;
+                min-height: auto;
+            }
+        }
     </style>
     <link rel="stylesheet" href="/css/style.css?v=1.0.5">
     <link rel="stylesheet" href="/assets/css/auth-ui.css">
 </head>
+
 <body>
 
     <!-- Floating Social Sidebar -->
     <div class="social-sidebar">
         <a href="https://x.com" target="_blank" class="social-item" title="X (Twitter)">
-            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
         </a>
         <a href="https://instagram.com" target="_blank" class="social-item" title="Instagram">
-            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+            </svg>
         </a>
-        <a href="https://www.youtube.com/channel/UCaYgBUfFPI3YldZeRfbfitA" target="_blank" class="social-item" title="YouTube">
-            <svg viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        <a href="https://www.youtube.com/channel/UCaYgBUfFPI3YldZeRfbfitA" target="_blank" class="social-item"
+            title="YouTube">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M23.498 6.163a3.003 3.003 0 00-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.507a3.003 3.003 0 00-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 002.11 2.11c1.87.507 9.388.507 9.388.507s7.518 0 9.388-.507a3.003 3.003 0 002.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
         </a>
         <a href="https://www.tiktok.com/@hypercore1234?lang=en" target="_blank" class="social-item" title="TikTok">
-            <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23.83.99 1.96 1.71 3.21 2.08v4.06c-1.39-.02-2.77-.38-3.98-1.09-.59-.34-1.12-.79-1.56-1.31v7.69c.02 1.42-.32 2.84-1 4.07-.63 1.15-1.61 2.1-2.78 2.72-1.37.74-2.93 1.09-4.48 1.01-1.78-.08-3.51-.8-4.78-2.06A9.972 9.972 0 011 12.87c.23-2.09 1.25-4.04 2.86-5.41 1.48-1.28 3.39-1.97 5.35-1.92.05 1.28.02 2.57.03 3.85-.92-.26-1.92-.12-2.73.39-.88.53-1.46 1.48-1.58 2.5-.16 1.19.26 2.42 1.12 3.24.78.78 1.87 1.21 2.97 1.2 1.07-.01 2.1-.48 2.76-1.31.54-.66.8-1.52.79-2.38V.02z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23.83.99 1.96 1.71 3.21 2.08v4.06c-1.39-.02-2.77-.38-3.98-1.09-.59-.34-1.12-.79-1.56-1.31v7.69c.02 1.42-.32 2.84-1 4.07-.63 1.15-1.61 2.1-2.78 2.72-1.37.74-2.93 1.09-4.48 1.01-1.78-.08-3.51-.8-4.78-2.06A9.972 9.972 0 011 12.87c.23-2.09 1.25-4.04 2.86-5.41 1.48-1.28 3.39-1.97 5.35-1.92.05 1.28.02 2.57.03 3.85-.92-.26-1.92-.12-2.73.39-.88.53-1.46 1.48-1.58 2.5-.16 1.19.26 2.42 1.12 3.24.78.78 1.87 1.21 2.97 1.2 1.07-.01 2.1-.48 2.76-1.31.54-.66.8-1.52.79-2.38V.02z" />
+            </svg>
         </a>
         <a href="https://discord.gg/QBbHeKc2Sy" target="_blank" class="social-item" title="Discord">
-            <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 01-1.873-.894.077.077 0 01-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 01.077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 01.078.009c.12.099.246.195.373.289a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.894.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084-.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z"/></svg>
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.094 13.094 0 01-1.873-.894.077.077 0 01-.008-.128c.126-.093.252-.19.372-.287a.075.075 0 01.077-.011c3.92 1.793 8.18 1.793 12.061 0a.073.073 0 01.078.009c.12.099.246.195.373.289a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.894.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084-.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.156 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.156-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.156 2.418z" />
+            </svg>
         </a>
     </div>
 
     <!-- HEADER -->
     <header id="header">
         <div class="logo" style="cursor:pointer;" onclick="window.location.href='/Homepage'">
-            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" style="height:38px;display:block;object-fit:contain;">
+            <img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                style="height:38px;display:block;object-fit:contain;">
         </div>
         <nav>
             <a href="/Homepage">Trang Chủ</a>
@@ -722,19 +1730,34 @@
         </nav>
         <div class="nav-actions">
             <div class="header-search-container" id="headerSearchWrap">
-                <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Tìm kiếm sản phẩm..." onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
-                <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)" title="Tìm kiếm" aria-label="Tìm kiếm">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="headerSearchInput" class="header-search-input" placeholder="Tìm kiếm sản phẩm..."
+                    onkeydown="if(event.key==='Enter')handleHeaderSearch(this)">
+                <button class="header-icon-btn search-toggle-btn" onclick="toggleHeaderSearch(this)" title="Tìm kiếm"
+                    aria-label="Tìm kiếm">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
                 </button>
             </div>
-            <a href="/Login" id="accountLoginLink" style="text-decoration:none;color:inherit;" class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <a href="/Login" id="accountLoginLink" style="text-decoration:none;color:inherit;"
+                class="header-icon-btn account-login-link" title="Đăng nhập" aria-label="Đăng nhập">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
             </a>
             <div class="user-greeting-wrap" id="userGreetingWrap">
-                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()" aria-label="Tài khoản">
+                <button class="user-greeting-btn" id="userGreetingBtn" onclick="toggleUserDropdown()"
+                    aria-label="Tài khoản">
                     <div class="user-avatar" id="userAvatar">U</div>
                     <div class="user-greeting-name"><em>Xin chào,</em><span id="userDisplayName">Người dùng</span></div>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
                 </button>
                 <div class="user-dropdown" id="userDropdown">
                     <div class="dropdown-header">
@@ -742,33 +1765,68 @@
                         <small id="dropdownEmail">email@example.com</small>
                     </div>
                     <a href="/profile/info" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
                         Hồ sơ của tôi
                     </a>
                     <a href="/shoppingcart" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
                         Giỏ hàng
                     </a>
                     <a href="/order-status" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
                         Đơn hàng
                     </a>
                     <a href="/customer-returns" class="dropdown-item">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5" />
+                        </svg>
                         Đổi trả / Hoàn tiền
                     </a>
                     <button class="dropdown-item logout" onclick="handleLogout()">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8"
+                            viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
                         Đăng xuất
                     </button>
                 </div>
             </div>
-            <a href="/shoppingcart" style="text-decoration:none;color:inherit;" class="header-icon-btn cart-link" title="Giỏ hàng" aria-label="Giỏ hàng">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <a href="/shoppingcart" style="text-decoration:none;color:inherit;" class="header-icon-btn cart-link"
+                title="Giỏ hàng" aria-label="Giỏ hàng">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
                 <span class="cart-badge" id="cartCount">0</span>
             </a>
         </div>
     </header>
+
+    <section class="hero-banner">
+        <a id="heroBannerLink">
+            <img src="/images/tayCam.jpg" class="hero-banner-img" alt="Gaming Gear Banner">
+        </a>
+    </section>
 
     <main>
         <!-- SHOWCASE -->
@@ -776,7 +1834,8 @@
             <div class="item-section align-left">
                 <div class="tilt-card card-md" id="showcaseCard1">
                     <div class="glass-base"></div>
-                    <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png" alt="Chuột" class="product-img showcase-img">
+                    <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png"
+                        alt="Chuột" class="product-img showcase-img">
                     <div class="item-info">
                         <p class="item-tag">Wireless Esports Mouse</p>
                         <h2 class="item-name">CORE M-PRO</h2>
@@ -785,7 +1844,8 @@
                 </div>
                 <div class="side-content">
                     <h2 class="side-title">VƯỢT QUA<br>GIỚI HẠN.</h2>
-                    <p class="side-desc">Cảm biến thế hệ mới, trọng lượng siêu nhẹ, mang lại độ chính xác tuyệt đối trên từng pixel cho game thủ FPS.</p>
+                    <p class="side-desc">Cảm biến thế hệ mới, trọng lượng siêu nhẹ, mang lại độ chính xác tuyệt đối trên
+                        từng pixel cho game thủ FPS.</p>
                 </div>
             </div>
         </div>
@@ -797,7 +1857,8 @@
                 <div class="trending-card">
                     <span class="trending-badge badge-best">BEST SELLER</span>
                     <div class="trending-card-img-wrap">
-                        <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png" alt="CORE M-PRO" class="trending-card-img">
+                        <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png"
+                            alt="CORE M-PRO" class="trending-card-img">
                         <div class="trending-card-img-overlay"></div>
                     </div>
                     <div class="trending-card-body">
@@ -805,7 +1866,8 @@
                         <div class="trending-card-name">CORE M-PRO Superlight</div>
                         <div class="trending-card-price-row"><span class="trending-card-price">2,450,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE M-PRO"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE M-PRO"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=41" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
@@ -813,7 +1875,8 @@
                 <div class="trending-card">
                     <span class="trending-badge badge-hot">HOT</span>
                     <div class="trending-card-img-wrap">
-                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png" alt="CORE K-ELITE" class="trending-card-img">
+                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png"
+                            alt="CORE K-ELITE" class="trending-card-img">
                         <div class="trending-card-img-overlay"></div>
                     </div>
                     <div class="trending-card-body">
@@ -825,7 +1888,8 @@
                             <span class="discount-tag">-9%</span>
                         </div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE K-ELITE"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE K-ELITE"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=42" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
@@ -833,7 +1897,8 @@
                 <div class="trending-card">
                     <span class="trending-badge badge-limited">LIMITED</span>
                     <div class="trending-card-img-wrap">
-                        <img src="https://compass-ssl.xbox.com/assets/80/75/807530ce-2e8f-4d32-8ea7-a3aa7ccb68fc.png?n=Elite-Series-2_Gallery_1084x794_02.png" alt="CORE G-CMD" class="trending-card-img">
+                        <img src="https://compass-ssl.xbox.com/assets/80/75/807530ce-2e8f-4d32-8ea7-a3aa7ccb68fc.png?n=Elite-Series-2_Gallery_1084x794_02.png"
+                            alt="CORE G-CMD" class="trending-card-img">
                         <div class="trending-card-img-overlay"></div>
                     </div>
                     <div class="trending-card-body">
@@ -841,7 +1906,8 @@
                         <div class="trending-card-name">CORE G-CMD Elite</div>
                         <div class="trending-card-price-row"><span class="trending-card-price">4,500,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE G-CMD"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE G-CMD"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=45" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
@@ -849,7 +1915,8 @@
                 <div class="trending-card">
                     <span class="trending-badge badge-new">NEW</span>
                     <div class="trending-card-img-wrap">
-                        <img src="https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png" alt="CORE H-SOUND" class="trending-card-img">
+                        <img src="https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png"
+                            alt="CORE H-SOUND" class="trending-card-img">
                         <div class="trending-card-img-overlay"></div>
                     </div>
                     <div class="trending-card-body">
@@ -857,7 +1924,8 @@
                         <div class="trending-card-name">CORE H-SOUND Pro</div>
                         <div class="trending-card-price-row"><span class="trending-card-price">2,890,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE H-SOUND"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE H-SOUND"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=43" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
@@ -868,10 +1936,22 @@
         <!-- MINI STATS -->
         <div class="stats-section">
             <div class="stats-grid">
-                <div class="stat-card"><div class="stat-number" data-target="150">0</div><div class="stat-label">Gaming Gear</div></div>
-                <div class="stat-card"><div class="stat-number" data-target="30">0</div><div class="stat-label">Thương Hiệu</div></div>
-                <div class="stat-card"><div class="stat-number" data-target="98" data-suffix="%">0%</div><div class="stat-label">Positive Review</div></div>
-                <div class="stat-card"><div class="stat-number" data-target="24" data-suffix="H">0H</div><div class="stat-label">Shipping</div></div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="150">0</div>
+                    <div class="stat-label">Gaming Gear</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="30">0</div>
+                    <div class="stat-label">Thương Hiệu</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="98" data-suffix="%">0%</div>
+                    <div class="stat-label">Positive Review</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" data-target="24" data-suffix="H">0H</div>
+                    <div class="stat-label">Shipping</div>
+                </div>
             </div>
         </div>
 
@@ -960,28 +2040,33 @@
         <div class="grid-container">
             <div class="product-grid" id="productGrid">
                 <!-- CORE M-PRO -->
-                <div class="tilt-card grid-item" data-category="mouse" data-price="2450000" data-brand="logitech" data-tags="wireless bestseller">
+                <div class="tilt-card grid-item" data-category="mouse" data-price="2450000" data-brand="logitech"
+                    data-tags="wireless bestseller">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
                         <span class="card-badge hot">HOT</span>
-                        <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png" alt="CORE M-PRO" loading="lazy">
+                        <img src="https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png"
+                            alt="CORE M-PRO" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE M-PRO</div>
                         <div class="card-specs">Wireless Esports · 25600 DPI · 61g</div>
                         <div class="card-price-row"><span class="price-new">2,450,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE M-PRO"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE M-PRO"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=41" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
                 </div>
                 <!-- CORE K-ELITE -->
-                <div class="tilt-card grid-item" data-category="keyboard" data-price="3890000" data-brand="corsair" data-tags="rgb hotdeal">
+                <div class="tilt-card grid-item" data-category="keyboard" data-price="3890000" data-brand="corsair"
+                    data-tags="rgb hotdeal">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
                         <span class="card-badge sale">SALE</span>
-                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png" alt="CORE K-ELITE" loading="lazy">
+                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png"
+                            alt="CORE K-ELITE" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE K-ELITE</div>
@@ -992,33 +2077,39 @@
                             <span class="discount-tag">-9%</span>
                         </div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE K-ELITE"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE K-ELITE"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=42" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
                 </div>
                 <!-- CORE H-SOUND -->
-                <div class="tilt-card grid-item" data-category="headset" data-price="2890000" data-brand="hyperx" data-tags="wireless newarrival">
+                <div class="tilt-card grid-item" data-category="headset" data-price="2890000" data-brand="hyperx"
+                    data-tags="wireless newarrival">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
-                        <img src="https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png" alt="CORE H-SOUND" loading="lazy">
+                        <img src="https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png"
+                            alt="CORE H-SOUND" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE H-SOUND</div>
                         <div class="card-specs">7.1 Surround · Wireless · 90h battery</div>
                         <div class="card-price-row"><span class="price-new">2,890,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE H-SOUND"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE H-SOUND"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=43" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
                 </div>
                 <!-- CORE STUDIO -->
-                <div class="tilt-card grid-item" data-category="mic" data-price="3100000" data-brand="corsair" data-tags="hotdeal">
+                <div class="tilt-card grid-item" data-category="mic" data-price="3100000" data-brand="corsair"
+                    data-tags="hotdeal">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
                         <span class="card-badge sale">SALE</span>
-                        <img src="https://cdn.shopify.com/s/files/1/0073/3288/8687/products/Yeti-Black-Front_1024x1024.png" alt="CORE STUDIO" loading="lazy">
+                        <img src="https://cdn.shopify.com/s/files/1/0073/3288/8687/products/Yeti-Black-Front_1024x1024.png"
+                            alt="CORE STUDIO" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE STUDIO</div>
@@ -1029,50 +2120,59 @@
                             <span class="discount-tag">-11%</span>
                         </div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE STUDIO"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE STUDIO"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=44" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
                 </div>
                 <!-- CORE G-CMD -->
-                <div class="tilt-card grid-item" data-category="gamepad" data-price="4500000" data-brand="xbox" data-tags="wireless bestseller">
+                <div class="tilt-card grid-item" data-category="gamepad" data-price="4500000" data-brand="xbox"
+                    data-tags="wireless bestseller">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
                         <span class="card-badge hot">HOT</span>
-                        <img src="https://compass-ssl.xbox.com/assets/80/75/807530ce-2e8f-4d32-8ea7-a3aa7ccb68fc.png?n=Elite-Series-2_Gallery_1084x794_02.png" alt="CORE G-CMD" loading="lazy">
+                        <img src="https://compass-ssl.xbox.com/assets/80/75/807530ce-2e8f-4d32-8ea7-a3aa7ccb68fc.png?n=Elite-Series-2_Gallery_1084x794_02.png"
+                            alt="CORE G-CMD" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE G-CMD</div>
                         <div class="card-specs">Elite Series 2 · Bluetooth · 40h</div>
                         <div class="card-price-row"><span class="price-new">4,500,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE G-CMD"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE G-CMD"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=45" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
                 </div>
                 <!-- CORE PAD PRO -->
-                <div class="tilt-card grid-item" data-category="pad" data-price="1800000" data-brand="corsair" data-tags="rgb">
+                <div class="tilt-card grid-item" data-category="pad" data-price="1800000" data-brand="corsair"
+                    data-tags="rgb">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
-                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Mousepads/MM700_RGB_Extended/Gallery/MM700_RGB_EXTENDED_01.png" alt="CORE PAD PRO" loading="lazy">
+                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Mousepads/MM700_RGB_Extended/Gallery/MM700_RGB_EXTENDED_01.png"
+                            alt="CORE PAD PRO" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE PAD PRO</div>
                         <div class="card-specs">RGB · 900×400mm · Non-slip base</div>
                         <div class="card-price-row"><span class="price-new">1,800,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE PAD PRO"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE PAD PRO"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=46" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
                 </div>
                 <!-- CORE BASE RGB -->
-                <div class="tilt-card grid-item" data-category="acc" data-price="1200000" data-brand="corsair" data-tags="rgb hotdeal">
+                <div class="tilt-card grid-item" data-category="acc" data-price="1200000" data-brand="corsair"
+                    data-tags="rgb hotdeal">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
                         <span class="card-badge sale">SALE</span>
-                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Accessories/ST100/Gallery/ST100_01.png" alt="CORE BASE RGB" loading="lazy">
+                        <img src="https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Accessories/ST100/Gallery/ST100_01.png"
+                            alt="CORE BASE RGB" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE BASE RGB</div>
@@ -1083,24 +2183,28 @@
                             <span class="discount-tag">-19%</span>
                         </div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE BASE RGB"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE BASE RGB"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=47" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
                 </div>
                 <!-- CORE WHEEL -->
-                <div class="tilt-card grid-item" data-category="acc" data-price="9500000" data-brand="logitech" data-tags="bestseller">
+                <div class="tilt-card grid-item" data-category="acc" data-price="9500000" data-brand="logitech"
+                    data-tags="bestseller">
                     <div class="glass-base"></div>
                     <div class="card-img-wrap">
                         <span class="card-badge hot">HOT</span>
-                        <img src="https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g923-and-trueforce/g923-gallery-1.png?v=1" alt="CORE WHEEL" loading="lazy">
+                        <img src="https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g923-and-trueforce/g923-gallery-1.png?v=1"
+                            alt="CORE WHEEL" loading="lazy">
                     </div>
                     <div class="card-body">
                         <div class="card-name">CORE WHEEL</div>
                         <div class="card-specs">Force Feedback · 900° rotation · Pedals</div>
                         <div class="card-price-row"><span class="price-new">9,500,000 ₫</span></div>
                         <div class="card-actions">
-                            <button class="btn-add" data-name="CORE WHEEL"><span class="btn-text">Thêm vào giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
+                            <button class="btn-add" data-name="CORE WHEEL"><span class="btn-text">Thêm vào
+                                    giỏ</span><span class="btn-check">✓ Đã thêm</span></button>
                             <a href="/product-detail?id=48" class="btn-detail">Chi tiết</a>
                         </div>
                     </div>
@@ -1113,7 +2217,8 @@
     <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-info-col">
-                <div class="footer-logo"><img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE" style="height:55px;display:block;object-fit:contain;filter:invert(1);"></div>
+                <div class="footer-logo"><img src="/assets/logo/logoHP_cropped.png" alt="HYPER CORE"
+                        style="height:55px;display:block;object-fit:contain;filter:invert(1);"></div>
             </div>
             <div class="footer-links-col">
                 <h4>Linh Kiện</h4>
@@ -1159,429 +2264,427 @@
     <script src="/assets/js/cart-helper.js?v=1.0.5"></script>
     <script src="/assets/js/cart-drawer-global.js?v=1.0.7"></script>
     <script src="/assets/js/search.js?v=1.0.0"></script>
-  <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
+    <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
     <script>
-    /* =====================================================
-       GAMINGGEAR.JS — All logic, UTF-8 clean
-    ===================================================== */
+        /* =====================================================
+           GAMINGGEAR.JS — All logic, UTF-8 clean
+        ===================================================== */
 
-    // ── 1. HEADER SCROLL ──
-    const header = document.getElementById('header');
-    window.addEventListener('scroll', () => {
-        header.classList.toggle('scrolled', window.scrollY > 50);
-    }, { passive: true });
+        // ── 1. HEADER SCROLL ──
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        }, { passive: true });
 
-    // ── 2. SHOWCASE SCROLL REVEAL ──
-    const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
-    }, { threshold: 0.18 });
-    document.querySelectorAll('.item-section').forEach(s => sectionObserver.observe(s));
-    const footerEl = document.querySelector('footer');
-    if (footerEl) sectionObserver.observe(footerEl);
+        // ── 2. SHOWCASE SCROLL REVEAL ──
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+        }, { threshold: 0.18 });
+        document.querySelectorAll('.item-section').forEach(s => sectionObserver.observe(s));
+        const footerEl = document.querySelector('footer');
+        if (footerEl) sectionObserver.observe(footerEl);
 
-    // ── 3. PARALLAX — nhẹ trên showcase ──
-    window.addEventListener('scroll', () => {
-        const sy = window.scrollY;
-        document.querySelectorAll('.showcase-img').forEach(img => {
-            img.style.transform = `translateY(${sy * 0.04}px)`;
-        });
-    }, { passive: true });
-
-    // ── 4. MOUSE PARALLAX trên showcase cards ──
-    document.querySelectorAll('.item-section .tilt-card').forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const r = card.getBoundingClientRect();
-            const x = (e.clientX - r.left - r.width / 2) / r.width;
-            const y = (e.clientY - r.top - r.height / 2) / r.height;
-            const img = card.querySelector('.product-img');
-            if (img) img.style.transform = `translate(${x * 6}px, ${y * 6}px)`;
-        });
-        card.addEventListener('mouseleave', () => {
-            const img = card.querySelector('.product-img');
-            if (img) img.style.transform = '';
-        });
-    });
-
-    // ── 5. GRID ITEM SCROLL REVEAL (stagger) ──
-    function revealGridItems() {
-        const visibleItems = Array.from(document.querySelectorAll('.grid-item:not(.hidden)'));
-        visibleItems.forEach((item, i) => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(24px)';
-            setTimeout(() => {
-                item.style.transition = 'opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)';
-                item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
-            }, i * 70);
-        });
-    }
-
-    // ── 6. FILTER STATE ──
-    let currentCategory = 'all';
-    let currentBrand = 'all';
-    let currentQuick = 'all';
-    let currentPage = 1;
-    const itemsPerPage = 9;
-    const priceSelect = document.getElementById('priceSelect');
-
-    function filterProducts() {
-        const priceVal = priceSelect.value;
-        const gridItems = Array.from(document.querySelectorAll('.grid-item'));
-
-        // Find all items that match current filter selections
-        const matchingItems = [];
-        gridItems.forEach(item => {
-            const itemPrice = parseInt(item.getAttribute('data-price'));
-            const itemCat   = item.getAttribute('data-category');
-            const itemBrand = item.getAttribute('data-brand') || 'all';
-            const itemTags  = item.getAttribute('data-tags') || '';
-
-            const catMatch   = currentCategory === 'all' || currentCategory === itemCat;
-            const brandMatch = currentBrand === 'all' || itemBrand === currentBrand;
-            const quickMatch = currentQuick === 'all' || itemTags.includes(currentQuick);
-            let priceMatch = true;
-            if (priceVal === 'under2' && itemPrice >= 2000000) priceMatch = false;
-            if (priceVal === '2to4' && (itemPrice < 2000000 || itemPrice > 4000000)) priceMatch = false;
-            if (priceVal === 'over4' && itemPrice <= 4000000) priceMatch = false;
-
-            if (catMatch && brandMatch && quickMatch && priceMatch) {
-                matchingItems.push(item);
-            } else {
-                item.style.display = 'none';
-                item.classList.add('hidden');
-                item.style.opacity = '0';
-            }
-        });
-
-        // Calculate pagination parameters
-        const totalItems = matchingItems.length;
-        const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-        if (currentPage > totalPages) {
-            currentPage = totalPages;
-        }
-
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-
-        // Render matching items for current page with delay transition
-        let delay = 0;
-        matchingItems.forEach((item, idx) => {
-            if (idx >= startIndex && idx < endIndex) {
-                item.style.display = 'flex';
-                item.classList.remove('hidden');
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(20px)';
-                item.style.transition = `opacity .45s ease ${delay * 65}ms, transform .45s cubic-bezier(.22,1,.36,1) ${delay * 65}ms`;
-                setTimeout((_item => () => {
-                    _item.style.opacity = '1';
-                    _item.style.transform = 'translateY(0)';
-                })(item), 20 + delay * 65);
-                delay++;
-            } else {
-                item.style.display = 'none';
-                item.classList.add('hidden');
-                item.style.opacity = '0';
-            }
-        });
-
-        // Re-render pagination buttons
-        renderPaginationControls(totalPages);
-    }
-
-    function renderPaginationControls(totalPages) {
-        let container = document.getElementById('paginationContainer');
-        if (!container) {
-            const grid = document.getElementById('productGrid');
-            container = document.createElement('div');
-            container.id = 'paginationContainer';
-            container.className = 'pagination-container';
-            grid.parentNode.appendChild(container);
-        }
-
-        if (totalPages <= 1) {
-            container.innerHTML = '';
-            return;
-        }
-
-        let html = '';
-        
-        // First page button (<<)
-        html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
-        
-        // Prev button (<)
-        html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&lt;</button>`;
-
-        // Calculate the window of 5 pages
-        let startPage = currentPage - 2;
-        let endPage = currentPage + 2;
-
-        if (startPage < 1) {
-            endPage = Math.min(totalPages, endPage + (1 - startPage));
-            startPage = 1;
-        }
-        if (endPage > totalPages) {
-            startPage = Math.max(1, startPage - (endPage - totalPages));
-            endPage = totalPages;
-        }
-
-        // Ellipsis before
-        if (startPage > 1) {
-            html += `<span class="page-ellipsis">...</span>`;
-        }
-
-        // Page numbers
-        for (let i = startPage; i <= endPage; i++) {
-            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
-        }
-
-        // Ellipsis after
-        if (endPage < totalPages) {
-            html += `<span class="page-ellipsis">...</span>`;
-        }
-
-        // Next button (>)
-        html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;</button>`;
-
-        // Last page button (>>)
-        html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
-
-        container.innerHTML = html;
-    }
-
-    window.changePage = function(page) {
-        currentPage = page;
-        filterProducts();
-        document.getElementById('all-gear').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    };
-
-    // ── 7. CATEGORY BUTTONS ──
-    document.querySelectorAll('.cat-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentCategory = btn.getAttribute('data-filter');
-            currentPage = 1;
-            filterProducts();
-        });
-    });
-
-    // ── 8. BRAND FILTER BUTTONS ──
-    document.querySelectorAll('.brand-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentBrand = btn.getAttribute('data-brand-filter');
-            currentPage = 1;
-            filterProducts();
-        });
-    });
-
-    // ── 9. BRAND SHOWCASE PILLS (sync with brand filter) ──
-    document.querySelectorAll('.brand-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            document.querySelectorAll('.brand-pill').forEach(p => p.classList.remove('active'));
-            pill.classList.add('active');
-            const brand = pill.getAttribute('data-brand');
-            currentBrand = brand;
-            document.querySelectorAll('.brand-btn').forEach(b => {
-                b.classList.toggle('active', b.getAttribute('data-brand-filter') === brand);
+        // ── 3. PARALLAX — nhẹ trên showcase ──
+        window.addEventListener('scroll', () => {
+            const sy = window.scrollY;
+            document.querySelectorAll('.showcase-img').forEach(img => {
+                img.style.transform = `translateY(${sy * 0.04}px)`;
             });
-            currentPage = 1;
+        }, { passive: true });
+
+        // ── 4. MOUSE PARALLAX trên showcase cards ──
+        document.querySelectorAll('.item-section .tilt-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const r = card.getBoundingClientRect();
+                const x = (e.clientX - r.left - r.width / 2) / r.width;
+                const y = (e.clientY - r.top - r.height / 2) / r.height;
+                const img = card.querySelector('.product-img');
+                if (img) img.style.transform = `translate(${x * 6}px, ${y * 6}px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                const img = card.querySelector('.product-img');
+                if (img) img.style.transform = '';
+            });
+        });
+
+        // ── 5. GRID ITEM SCROLL REVEAL (stagger) ──
+        function revealGridItems() {
+            const visibleItems = Array.from(document.querySelectorAll('.grid-item:not(.hidden)'));
+            visibleItems.forEach((item, i) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(24px)';
+                setTimeout(() => {
+                    item.style.transition = 'opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, i * 70);
+            });
+        }
+
+        // ── 6. FILTER STATE ──
+        let currentCategory = 'all';
+        let currentBrand = 'all';
+        let currentQuick = 'all';
+        let currentPage = 1;
+        const itemsPerPage = 9;
+        const priceSelect = document.getElementById('priceSelect');
+
+        function filterProducts() {
+            const priceVal = priceSelect.value;
+            const gridItems = Array.from(document.querySelectorAll('.grid-item'));
+
+            // Find all items that match current filter selections
+            const matchingItems = [];
+            gridItems.forEach(item => {
+                const itemPrice = parseInt(item.getAttribute('data-price'));
+                const itemCat = item.getAttribute('data-category');
+                const itemBrand = item.getAttribute('data-brand') || 'all';
+                const itemTags = item.getAttribute('data-tags') || '';
+
+                const catMatch = currentCategory === 'all' || currentCategory === itemCat;
+                const brandMatch = currentBrand === 'all' || itemBrand === currentBrand;
+                const quickMatch = currentQuick === 'all' || itemTags.includes(currentQuick);
+                let priceMatch = true;
+                if (priceVal === 'under2' && itemPrice >= 2000000) priceMatch = false;
+                if (priceVal === '2to4' && (itemPrice < 2000000 || itemPrice > 4000000)) priceMatch = false;
+                if (priceVal === 'over4' && itemPrice <= 4000000) priceMatch = false;
+
+                if (catMatch && brandMatch && quickMatch && priceMatch) {
+                    matchingItems.push(item);
+                } else {
+                    item.style.display = 'none';
+                    item.classList.add('hidden');
+                    item.style.opacity = '0';
+                }
+            });
+
+            // Calculate pagination parameters
+            const totalItems = matchingItems.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+            if (currentPage > totalPages) {
+                currentPage = totalPages;
+            }
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
+            // Render matching items for current page with delay transition
+            let delay = 0;
+            matchingItems.forEach((item, idx) => {
+                if (idx >= startIndex && idx < endIndex) {
+                    item.style.display = 'flex';
+                    item.classList.remove('hidden');
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    item.style.transition = `opacity .45s ease ${delay * 65}ms, transform .45s cubic-bezier(.22,1,.36,1) ${delay * 65}ms`;
+                    setTimeout((_item => () => {
+                        _item.style.opacity = '1';
+                        _item.style.transform = 'translateY(0)';
+                    })(item), 20 + delay * 65);
+                    delay++;
+                } else {
+                    item.style.display = 'none';
+                    item.classList.add('hidden');
+                    item.style.opacity = '0';
+                }
+            });
+
+            // Re-render pagination buttons
+            renderPaginationControls(totalPages);
+        }
+
+        function renderPaginationControls(totalPages) {
+            let container = document.getElementById('paginationContainer');
+            if (!container) {
+                const grid = document.getElementById('productGrid');
+                container = document.createElement('div');
+                container.id = 'paginationContainer';
+                container.className = 'pagination-container';
+                grid.parentNode.appendChild(container);
+            }
+
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            // First page button (<<)
+            html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>&lt;&lt;</button>`;
+
+            // Prev button (<)
+            html += `<button class="page-btn ${currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>&lt;</button>`;
+
+            // Calculate the window of 5 pages
+            let startPage = currentPage - 2;
+            let endPage = currentPage + 2;
+
+            if (startPage < 1) {
+                endPage = Math.min(totalPages, endPage + (1 - startPage));
+                startPage = 1;
+            }
+            if (endPage > totalPages) {
+                startPage = Math.max(1, startPage - (endPage - totalPages));
+                endPage = totalPages;
+            }
+
+            // Ellipsis before
+            if (startPage > 1) {
+                html += `<span class="page-ellipsis">...</span>`;
+            }
+
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            // Ellipsis after
+            if (endPage < totalPages) {
+                html += `<span class="page-ellipsis">...</span>`;
+            }
+
+            // Next button (>)
+            html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;</button>`;
+
+            // Last page button (>>)
+            html += `<button class="page-btn ${currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>&gt;&gt;</button>`;
+
+            container.innerHTML = html;
+        }
+
+        window.changePage = function (page) {
+            currentPage = page;
             filterProducts();
             document.getElementById('all-gear').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-    });
+        };
 
-    // ── 10. QUICK FILTER ──
-    document.querySelectorAll('.quick-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const isActive = btn.classList.contains('active');
-            document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
-            if (!isActive) {
+        // ── 7. CATEGORY BUTTONS ──
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                currentQuick = btn.getAttribute('data-quick');
-            } else {
-                currentQuick = 'all';
-            }
+                currentCategory = btn.getAttribute('data-filter');
+                currentPage = 1;
+                filterProducts();
+            });
+        });
+
+        // ── 8. BRAND FILTER BUTTONS ──
+        document.querySelectorAll('.brand-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentBrand = btn.getAttribute('data-brand-filter');
+                currentPage = 1;
+                filterProducts();
+            });
+        });
+
+        // ── 9. BRAND SHOWCASE PILLS (sync with brand filter) ──
+        document.querySelectorAll('.brand-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.brand-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                const brand = pill.getAttribute('data-brand');
+                currentBrand = brand;
+                document.querySelectorAll('.brand-btn').forEach(b => {
+                    b.classList.toggle('active', b.getAttribute('data-brand-filter') === brand);
+                });
+                currentPage = 1;
+                filterProducts();
+                document.getElementById('all-gear').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // ── 10. QUICK FILTER ──
+        document.querySelectorAll('.quick-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const isActive = btn.classList.contains('active');
+                document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+                if (!isActive) {
+                    btn.classList.add('active');
+                    currentQuick = btn.getAttribute('data-quick');
+                } else {
+                    currentQuick = 'all';
+                }
+                currentPage = 1;
+                filterProducts();
+            });
+        });
+
+        // ── 11. PRICE FILTER ──
+        priceSelect.addEventListener('change', () => {
             currentPage = 1;
             filterProducts();
         });
-    });
 
-    // ── 11. PRICE FILTER ──
-    priceSelect.addEventListener('change', () => {
-        currentPage = 1;
-        filterProducts();
-    });
-
-    // ── 12. URL PARAMS ──
-    function applyUrlParams() {
-        const urlParams = new URLSearchParams(window.location.search);
-        let catParam = urlParams.get('category') || urlParams.get('cat');
-        if (catParam) {
-            catParam = catParam.toLowerCase();
-            const catMap = {
-                'chuot-gaming':'mouse','mouse':'mouse','ban-phim':'keyboard','keyboard':'keyboard',
-                'tai-nghe':'headset','headset':'headset','mic-studio':'mic','mic':'mic',
-                'tay-cam':'gamepad','gamepad':'gamepad','lot-chuot':'pad','pad':'pad',
-                'phu-kien':'acc','acc':'acc'
-            };
-            const mapped = catMap[catParam];
-            if (mapped) {
-                currentCategory = mapped;
-                document.querySelectorAll('.cat-btn').forEach(b => {
-                    b.classList.toggle('active', b.getAttribute('data-filter') === mapped);
-                });
-                filterProducts();
-            }
-        }
-    }
-
-    // ── 13. CART ──
-    function updateCartBadge() {
-        const cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
-        const countEl = document.getElementById('cartCount');
-        if (countEl) {
-            const total = cart.reduce((acc, i) => acc + i.qty, 0);
-            countEl.innerText = total;
-            countEl.style.display = total > 0 ? 'flex' : 'none';
-        }
-    }
-
-    const formatPrice = n => n.toLocaleString('vi-VN') + ' ₫';
-
-    function getSubcategoryFromProduct(p) {
-        const sku = (p.sku || p.SKU || '').toUpperCase();
-        const name = (p.productName || p.ProductName || '').toLowerCase();
-        const desc = (p.description || p.Description || '').toLowerCase();
-
-        if (sku.includes('MOUSE') || name.includes('mouse') || name.includes('chuột')) return 'mouse';
-        if (sku.includes('KB') || name.includes('keyboard') || name.includes('bàn phím') || name.includes('keychron') || name.includes('akko')) return 'keyboard';
-        if (sku.includes('HS') || name.includes('headset') || name.includes('tai nghe') || name.includes('sound')) return 'headset';
-        if (sku.includes('MIC') || name.includes('mic') || name.includes('micro')) return 'mic';
-        if ((sku.includes('PAD') && !sku.includes('MPAD')) || name.includes('gamepad') || name.includes('tay cầm')) return 'gamepad';
-        if (sku.includes('MPAD') || name.includes('lót chuột') || name.includes('mousepad') || name.includes('pad')) return 'pad';
-        if (sku.includes('ACC') || sku.includes('RC') || name.includes('vô lăng') || name.includes('stand') || name.includes('giá treo') || name.includes('wheel') || name.includes('phụ kiện')) return 'acc';
-        return 'acc';
-    }
-
-    function getTagsFromProduct(p) {
-        const sku = (p.sku || p.SKU || '').toUpperCase();
-        const name = (p.productName || p.ProductName || '').toLowerCase();
-        const desc = (p.description || p.Description || '').toLowerCase();
-        const tags = [];
-
-        if (name.includes('wireless') || desc.includes('không dây') || desc.includes('wireless') || desc.includes('bluetooth') || name.includes('pro')) {
-            tags.push('wireless');
-        }
-        if (name.includes('rgb') || desc.includes('rgb') || desc.includes('led')) {
-            tags.push('rgb');
-        }
-        if (sku.includes('MOUSE') || sku.includes('PAD') || sku.includes('RC')) {
-            tags.push('bestseller');
-        }
-        if (sku.includes('KB') || sku.includes('MIC') || sku.includes('ACC')) {
-            tags.push('hotdeal');
-        }
-        if (sku.includes('HS')) {
-            tags.push('newarrival');
-        }
-        return tags.join(' ');
-    }
-
-    function renderShowcaseCard() {
-        const showcaseProd = PRODUCTS.find(p => p.id === 41) || PRODUCTS[0];
-        if (showcaseProd) {
-            const card = document.getElementById('showcaseCard1');
-            if (card) {
-                const img = card.querySelector('.product-img');
-                const tag = card.querySelector('.item-tag');
-                const name = card.querySelector('.item-name');
-                const price = card.querySelector('.item-price');
-
-                if (img) img.src = showcaseProd.img;
-                if (tag) tag.textContent = showcaseProd.specs;
-                if (name) name.textContent = showcaseProd.name;
-                if (price) price.textContent = formatPrice(showcaseProd.price);
-
-                card.onclick = () => {
-                    window.location.href = window.location.protocol === 'file:' 
-                        ? `product-detail.html?id=${showcaseProd.id}` 
-                        : `/product-detail?id=${showcaseProd.id}`;
+        // ── 12. URL PARAMS ──
+        function applyUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let catParam = urlParams.get('category') || urlParams.get('cat');
+            if (catParam) {
+                catParam = catParam.toLowerCase();
+                const catMap = {
+                    'chuot-gaming': 'mouse', 'mouse': 'mouse', 'ban-phim': 'keyboard', 'keyboard': 'keyboard',
+                    'tai-nghe': 'headset', 'headset': 'headset', 'mic-studio': 'mic', 'mic': 'mic',
+                    'tay-cam': 'gamepad', 'gamepad': 'gamepad', 'lot-chuot': 'pad', 'pad': 'pad',
+                    'phu-kien': 'acc', 'acc': 'acc'
                 };
-                card.style.cursor = 'pointer';
+                const mapped = catMap[catParam];
+                if (mapped) {
+                    currentCategory = mapped;
+                    document.querySelectorAll('.cat-btn').forEach(b => {
+                        b.classList.toggle('active', b.getAttribute('data-filter') === mapped);
+                    });
+                    filterProducts();
+                }
             }
         }
-    }
 
-    function renderTrendingGrid() {
-        const trendingIds = [41, 42, 45, 43];
-        const trendingCards = document.querySelectorAll('.trending-card');
-        trendingCards.forEach((card, idx) => {
-            const targetId = trendingIds[idx];
-            const p = PRODUCTS.find(prod => prod.id === targetId);
-            if (p) {
-                const img = card.querySelector('.trending-card-img');
-                const tag = card.querySelector('.trending-card-tag');
-                const name = card.querySelector('.trending-card-name');
-                const priceRow = card.querySelector('.trending-card-price-row');
-                const btnAdd = card.querySelector('.btn-add');
-                const btnDetail = card.querySelector('.btn-detail');
+        // ── 13. CART ──
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('hyper_core_cart')) || [];
+            const countEl = document.getElementById('cartCount');
+            if (countEl) {
+                const total = cart.reduce((acc, i) => acc + i.qty, 0);
+                countEl.innerText = total;
+                countEl.style.display = total > 0 ? 'flex' : 'none';
+            }
+        }
 
-                if (img) img.src = p.img;
-                if (tag) tag.textContent = p.specs;
-                if (name) name.textContent = p.name;
-                if (priceRow) {
-                    priceRow.innerHTML = `<span class="trending-card-price">${formatPrice(p.price)}</span>`;
-                    if (p.oldPrice) {
-                        priceRow.innerHTML += `
+        const formatPrice = n => n.toLocaleString('vi-VN') + ' ₫';
+
+        function getSubcategoryFromProduct(p) {
+            const sku = (p.sku || p.SKU || '').toUpperCase();
+            const name = (p.productName || p.ProductName || '').toLowerCase();
+            const desc = (p.description || p.Description || '').toLowerCase();
+
+            if (sku.includes('MOUSE') || name.includes('mouse') || name.includes('chuột')) return 'mouse';
+            if (sku.includes('KB') || name.includes('keyboard') || name.includes('bàn phím') || name.includes('keychron') || name.includes('akko')) return 'keyboard';
+            if (sku.includes('HS') || name.includes('headset') || name.includes('tai nghe') || name.includes('sound')) return 'headset';
+            if (sku.includes('MIC') || name.includes('mic') || name.includes('micro')) return 'mic';
+            if ((sku.includes('PAD') && !sku.includes('MPAD')) || name.includes('gamepad') || name.includes('tay cầm')) return 'gamepad';
+            if (sku.includes('MPAD') || name.includes('lót chuột') || name.includes('mousepad') || name.includes('pad')) return 'pad';
+            if (sku.includes('ACC') || sku.includes('RC') || name.includes('vô lăng') || name.includes('stand') || name.includes('giá treo') || name.includes('wheel') || name.includes('phụ kiện')) return 'acc';
+            return 'acc';
+        }
+
+        function getTagsFromProduct(p) {
+            const sku = (p.sku || p.SKU || '').toUpperCase();
+            const name = (p.productName || p.ProductName || '').toLowerCase();
+            const desc = (p.description || p.Description || '').toLowerCase();
+            const tags = [];
+
+            if (name.includes('wireless') || desc.includes('không dây') || desc.includes('wireless') || desc.includes('bluetooth') || name.includes('pro')) {
+                tags.push('wireless');
+            }
+            if (name.includes('rgb') || desc.includes('rgb') || desc.includes('led')) {
+                tags.push('rgb');
+            }
+            if (sku.includes('MOUSE') || sku.includes('PAD') || sku.includes('RC')) {
+                tags.push('bestseller');
+            }
+            if (sku.includes('KB') || sku.includes('MIC') || sku.includes('ACC')) {
+                tags.push('hotdeal');
+            }
+            if (sku.includes('HS')) {
+                tags.push('newarrival');
+            }
+            return tags.join(' ');
+        }
+
+        function renderShowcaseCard() {
+            const showcaseProd = PRODUCTS[0];
+            if (showcaseProd) {
+                const card = document.getElementById('showcaseCard1');
+                if (card) {
+                    const img = card.querySelector('.product-img');
+                    const tag = card.querySelector('.item-tag');
+                    const name = card.querySelector('.item-name');
+                    const price = card.querySelector('.item-price');
+
+                    if (img) img.src = showcaseProd.img;
+                    if (tag) tag.textContent = showcaseProd.specs;
+                    if (name) name.textContent = showcaseProd.name;
+                    if (price) price.textContent = formatPrice(showcaseProd.price);
+
+                    card.onclick = () => {
+                        window.location.href = window.location.protocol === 'file:'
+                            ? `product-detail.html?id=${showcaseProd.id}`
+                            : `/product-detail?id=${showcaseProd.id}`;
+                    };
+                    card.style.cursor = 'pointer';
+                }
+            }
+        }
+
+        function renderTrendingGrid() {
+            const trendingCards = document.querySelectorAll('.trending-card');
+            trendingCards.forEach((card, idx) => {
+                const p = PRODUCTS[idx];
+                if (p) {
+                    const img = card.querySelector('.trending-card-img');
+                    const tag = card.querySelector('.trending-card-tag');
+                    const name = card.querySelector('.trending-card-name');
+                    const priceRow = card.querySelector('.trending-card-price-row');
+                    const btnAdd = card.querySelector('.btn-add');
+                    const btnDetail = card.querySelector('.btn-detail');
+
+                    if (img) img.src = p.img;
+                    if (tag) tag.textContent = p.specs;
+                    if (name) name.textContent = p.name;
+                    if (priceRow) {
+                        priceRow.innerHTML = `<span class="trending-card-price">${formatPrice(p.price)}</span>`;
+                        if (p.oldPrice) {
+                            priceRow.innerHTML += `
                             <span class="price-old-tag" style="margin-left: 8px;">${formatPrice(p.oldPrice)}</span>
                             <span class="discount-tag" style="margin-left: 4px;">-${p.discount}%</span>
                         `;
+                        }
+                    }
+                    if (btnAdd) {
+                        btnAdd.setAttribute('data-name', p.name);
+                        if (p.stock === 'out') {
+                            btnAdd.setAttribute('disabled', 'true');
+                            btnAdd.querySelector('.btn-text').textContent = 'Hết hàng';
+                        } else {
+                            btnAdd.removeAttribute('disabled');
+                            btnAdd.querySelector('.btn-text').textContent = 'Thêm vào giỏ';
+                        }
+                    }
+                    if (btnDetail) {
+                        btnDetail.href = window.location.protocol === 'file:'
+                            ? `product-detail.html?id=${p.id}`
+                            : `/product-detail?id=${p.id}`;
                     }
                 }
-                if (btnAdd) {
-                    btnAdd.setAttribute('data-name', p.name);
-                    if (p.stock === 'out') {
-                        btnAdd.setAttribute('disabled', 'true');
-                        btnAdd.querySelector('.btn-text').textContent = 'Hết hàng';
-                    } else {
-                        btnAdd.removeAttribute('disabled');
-                        btnAdd.querySelector('.btn-text').textContent = 'Thêm vào giỏ';
-                    }
-                }
-                if (btnDetail) {
-                    btnDetail.href = window.location.protocol === 'file:' 
-                        ? `product-detail.html?id=${p.id}` 
-                        : `/product-detail?id=${p.id}`;
-                }
-            }
-        });
-    }
+            });
+        }
 
-    function renderMainGrid(list) {
-        const grid = document.getElementById('productGrid');
-        if (!grid) return;
-        grid.innerHTML = '';
+        function renderMainGrid(list) {
+            const grid = document.getElementById('productGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
 
-        list.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'tilt-card grid-item';
-            card.setAttribute('data-category', p.cat);
-            card.setAttribute('data-price', p.price);
-            card.setAttribute('data-brand', p.brand ? p.brand.toLowerCase() : 'all');
-            card.setAttribute('data-tags', p.tags || '');
+            list.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'tilt-card grid-item';
+                card.setAttribute('data-category', p.cat);
+                card.setAttribute('data-price', p.price);
+                card.setAttribute('data-brand', p.brand ? p.brand.toLowerCase() : 'all');
+                card.setAttribute('data-tags', p.tags || '');
 
-            const isOut = p.stock === 'out';
-            const badgeHTML = p.badge ? `<span class="card-badge ${p.badge}">${p.badge.toUpperCase()}</span>` : '';
-            const oldPriceHTML = p.oldPrice ? `
+                const isOut = p.stock === 'out';
+                const badgeHTML = p.badge ? `<span class="card-badge ${p.badge}">${p.badge.toUpperCase()}</span>` : '';
+                const oldPriceHTML = p.oldPrice ? `
                 <span class="price-old-tag">${formatPrice(p.oldPrice)}</span>
                 <span class="discount-tag">-${p.discount}%</span>
             ` : '';
 
-            const detailUrl = window.location.protocol === 'file:' ? `product-detail.html?id=${p.id}` : `/product-detail?id=${p.id}`;
+                const detailUrl = window.location.protocol === 'file:' ? `product-detail.html?id=${p.id}` : `/product-detail?id=${p.id}`;
 
-            card.innerHTML = `
+                card.innerHTML = `
                 <div class="glass-base"></div>
                 <div class="card-img-wrap">
                     ${badgeHTML}
@@ -1603,237 +2706,325 @@
                     </div>
                 </div>
             `;
-            grid.appendChild(card);
-        });
-    }
+                grid.appendChild(card);
+            });
+        }
 
-    function setupAddToCartButtons() {
-        document.querySelectorAll('.btn-add').forEach(btn => {
-            if (btn.dataset.listenerAttached) return;
-            btn.dataset.listenerAttached = 'true';
+        function setupAddToCartButtons() {
+            document.querySelectorAll('.btn-add').forEach(btn => {
+                if (btn.dataset.listenerAttached) return;
+                btn.dataset.listenerAttached = 'true';
 
-            btn.addEventListener('click', async (e) => {
-                e.preventDefault(); e.stopPropagation();
-                if (btn.classList.contains('added')) return;
-                const name = btn.getAttribute('data-name');
-                const p = PRODUCTS.find(x => x.name === name);
-                if (!p) return;
-                const ok = await addToCartHelper(p.id, 1);
-                if (ok) {
-                    btn.classList.add('added');
-                    updateCartBadge();
-                    setTimeout(() => btn.classList.remove('added'), 2200);
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    if (btn.classList.contains('added')) return;
+                    const name = btn.getAttribute('data-name');
+                    const p = PRODUCTS.find(x => x.name === name);
+                    if (!p) return;
+                    const ok = await addToCartHelper(p.id, 1);
+                    if (ok) {
+                        btn.classList.add('added');
+                        updateCartBadge();
+                        setTimeout(() => btn.classList.remove('added'), 2200);
+                    }
+                });
+
+                btn.addEventListener('mousedown', (e) => {
+                    const r = btn.getBoundingClientRect();
+                    btn.style.setProperty('--rx', (e.clientX - r.left) + 'px');
+                    btn.style.setProperty('--ry', (e.clientY - r.top) + 'px');
+                    btn.classList.add('ripple');
+                    setTimeout(() => btn.classList.remove('ripple'), 500);
+                });
+            });
+        }
+
+        let PRODUCTS = [];
+
+        async function loadCategoriesMapping() {
+            try {
+                const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
+                const res = await fetch(`${baseUrl}/api/Categories`);
+                if (!res.ok) return 7;
+                const data = await res.json();
+                const cats = Array.isArray(data) ? data : (data.items ?? data.Items ?? []);
+                const ggCat = cats.find(c => {
+                    const name = c.categoryName ?? c.CategoryName ?? '';
+                    return name.toLowerCase().includes('gaming gear');
+                });
+                return ggCat ? (ggCat.categoryId ?? ggCat.CategoryId) : 7;
+            } catch (e) {
+                console.warn('[GamingGear] Could not load categories mapping:', e);
+                return 7;
+            }
+        }
+
+        async function loadGamingGearFromAPI() {
+            console.log('[GamingGear] Loading products from SQL via API...');
+            const categoryId = await loadCategoriesMapping();
+            try {
+                const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
+                const response = await fetch(`${baseUrl}/api/Products?CategoryId=${categoryId}&PageSize=100&OnlyActive=true`);
+                if (!response.ok) {
+                    console.error('[GamingGear] API error:', response.status, response.statusText);
+                    return;
+                }
+                const data = await response.json();
+                const items = data.items ?? data.Items ?? [];
+                if (!Array.isArray(items) || items.length === 0) {
+                    console.warn('[GamingGear] API returned 0 products, using hardcoded fallback.');
+                    return;
+                }
+
+                PRODUCTS = items.map(p => {
+                    const productId = p.productId ?? p.ProductId;
+                    const brandName = p.brandName ?? p.BrandName ?? 'Unknown';
+                    const productName = p.productName ?? p.ProductName ?? '';
+                    const description = p.description ?? p.Description ?? '';
+                    const price = p.price ?? p.Price ?? 0;
+                    const discountPrice = p.discountPrice ?? p.DiscountPrice ?? 0;
+                    const effectivePrice = p.effectivePrice ?? p.EffectivePrice ?? price;
+                    const stockQuantity = p.stockQuantity ?? p.StockQuantity ?? 0;
+                    const defaultImageUrl = p.defaultImageUrl ?? p.DefaultImageUrl ?? null;
+                    const slug = p.slug ?? p.Slug ?? null;
+
+                    const cat = getSubcategoryFromProduct(p);
+                    const tags = getTagsFromProduct(p);
+
+                    let stock = 'in';
+                    if (stockQuantity <= 0) stock = 'out';
+                    else if (stockQuantity < 10) stock = 'low';
+
+                    let badge = null;
+                    if (discountPrice > 0 && discountPrice < price) badge = 'sale';
+                    else if (tags.includes('bestseller')) badge = 'hot';
+
+                    const img = defaultImageUrl || `https://placehold.co/300x200/081120/7dd3fc?text=${encodeURIComponent((productName || 'Product').substring(0, 20))}`;
+
+                    const oldPrice = (discountPrice > 0 && discountPrice < price) ? price : null;
+                    const discount = oldPrice ? Math.round((1 - effectivePrice / oldPrice) * 100) : 0;
+
+                    return {
+                        id: productId,
+                        name: productName,
+                        price: effectivePrice,
+                        oldPrice: oldPrice,
+                        discount: discount,
+                        img: img,
+                        specs: description ? description.substring(0, 80) : 'Xem chi tiết để biết thêm',
+                        cat: cat,
+                        brand: brandName,
+                        tags: tags,
+                        stock: stock,
+                        badge: badge,
+                        slug: slug
+                    };
+                });
+
+                console.log('[GamingGear] Loaded', PRODUCTS.length, 'products from SQL');
+
+                renderShowcaseCard();
+                renderTrendingGrid();
+                renderMainGrid(PRODUCTS);
+
+                const gridItems = Array.from(document.querySelectorAll('#productGrid .grid-item'));
+
+                filterProducts();
+                setupAddToCartButtons();
+                revealTrendingCards();
+
+            } catch (error) {
+                console.error('[GamingGear] Error loading products from SQL:', error);
+            }
+        }
+
+        // ── 14. COUNTER ANIMATION ──
+        function animateCounter(el) {
+            const target = parseInt(el.getAttribute('data-target'));
+            const suffix = el.getAttribute('data-suffix') || '+';
+            let current = 0;
+            const step = Math.ceil(target / 40);
+            const timer = setInterval(() => {
+                current = Math.min(current + step, target);
+                el.textContent = current + suffix;
+                if (current >= target) clearInterval(timer);
+            }, 35);
+        }
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('show');
+                    const num = e.target.querySelector('.stat-number');
+                    if (num && !num.dataset.animated) {
+                        num.dataset.animated = '1';
+                        animateCounter(num);
+                    }
                 }
             });
+        }, { threshold: 0.3 });
+        document.querySelectorAll('.stat-card').forEach(c => statsObserver.observe(c));
 
-            btn.addEventListener('mousedown', (e) => {
-                const r = btn.getBoundingClientRect();
-                btn.style.setProperty('--rx', (e.clientX - r.left) + 'px');
-                btn.style.setProperty('--ry', (e.clientY - r.top) + 'px');
-                btn.classList.add('ripple');
-                setTimeout(() => btn.classList.remove('ripple'), 500);
+        // ── 15. TRENDING CARDS REVEAL ──
+        function revealTrendingCards() {
+            const trendingCards = Array.from(document.querySelectorAll('.trending-card'));
+            trendingCards.forEach((item, i) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(24px)';
+                setTimeout(() => {
+                    item.style.transition = 'opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                    item.classList.add('show');
+                }, i * 70);
             });
-        });
-    }
-
-    let PRODUCTS = [
-        { id:41, name:"CORE M-PRO",    price:2450000, img:"https://cdn.shopify.com/s/files/1/0268/7342/1898/products/GProXSuperlight_Black_1024x1024.png",    specs:"Mouse"      },
-        { id:42, name:"CORE K-ELITE",  price:3890000, img:"https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Keyboards/K70_RGB_PRO_PBT/CH-9109410-NA/Gallery/K70_RGB_PRO_PBT_01.png", specs:"Keyboard"   },
-        { id:43, name:"CORE H-SOUND",  price:2890000, img:"https://cdn.shopify.com/s/files/1/0556/2643/2691/products/hyperx_cloud_ii_wireless_1_1024x1024.png", specs:"Headset"    },
-        { id:44, name:"CORE STUDIO",   price:3100000, img:"https://cdn.shopify.com/s/files/1/0073/3288/8687/products/Yeti-Black-Front_1024x1024.png",           specs:"Mic"        },
-        { id:45, name:"CORE G-CMD",    price:4500000, img:"https://compass-ssl.xbox.com/assets/80/75/807530ce-2e8f-4d32-8ea7-a3aa7ccb68fc.png?n=Elite-Series-2_Gallery_1084x794_02.png", specs:"Gamepad"    },
-        { id:46, name:"CORE PAD PRO",  price:1800000, img:"https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Mousepads/MM700_RGB_Extended/Gallery/MM700_RGB_EXTENDED_01.png", specs:"Mousepad"   },
-        { id:47, name:"CORE BASE RGB", price:1200000, img:"https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Accessories/ST100/Gallery/ST100_01.png", specs:"Accessories"},
-        { id:48, name:"CORE WHEEL",    price:9500000, img:"https://resource.logitechg.com/w_692,c_limit,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g923-and-trueforce/g923-gallery-1.png?v=1", specs:"Racing"     }
-    ];
-
-    async function loadCategoriesMapping() {
-        try {
-            const res = await fetch('/api/Categories');
-            if (!res.ok) return 7;
-            const data = await res.json();
-            const cats = Array.isArray(data) ? data : (data.items ?? data.Items ?? []);
-            const ggCat = cats.find(c => {
-                const name = c.categoryName ?? c.CategoryName ?? '';
-                return name.toLowerCase().includes('gaming gear');
-            });
-            return ggCat ? (ggCat.categoryId ?? ggCat.CategoryId) : 7;
-        } catch (e) {
-            console.warn('[GamingGear] Could not load categories mapping:', e);
-            return 7;
         }
-    }
 
-    async function loadGamingGearFromAPI() {
-        console.log('[GamingGear] Loading products from SQL via API...');
-        const categoryId = await loadCategoriesMapping();
-        try {
-            const response = await fetch(`/api/Products?CategoryId=${categoryId}&PageSize=100&OnlyActive=true`);
-            if (!response.ok) {
-                console.error('[GamingGear] API error:', response.status, response.statusText);
-                return;
+        function updateShowcase() {
+            const pinnedId = localStorage.getItem('PinnedGGProductID');
+            if (!pinnedId) return;
+
+            const product = PRODUCTS.find(p => p.id == pinnedId);
+            if (!product) return;
+
+            const showcaseCard = document.getElementById('showcaseCard1');
+            if (!showcaseCard) return;
+
+            const img = showcaseCard.querySelector('.showcase-img');
+            if (img) {
+                img.src = product.img;
+                img.alt = product.name;
             }
-            const data = await response.json();
-            const items = data.items ?? data.Items ?? [];
-            if (!Array.isArray(items) || items.length === 0) {
-                console.warn('[GamingGear] API returned 0 products, using hardcoded fallback.');
-                return;
+
+            const tag = showcaseCard.querySelector('.item-tag');
+            if (tag) tag.textContent = (product.cat || 'Gaming Gear').toUpperCase();
+
+            const nameEl = showcaseCard.querySelector('.item-name');
+            if (nameEl) nameEl.textContent = product.name;
+
+            const priceEl = showcaseCard.querySelector('.item-price');
+            if (priceEl) {
+                if (product.oldPrice) {
+                    priceEl.innerHTML = `<span style="color:#f59e0b; font-weight:700;">${product.price.toLocaleString()} ₫</span> 
+                                         <span style="text-decoration:line-through; font-size:0.8em; color:#94a3b8; margin-left:8px;">${product.oldPrice.toLocaleString()} ₫</span>`;
+                } else {
+                    priceEl.textContent = `${product.price.toLocaleString()} ₫`;
+                }
             }
 
-            PRODUCTS = items.map(p => {
-                const productId     = p.productId     ?? p.ProductId;
-                const brandName     = p.brandName     ?? p.BrandName     ?? 'Unknown';
-                const productName   = p.productName   ?? p.ProductName   ?? '';
-                const description   = p.description   ?? p.Description   ?? '';
-                const price         = p.price         ?? p.Price         ?? 0;
-                const discountPrice = p.discountPrice ?? p.DiscountPrice ?? 0;
-                const effectivePrice= p.effectivePrice?? p.EffectivePrice?? price;
-                const stockQuantity = p.stockQuantity ?? p.StockQuantity ?? 0;
-                const defaultImageUrl = p.defaultImageUrl ?? p.DefaultImageUrl ?? null;
-                const slug          = p.slug          ?? p.Slug          ?? null;
+            const sideDesc = document.querySelector('.side-content .side-desc');
+            if (sideDesc && product.specs) {
+                sideDesc.textContent = product.specs;
+            }
 
-                const cat = getSubcategoryFromProduct(p);
-                const tags = getTagsFromProduct(p);
+            let badgeEl = showcaseCard.querySelector('.showcase-badge');
+            if (!badgeEl && product.badge) {
+                badgeEl = document.createElement('span');
+                badgeEl.style.position = 'absolute';
+                badgeEl.style.top = '16px';
+                badgeEl.style.left = '16px';
+                badgeEl.style.zIndex = '10';
+                showcaseCard.appendChild(badgeEl);
+            }
+            if (badgeEl) {
+                if (product.badge) {
+                    badgeEl.textContent = product.badge === 'sale' ? 'SALE' : 'HOT';
+                    badgeEl.className = 'showcase-badge card-badge ' + (product.badge === 'sale' ? 'sale' : 'hot');
+                    badgeEl.style.display = 'inline-block';
+                } else {
+                    badgeEl.style.display = 'none';
+                }
+            }
 
-                let stock = 'in';
-                if (stockQuantity <= 0) stock = 'out';
-                else if (stockQuantity < 10) stock = 'low';
+            showcaseCard.style.cursor = 'pointer';
+            showcaseCard.onclick = () => window.location.href = `/product-detail?id=${product.id}`;
+        }
 
-                let badge = null;
-                if (discountPrice > 0 && discountPrice < price) badge = 'sale';
-                else if (tags.includes('bestseller')) badge = 'hot';
+        // ── 15b. DYNAMIC HERO BANNER LOADER ──
+        async function loadGamingGearBanner() {
+            try {
+                const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
+                const res = await fetch(`${baseUrl}/api/Banners/active`);
+                if (!res.ok) return;
+                const banners = await res.json();
+                const ggBanner = banners.find(b => b.title && b.title.startsWith('[gaminggear]') && b.isActive !== false);
+                if (ggBanner && ggBanner.imageUrl) {
+                    const heroImg = document.querySelector('.hero-banner-img');
+                    const heroLink = document.getElementById('heroBannerLink');
+                    if (heroImg) {
+                        heroImg.style.opacity = '0';
+                        setTimeout(() => {
+                            heroImg.onload = () => {
+                                heroImg.style.opacity = '1';
+                            };
+                            heroImg.src = window.location.protocol === 'file:' ? '../wwwroot' + ggBanner.imageUrl : ggBanner.imageUrl;
+                            heroImg.alt = ggBanner.title.replace('[gaminggear] ', '') || 'Gaming Gear Banner';
+                            if (heroLink && ggBanner.link) {
+                                heroLink.href = ggBanner.link;
+                            }
+                        }, 50);
+                    }
+                }
+            } catch (e) {
+                console.warn('[GamingGear] Could not load banner from API:', e);
+            }
+        }
 
-                const img = defaultImageUrl || `https://placehold.co/300x200/081120/7dd3fc?text=${encodeURIComponent((productName || 'Product').substring(0, 20))}`;
+        // ── 16. INITIALIZATION ──
+        (async function init() {
+            console.log('[GamingGear] Initializing page...');
 
-                const oldPrice = (discountPrice > 0 && discountPrice < price) ? price : null;
-                const discount = oldPrice ? Math.round((1 - effectivePrice / oldPrice) * 100) : 0;
+            // Load dynamic hero banner from Admin
+            loadGamingGearBanner();
 
-                return {
-                    id: productId,
-                    name: productName,
-                    price: effectivePrice,
-                    oldPrice: oldPrice,
-                    discount: discount,
-                    img: img,
-                    specs: description ? description.substring(0, 80) : 'Xem chi tiết để biết thêm',
-                    cat: cat,
-                    brand: brandName,
-                    tags: tags,
-                    stock: stock,
-                    badge: badge,
-                    slug: slug
-                };
-            });
-
-            console.log('[GamingGear] Loaded', PRODUCTS.length, 'products from SQL');
-
-            renderShowcaseCard();
-            renderTrendingGrid();
-            renderMainGrid(PRODUCTS);
-
-            const gridItems = Array.from(document.querySelectorAll('#productGrid .grid-item'));
-
-            filterProducts();
+            // Setup static add-to-cart click listeners (fallback)
             setupAddToCartButtons();
-            revealTrendingCards();
 
-        } catch (error) {
-            console.error('[GamingGear] Error loading products from SQL:', error);
-        }
-    }
+            // Fetch products from SQL database via API
+            await loadGamingGearFromAPI();
+            updateShowcase();
 
-    // ── 14. COUNTER ANIMATION ──
-    function animateCounter(el) {
-        const target = parseInt(el.getAttribute('data-target'));
-        const suffix = el.getAttribute('data-suffix') || '+';
-        let current = 0;
-        const step = Math.ceil(target / 40);
-        const timer = setInterval(() => {
-            current = Math.min(current + step, target);
-            el.textContent = current + suffix;
-            if (current >= target) clearInterval(timer);
-        }, 35);
-    }
-    const statsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                e.target.classList.add('show');
-                const num = e.target.querySelector('.stat-number');
-                if (num && !num.dataset.animated) {
-                    num.dataset.animated = '1';
-                    animateCounter(num);
+            // If API didn't load any items (e.g. running locally via file:// or API failed),
+            // animate the fallback products already in HTML
+            if (document.querySelectorAll('#productGrid .grid-item').length > 0 &&
+                !document.querySelector('#productGrid .grid-item').classList.contains('hidden')) {
+                // Already handled by API response callback (filterProducts + revealTrendingCards)
+            } else {
+                revealGridItems();
+                revealTrendingCards();
+            }
+
+            // Sync cart badge
+            updateCartBadge();
+        })();
+
+        // ── 18. LOCAL FILE PROTOCOL FIX ──
+        if (window.location.protocol === 'file:') {
+            document.querySelectorAll('a').forEach(a => {
+                const href = a.getAttribute('href');
+                if (href && href.startsWith('/')) {
+                    const path = href.toLowerCase();
+                    const search = href.includes('?') ? href.substring(href.indexOf('?')) : '';
+                    if (path === '/homepage' || path.startsWith('/homepage?')) a.href = 'homepage.html' + search;
+                    else if (path.startsWith('/products')) a.href = 'products.html' + search;
+                    else if (path.startsWith('/gaminggear')) a.href = 'gaminggear.html' + search;
+                    else if (path.startsWith('/pcbuild')) a.href = 'pcbuild.html' + search;
+                    else if (path.startsWith('/login')) a.href = 'login.html' + search;
+                    else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
+                    else if (path.startsWith('/product-detail')) a.href = 'product-detail.html' + search;
                 }
-            }
-        });
-    }, { threshold: 0.3 });
-    document.querySelectorAll('.stat-card').forEach(c => statsObserver.observe(c));
-
-    // ── 15. TRENDING CARDS REVEAL ──
-    function revealTrendingCards() {
-        const trendingCards = Array.from(document.querySelectorAll('.trending-card'));
-        trendingCards.forEach((item, i) => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(24px)';
-            setTimeout(() => {
-                item.style.transition = 'opacity .5s ease, transform .5s cubic-bezier(.22,1,.36,1)';
-                item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
-                item.classList.add('show');
-            }, i * 70);
-        });
-    }
-
-    // ── 16. INITIALIZATION ──
-    (async function init() {
-        console.log('[GamingGear] Initializing page...');
-        
-        // Setup static add-to-cart click listeners (fallback)
-        setupAddToCartButtons();
-        
-        // Fetch products from SQL database via API
-        await loadGamingGearFromAPI();
-        
-        // If API didn't load any items (e.g. running locally via file:// or API failed),
-        // animate the fallback products already in HTML
-        if (document.querySelectorAll('#productGrid .grid-item').length > 0 && 
-            !document.querySelector('#productGrid .grid-item').classList.contains('hidden')) {
-            // Already handled by API response callback (filterProducts + revealTrendingCards)
-        } else {
-            revealGridItems();
-            revealTrendingCards();
+            });
+            document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('/')) link.href = '../wwwroot' + href;
+            });
+            document.querySelectorAll('img').forEach(img => {
+                const src = img.getAttribute('src');
+                if (src && src.startsWith('/')) img.src = '../wwwroot' + src;
+            });
         }
-        
-        // Sync cart badge
-        updateCartBadge();
-    })();
-
-    // ── 18. LOCAL FILE PROTOCOL FIX ──
-    if (window.location.protocol === 'file:') {
-        document.querySelectorAll('a').forEach(a => {
-            const href = a.getAttribute('href');
-            if (href && href.startsWith('/')) {
-                const path = href.toLowerCase();
-                const search = href.includes('?') ? href.substring(href.indexOf('?')) : '';
-                if (path === '/homepage' || path.startsWith('/homepage?')) a.href = 'homepage.html' + search;
-                else if (path.startsWith('/products')) a.href = 'products.html' + search;
-                else if (path.startsWith('/gaminggear')) a.href = 'gaminggear.html' + search;
-                else if (path.startsWith('/pcbuild')) a.href = 'pcbuild.html' + search;
-                else if (path.startsWith('/login')) a.href = 'login.html' + search;
-                else if (path.startsWith('/shoppingcart')) a.href = 'shoppingcart.html' + search;
-                else if (path.startsWith('/product-detail')) a.href = 'product-detail.html' + search;
-            }
-        });
-        document.querySelectorAll("link[rel='stylesheet']").forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href.startsWith('/')) link.href = '../wwwroot' + href;
-        });
-        document.querySelectorAll('img').forEach(img => {
-            const src = img.getAttribute('src');
-            if (src && src.startsWith('/')) img.src = '../wwwroot' + src;
-        });
-    }
     </script>
     <!-- Chatbot Global -->
     <script src="/assets/js/chatbot-global.js?v=1.1.2"></script>
 </body>
+
 </html>

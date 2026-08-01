@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -2233,6 +2233,445 @@
 				display: none !important;
 			}
 		}
+
+		/* ========================================== */
+		/* PREMIUM CART DRAWER (WLMOUSE STYLE) CSS */
+		/* ========================================== */
+
+		/* CART DRAWER OVERLAY */
+		.cart-drawer-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			background: rgba(0, 0, 0, 0.4);
+			backdrop-filter: blur(8px);
+			-webkit-backdrop-filter: blur(8px);
+			z-index: 1000;
+			opacity: 0;
+			visibility: hidden;
+			transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+		}
+
+		.cart-drawer-overlay.open {
+			opacity: 1;
+			visibility: visible;
+		}
+
+		/* CART DRAWER PANEL */
+		.cart-drawer {
+			position: fixed;
+			top: 0;
+			right: 0;
+			width: 520px;
+			max-width: 100vw;
+			height: 100vh;
+			background: rgba(244, 244, 245, 0.85);
+			/* Deep dark glass */
+			backdrop-filter: blur(40px);
+			-webkit-backdrop-filter: blur(40px);
+			color: #000000;
+			z-index: 1001;
+			display: flex;
+			flex-direction: column;
+			border-radius: 40px 0 0 40px;
+			border-left: 1px solid #E6E6E6;
+			/* Sleek neon cyan border line */
+			box-shadow: -10px 0 40px #D1D5DB;
+			transform: translateX(100%);
+			transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+			/* Slower, premium easing */
+		}
+
+		.cart-drawer.open {
+			transform: translateX(0);
+		}
+
+		/* Drawer Header */
+		.cart-drawer-header {
+			padding: 30px 40px 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1px solid #E6E6E6;
+		}
+
+		.cart-drawer-tabs {
+			display: flex;
+			gap: 24px;
+			align-items: center;
+		}
+
+		.cart-tab {
+			font-size: 20px;
+			font-weight: 700;
+			color: #555555;
+			cursor: pointer;
+			transition: color 0.3s;
+		}
+
+		.cart-tab.active {
+			color: #000000;
+		}
+
+		.cart-badge-count {
+			font-size: 14px;
+			vertical-align: super;
+			color: #000000;
+			font-weight: 700;
+			text-shadow: 0 0 10px rgba(125, 211, 252, 0.4);
+		}
+
+		.cart-drawer-close {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			border: 1px solid #E6E6E6;
+			background: #FFFFFF;
+			color: #000000;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: background 0.3s, border-color 0.3s, transform 0.3s;
+		}
+
+		.cart-drawer-close:hover {
+			background: rgba(0, 0, 0, 0.1);
+			border-color: #000000;
+			transform: rotate(90deg);
+			box-shadow: 0 0 10px #D1D5DB;
+		}
+
+		.continue-shopping-btn:hover {
+			background: #e2e8f0 !important;
+			transform: translateY(-2px);
+			box-shadow: 0 8px 20px #D1D5DB;
+		}
+
+		/* Drawer Content scroll area */
+		.cart-drawer-content {
+			flex: 1;
+			overflow-y: auto;
+			padding: 30px 40px;
+			display: flex;
+			flex-direction: column;
+			gap: 40px;
+		}
+
+		/* Scrollbar */
+		.cart-drawer-content::-webkit-scrollbar {
+			width: 5px;
+		}
+
+		.cart-drawer-content::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		.cart-drawer-content::-webkit-scrollbar-thumb {
+			background: rgba(0, 0, 0, 0.2);
+			border-radius: 99px;
+		}
+
+		/* Cart Items list */
+		.cart-items-list {
+			display: flex;
+			flex-direction: column;
+			gap: 30px;
+		}
+
+		.cart-item-row {
+			display: flex;
+			gap: 20px;
+			align-items: flex-start;
+			position: relative;
+		}
+
+		.cart-item-img {
+			width: 90px;
+			height: 90px;
+			border-radius: 16px;
+			background: #FFFFFF;
+			object-fit: contain;
+			padding: 10px;
+			border: 1px solid #E6E6E6;
+		}
+
+		.cart-item-details {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.cart-item-name {
+			font-size: 16px;
+			font-weight: 600;
+			color: #000000;
+			line-height: 1.4;
+		}
+
+		.cart-item-specs {
+			font-size: 13px;
+			color: #555555;
+		}
+
+		.cart-item-price {
+			font-size: 15px;
+			font-weight: 700;
+			color: #000000;
+			text-shadow: 0 0 10px rgba(125, 211, 252, 0.2);
+			margin-top: 4px;
+		}
+
+		.cart-item-controls {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 12px;
+		}
+
+		.quantity-selector {
+			display: flex;
+			align-items: center;
+			background: #F4F4F5;
+			border: 1px solid rgba(0, 0, 0, 0.08);
+			border-radius: 12px;
+			padding: 4px 8px;
+			gap: 12px;
+		}
+
+		.qty-display {
+			font-size: 14px;
+			font-weight: 700;
+			color: #000000;
+			min-width: 16px;
+			text-align: center;
+		}
+
+		.qty-btn-col {
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+		}
+
+		.qty-btn-arrow {
+			border: none;
+			background: none;
+			color: #555555;
+			cursor: pointer;
+			padding: 0;
+			font-size: 10px;
+			line-height: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: color 0.2s;
+		}
+
+		.qty-btn-arrow:hover {
+			color: #000000;
+		}
+
+		.cart-remove-link {
+			font-size: 13px;
+			color: #555555;
+			text-decoration: underline;
+			cursor: pointer;
+			transition: color 0.2s;
+		}
+
+		.cart-remove-link:hover {
+			color: #f87171;
+		}
+
+		/* Recommendations Section */
+		.cart-recommendations {
+			background: transparent;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+			padding-top: 30px;
+		}
+
+		.cart-recommendations h5 {
+			font-size: 16px;
+			font-weight: 700;
+			color: #000000;
+			margin-bottom: 20px;
+		}
+
+		.recommend-card {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			background: #FFFFFF;
+			border-radius: 20px;
+			padding: 16px;
+			border: 1px solid #E6E6E6;
+		}
+
+		.recommend-card img {
+			width: 70px;
+			height: 70px;
+			object-fit: contain;
+			border-radius: 12px;
+			background: #FFFFFF;
+			padding: 5px;
+			border: 1px solid #E6E6E6;
+		}
+
+		.recommend-info {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+		}
+
+		.recommend-title {
+			font-size: 14px;
+			font-weight: 600;
+			color: #000000;
+			line-height: 1.4;
+		}
+
+		.recommend-price {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.price-usd-new {
+			font-size: 14px;
+			font-weight: 700;
+			color: #000000;
+		}
+
+		.price-usd-old {
+			font-size: 12px;
+			text-decoration: line-through;
+			color: #555555;
+		}
+
+		.recommend-add-btn {
+			background: rgba(0, 0, 0, 0.06);
+			color: #000000;
+			border: 1px solid rgba(0, 0, 0, 0.3);
+			border-radius: 12px;
+			padding: 10px 16px;
+			font-size: 13px;
+			font-weight: 700;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			transition: all 0.3s;
+		}
+
+		.recommend-add-btn:hover {
+			background: #000000;
+			color: #FFFFFF;
+			border-color: #000000;
+			transform: translateY(-2px);
+			box-shadow: 0 0 15px #D1D5DB;
+		}
+
+		/* Actions Bar */
+		.cart-drawer-actions {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			border-top: 1px solid #E6E6E6;
+			border-bottom: 1px solid #E6E6E6;
+			background: rgba(230, 230, 230, 0.5);
+		}
+
+		.action-item {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			padding: 18px 10px;
+			font-size: 13px;
+			font-weight: 600;
+			color: #555555;
+			cursor: pointer;
+			transition: background 0.2s, color 0.2s;
+		}
+
+		.action-item:not(:last-child) {
+			border-right: 1px solid rgba(0, 0, 0, 0.06);
+		}
+
+		.action-item:hover {
+			background: #FFFFFF;
+			color: #000000;
+		}
+
+		.action-icon {
+			font-size: 16px;
+		}
+
+		/* Drawer Footer */
+		.cart-drawer-footer {
+			padding: 30px 40px 40px;
+			background: rgba(244, 244, 245, 0.9);
+			border-top: 1px solid rgba(0, 0, 0, 0.1);
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+		}
+
+		.cart-subtotal-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 20px;
+		}
+
+		.subtotal-left {
+			flex: 1;
+			font-size: 12px;
+			color: #555555;
+			line-height: 1.4;
+		}
+
+		.subtotal-right {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 4px;
+		}
+
+		.subtotal-label {
+			font-size: 13px;
+			color: #555555;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.subtotal-amount {
+			font-size: 24px;
+			font-weight: 800;
+			color: #000000;
+			text-shadow: 0 0 15px rgba(125, 211, 252, 0.3);
+		}
+
+		.cart-checkout-btn {
+			background: linear-gradient(135deg, #000000, #000000);
+			color: #FFFFFF;
+			border: none;
+			border-radius: 16px;
+			padding: 16px;
+			font-size: 16px;
+			font-weight: 700;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 20px #D1D5DB;
+			transition: all 0.3s ease;
+		}
+
+		/* ================================= */
 	</style>
 </head>
 
@@ -2439,11 +2878,93 @@
 
 		<main class="container">
 			<!-- SECTION 1: HERO BANNER -->
+			<style>
+				/* Hero Slot Animation Styles */
+				.hero-slot img {
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					object-fit: contain;
+					opacity: 0;
+					transform: scale(0.95);
+					transition: opacity 0.8s ease, transform 0.8s ease;
+				}
+
+				.hero-slot img.active {
+					opacity: 1;
+					transform: scale(1);
+				}
+
+				#heroBgSlider img {
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+					opacity: 0;
+					transition: opacity 1s ease;
+				}
+
+				#heroBgSlider img.active {
+					opacity: 1;
+				}
+
+				/* Hero Main Slider Styles */
+				.hero-main-slide {
+					position: absolute;
+					inset: 0;
+					opacity: 0;
+					transition: opacity 0.8s ease;
+					pointer-events: none;
+					z-index: 1;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					text-align: center;
+				}
+
+				.hero-main-slide.active {
+					opacity: 1;
+					pointer-events: auto;
+					z-index: 2;
+				}
+
+				.hero-main-slide img.full-promo {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+				}
+
+				.stat-card:hover {
+					background: rgba(255, 255, 255, 0.12) !important;
+					transform: translateY(-4px);
+				}
+
+				.hero-btn-outline:hover {
+					background: rgba(255, 255, 255, 0.15) !important;
+				}
+
+				@media (max-width: 768px) {
+					.hero-stats-grid {
+						grid-template-columns: repeat(2, 1fr) !important;
+					}
+
+					.hero-dashboard-content {
+						padding: 30px 20px !important;
+					}
+
+					.hero-slide-title {
+						font-size: 28px !important;
+					}
+				}
+			</style>
 			<div class="hero-wrapper">
 				<!-- Khối trang trí bên trái -->
 				<div class="hero-side-promo hero-side-left">
 					<div class="promo-lightning promo-lightning-orange"></div>
-					<img class="promo-main-img" src="images/voucher.png" alt="Gaming Setup">
+					<div class="promo-main-img hero-slot" id="heroSlotA"
+						style="position: relative; width: 100%; height: 280px;">
+						<!-- Images injected via JS -->
+					</div>
 
 					<div class="side-voucher sv-1">
 						<div class="sv-top">VOUCHER</div>
@@ -2460,19 +2981,93 @@
 					<div class="side-badge badge-hot">HOT</div>
 				</div>
 
-				<section class="hero-banner-section slide-up" id="heroBannerSection">
-					<div class="hero-slider" id="heroSlider">
-						<div class="hero-track" id="heroTrack"></div>
-						<div class="hero-nav hero-prev" id="heroPrev">&#10094;</div>
-						<div class="hero-nav hero-next" id="heroNext">&#10095;</div>
-						<div class="hero-dots" id="heroDots"></div>
+				<section class="hero-banner-section slide-up" id="heroBannerSection"
+					style="position: relative; overflow: hidden; border-radius: 24px; min-height: 480px;">
+
+					<!-- SLIDE 1: Hero Dashboard -->
+					<div class="hero-main-slide active" id="heroMainSlide1">
+						<!-- Background Slider -->
+						<div id="heroBgSlider" style="position: absolute; inset: 0; z-index: 0;"></div>
+						<!-- Dark Overlay -->
+						<div
+							style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(17,24,39,0.7) 0%, rgba(17,24,39,0.95) 100%); z-index: 1;">
+						</div>
+
+						<!-- Dashboard Content -->
+						<div class="hero-dashboard-content"
+							style="position: relative; z-index: 2; width: 100%; padding: 40px 60px;">
+							<h1 class="hero-slide-title"
+								style="font-size: 40px; font-weight: 900; margin-bottom: 12px; color: #fff; text-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+								Chiến Dịch Siêu Sale Công Nghệ</h1>
+							<p class="hero-slide-desc"
+								style="font-size: 16px; max-width: 600px; margin: 0 auto 30px; color: #d1d5db; line-height: 1.6;">
+								Săn voucher đỉnh - Nâng cấp góc máy chuẩn VIP. Đừng bỏ lỡ cơ hội sở hữu Gaming Gear với
+								mức
+								giá tốt nhất năm!</p>
+
+							<div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 40px;">
+								<button class="hero-btn"
+									onclick="document.getElementById('voucherHotSection').scrollIntoView({behavior: 'smooth'})"
+									style="padding: 14px 32px; background: #FF5722; color: #fff; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 20px rgba(255,87,34,0.3);">Săn
+									Voucher Ngay</button>
+								<button class="hero-btn-outline"
+									style="padding: 14px 32px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; backdrop-filter: blur(8px);">Xem
+									Thể Lệ</button>
+							</div>
+
+							<!-- Glassmorphism Stats Dashboard -->
+							<div class="hero-stats-grid"
+								style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 800px; margin: 0 auto;">
+								<div class="stat-card"
+									style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; backdrop-filter: blur(12px); transition: 0.3s; cursor: default;">
+									<div
+										style="font-size: 13px; color: #9ca3af; text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+										🎁 Đã phát</div>
+									<div style="font-size: 22px; font-weight: 900; color: #fff;">12,500+</div>
+								</div>
+								<div class="stat-card"
+									style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; backdrop-filter: blur(12px); transition: 0.3s; cursor: default;">
+									<div
+										style="font-size: 13px; color: #9ca3af; text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+										👥 Tham gia</div>
+									<div style="font-size: 22px; font-weight: 900; color: #fff;">5,200</div>
+								</div>
+								<div class="stat-card"
+									style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; backdrop-filter: blur(12px); transition: 0.3s; cursor: default;">
+									<div
+										style="font-size: 13px; color: #9ca3af; text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+										💎 Cao nhất</div>
+									<div style="font-size: 22px; font-weight: 900; color: #3aa7ff;">1 Triệu</div>
+								</div>
+								<div class="stat-card"
+									style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 16px; backdrop-filter: blur(12px); transition: 0.3s; cursor: default;">
+									<div
+										style="font-size: 13px; color: #9ca3af; text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+										⭐ Hạng VIP</div>
+									<div style="font-size: 22px; font-weight: 900; color: #ff9800;">420</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- SLIDE 2: Promotional Image -->
+					<div class="hero-main-slide" id="heroMainSlide2">
+						<!-- Injected by JS -->
+					</div>
+
+					<!-- SLIDE 3: Promotional Image -->
+					<div class="hero-main-slide" id="heroMainSlide3">
+						<!-- Injected by JS -->
 					</div>
 				</section>
 
 				<!-- Khối trang trí bên phải -->
 				<div class="hero-side-promo hero-side-right">
 					<div class="promo-lightning promo-lightning-blue"></div>
-					<img class="promo-main-img" src="images/voucher.png" alt="Gaming Gear">
+					<div class="promo-main-img hero-slot" id="heroSlotB"
+						style="position: relative; width: 100%; height: 280px;">
+						<!-- Images injected via JS -->
+					</div>
 
 					<div class="side-voucher sv-3">
 						<div class="sv-top">VOUCHER</div>
@@ -2950,7 +3545,7 @@
 		function claimReward(rewardItem) {
 			const baseReward = rewardItem.reward;
 			const meta = VOUCHER_MAP[baseReward] || { name: 'Voucher', description: 'Voucher của bạn', discountText: '-' };
-			
+
 			// Ánh xạ giải thưởng vòng quay sang mã voucher thật trong DB
 			let realDbCode = 'HC50K'; // Mặc định
 			if (baseReward.includes('FREESHIP')) realDbCode = 'FREESHIP';
@@ -3336,7 +3931,7 @@
 							link: b.linkUrl || '#'
 						}));
 				}
-			} catch(e) {
+			} catch (e) {
 				console.error('Failed to load banners from API:', e);
 			}
 
@@ -3347,7 +3942,7 @@
 						id: 1,
 						title: "Siêu Sale Hè Rực Rỡ",
 						subtitle: "Săn ngay voucher giảm giá cực sâu",
-						image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/690x300_banner%20tuu%20truong.png",
+						image: "",
 						buttonText: "Săn Ngay",
 						link: "#"
 					},
@@ -3355,7 +3950,7 @@
 						id: 2,
 						title: "Săn Deal Công Nghệ",
 						subtitle: "Mã giảm giá độc quyền dành cho bạn",
-						image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/M365-cate%20(2).png",
+						image: "",
 						buttonText: "Săn Ngay",
 						link: "#"
 					},
@@ -3363,7 +3958,7 @@
 						id: 3,
 						title: "Đại Tiệc Voucher Giảm Sâu",
 						subtitle: "Số lượng có hạn, săn ngay kẻo lỡ",
-						image: "https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/samsung-s23-ultra-cate.png",
+						image: "",
 						buttonText: "Săn Ngay",
 						link: "#"
 					}
@@ -3383,94 +3978,157 @@
 			{ icon: '🎮', name: 'Gaming Combo', cond: 'Khi mua Laptop', code: 'GEAR', exp: '31/07/2026', badge: 'HOT' }
 		];
 
-		function renderBanner() {
-			const track = $('heroTrack');
-			const dotsContainer = $('heroDots');
-			if (!track || !dotsContainer) return;
+		// Admin Configuration Ready Structure for Hero Dashboard
+		const heroConfig = {
+			bgInterval: 8000,
+			slotAInterval: 5000,
+			slotBInterval: 6000,
+			mainSlideInterval: 5000, // Fixed 5 seconds for main slides
+			backgrounds: [],
+			promos: [
+				"",
+				""
+			],
+			slotA: [
+				"images/voucher.png",
 
-			track.innerHTML = '';
-			dotsContainer.innerHTML = '';
+			],
+			slotB: [
+				"images/voucher.png",
 
-			banners.forEach((b, i) => {
-				const slide = document.createElement('div');
-				slide.className = 'hero-slide';
-				slide.onclick = () => window.location.href = b.link;
+			]
+		};
 
+		function initHeroDashboard() {
+			// Populate backgrounds from API if available
+			if (banners && banners.length > 0) {
+				heroConfig.backgrounds = banners.map(b => b.image).filter(i => i);
+			} else {
+				heroConfig.backgrounds = [
+					"https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/690x300_banner%20tuu%20truong.png",
+					"https://cdn2.cellphones.com.vn/insecure/rs:fill:1200:400/q:90/plain/https://dashboard.cellphones.com.vn/storage/M365-cate%20(2).png"
+				];
+			}
+
+			// Override with local storage config if available
+			try {
+				const fullConfigStr = localStorage.getItem('bannerConfig');
+				if (fullConfigStr) {
+					const fullConfig = JSON.parse(fullConfigStr);
+					const lsConfig = fullConfig.voucher || {};
+					if (lsConfig.heroBackground) {
+						const heroSection = document.getElementById('heroBannerSection');
+						if (heroSection) {
+							heroSection.style.backgroundImage = `url('${lsConfig.heroBackground}')`;
+							heroSection.style.backgroundSize = 'cover';
+							heroSection.style.backgroundPosition = 'center';
+						}
+					}
+					if (lsConfig.mainSlides) {
+						if (lsConfig.mainSlides[0]) heroConfig.backgrounds = [lsConfig.mainSlides[0]];
+						if (lsConfig.mainSlides[1]) heroConfig.promos[0] = lsConfig.mainSlides[1];
+						if (lsConfig.mainSlides[2]) heroConfig.promos[1] = lsConfig.mainSlides[2];
+					}
+					if (lsConfig.slotA) heroConfig.slotA = [lsConfig.slotA];
+					if (lsConfig.slotB) heroConfig.slotB = [lsConfig.slotB];
+				}
+			} catch (e) {
+				console.error("Error parsing voucher banner config", e);
+			}
+
+			// Init Background for Slide 1
+			const bgContainer = $('heroBgSlider');
+			if (bgContainer) {
+				heroConfig.backgrounds.forEach((src, idx) => {
+					const img = document.createElement('img');
+					img.src = src;
+					if (idx === 0) img.classList.add('active');
+					bgContainer.appendChild(img);
+				});
+			}
+
+			// Init Promos for Slide 2 and Slide 3
+			const slide2 = $('heroMainSlide2');
+			const slide3 = $('heroMainSlide3');
+			if (slide2 && heroConfig.promos[0]) {
 				const img = document.createElement('img');
-				img.src = b.image;
-				img.alt = b.title || 'Banner ' + b.id;
-				img.style.width = '100%';
-				img.style.height = '100%';
-				img.style.objectFit = 'cover';
-				img.style.position = 'absolute';
-				img.style.inset = '0';
-				img.style.zIndex = '0';
-				slide.appendChild(img);
+				img.src = heroConfig.promos[0];
+				img.className = 'full-promo';
+				slide2.appendChild(img);
+			}
+			if (slide3 && heroConfig.promos[1]) {
+				const img = document.createElement('img');
+				img.src = heroConfig.promos[1];
+				img.className = 'full-promo';
+				slide3.appendChild(img);
+			}
 
-				if (b.title || b.subtitle || b.buttonText) {
-					const content = document.createElement('div');
-					content.className = 'hero-slide-content';
-					content.style.zIndex = '1';
-					content.innerHTML = `
-						${b.title ? `<h1 class="hero-slide-title">${b.title}</h1>` : ''}
-						${b.subtitle ? `<p class="hero-slide-desc">${b.subtitle}</p>` : ''}
-						${b.buttonText ? `<button class="hero-btn" onclick="event.stopPropagation(); window.location.href='${b.link}'">${b.buttonText}</button>` : ''}
-					`;
-					slide.appendChild(content);
+			// Init Slot A
+			const slotA = $('heroSlotA');
+			if (slotA) {
+				heroConfig.slotA.forEach((src, idx) => {
+					const img = document.createElement('img');
+					img.src = src;
+					if (idx === 0) img.classList.add('active');
+					slotA.appendChild(img);
+				});
+			}
+
+			// Init Slot B
+			const slotB = $('heroSlotB');
+			if (slotB) {
+				heroConfig.slotB.forEach((src, idx) => {
+					const img = document.createElement('img');
+					img.src = src;
+					if (idx === 0) img.classList.add('active');
+					slotB.appendChild(img);
+				});
+			}
+
+			let lastBg = Date.now(), lastA = Date.now(), lastB = Date.now(), lastMain = Date.now();
+			let bgIdx = 0, aIdx = 0, bIdx = 0, mainIdx = 0;
+			const bgImgs = bgContainer ? bgContainer.querySelectorAll('img') : [];
+			const aImgs = slotA ? slotA.querySelectorAll('img') : [];
+			const bImgs = slotB ? slotB.querySelectorAll('img') : [];
+
+			const mainSlides = [$('heroMainSlide1'), $('heroMainSlide2'), $('heroMainSlide3')].filter(el => el);
+
+			// Use a single interval to manage all hero animations efficiently without leaks
+			setInterval(() => {
+				const now = Date.now();
+
+				// Main Slides Transition (5s loop)
+				if (mainSlides.length > 1 && now - lastMain >= heroConfig.mainSlideInterval) {
+					mainSlides[mainIdx].classList.remove('active');
+					mainIdx = (mainIdx + 1) % mainSlides.length;
+					mainSlides[mainIdx].classList.add('active');
+					lastMain = now;
 				}
 
-				track.appendChild(slide);
+				// Background Slide inside Slide 1 (8s)
+				if (bgImgs.length > 1 && now - lastBg >= heroConfig.bgInterval) {
+					bgImgs[bgIdx].classList.remove('active');
+					bgIdx = (bgIdx + 1) % bgImgs.length;
+					bgImgs[bgIdx].classList.add('active');
+					lastBg = now;
+				}
 
-				const dot = document.createElement('div');
-				dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
-				dot.dataset.index = i;
-				dotsContainer.appendChild(dot);
-			});
-		}
+				// Slot A Slide (5s)
+				if (aImgs.length > 1 && now - lastA >= heroConfig.slotAInterval) {
+					aImgs[aIdx].classList.remove('active');
+					aIdx = (aIdx + 1) % aImgs.length;
+					aImgs[aIdx].classList.add('active');
+					lastA = now;
+				}
 
-		function initSlider() {
-			const track = $('heroTrack');
-			const dots = document.querySelectorAll('.hero-dot');
-			const prevBtn = $('heroPrev');
-			const nextBtn = $('heroNext');
-			let currentIdx = 0;
-			let sliderInterval;
-
-			if (!track || banners.length === 0) return;
-
-			function goToSlide(idx) {
-				if (idx < 0) idx = banners.length - 1;
-				if (idx >= banners.length) idx = 0;
-				currentIdx = idx;
-				track.style.transform = `translateX(-${currentIdx * 100}%)`;
-				dots.forEach((d, i) => d.classList.toggle('active', i === currentIdx));
-			}
-
-			function nextSlide() { goToSlide(currentIdx + 1); }
-			function prevSlide() { goToSlide(currentIdx - 1); }
-
-			function startAuto() {
-				stopAuto();
-				sliderInterval = setInterval(nextSlide, 5000);
-			}
-
-			function stopAuto() {
-				if (sliderInterval) clearInterval(sliderInterval);
-			}
-
-			if (prevBtn) prevBtn.onclick = () => { prevSlide(); startAuto(); };
-			if (nextBtn) nextBtn.onclick = () => { nextSlide(); startAuto(); };
-			dots.forEach((dot, i) => {
-				dot.onclick = () => { goToSlide(i); startAuto(); };
-			});
-
-			const slider = $('heroSlider');
-			if (slider) {
-				slider.onmouseenter = stopAuto;
-				slider.onmouseleave = startAuto;
-			}
-
-			startAuto();
+				// Slot B Slide (6s)
+				if (bImgs.length > 1 && now - lastB >= heroConfig.slotBInterval) {
+					bImgs[bIdx].classList.remove('active');
+					bIdx = (bIdx + 1) % bImgs.length;
+					bImgs[bIdx].classList.add('active');
+					lastB = now;
+				}
+			}, 250); // Polling check
 		}
 
 		async function renderVoucherList() {
@@ -3492,10 +4150,10 @@
 				if (vouchers && vouchers.length > 0) {
 					grid.innerHTML = vouchers.map(v => {
 						const icon = v.voucherCode.toLowerCase().includes('freeship') ? '🚀' :
-						             v.isPercent ? '⚡' :
-						             v.discountAmount >= 500000 ? '🏆' :
-						             v.discountAmount >= 200000 ? '💎' :
-						             v.discountAmount >= 100000 ? '🔥' : '🎁';
+							v.isPercent ? '⚡' :
+								v.discountAmount >= 500000 ? '🏆' :
+									v.discountAmount >= 200000 ? '💎' :
+										v.discountAmount >= 100000 ? '🔥' : '🎁';
 
 						const nameText = v.isPercent ? `Giảm ${v.discountAmount}%` : `Giảm ${v.discountAmount.toLocaleString('vi-VN')}đ`;
 						const condText = v.minOrderValue > 0 ? `Đơn tối thiểu ${v.minOrderValue.toLocaleString('vi-VN')}đ` : 'Không giới hạn đơn tối thiểu';
@@ -3577,9 +4235,8 @@
 		async function init() {
 			// checkVoucherExpiry();
 			await loadBannersFromAPI();
-			renderBanner();
+			initHeroDashboard();
 			renderVoucherList();
-			initSlider();
 
 			buildParticles();
 			loadStorage();
@@ -3603,8 +4260,30 @@
 			});
 		}
 
+		let cart = JSON.parse(localStorage.getItem("hyper_core_cart")) || [];
+
+		// Update cart badge count
+		function updateCartBadge() {
+			const badgeEl = document.getElementById('cartCount');
+			if (badgeEl) {
+				const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+				badgeEl.textContent = totalItems;
+				badgeEl.style.display = totalItems > 0 ? 'flex' : 'none';
+			}
+		}
+
+		// Listen for cart sync events from DB
+		window.addEventListener('cartSynced', (e) => {
+			cart = e.detail;
+			updateCartBadge();
+		});
+
+		// Initial cart badge update
+		updateCartBadge();
+
 		init();
 	</script>
+	<script src="/assets/js/chatbot-global.js?v=1.1.2"></script>
 </body>
 
 </html>
