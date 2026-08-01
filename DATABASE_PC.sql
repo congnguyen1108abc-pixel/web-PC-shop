@@ -2372,10 +2372,32 @@ BEGIN
         RETURN;
     END
 
-    UPDATE Products
-    SET IsActive = 0,
-        UpdatedAt = GETDATE()
-    WHERE ProductID = @ProductID;
+    -- Kiểm tra xem sản phẩm đã phát sinh đơn hàng hoặc nhật ký bán hàng chưa
+    DECLARE @HasOrders BIT = 0;
+
+    IF EXISTS (SELECT 1 FROM OrderDetails WHERE ProductID = @ProductID)
+       OR EXISTS (SELECT 1 FROM InventoryLog WHERE ProductID = @ProductID)
+    BEGIN
+        SET @HasOrders = 1;
+    END
+
+    IF @HasOrders = 0
+    BEGIN
+        -- XÓA CỨNG (Hard Delete) khỏi database đối với sản phẩm chưa từng có giao dịch
+        DELETE FROM Cart WHERE ProductID = @ProductID;
+        DELETE FROM Reviews WHERE ProductID = @ProductID;
+        DELETE FROM ProductAttributes WHERE ProductID = @ProductID;
+        DELETE FROM ProductImages WHERE ProductID = @ProductID;
+        DELETE FROM Products WHERE ProductID = @ProductID;
+    END
+    ELSE
+    BEGIN
+        -- XÓA MỀM (Soft Delete) để giữ toàn vẹn lịch sử đơn hàng và doanh thu
+        UPDATE Products
+        SET IsActive = 0,
+            UpdatedAt = GETDATE()
+        WHERE ProductID = @ProductID;
+    END
 
     SELECT @ProductID AS DeletedProductID;
 END;
