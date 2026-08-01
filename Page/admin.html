@@ -17,6 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- SignalR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <!-- Brand Mapping -->
+    <script src="/js/brand-mapping.js"></script>
 
     <link rel="stylesheet" href="/assets/css/admin.css">
     <style>
@@ -3493,6 +3495,29 @@
             renderInventoryTable(filtered);
         }
 
+        function filterBrandsByCategory(categoryId, categoryName, preselectBrandId = null) {
+            const brandSelect = document.getElementById('prodBrand');
+            if (!brandSelect) return;
+
+            if (!categoryId) {
+                brandSelect.innerHTML = '<option value="">-- Chọn thương hiệu --</option>';
+                return;
+            }
+
+            // Gọi hàm chia sẻ từ brand-mapping.js
+            let filteredBrands = window.getFilteredBrandsForCategory ?
+                window.getFilteredBrandsForCategory(allBrands, categoryName) : allBrands;
+
+            brandSelect.innerHTML = '<option value="">-- Chọn thương hiệu --</option>' +
+                filteredBrands.map(b => `<option value="${b.brandId}">${b.brandName}</option>`).join('');
+
+            if (preselectBrandId && filteredBrands.some(b => b.brandId.toString() === preselectBrandId.toString())) {
+                brandSelect.value = preselectBrandId;
+            } else {
+                brandSelect.value = '';
+            }
+        }
+
         async function loadCategoriesAndBrands() {
             try {
                 const [catRes, brandRes] = await Promise.all([
@@ -3506,11 +3531,17 @@
                 const brandSelect = document.getElementById('prodBrand');
 
                 if (catSelect) {
-                    catSelect.innerHTML = allCategories.map(c => `<option value="${c.categoryId}">${c.categoryName}</option>`).join('');
-                    catSelect.onchange = () => renderCategoryAttributeFields();
+                    catSelect.innerHTML = '<option value="">-- Chọn Danh Mục --</option>' + allCategories.map(c => `<option value="${c.categoryId}">${c.categoryName}</option>`).join('');
+                    catSelect.onchange = (e) => {
+                        const catId = e.target.value;
+                        const selectedOption = e.target.options[e.target.selectedIndex];
+                        const catName = selectedOption ? selectedOption.text : '';
+                        filterBrandsByCategory(catId, catName);
+                        renderCategoryAttributeFields();
+                    };
                 }
                 if (brandSelect) {
-                    brandSelect.innerHTML = allBrands.map(b => `<option value="${b.brandId}">${b.brandName}</option>`).join('');
+                    brandSelect.innerHTML = '<option value="">-- Chọn thương hiệu --</option>';
                 }
             } catch (e) {
                 console.error('Lỗi tải danh mục / thương hiệu:', e);
@@ -3531,16 +3562,98 @@
             container.innerHTML = '<div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Đang tải thuộc tính danh mục...</div>';
 
             try {
+                if (parseInt(categoryId) === 7) {
+                    try {
+                        const typeRes = await fetch('/api/products/gaming/product-types');
+                        if (typeRes.ok) {
+                            const productTypes = await typeRes.json();
+                            const currentVal = existingAttrMap['ProductType'] || '';
+
+                            const ggAttrMap = {
+                                'mouse': ['DPI', 'Polling Rate', 'RGB', 'Weight', 'Sensor', 'Connectivity'],
+                                'keyboard': ['Switch', 'Layout', 'Keycap', 'Hot Swap', 'Led RGB', 'Connectivity'],
+                                'headset': ['Driver', 'Microphone', 'Frequency', 'RGB', 'Connectivity'],
+                                'monitor': ['Refresh Rate', 'Resolution', 'Panel', 'Response Time', 'Size', 'Ports'],
+                                'pad': ['Size', 'Thickness', 'Material', 'RGB'],
+                                'controller': ['Connectivity', 'Vibration', 'Battery', 'Compatibility'],
+                                'mic': ['Polar Pattern', 'Sample Rate', 'Frequency Response', 'Connectivity'],
+                                'webcam': ['Resolution', 'Frame Rate', 'Field of View', 'Microphone'],
+                                'loa': ['Output Power', 'Frequency Response', 'Connectivity', 'Dimensions'],
+                                'other': ['Type', 'Material', 'Color']
+                            };
+
+                            let html = `
+                                <div style="grid-column: 1 / -1;">
+                                    <label style="font-size: 11px; font-weight: 600; color: var(--text-dark); display: block; margin-bottom: 4px;">
+                                        Loại sản phẩm <span style="color:red;">*</span>
+                                    </label>
+                                    <select id="ggProductTypeSelect" class="admin-form-control attr-dynamic-input" data-attr-name="ProductType" style="width:100%; padding: 8px 10px; font-size:12px; border-radius:6px; border:1px solid var(--border-color);" required>
+                                        <option value="">-- Chọn loại sản phẩm --</option>
+                                        ${productTypes.map(t => `<option value="${t.code || t.Code}" ${currentVal === (t.code || t.Code) ? 'selected' : ''}>${t.name || t.Name}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div id="ggSpecificAttributes" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+                                </div>
+                            `;
+                            container.innerHTML = html;
+
+                            const selectEl = document.getElementById('ggProductTypeSelect');
+                            const specificContainer = document.getElementById('ggSpecificAttributes');
+
+                            const renderGgAttrs = (type) => {
+                                if (!type) {
+                                    specificContainer.innerHTML = '';
+                                    return;
+                                }
+                                const typeLower = type.toLowerCase();
+                                const attrs = ggAttrMap[typeLower] || ggAttrMap['other'] || ['Mô tả thêm'];
+                                let attrHtml = '';
+                                attrs.forEach(attr => {
+                                    const val = existingAttrMap[attr] || '';
+                                    attrHtml += `
+                                        <div>
+                                            <label style="font-size: 11px; font-weight: 600; color: var(--text-dark); display: block; margin-bottom: 4px;">
+                                                ${attr}
+                                            </label>
+                                            <input type="text" class="admin-form-control attr-dynamic-input" 
+                                                   data-attr-name="${attr}" 
+                                                   placeholder="Nhập ${attr}" 
+                                                   value="${val.replace(/"/g, '&quot;')}"
+                                                   style="width:100%; padding: 8px 10px; font-size:12px; border-radius:6px; border:1px solid var(--border-color);" />
+                                        </div>
+                                    `;
+                                });
+                                specificContainer.innerHTML = attrHtml;
+                            };
+
+                            selectEl.addEventListener('change', (e) => {
+                                renderGgAttrs(e.target.value);
+                            });
+
+                            if (currentVal) renderGgAttrs(currentVal);
+                            return; // Dừng lại ở đây, không render các thuộc tính cũ
+                        } else {
+                            container.innerHTML = '<div style="color:red; font-size:12px; grid-column: 1 / -1; margin-bottom:10px;">Không tải được loại sản phẩm</div>';
+                            return;
+                        }
+                    } catch (e) {
+                        console.error('Lỗi khi tải ProductType:', e);
+                        container.innerHTML = '<div style="color:red; font-size:12px; grid-column: 1 / -1; margin-bottom:10px;">Không tải được loại sản phẩm</div>';
+                        return;
+                    }
+                }
+
                 const res = await fetch(`/api/Categories/${categoryId}/attributes`);
                 if (!res.ok) throw new Error('Không thể lấy thuộc tính');
-                const templates = await res.json();
+                const templates = await res.json() || [];
 
-                if (!templates || templates.length === 0) {
+                let html = '';
+
+                if (templates.length === 0) {
                     container.innerHTML = '<div style="grid-column: 1 / -1; font-size: 12px; color: var(--text-muted);">Danh mục này dùng mô tả mặc định.</div>';
                     return;
                 }
 
-                let html = '';
                 templates.forEach(tpl => {
                     const currentVal = existingAttrMap[tpl.attributeName] || '';
                     const fullWidth = tpl.attributeName.toLowerCase().includes('mô tả') || tpl.attributeName.toLowerCase().includes('output') ? 'grid-column: 1 / -1;' : '';
@@ -3557,6 +3670,7 @@
                         </div>
                     `;
                 });
+
                 container.innerHTML = html;
             } catch (err) {
                 console.error('Lỗi renderCategoryAttributeFields:', err);
@@ -3629,6 +3743,9 @@
             document.getElementById('prodImageUrl').value = '';
             previewProductImage();
 
+            document.getElementById('prodCategory').value = '';
+            filterBrandsByCategory(null, '');
+
             document.getElementById('productModal').classList.add('active');
             renderCategoryAttributeFields();
         }
@@ -3653,7 +3770,9 @@
             previewProductImage();
 
             document.getElementById('prodCategory').value = p.categoryId;
-            document.getElementById('prodBrand').value = p.brandId;
+            const catInfo = allCategories.find(c => c.categoryId === p.categoryId);
+            const catName = catInfo ? catInfo.categoryName : '';
+            filterBrandsByCategory(p.categoryId, catName, p.brandId);
 
             document.getElementById('productModal').classList.add('active');
 
@@ -3711,6 +3830,16 @@
 
             const imgUrl = document.getElementById('prodImageUrl').value.trim();
             const images = imgUrl ? [{ imageUrl: imgUrl, isDefault: true, sortOrder: 1 }] : null;
+
+            const categoryId = parseInt(document.getElementById('prodCategory').value);
+
+            if (categoryId === 7) {
+                const typeAttr = attributes.find(a => a.attributeName === 'ProductType');
+                if (!typeAttr || !typeAttr.attributeValue) {
+                    showToast('Vui lòng chọn loại sản phẩm.', 'error');
+                    return;
+                }
+            }
 
             const payload = {
                 categoryId: parseInt(document.getElementById('prodCategory').value),

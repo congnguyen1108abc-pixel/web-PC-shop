@@ -1574,8 +1574,8 @@
         }
 
         /* ===========================
-   HERO BANNER
-=========================== */
+    HERO BANNER
+    =========================== */
         .hero-banner {
             width: 100vw;
             max-width: none;
@@ -1692,17 +1692,10 @@
                 </div>
             </div>
             <div class="nav-item-dropdown">
-                <a href="/gaminggear" id="nav-gaminggear" class="active">Gaming Gear</a>
+                <a href="#" id="nav-gaminggear" class="active" onclick="event.preventDefault()">Gaming Gear</a>
                 <div class="mega-menu" style="width: 280px; grid-template-columns: 1fr; gap: 10px; padding: 16px;">
-                    <div class="mega-col">
+                    <div class="mega-col" id="ggHeaderCategoryPanel">
                         <h3>Gaming Gear</h3>
-                        <a href="/gaminggear?category=chuot-gaming">Chuột Gaming</a>
-                        <a href="/gaminggear?category=ban-phim">Bàn Phím</a>
-                        <a href="/gaminggear?category=tai-nghe">Tai Nghe</a>
-                        <a href="/gaminggear?category=mic-studio">Mic Studio</a>
-                        <a href="/gaminggear?category=tay-cam">Tay Cầm</a>
-                        <a href="/gaminggear?category=lot-chuot">Lót Chuột</a>
-                        <a href="/gaminggear?category=phu-kien">Phụ kiện</a>
                     </div>
                 </div>
             </div>
@@ -1966,21 +1959,8 @@
             </div>
         </div>
 
-        <!-- BRAND SHOWCASE -->
-        <div class="brands-section">
-            <div class="brands-title">FEATURED BRANDS</div>
-            <div class="brands-row">
-                <button class="brand-pill active" data-brand="all">Tất cả</button>
-                <button class="brand-pill" data-brand="asus">ASUS ROG</button>
-                <button class="brand-pill" data-brand="msi">MSI</button>
-                <button class="brand-pill" data-brand="logitech">Logitech G</button>
-                <button class="brand-pill" data-brand="razer">Razer</button>
-                <button class="brand-pill" data-brand="corsair">Corsair</button>
-                <button class="brand-pill" data-brand="steelseries">SteelSeries</button>
-                <button class="brand-pill" data-brand="hyperx">HyperX</button>
-                <button class="brand-pill" data-brand="keychron">Keychron</button>
-                <button class="brand-pill" data-brand="akko">Akko</button>
-            </div>
+        <!-- BRAND SHOWCASE (HIDDEN) -->
+        <div class="brands-section" style="display: none;">
         </div>
 
         <!-- SECTION HEADING -->
@@ -1988,15 +1968,8 @@
 
         <!-- CATEGORY FILTER -->
         <div class="filter-bar">
-            <div class="category-menu">
+            <div class="category-menu" id="categoryMenu">
                 <button class="cat-btn active" data-filter="all">Tất Cả</button>
-                <button class="cat-btn" data-filter="mouse">Chuột Gaming</button>
-                <button class="cat-btn" data-filter="keyboard">Bàn Phím</button>
-                <button class="cat-btn" data-filter="headset">Tai Nghe</button>
-                <button class="cat-btn" data-filter="mic">Mic Studio</button>
-                <button class="cat-btn" data-filter="gamepad">Tay Cầm</button>
-                <button class="cat-btn" data-filter="pad">Lót Chuột</button>
-                <button class="cat-btn" data-filter="acc">Phụ kiện</button>
             </div>
             <div class="price-filter">
                 <label for="priceSelect">Mức giá:</label>
@@ -2010,20 +1983,11 @@
         </div>
 
         <!-- BRAND FILTER ROW -->
-        <div class="brand-filter-bar">
+        <div class="brand-filter-bar" id="ggBrandFilterBar">
             <span class="brand-filter-label">Hãng:</span>
-            <button class="brand-btn active" data-brand-filter="all">Tất cả</button>
-            <button class="brand-btn" data-brand-filter="asus">ASUS</button>
-            <button class="brand-btn" data-brand-filter="msi">MSI</button>
-            <button class="brand-btn" data-brand-filter="logitech">Logitech G</button>
-            <button class="brand-btn" data-brand-filter="razer">Razer</button>
-            <button class="brand-btn" data-brand-filter="corsair">Corsair</button>
-            <button class="brand-btn" data-brand-filter="steelseries">SteelSeries</button>
-            <button class="brand-btn" data-brand-filter="hyperx">HyperX</button>
-            <button class="brand-btn" data-brand-filter="keychron">Keychron</button>
-            <button class="brand-btn" data-brand-filter="akko">Akko</button>
-            <button class="brand-btn" data-brand-filter="xbox">Xbox</button>
-            <button class="brand-btn" data-brand-filter="sony">Sony</button>
+            <div id="ggBrandFilterContainer" style="display:inline-flex; gap: 8px; flex-wrap: wrap;">
+                <button class="brand-btn active" data-brand-filter="all">Tất cả</button>
+            </div>
         </div>
 
         <!-- QUICK FILTER -->
@@ -2265,6 +2229,7 @@
     <script src="/assets/js/cart-drawer-global.js?v=1.0.7"></script>
     <script src="/assets/js/search.js?v=1.0.0"></script>
     <script src="/assets/js/auth-ui.js?v=1.1.0"></script>
+    <script src="/js/brand-mapping.js"></script>
     <script>
         /* =====================================================
            GAMINGGEAR.JS — All logic, UTF-8 clean
@@ -2335,14 +2300,19 @@
 
             // Find all items that match current filter selections
             const matchingItems = [];
-            gridItems.forEach(item => {
+            gridItems.forEach((item, i) => {
                 const itemPrice = parseInt(item.getAttribute('data-price'));
                 const itemCat = item.getAttribute('data-category');
-                const itemBrand = item.getAttribute('data-brand') || 'all';
+                const itemBrand = String(item.getAttribute('data-brand') || 'all').trim().toLowerCase();
                 const itemTags = item.getAttribute('data-tags') || '';
 
                 const catMatch = currentCategory === 'all' || currentCategory === itemCat;
-                const brandMatch = currentBrand === 'all' || itemBrand === currentBrand;
+                const selectedBrand = String(currentBrand).trim().toLowerCase();
+                const brandMatch = selectedBrand === 'all' || itemBrand === selectedBrand;
+
+                if (i === 0) { // Log item đầu tiên để debug tránh spam console
+                    console.log(`[Debug] Current Brand: ${selectedBrand} | Item Brand: ${itemBrand} | Brand Match: ${brandMatch}`);
+                }
                 const quickMatch = currentQuick === 'all' || itemTags.includes(currentQuick);
                 let priceMatch = true;
                 if (priceVal === 'under2' && itemPrice >= 2000000) priceMatch = false;
@@ -2357,6 +2327,18 @@
                     item.style.opacity = '0';
                 }
             });
+
+            // Check empty state
+            let emptyState = document.getElementById('ggEmptyState');
+            if (!emptyState) {
+                emptyState = document.createElement('div');
+                emptyState.id = 'ggEmptyState';
+                emptyState.style.cssText = 'grid-column: 1 / -1; text-align: center; font-size: 16px; color: #888; padding: 40px 0; width: 100%;';
+                emptyState.textContent = 'Hiện chưa có sản phẩm.';
+                const grid = document.getElementById('productGrid');
+                if (grid) grid.appendChild(emptyState);
+            }
+            emptyState.style.display = (matchingItems.length === 0) ? 'block' : 'none';
 
             // Calculate pagination parameters
             const totalItems = matchingItems.length;
@@ -2459,16 +2441,8 @@
             document.getElementById('all-gear').scrollIntoView({ behavior: 'smooth', block: 'start' });
         };
 
-        // ── 7. CATEGORY BUTTONS ──
-        document.querySelectorAll('.cat-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.getAttribute('data-filter');
-                currentPage = 1;
-                filterProducts();
-            });
-        });
+        // ── 7. CATEGORY BUTTONS (Đã chuyển vào trong loadProductTypesAndMenu để handle động) ──
+
 
         // ── 8. BRAND FILTER BUTTONS ──
         document.querySelectorAll('.brand-btn').forEach(btn => {
@@ -2524,21 +2498,12 @@
             const urlParams = new URLSearchParams(window.location.search);
             let catParam = urlParams.get('category') || urlParams.get('cat');
             if (catParam) {
-                catParam = catParam.toLowerCase();
-                const catMap = {
-                    'chuot-gaming': 'mouse', 'mouse': 'mouse', 'ban-phim': 'keyboard', 'keyboard': 'keyboard',
-                    'tai-nghe': 'headset', 'headset': 'headset', 'mic-studio': 'mic', 'mic': 'mic',
-                    'tay-cam': 'gamepad', 'gamepad': 'gamepad', 'lot-chuot': 'pad', 'pad': 'pad',
-                    'phu-kien': 'acc', 'acc': 'acc'
-                };
-                const mapped = catMap[catParam];
-                if (mapped) {
-                    currentCategory = mapped;
-                    document.querySelectorAll('.cat-btn').forEach(b => {
-                        b.classList.toggle('active', b.getAttribute('data-filter') === mapped);
-                    });
-                    filterProducts();
-                }
+                const mapped = catParam.toLowerCase();
+                currentCategory = mapped;
+                document.querySelectorAll('.cat-btn').forEach(b => {
+                    b.classList.toggle('active', b.getAttribute('data-filter') === mapped);
+                });
+                filterProducts();
             }
         }
 
@@ -2556,18 +2521,8 @@
         const formatPrice = n => n.toLocaleString('vi-VN') + ' ₫';
 
         function getSubcategoryFromProduct(p) {
-            const sku = (p.sku || p.SKU || '').toUpperCase();
-            const name = (p.productName || p.ProductName || '').toLowerCase();
-            const desc = (p.description || p.Description || '').toLowerCase();
-
-            if (sku.includes('MOUSE') || name.includes('mouse') || name.includes('chuột')) return 'mouse';
-            if (sku.includes('KB') || name.includes('keyboard') || name.includes('bàn phím') || name.includes('keychron') || name.includes('akko')) return 'keyboard';
-            if (sku.includes('HS') || name.includes('headset') || name.includes('tai nghe') || name.includes('sound')) return 'headset';
-            if (sku.includes('MIC') || name.includes('mic') || name.includes('micro')) return 'mic';
-            if ((sku.includes('PAD') && !sku.includes('MPAD')) || name.includes('gamepad') || name.includes('tay cầm')) return 'gamepad';
-            if (sku.includes('MPAD') || name.includes('lót chuột') || name.includes('mousepad') || name.includes('pad')) return 'pad';
-            if (sku.includes('ACC') || sku.includes('RC') || name.includes('vô lăng') || name.includes('stand') || name.includes('giá treo') || name.includes('wheel') || name.includes('phụ kiện')) return 'acc';
-            return 'acc';
+            const productType = p.productType ?? p.ProductType ?? '';
+            return productType.trim().toLowerCase();
         }
 
         function getTagsFromProduct(p) {
@@ -2672,7 +2627,7 @@
                 card.className = 'tilt-card grid-item';
                 card.setAttribute('data-category', p.cat);
                 card.setAttribute('data-price', p.price);
-                card.setAttribute('data-brand', p.brand ? p.brand.toLowerCase() : 'all');
+                card.setAttribute('data-brand', String(p.brand ?? 'all').trim().toLowerCase());
                 card.setAttribute('data-tags', p.tags || '');
 
                 const isOut = p.stock === 'out';
@@ -2683,7 +2638,6 @@
             ` : '';
 
                 const detailUrl = window.location.protocol === 'file:' ? `product-detail.html?id=${p.id}` : `/product-detail?id=${p.id}`;
-
                 card.innerHTML = `
                 <div class="glass-base"></div>
                 <div class="card-img-wrap">
@@ -2741,6 +2695,7 @@
 
         let PRODUCTS = [];
 
+
         async function loadCategoriesMapping() {
             try {
                 const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
@@ -2778,7 +2733,9 @@
 
                 PRODUCTS = items.map(p => {
                     const productId = p.productId ?? p.ProductId;
-                    const brandName = p.brandName ?? p.BrandName ?? 'Unknown';
+                    const rawBrand = p.brandName ?? p.BrandName ?? p.brand ?? p.Brand ?? 'Unknown';
+                    const brandName = String(rawBrand).trim().toLowerCase();
+                    if (PRODUCTS.length === 0) console.log(`[Debug] Product Brand (load API): ${brandName} (Raw: ${rawBrand})`);
                     const productName = p.productName ?? p.ProductName ?? '';
                     const description = p.description ?? p.Description ?? '';
                     const price = p.price ?? p.Price ?? 0;
@@ -2829,6 +2786,7 @@
 
                 const gridItems = Array.from(document.querySelectorAll('#productGrid .grid-item'));
 
+                if (typeof renderBrandFilter === 'function') await renderBrandFilter();
                 filterProducts();
                 setupAddToCartButtons();
                 revealTrendingCards();
@@ -2939,7 +2897,185 @@
             showcaseCard.onclick = () => window.location.href = `/product-detail?id=${product.id}`;
         }
 
-        // ── 15b. DYNAMIC HERO BANNER LOADER ──
+        // ── 15b. DYNAMIC HERO BANNER LOADER & CATEGORY ──
+        const GG_FIXED_CATEGORIES = [
+            "Chuột", "Bàn phím", "Tai nghe", "Màn hình", "Loa",
+            "Micro", "Webcam", "Ghế Gaming", "Mouse Pad", "Tay cầm", "Phụ kiện"
+        ];
+
+        const PC_COMPONENT_BRANDS = [
+            "gigabyte", "asrock", "colorful", "palit", "zotac", "pny", "kingston", "wd",
+            "seagate", "intel", "amd", "nvidia", "crucial", "adata", "g.skill", "teamgroup",
+            "lexar", "deepcool", "thermaltake", "antec", "coolmoon"
+        ];
+
+        async function renderBrandFilter() {
+            const container = document.getElementById('ggBrandFilterContainer');
+            if (!container) return;
+
+            try {
+                const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
+                const brandRes = await fetch(`${baseUrl}/api/Brands`);
+                if (!brandRes.ok) return;
+                const allBrands = await brandRes.json();
+
+                let brandsToRender = window.getFilteredBrandsForCategory ?
+                    window.getFilteredBrandsForCategory(allBrands, 'gaming gear').map(b => b.brandName) :
+                    allBrands.map(b => b.brandName);
+
+                if (brandsToRender.length === 0) {
+                    container.innerHTML = '<span style="font-size: 14px; color: #666; margin-left: 10px;">Chưa có thương hiệu.</span>';
+                    return;
+                }
+
+                let html = `<button class="brand-btn ${currentBrand === 'all' ? 'active' : ''}" data-brand-filter="all">Tất cả</button>`;
+                brandsToRender.forEach((b, i) => {
+                    const normalizedBrand = String(b).trim().toLowerCase();
+                    if (i === 0) console.log(`[Debug] Button Brand (render): ${normalizedBrand} (Raw: ${b})`);
+                    const isActive = (String(currentBrand).trim().toLowerCase() === normalizedBrand) ? 'active' : '';
+                    html += `<button class="brand-btn ${isActive}" data-brand-filter="${normalizedBrand}">${b}</button>`;
+                });
+                container.innerHTML = html;
+
+                container.querySelectorAll('.brand-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        container.querySelectorAll('.brand-btn').forEach(bb => bb.classList.remove('active'));
+                        btn.classList.add('active');
+                        currentBrand = btn.getAttribute('data-brand-filter');
+                        currentPage = 1;
+                        filterProducts();
+                    });
+                });
+            } catch (err) {
+                console.error("[GamingGear] Lỗi tải Brands:", err);
+            }
+        }
+
+        async function loadProductTypesAndMenu() {
+            try {
+                const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
+
+                // Fetch category counts
+                const typeRes = await fetch(`${baseUrl}/api/gaminggear/categories`);
+                let fetchedCategories = [];
+                if (typeRes.ok) fetchedCategories = await typeRes.json();
+
+                const catCounts = {};
+                fetchedCategories.forEach(c => {
+                    catCounts[(c.name || '').toLowerCase()] = c.count; // c.name is the Code like "Chair"
+                });
+
+                // Fetch true product types mapping (Code <-> Name)
+                const defRes = await fetch(`${baseUrl}/api/products/gaming/product-types`);
+                let productTypes = [];
+                if (defRes.ok) productTypes = await defRes.json();
+
+                // 1. Cập nhật Category Panel trên Navbar
+                const ggHeaderPanel = document.getElementById('ggHeaderCategoryPanel');
+                if (ggHeaderPanel && productTypes.length > 0) {
+                    let panelHtml = '<h3>Gaming Gear</h3>';
+                    productTypes.forEach(pt => {
+                        const count = catCounts[(pt.code || '').toLowerCase()] || 0;
+                        panelHtml += `<a href="#" data-panel-filter="${pt.code}">${pt.name}</a>`;
+                    });
+                    ggHeaderPanel.innerHTML = panelHtml;
+
+                    ggHeaderPanel.querySelectorAll('a[data-panel-filter]').forEach(a => {
+                        a.addEventListener('click', async (e) => {
+                            e.preventDefault();
+                            const subcat = a.getAttribute('data-panel-filter');
+                            currentBrand = 'all'; // Reset brand filter
+                            currentCategory = subcat.toLowerCase();
+                            currentPage = 1;
+                            await fetchAndRenderGamingProducts(subcat);
+                        });
+                    });
+                }
+
+                // 2. Cập nhật Category Menu dạng pill (Filter Bar)
+                const menuContainer = document.getElementById('categoryMenu');
+                if (menuContainer && productTypes.length > 0) {
+                    let html = '<button class="cat-btn active" data-filter="all">Tất Cả</button>';
+                    productTypes.forEach(pt => {
+                        html += `<button class="cat-btn" data-filter="${pt.code}">${pt.name}</button>`;
+                    });
+                    menuContainer.innerHTML = html;
+                    menuContainer.querySelectorAll('.cat-btn').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            menuContainer.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            const filterVal = btn.getAttribute('data-filter');
+                            currentBrand = 'all'; // Reset brand filter
+                            currentCategory = filterVal.toLowerCase();
+                            currentPage = 1;
+                            if (filterVal === 'all') {
+                                await loadGamingGearFromAPI();
+                            } else {
+                                await fetchAndRenderGamingProducts(filterVal);
+                            }
+                        });
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to load product types:', e);
+            }
+            applyUrlParams();
+        }
+
+        async function fetchAndRenderGamingProducts(subcategory) {
+            try {
+                const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
+                const response = await fetch(`${baseUrl}/api/gaminggear/products?subcategory=${encodeURIComponent(subcategory)}`);
+                if (!response.ok) {
+                    console.error('Error fetching subcategory products:', response.status);
+                    return;
+                }
+                const data = await response.json();
+                const items = data.items || data;
+
+                // Map sang format Frontend
+                PRODUCTS = items.map(p => {
+                    const price = p.price ?? p.Price ?? 0;
+                    const discountPrice = p.discountPrice ?? p.DiscountPrice ?? 0;
+                    const effectivePrice = p.effectivePrice ?? p.EffectivePrice ?? price;
+                    const oldPrice = (discountPrice > 0 && discountPrice < price) ? price : null;
+                    const discount = oldPrice ? Math.round((1 - effectivePrice / oldPrice) * 100) : 0;
+
+                    return {
+                        id: p.productId ?? p.ProductId ?? p.ProductID,
+                        name: p.productName ?? p.ProductName,
+                        price: effectivePrice,
+                        oldPrice: oldPrice,
+                        discount: discount,
+                        img: p.defaultImageUrl ?? p.DefaultImageUrl ?? 'https://placehold.co/300x200?text=No+Image',
+                        specs: (p.description ?? p.Description) ? String(p.description ?? p.Description).substring(0, 80) : 'Xem chi tiết',
+                        cat: subcategory.toLowerCase(),
+                        brand: String(p.brandName ?? p.BrandName ?? p.brand ?? p.Brand ?? 'Unknown').trim().toLowerCase(),
+                        tags: '',
+                        stock: ((p.stockQuantity ?? p.StockQuantity ?? 0) > 0) ? 'in' : 'out',
+                        badge: null
+                    };
+                });
+
+                renderMainGrid(PRODUCTS);
+                setupAddToCartButtons();
+                filterProducts(); // to trigger empty state checking
+
+                // Đổi active state của pill buttons (nếu có)
+                const menuContainer = document.getElementById('categoryMenu');
+                if (menuContainer) {
+                    menuContainer.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    const targetBtn = menuContainer.querySelector(`.cat-btn[data-filter="${subcategory}"]`);
+                    if (targetBtn) targetBtn.classList.add('active');
+                }
+
+                // Cuộn xuống grid
+                document.getElementById('all-gear').scrollIntoView({ behavior: 'smooth' });
+            } catch (e) {
+                console.error('Error in fetchAndRenderGamingProducts', e);
+            }
+        }
+
         async function loadGamingGearBanner() {
             try {
                 const baseUrl = window.location.protocol === 'file:' ? 'https://localhost:7115' : '';
@@ -2972,6 +3108,9 @@
         // ── 16. INITIALIZATION ──
         (async function init() {
             console.log('[GamingGear] Initializing page...');
+
+            // Load Product Types & Sinh Category Menu
+            await loadProductTypesAndMenu();
 
             // Load dynamic hero banner from Admin
             loadGamingGearBanner();

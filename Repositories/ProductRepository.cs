@@ -39,7 +39,7 @@ public sealed class ProductRepository : IProductRepository
                 x.SKU, x.ProductName, x.Price, x.DiscountPrice, x.CostPrice, x.EffectivePrice,
                 x.StockQuantity, x.SoldCount, x.Description, x.IsActive,
                 x.WarrantyMonths, x.Slug, x.CreatedAt, x.UpdatedAt, x.DefaultImageUrl,
-                x.AvgRating, x.ReviewCount
+                x.AvgRating, x.ReviewCount, x.ProductType
             )),
             totalRecords: totalRecords,
             pageNumber: normalized.PageNumber,
@@ -268,6 +268,7 @@ public sealed class ProductRepository : IProductRepository
         public string? DefaultImageUrl { get; init; }
         public decimal AvgRating { get; init; }
         public int ReviewCount { get; init; }
+        public string? ProductType { get; init; }
         public int TotalRecords { get; init; }
     }
 }

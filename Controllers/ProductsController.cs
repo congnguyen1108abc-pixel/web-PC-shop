@@ -104,6 +104,29 @@ public sealed class ProductsController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
+    [HttpGet("gaming/product-types")]
+    public ActionResult GetGamingProductTypes()
+    {
+        // Return a predefined list of Gaming Gear product types
+        var productTypes = new[]
+        {
+            new { Code = "Mouse", Name = "Chuột" },
+            new { Code = "Keyboard", Name = "Bàn phím" },
+            new { Code = "Headset", Name = "Tai nghe" },
+            new { Code = "Monitor", Name = "Màn hình" },
+            new { Code = "Speaker", Name = "Loa" },
+            new { Code = "Microphone", Name = "Micro" },
+            new { Code = "Webcam", Name = "Webcam" },
+            new { Code = "Chair", Name = "Ghế Gaming" },
+            new { Code = "MousePad", Name = "Mouse Pad" },
+            new { Code = "Controller", Name = "Tay cầm" },
+            new { Code = "Other", Name = "Phụ kiện" }
+        };
+        
+        return Ok(productTypes);
+    }
+
     // ── Product Management APIs ───────────────────────────────────────────────
     // Chỉ Admin hoặc Staff được thêm/sửa/xóa sản phẩm.
 
@@ -143,16 +166,30 @@ public sealed class ProductsController : ControllerBase
     [HttpDelete("{productId:int}")]
     public async Task<ActionResult> Delete(int productId)
     {
-        var id = await _products.DeleteAsync(productId);
-
-        if (id is null)
-            return BadRequest(new { message = "Xóa sản phẩm thất bại" });
-
-        return Ok(new
+        try
         {
-            message = "Xóa sản phẩm thành công",
-            deletedProductId = id
-        });
+            var id = await _products.DeleteAsync(productId);
+
+            if (id is null)
+                return BadRequest(new { message = "Xóa sản phẩm thất bại" });
+
+            return Ok(new
+            {
+                message = "Xóa sản phẩm thành công",
+                deletedProductId = id
+            });
+        }
+        catch (Microsoft.Data.SqlClient.SqlException ex)
+        {
+            if (ex.Message.Contains("khong ton tai"))
+                return NotFound(new { message = "Sản phẩm không tồn tại" });
+            
+            return BadRequest(new { message = "Xóa sản phẩm thất bại: " + ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Lỗi hệ thống: " + ex.Message });
+        }
     }
 
     // ── Product Images Management APIs ────────────────────────────────────────

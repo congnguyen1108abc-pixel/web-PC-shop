@@ -2792,20 +2792,29 @@
         if (specsGrid) {
           specsGrid.innerHTML = '';
           if (attributes && attributes.length > 0) {
-            let html = '<div class="specs-minimal-table">';
-            attributes.forEach(attr => {
-              html += `
-                <div class="spec-table-row">
-                  <span class="spec-table-name">${escapeHtml(attr.attributeName)}</span>
-                  <span class="spec-table-val">${escapeHtml(attr.attributeValue)}</span>
-                </div>
-              `;
-            });
-            html += '</div>';
-            specsGrid.innerHTML = html;
+            const displayAttrs = attributes.filter(a => a.attributeName !== 'ProductType');
+
+            if (displayAttrs.length > 0) {
+              let html = '<div class="specs-minimal-table">';
+              displayAttrs.forEach(attr => {
+                html += `
+                  <div class="spec-table-row">
+                    <span class="spec-table-name">${escapeHtml(attr.attributeName)}</span>
+                    <span class="spec-table-val">${escapeHtml(attr.attributeValue)}</span>
+                  </div>
+                `;
+              });
+              html += '</div>';
+              specsGrid.innerHTML = html;
+            } else {
+              renderSpecsPlaceholder(specsGrid);
+            }
           } else {
-            // Requirement #2: Minimalist placeholder card with icon and FAFAFA background
-            specsGrid.innerHTML = `
+            renderSpecsPlaceholder(specsGrid);
+          }
+
+          function renderSpecsPlaceholder(grid) {
+            grid.innerHTML = `
               <div class="specs-placeholder-card">
                 <div class="placeholder-icon">⚙️</div>
                 <div class="placeholder-content">

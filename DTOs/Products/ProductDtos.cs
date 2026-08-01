@@ -117,7 +117,8 @@ public sealed record ProductListItem(
     DateTime? UpdatedAt,
     string? DefaultImageUrl,
     decimal AvgRating,
-    int ReviewCount);
+    int ReviewCount,
+    string? ProductType = null);
 
 public sealed record ProductDetailHeader
 {

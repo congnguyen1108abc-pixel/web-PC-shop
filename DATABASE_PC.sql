@@ -7570,6 +7570,7 @@ BEGIN
             (SELECT TOP 1 ImageUrl FROM ProductImages pi WHERE pi.ProductID = p.ProductID AND pi.IsDefault = 1) AS DefaultImageUrl,
             ISNULL((SELECT AVG(CAST(Rating AS DECIMAL(3,1))) FROM Reviews r WHERE r.ProductID = p.ProductID AND r.IsApproved = 1), 0) AS AvgRating,
             ISNULL((SELECT COUNT(*) FROM Reviews r WHERE r.ProductID = p.ProductID AND r.IsApproved = 1), 0) AS ReviewCount,
+            (SELECT TOP 1 AttributeValue FROM ProductAttributes pa WHERE pa.ProductID = p.ProductID AND pa.AttributeName = 'ProductType') AS ProductType,
             COUNT(*) OVER() AS TotalRecords
         FROM Products p
         LEFT JOIN Categories c ON p.CategoryID = c.CategoryID
@@ -7628,6 +7629,7 @@ BEGIN
         DefaultImageUrl,
         AvgRating,
         ReviewCount,
+        ProductType,
         TotalRecords
     FROM FilteredProducts
     ORDER BY 
