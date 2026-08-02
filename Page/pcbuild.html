@@ -996,7 +996,9 @@
                         tempDb[targetCat].push({
                             id: p.productId,
                             name: p.productName,
-                            spec: p.description || (p.brandName ? `Hãng: ${p.brandName}` : "Linh kiện PC chất lượng cao"),
+                            sku: p.sku || "",
+                            warranty: p.warrantyMonths || 0,
+                            spec: `${p.sku || "N/A"} | Bảo hành: ${p.warrantyMonths || 0} tháng`,
                             price: p.price,
                             img: p.defaultImageUrl || ""
                         });
@@ -1494,7 +1496,11 @@
 
             if (item) {
                 rowEl.classList.add("selected");
-                titleEl.innerText = item.name;
+                // Display: ProductName | SKU | Warranty
+                const warranty = item.warranty ? ` | Bảo hành: ${item.warranty} tháng` : "";
+                const sku = item.sku ? item.sku : "N/A";
+                const displayInfo = `${item.name} | ${sku}${warranty}`;
+                titleEl.innerText = displayInfo;
                 priceEl.innerText = item.price.toLocaleString("vi-VN") + " đ";
 
                 const iconEl = rowEl.querySelector(".row-icon");
@@ -1510,7 +1516,13 @@
                 const summaryRow = document.getElementById(`summary-${cat}`);
                 const summaryTitle = document.getElementById(`summary-${cat}-title`);
                 if (summaryRow) summaryRow.style.display = "flex";
-                if (summaryTitle) summaryTitle.innerText = item.name;
+                if (summaryTitle) {
+                    // Display: ProductName | SKU | Warranty
+                    const warranty = item.warranty ? ` | Bảo hành: ${item.warranty} tháng` : "";
+                    const sku = item.sku ? item.sku : "N/A";
+                    const displayInfo = `${item.name} | ${sku}${warranty}`;
+                    summaryTitle.innerText = displayInfo;
+                }
             } else {
                 rowEl.classList.remove("selected");
                 

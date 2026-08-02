@@ -3316,17 +3316,23 @@ BEGIN
     SET NOCOUNT ON;
 
     SELECT
-        UserID,
-        FullName,
-        Email,
-        PhoneNumber,
-        AvatarURL,
-        Role,
-        IsActive,
-        CreatedAt,
-        UpdatedAt
-    FROM Users
-    WHERE UserID = @UserID;
+        u.UserID,
+        u.FullName,
+        u.Email,
+        u.PhoneNumber,
+        u.AvatarURL,
+        u.Role,
+        u.IsActive,
+        u.CreatedAt,
+        u.UpdatedAt,
+        ISNULL(u.TotalSpent, 0)              AS TotalSpent,
+        ISNULL(u.MembershipTier, N'Đồng')   AS MembershipTier,
+        ISNULL(u.LoyaltyDiscountUses, 0)     AS LoyaltyDiscountUses,
+        u.BankName,
+        u.BankAccountNumber,
+        u.BankAccountName
+    FROM Users u
+    WHERE u.UserID = @UserID;
 END;
 GO
 
@@ -4238,17 +4244,34 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    DECLARE @NetRevenue DECIMAL(18,2) = 0;
+    DECLARE @TotalCogs  DECIMAL(18,2) = 0;
+    DECLARE @NetProfit  DECIMAL(18,2) = 0;
+
+    SELECT @NetRevenue = ISNULL(SUM(FinalAmount), 0)
+    FROM Orders WHERE Status = N'Hoàn tất';
+
+    SELECT @TotalCogs = ISNULL(SUM(od.Quantity * od.CostPrice), 0)
+    FROM OrderDetails od
+    JOIN Orders o ON od.OrderID = o.OrderID
+    WHERE o.Status = N'Hoàn tất';
+
+    SET @NetProfit = @NetRevenue - @TotalCogs;
+
     SELECT
-        TotalUsers = (SELECT COUNT(*) FROM Users),
-        ActiveUsers = (SELECT COUNT(*) FROM Users WHERE IsActive = 1),
-        TotalProducts = (SELECT COUNT(*) FROM Products),
-        ActiveProducts = (SELECT COUNT(*) FROM Products WHERE IsActive = 1),
-        PendingOrders = (SELECT COUNT(*) FROM Orders WHERE Status = N'Chờ xác nhận'),
-        ShippingOrders = (SELECT COUNT(*) FROM Orders WHERE Status = N'Đang giao'),
-        CompletedOrders = (SELECT COUNT(*) FROM Orders WHERE Status = N'Hoàn tất'),
-        LowStockProducts = (SELECT COUNT(*) FROM Products WHERE IsActive = 1 AND StockQuantity <= 5),
-        OpenWarrantyClaims = (SELECT COUNT(*) FROM WarrantyClaims WHERE Status IN (N'Đang tiếp nhận', N'Đang sửa chữa')),
-        UnreadNotifications = (SELECT COUNT(*) FROM Notifications WHERE IsRead = 0);
+        TotalUsers          = (SELECT COUNT(*) FROM Users),
+        ActiveUsers         = (SELECT COUNT(*) FROM Users WHERE IsActive = 1),
+        TotalProducts       = (SELECT COUNT(*) FROM Products),
+        ActiveProducts      = (SELECT COUNT(*) FROM Products WHERE IsActive = 1),
+        PendingOrders       = (SELECT COUNT(*) FROM Orders WHERE Status = N'Chờ xác nhận'),
+        ShippingOrders      = (SELECT COUNT(*) FROM Orders WHERE Status = N'Đang giao'),
+        CompletedOrders     = (SELECT COUNT(*) FROM Orders WHERE Status = N'Hoàn tất'),
+        LowStockProducts    = (SELECT COUNT(*) FROM Products WHERE IsActive = 1 AND StockQuantity <= 5),
+        OpenWarrantyClaims  = (SELECT COUNT(*) FROM WarrantyClaims WHERE Status IN (N'Đang tiếp nhận', N'Đang sửa chữa')),
+        UnreadNotifications = (SELECT COUNT(*) FROM Notifications WHERE IsRead = 0),
+        NetRevenue          = @NetRevenue,
+        TotalCogs           = @TotalCogs,
+        NetProfit           = @NetProfit;
 END;
 GO
 
